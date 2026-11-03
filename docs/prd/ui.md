@@ -71,6 +71,7 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`Mechanic`](<../../Design Artifact/steps/MechanicAction.html#Mechanic>) | Step: Mechanic Action | P0 | REQ-MEC-001, REQ-MEC-002 |
 | [`MechanicExternal`](<../../Design Artifact/steps/MechanicAction.html#MechanicExternal>) | Mechanic Action: external team | P0 | REQ-MEC-003 |
 | [`PartCheck`](<../../Design Artifact/steps/PartCheck.html#PartCheck>) | Step: Part Check | P0 | REQ-CHK-002 |
+| [`Mobilisasi`](<../../Design Artifact/steps/Mobilisasi.html#Mobilisasi>) | Step: Mobilisasi (web view and verification of the route, trail and stooring) | P0 | REQ-MBL-002 to REQ-MBL-006, DEC-99 |
 | [`PartCheckVerify`](<../../Design Artifact/steps/StepVerify.html#PartCheckVerify>) | Verify a Part Check step | P0 | REQ-CHK-003 |
 | [`CreateWOFromCheck`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | Draft WO from a Part Check | P0 | REQ-CHK-003, REQ-CHK-004 |
 | [`MechanicMobileCheck`](<../../Design Artifact/mobile/PartCheck.html#MechanicMobileCheck>) | Mobile: Part Check step | P0 (R1 step 7, DEC-98) | REQ-CHK-002 |
@@ -91,6 +92,7 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | **Schedule** |  |  |  |
 | [`MaintenanceSchedule`](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>) | Maintenance schedule (Planner) | P0 | REQ-SCH-001 to REQ-SCH-003, REQ-SCH-006 |
 | [`ScheduleDispatcher`](<../../Design Artifact/schedule/Schedule.html#ScheduleDispatcher>) | Maintenance schedule (Field Coordinator, read only) | P0 | REQ-SCH-005 |
+| [`ScheduleMonth`](<../../Design Artifact/schedule/Schedule.html#ScheduleMonth>) | Maintenance schedule, month view | P0 | REQ-SCH-001, REQ-SCH-002 |
 | **Vehicles** |  |  |  |
 | [`Vehicles`](<../../Design Artifact/fleet/Vehicles.html#Vehicles>) | Vehicles tab (Chassis and parts) | P0 | REQ-VEH-001, REQ-PLC-010 |
 | [`VehicleOverview`](<../../Design Artifact/fleet/Vehicle.html#VehicleOverview>) | Vehicles: Overview tab | P0 | REQ-VEH-001, REQ-VEH-006 |

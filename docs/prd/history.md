@@ -109,6 +109,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.13 (2026-11-03) is editorial only: the screen inventory (7.3) now lists the two artboards it lacked, `Mobilisasi` (the web step view, REQ-MBL-002 to 006) and `ScheduleMonth` (the month view of REQ-SCH-002), found by the coverage check of specs/tools. No rule changes.
+
 v2.12 (2026-11-03) adds DEC-100: MobileProfile is P0 in Release 1 (every R1 mobile menu has Profile); its push mute settings (REQ-NTF-003) stay P1.
 
 v2.11 (2026-11-03) adds the product owner's answers to the plan review: DEC-97 (one draft WO request screen, FCCreateWO, for the Mechanic and the Field Coordinator; FLW-MEC-10), DEC-98 (the Mechanic mobile menu moves to Release 1, R1 step 7; REQ-MOB-004 and REQ-MOB-010 become P0; push for the Mechanic; supersedes the Mechanic part of DEC-41) and DEC-99 (Part Check and Mobilisasi placed in R1 step 4 for server and web, phone screens in step 7); §10 release rows, 2.1, 4.19, 4.20, 7.3 screen priorities and flows 6.2 follow them. TX-16 now names the DEC-92 roll-forward, late alerts and the OFF-day count (editorial).

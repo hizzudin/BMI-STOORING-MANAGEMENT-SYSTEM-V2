@@ -363,6 +363,42 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 
 1. Notification → [`GoodsReceiptForm`](<../../Design Artifact/inventory/GoodsReceipt.html#GoodsReceiptForm>) with type From cancelled WO, prefilled with the Part Purchase items and prices; map each to a SKU or mark it not kept → Post receipt.
 
+## 6.8e Step time, troubleshooting, mobilisation and OFF units
+
+**FLW-MEC-07 Start, pause and resume a step** (REQ-ENG-012 to REQ-ENG-016, DEC-87).
+
+1. Open a step that tracks work time: the form is read only and the waiting time runs from the moment the step opened; opening, viewing or Save draft never starts it.
+2. Start, or "I started earlier" for a forgotten Start: up to 2 hours back and never before the step opened, with a reason; the start is marked entered.
+3. Pause with a reason (Waiting for parts, Waiting for the vehicle, Waiting for vendor or agency, Break or shift ended, Other): work time stops, the form is read only and Submit is unavailable. Resume unlocks it at once. A change request pauses the step by itself with reason Change request and resumes it when the request is decided (FLW-MEC-05).
+4. Submit. A wrong time is corrected only by the System Admin on [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) (Correct time, with a reason and an audit record). A module that does not track work time, such as Part Replacement, skips this flow (DEC-95).
+
+**FLW-MEC-08 Do a Part Check step** (REQ-CHK-001, REQ-CHK-002, REQ-CHK-005, REQ-CHK-007, DEC-88, DEC-89).
+
+1. [`DashboardMechanic`](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>), "My steps" → Open → Start → [`PartCheck`](<../../Design Artifact/steps/PartCheck.html#PartCheck>): one card per part the Planner listed, with what to check.
+2. For each part write the condition, choose Good, Repair or Replace and add at least one photo; a Repair or Replace part may be marked Unsafe to drive. Parts not on the list may be added (Added by mechanic) under the same rules.
+3. Record the check service: for an internal team at least one catalog service of category Diagnosis at its fixed price (a free check uses a Rp 0 service); for an external workshop the vendor, description, price and invoice image. Stooring for a field check comes from the WO's Mobilisasi step (FLW-MEC-09), not from this step.
+4. Submit; it is refused until every part is complete. A part marked Unsafe to drive notifies the Planner, Supervisor and Field Coordinators and shows a warning on the vehicle and the schedule; it never blocks the vehicle.
+
+**FLW-PLN-10 Turn a Part Check into a repair WO** (REQ-CHK-003, REQ-CHK-004, REQ-CHK-006).
+
+1. Verify the Part Check step in [`PartCheckVerify`](<../../Design Artifact/steps/StepVerify.html#PartCheckVerify>) (as FLW-PLN-05). When at least one part is Repair or Replace, the system creates one Draft WO with source Part\_Check for the same vehicle, priority Urgent when a part is Unsafe to drive, with its steps built from the findings; when every part is Good, no draft is made.
+2. Open the draft → [`CreateWOFromCheck`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>): the findings and their photos are carried over; change the steps as in any WO.
+3. Activate: submit for approval; the WO becomes Active only after an Approver approves it (FLW-APR-01), and the activating user counts as its creator for BR-03. Or Discard draft with a reason; the draft keeps its link to the check and is never made again for that step.
+4. The check WO completes and is billed on its own; [`WODocumentCheck`](<../../Design Artifact/work-orders/WODocument.html#WODocumentCheck>) prints the Part Check section with the follow-up WO number for reference.
+
+**FLW-MEC-09 Mobilisasi to a broken-down vehicle** (REQ-MBL-001 to REQ-MBL-006, REQ-WO-003, DEC-90).
+
+1. A breakdown (FLW-DRV-02, FLW-SA-04) drafts a WO pre-seeded with one Mobilisasi step to the driver's captured location; the Planner adds the other steps in [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>), where Mobilisasi is also in the module palette, and submits it (FLW-PLN-01, FLW-APR-01).
+2. When the step opens, the executor opens it on the phone ([`MobilisasiMobile`](<../../Design Artifact/mobile/Mobilisasi.html#MobilisasiMobile>), or [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) from the System Admin field menu, FLW-SA-07) and presses Start: the map shows the route to the destination, and the location trail is recorded while the step is In\_Progress and online.
+3. Reaching the destination submits the step by itself; Finish stooring submits it before arrival. Recording stops at submit.
+4. The stooring fee of the destination's area is charged as a snapshot: once per WO per area per day, Rp 0 for the workshop. The Planner or System Admin sees the trail and the stooring duration in [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) and the WO detail; every view is written to the access log. The trail never appears on the WO document or the invoice.
+
+**FLW-APR-09 Follow a WO that overruns its planned day** (REQ-SCH-003, REQ-SCH-007, REQ-BIL-003, SM-VEH, DEC-92).
+
+1. The daily job at 00:30 WIB finds a scheduled WO not Completed after its planned day: the card is marked Missed, flagged rolled-over / late and moved to the next day (FLW-PLN-04). The WO creator, the executor of its open step, the Planners, the Field Coordinators and the GM get a late alert, again every morning until the WO is Completed, Cancelled or moved.
+2. If that WO's first step had already started (the vehicle was in Repair), the vehicle becomes OFF and the WO's OFF days rise by one per WIB day, counted once even when the job runs twice. OFF never blocks or changes the WO (BR-13) and does not block WO creation or amendment.
+3. When the WO is Completed or Cancelled the vehicle leaves OFF. The invoice draft of a completed WO carries an Off\_Unit line, OFF days × the OFF-unit daily rate from Settings, at cost without markup (FLW-ACC-01).
+
 ## 6.9 Cross-role flow: a PM service from alert to WO document
 
 | Order | Role | Action | Screens | Transition |

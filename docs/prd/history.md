@@ -109,6 +109,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.10 (2026-11-03) is editorial only: flows 6.8e added for requirements that had no flow: FLW-MEC-07 step time (REQ-ENG-012 to 016), FLW-MEC-08 Part Check and FLW-PLN-10 its follow-up WO (REQ-CHK-001 to 007), FLW-MEC-09 Mobilisasi (REQ-MBL-001 to 006), FLW-APR-09 a WO that overruns its planned day, OFF and the OFF-unit cost (DEC-92); the traceability matrix links them. No rule changes.
+
 v2.9 (2026-11-03) is editorial only: flows (6) brought in line with the decisions already in force: Start before editing a step and no Start for Part Replacement (DEC-87, DEC-95), automatic schedule roll-forward (DEC-92), Part Purchase lines from the WO's part list only (DEC-62, DEC-63), a breakdown draft pre-seeded with one Mobilisasi step and stooring moved off Mechanic Action (DEC-90, DEC-91). AC-STK-002 retired with REQ-STK-005; AC-STK-006 now verifies REQ-STK-004 and REQ-PUR-008 instead of the retired REQ-STK-010; AC-REG-002 reworded for WOs and presets (DEC-85); the traceability matrix (12) gets the missing AC ranges and a Part Check row. No rule changes.
 
 v2.8 (2026-11-03) adds DEC-96: the design artifact is the visual target of the end product (0.1, 0.6, 7.1, 7.7); visual style is no longer free at implementation.

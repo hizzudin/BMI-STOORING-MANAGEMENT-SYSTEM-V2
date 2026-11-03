@@ -749,6 +749,7 @@ Release 1 is built in seven steps; each step ends with its acceptance criteria p
 | DEC-97 | The draft WO request screen is the same for the Mechanic and the Field Coordinator: on the web both use FCCreateWO (vehicle, suggested category, description, field-finding note, parts needed, photos; Send to Planner). A Mechanic's draft has source Manual\_Mechanic. Answers the missing web screen for REQ-WO-016 | REQ-WO-016, FLW-MEC-10 |
 | DEC-98 | The Mechanic mobile menu is essential and moves to Release 1, built in R1 step 7 with the Driver, Field Coordinator and System Admin menus: My steps for today (REQ-MOB-010), the step screens (Mechanic Action, Part Replacement, Part Check, Mobilisasi with route and location trail), field report (REQ-MOB-004), history and push. REQ-MOB-004 and REQ-MOB-010 become P0. The Supervisor/GM menu stays in Release 2. Supersedes the Mechanic part of DEC-41 | 2.1, 4.20, 4.19, 7.3, 10 |
 | DEC-99 | Part Check (DEC-88, DEC-89) and Mobilisasi (DEC-90) are essential Release 1 features: their server, web screens and verification are built in R1 step 4 with Mechanic Action; their phone screens in R1 step 7 | 10, 4.5, 4.5a |
+| DEC-100 | MobileProfile is P0 in Release 1, because every Release 1 mobile menu has a Profile tab: identity, language, app and session info and sign out. Its per-kind push mute (REQ-NTF-003) stays P1 | 7.3, REQ-MOB-001 |
 
 Fully superseded decisions (DEC-25, DEC-38, DEC-40, DEC-49, DEC-52, DEC-71) are in [docs/prd/history.md](docs/prd/history.md).
 

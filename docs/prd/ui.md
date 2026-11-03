@@ -177,7 +177,7 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`SupervisorMobileReview`](<../../Design Artifact/mobile/Approvals.html#SupervisorMobileReview>) | Supervisor/GM: review and decide | P1 | REQ-MOB-005 |
 | [`SupervisorMobileFleet`](<../../Design Artifact/mobile/Fleet.html#SupervisorMobileFleet>) | Supervisor/GM: fleet today | P1 | REQ-MOB-005 |
 | [`SupervisorMobileHistory`](<../../Design Artifact/mobile/Approvals.html#SupervisorMobileHistory>) | Supervisor/GM: decision history | P1 | REQ-MOB-005, DQ-04 |
-| [`MobileProfile`](<../../Design Artifact/mobile/MobileApp.html#MobileProfile>) | Mobile: profile and settings (every role) | P1 | REQ-MOB-001, DQ-01, DQ-03 |
+| [`MobileProfile`](<../../Design Artifact/mobile/MobileApp.html#MobileProfile>) | Mobile: profile and settings (every role) | P0 (DEC-100; the push mute settings of REQ-NTF-003 stay P1) | REQ-MOB-001, DQ-01, DQ-03 |
 | [`DispatcherMobileFleet`](<../../Design Artifact/mobile/Fleet.html#DispatcherMobileFleet>) | Field Coordinator: fleet availability | P0 | REQ-MOB-006 |
 | [`DispatcherMobileSchedule`](<../../Design Artifact/mobile/Fleet.html#DispatcherMobileSchedule>) | Field Coordinator: schedule, read only | P0 | REQ-MOB-006 |
 | [`DispatcherMobileAlerts`](<../../Design Artifact/mobile/MobileApp.html#DispatcherMobileAlerts>) | Field Coordinator: alerts | P0 | REQ-MOB-006, REQ-NTF-002 |

@@ -53,7 +53,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 1. Settings → [`SettingsWOPresets`](<../../Design Artifact/settings/WOPresets.html#SettingsWOPresets>): rename or deactivate presets. A preset's steps are changed by opening it in [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) (Edit steps in Create WO) and saving it again with Save as preset, which adds a version.
 2. Settings → [`SettingsPMPackages`](<../../Design Artifact/settings/WOPresets.html#SettingsPMPackages>): packages grouped by vehicle class, with intervals, tasks and suggested parts.
 
-## 6.2 Mechanic (web or tablet in release 1, mobile from P1)
+## 6.2 Mechanic (web or tablet, and mobile from R1 step 7)
 
 **FLW-MEC-01 Do a Mechanic Action step, internal team** (REQ-MEC-001, REQ-MEC-002).
 
@@ -83,10 +83,10 @@ Each flow lists the screens of the design canvas in the order the user meets the
 1. Inside the open step → "Raise change request" → [`ChangeRequest`](<../../Design Artifact/work-orders/ChangeRequest.html#ChangeRequest>): what changes, requested change, reason.
 2. Submit request → the WO is Pending\_Amendment and later steps stay Locked until the Approver decides (FLW-PLN-06, FLW-APR-02).
 
-**FLW-MEC-06 Mobile app (P1)** (REQ-MOB-002, REQ-MOB-004).
+**FLW-MEC-06 Mobile app (R1 step 7)** (REQ-MOB-002, REQ-MOB-004, REQ-MOB-010, DEC-98).
 
-1. [`MobileLogin`](<../../Design Artifact/mobile/MobileApp.html#MobileLogin>) → Mechanic menu → [`MechanicMobileHome`](<../../Design Artifact/mobile/MobileApp.html#MechanicMobileHome>) (open, returned and coming steps).
-2. Open a step → [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) (Mechanic Action) or [`MechanicMobilePlacement`](<../../Design Artifact/mobile/Placement.html#MechanicMobilePlacement>) (Part Replacement), same rules as FLW-MEC-01 to FLW-MEC-03 → Submit.
+1. [`MobileLogin`](<../../Design Artifact/mobile/MobileApp.html#MobileLogin>) → Mechanic menu → [`MechanicMobileHome`](<../../Design Artifact/mobile/MobileApp.html#MechanicMobileHome>) (the WOs scheduled for today and assigned to the mechanic, Urgent first, rolled-over first within a level).
+2. Open a step → [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) (Mechanic Action), [`MechanicMobilePlacement`](<../../Design Artifact/mobile/Placement.html#MechanicMobilePlacement>) (Part Replacement), [`MechanicMobileCheck`](<../../Design Artifact/mobile/PartCheck.html#MechanicMobileCheck>) (Part Check) or [`MobilisasiMobile`](<../../Design Artifact/mobile/Mobilisasi.html#MobilisasiMobile>) (Mobilisasi), same rules as FLW-MEC-01 to FLW-MEC-03, FLW-MEC-08 and FLW-MEC-09 → Submit.
 3. Report → [`MechanicMobileFieldReport`](<../../Design Artifact/mobile/Requests.html#MechanicMobileFieldReport>): vehicle, location, description, suggested category, urgency, photos → Send. It drafts a WO for the Planner (FLW-PLN-02); no work starts from the report.
 
 ## 6.3 Warehouse Manager (web)
@@ -364,6 +364,11 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 1. Notification → [`GoodsReceiptForm`](<../../Design Artifact/inventory/GoodsReceipt.html#GoodsReceiptForm>) with type From cancelled WO, prefilled with the Part Purchase items and prices; map each to a SKU or mark it not kept → Post receipt.
 
 ## 6.8e Step time, troubleshooting, mobilisation and OFF units
+
+**FLW-MEC-10 Send a field finding for review on the web** (REQ-WO-016, DEC-91, DEC-97).
+
+1. Work Orders → "+ Create Work Order" → [`FCCreateWO`](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>), the same request screen the Field Coordinator uses (DEC-97): vehicle, suggested category, description, the field-finding note (required), the parts needed and photos; no steps.
+2. Send to Planner: the WO stays Draft, marked Sent for review, with source Manual\_Mechanic and the Mechanic as creator; the Planners and the System Admin are notified, and the Planner continues as in FLW-FC-04 step 3. The Mechanic cannot submit or approve it.
 
 **FLW-MEC-07 Start, pause and resume a step** (REQ-ENG-012 to REQ-ENG-016, DEC-87).
 

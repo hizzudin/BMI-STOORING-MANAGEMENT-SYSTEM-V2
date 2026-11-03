@@ -30,7 +30,7 @@ Data that the spec keeps in master data (modules, steps, classes, layouts, tyre 
 | Form page | Cards in data-entry order and a bottom bar (Cancel, Save draft or Save, main action). Forms are full pages. Small actions use a side panel or a dialog: Replace and Rotate a tyre, column chooser, export, Cancel WO, Worn out, Scrap, deactivate, void, Correct baseline. |
 | [Settings](<../../Design Artifact/settings/Settings.html#Settings>) | Same shell; the Settings home groups items in cards (Work Orders; Fleet and maintenance; Alerts and system); each opens its own page. Users and roles is not in Settings. |
 | One field per column | Each data item has its own sortable, filterable column; never two items in one column or two lines in one cell; wide tables offer a column chooser; a matrix cell holds one value. A person column shows the name; the role gets its own column where it matters. |
-| Responsive | Web screens are desktop first and usable on a tablet. The mobile app (R1 step 7; the Mechanic and Supervisor menus in release 2) is mobile first at 390 × 844, one app whose menu follows the role. |
+| Responsive | Web screens are desktop first and usable on a tablet. The mobile app (R1 step 7; the Supervisor menu in release 2, DEC-98) is mobile first at 390 × 844, one app whose menu follows the role. |
 
 ## 7.3 Screen inventory
 
@@ -73,7 +73,7 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`PartCheck`](<../../Design Artifact/steps/PartCheck.html#PartCheck>) | Step: Part Check | P0 | REQ-CHK-002 |
 | [`PartCheckVerify`](<../../Design Artifact/steps/StepVerify.html#PartCheckVerify>) | Verify a Part Check step | P0 | REQ-CHK-003 |
 | [`CreateWOFromCheck`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | Draft WO from a Part Check | P0 | REQ-CHK-003, REQ-CHK-004 |
-| [`MechanicMobileCheck`](<../../Design Artifact/mobile/PartCheck.html#MechanicMobileCheck>) | Mobile: Part Check step | P1 | REQ-CHK-002 |
+| [`MechanicMobileCheck`](<../../Design Artifact/mobile/PartCheck.html#MechanicMobileCheck>) | Mobile: Part Check step | P0 (R1 step 7, DEC-98) | REQ-CHK-002 |
 | [`WODocumentCheck`](<../../Design Artifact/work-orders/WODocument.html#WODocumentCheck>) | WO document of a Part Check WO | P0 | REQ-CHK-006, REQ-CHK-007, REQ-WOD-008 |
 | [`Placement`](<../../Design Artifact/steps/Placement.html#Placement>) | Step: Part Replacement map | P0 | REQ-PLC-001 to REQ-PLC-010 |
 | [`PlacementReplace`](<../../Design Artifact/steps/Placement.html#PlacementReplace>) | Part Replacement: replace | P0 | REQ-PLC-003, REQ-PLC-004 |
@@ -167,11 +167,12 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`DriverBreakdown`](<../../Design Artifact/mobile/FieldReports.html#DriverBreakdown>) | Driver: report breakdown | P0 | REQ-MOB-003 |
 | [`DriverOdometer`](<../../Design Artifact/mobile/FieldReports.html#DriverOdometer>) | Driver: record odometer | P0 | REQ-MOB-003 |
 | [`DriverHistory`](<../../Design Artifact/mobile/FieldReports.html#DriverHistory>) | Driver: history | P0 | REQ-MOB-003 |
-| [`MechanicMobileHome`](<../../Design Artifact/mobile/MobileApp.html#MechanicMobileHome>) | Mechanic: my steps | P1 | REQ-MOB-002 |
-| [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) | Mechanic: Mechanic Action step | P0 (System Admin field menu), P1 (Mechanic) | REQ-MOB-002 |
-| [`MechanicMobilePlacement`](<../../Design Artifact/mobile/Placement.html#MechanicMobilePlacement>) | Mechanic: Part Replacement step | P1 | REQ-MOB-002 |
-| [`MechanicMobileFieldReport`](<../../Design Artifact/mobile/Requests.html#MechanicMobileFieldReport>) | Mechanic: field finding | P1 | REQ-MOB-004 |
-| [`MechanicMobileHistory`](<../../Design Artifact/mobile/MobileApp.html#MechanicMobileHistory>) | Mechanic: history | P1 | REQ-MOB-002, DQ-04 |
+| [`MechanicMobileHome`](<../../Design Artifact/mobile/MobileApp.html#MechanicMobileHome>) | Mechanic: my steps | P0 (DEC-98) | REQ-MOB-002, REQ-MOB-010 |
+| [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) | Mechanic: Mechanic Action step | P0 (Mechanic and System Admin field menu, DEC-98) | REQ-MOB-002 |
+| [`MechanicMobilePlacement`](<../../Design Artifact/mobile/Placement.html#MechanicMobilePlacement>) | Mechanic: Part Replacement step | P0 (DEC-98) | REQ-MOB-002 |
+| [`MechanicMobileFieldReport`](<../../Design Artifact/mobile/Requests.html#MechanicMobileFieldReport>) | Mechanic: field finding | P0 (DEC-98) | REQ-MOB-004 |
+| [`MechanicMobileHistory`](<../../Design Artifact/mobile/MobileApp.html#MechanicMobileHistory>) | Mechanic: history | P0 (DEC-98) | REQ-MOB-002, DQ-04 |
+| [`MobilisasiMobile`](<../../Design Artifact/mobile/Mobilisasi.html#MobilisasiMobile>) | Mechanic and System Admin: Mobilisasi step (route, location trail, Finish stooring) | P0 (DEC-98, DEC-99) | REQ-MBL-002 to REQ-MBL-005 |
 | [`SupervisorMobileHome`](<../../Design Artifact/mobile/Approvals.html#SupervisorMobileHome>) | Supervisor/GM: approvals | P1 | REQ-MOB-005 |
 | [`SupervisorMobileReview`](<../../Design Artifact/mobile/Approvals.html#SupervisorMobileReview>) | Supervisor/GM: review and decide | P1 | REQ-MOB-005 |
 | [`SupervisorMobileFleet`](<../../Design Artifact/mobile/Fleet.html#SupervisorMobileFleet>) | Supervisor/GM: fleet today | P1 | REQ-MOB-005 |
@@ -181,7 +182,7 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`DispatcherMobileSchedule`](<../../Design Artifact/mobile/Fleet.html#DispatcherMobileSchedule>) | Field Coordinator: schedule, read only | P0 | REQ-MOB-006 |
 | [`DispatcherMobileAlerts`](<../../Design Artifact/mobile/MobileApp.html#DispatcherMobileAlerts>) | Field Coordinator: alerts | P0 | REQ-MOB-006, REQ-NTF-002 |
 | [FileUploadStates](<../../Design Artifact/components/FileUpload.html#FileUploadStates>) | Component: file upload states (FileDrop) | P0 | REQ-FUP-001 to 007 |
-| [MechanicMobileUpload](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileUpload>) | Mechanic: photos uploading in the background, submit when done | P1 | REQ-FUP-006, REQ-FUP-011 to 015 |
+| [MechanicMobileUpload](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileUpload>) | Mechanic: photos uploading in the background, submit when done | P0 (DEC-98) | REQ-FUP-006, REQ-FUP-011 to 015 |
 | [PhotoViewer](<../../Design Artifact/components/PhotoViewer.html#PhotoViewer>) | Component: photo and file viewer (dialog) | P0 | REQ-FUP-016, REQ-ENG-010, REQ-APR-009, REQ-APR-010 |
 | **Field Coordinator requests and purchases (R1)** | - | - | - |
 | [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>) | Requests: draft WOs from drivers (Field Coordinator) | P0 | REQ-WO-014 |

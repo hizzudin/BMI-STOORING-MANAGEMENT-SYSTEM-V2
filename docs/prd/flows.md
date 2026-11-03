@@ -3,7 +3,7 @@
 > Part of the BMI Stooring System spec (§6 user flows). Core rules, roles, state machines, business rules and decisions: [PRD.md](../../PRD.md). Section numbers and IDs are unchanged from the single-file PRD v2.4.
 
 
-Each flow lists the screens of the design canvas in the order the user meets them, and names the requirements it exercises. Every web flow starts at [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) and lands on the role's dashboard; every mobile flow (R1 step 7 or P1, see 4.20) starts at [`MobileLogin`](<../../Design Artifact/mobile/MobileApp.html#MobileLogin>), whose menu follows the role. The bell in the page header opens [`NotificationCenter`](<../../Design Artifact/shell/Notifications.html#NotificationCenter>) from any screen; in the mobile app the same notices also arrive as push notifications. The System Admin can run every flow of every operational role; where it decides its own work the stamp is marked Self-approved or Self-verified.
+Each flow lists the screens of the design canvas in the order the user meets them, and names the requirements it exercises. Every web flow starts at [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) and lands on the role's dashboard; every mobile flow (R1 step 7 or P1, see 4.20) starts at [`MobileLogin`](<../../Design Artifact/mobile/MobileApp.html#MobileLogin>), whose menu follows the role. The bell in the page header opens [`NotificationCenter`](<../../Design Artifact/shell/Notifications.html#NotificationCenter>) from any screen; in the mobile app the same notices also arrive as push notifications. The System Admin can run every flow of every operational role; where it decides its own work the stamp is marked Self-approved or Self-verified. In every step flow, opening a step leaves its form read only until the executor presses Start (or Start from an earlier time with a reason); a module that does not track work time, such as Part Replacement, has no Start and is editable while Open (SM-STEP, DEC-87, DEC-95).
 
 ## 6.1 Planner (web)
 
@@ -28,7 +28,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 1. Sidebar Schedule → [`MaintenanceSchedule`](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>).
 2. Drag a WO card from "Not on the schedule" onto a day; a day can hold several cards. The Field Coordinator is alerted (FLW-FC-02).
-3. A card whose day passed without completion is marked Missed; drag it to a new day. The WO itself never changes (BR-13).
+3. A card whose day passed without completion is marked Missed by the daily job, flagged rolled-over / late and moved to the next day automatically, every day until the WO is Completed or Cancelled; the Planner may still drag it to another day. The WO itself never changes (BR-13, REQ-SCH-003, DEC-92).
 
 **FLW-PLN-05 Verify a submitted step** (REQ-ENG-005, REQ-ENG-007).
 
@@ -58,7 +58,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 **FLW-MEC-01 Do a Mechanic Action step, internal team** (REQ-MEC-001, REQ-MEC-002).
 
 1. [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) → [`DashboardMechanic`](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>), "My steps" → Open. A step that is not open yet shows [`StepLocked`](<../../Design Artifact/work-orders/WorkOrder.html#StepLocked>).
-2. [`Mechanic`](<../../Design Artifact/steps/MechanicAction.html#Mechanic>): team Internal, services from the catalog (fixed prices), at least one repair photo.
+2. Start → [`Mechanic`](<../../Design Artifact/steps/MechanicAction.html#Mechanic>): team Internal, services from the catalog (fixed prices), at least one repair photo. The step asks no location and adds no stooring; that comes from the WO's Mobilisasi step (REQ-MEC-009 retired, DEC-90).
 3. Submit step → waits for verification (FLW-PLN-05).
 
 **FLW-MEC-02 Repair at an outside workshop** (REQ-MEC-003).
@@ -68,7 +68,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 **FLW-MEC-03 Part Replacement step** (REQ-PLC-002 to REQ-PLC-005).
 
-1. [`DashboardMechanic`](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>) → Open → [`Placement`](<../../Design Artifact/steps/Placement.html#Placement>): the chassis map with each position and its tyre.
+1. [`DashboardMechanic`](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>) → Open → [`Placement`](<../../Design Artifact/steps/Placement.html#Placement>): the chassis map with each position and its tyre. There is no Start or Pause: the form is editable while the step is Open, and the first change claims the step (DEC-95, REQ-ENG-017).
 2. Replace: pick a position → [`PlacementReplace`](<../../Design Artifact/steps/Placement.html#PlacementReplace>): choose a tyre Issued to this WO, set the old tyre's condition (Needs Retread, Worn Out or Back to stock), tread and pressure.
 3. Rotate: [`PlacementRotate`](<../../Design Artifact/steps/Placement.html#PlacementRotate>): move tyres between positions.
 4. Submit step.
@@ -76,7 +76,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 **FLW-MEC-04 Returned step** (REQ-ENG-005).
 
 1. Notification "Step returned" → [`StepReturned`](<../../Design Artifact/work-orders/WorkOrder.html#StepReturned>) shows the verifier's note.
-2. Fix the content → Submit step again.
+2. Start again → fix the content → Submit step again.
 
 **FLW-MEC-05 The WO content is wrong** (REQ-CR-001, REQ-CR-002).
 
@@ -94,8 +94,8 @@ Each flow lists the screens of the design canvas in the order the user meets the
 **FLW-WHM-01 Issue parts and tyres for a WO** (REQ-STK-001 to REQ-STK-007).
 
 1. [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) → [`DashboardWarehouse`](<../../Design Artifact/dashboard/Dashboard.html#DashboardWarehouse>), "My steps" → Open → [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>).
-2. For each line on the WO list enter the quantity used; for each tyre line choose a tyre In Stock by code and serial number.
-3. Parts bought outside: [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) step with free-text lines, a live total to check against the receipt and a receipt photo; warehouse stock does not change.
+2. Start → for each line on the WO list enter the quantity used; for each tyre line choose a tyre In Stock by code and serial number. When stock is short, issue what is on hand and confirm the shortfall: a Part Purchase step is added after this step (REQ-STK-004).
+3. Parts bought outside: [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) step. Its lines are the parts the Planner or System Admin listed on the WO, picked from the parts catalog; the buyer types only the quantity bought and the unit price, sees each line total and the grand total at once to check against the receipt, and adds the receipt photo. No part can be added; warehouse stock does not change (REQ-PUR-002, REQ-PUR-003, DEC-62, DEC-63).
 4. If the list is wrong → "Raise change request" → [`ChangeRequest`](<../../Design Artifact/work-orders/ChangeRequest.html#ChangeRequest>) (FLW-MEC-05).
 5. Submit step → stock goes down, chosen tyres become Issued and the cost lands on the WO.
 
@@ -195,7 +195,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 1. [`Documents`](<../../Design Artifact/documents/Documents.html#Documents>) or [`VehicleDocuments`](<../../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) → "+ Add document" → [`AddDocument`](<../../Design Artifact/documents/DocumentForm.html#AddDocument>) for a document never entered; "View scan" → [`DocumentScan`](<../../Design Artifact/documents/Documents.html#DocumentScan>).
 2. A wrong number or date before the first renewal WO → "Correct entry" → [`DocumentCorrectEntry`](<../../Design Artifact/documents/DocumentForm.html#DocumentCorrectEntry>) with a reason.
-3. Renewal: the Document WO drafted at Warning is approved (FLW-APR-01) → the System Admin opens the Document step → [`DocStep`](<../../Design Artifact/steps/DocStep.html#DocStep>): new number, dates, scan, cost, receipt → Submit → verified (FLW-PLN-05) → the block is lifted.
+3. Renewal: the Document WO drafted at Warning is approved (FLW-APR-01) → the System Admin opens the Document step and presses Start → [`DocStep`](<../../Design Artifact/steps/DocStep.html#DocStep>): new number, dates, scan, cost, receipt → Submit → verified (FLW-PLN-05) → the block is lifted.
 4. Document types → [`DocumentTypes`](<../../Design Artifact/settings/MasterData.html#DocumentTypes>).
 
 **FLW-SA-03 Keep a vehicle up to date** (REQ-VEH-003 to REQ-VEH-008, REQ-BSL-005).
@@ -210,7 +210,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 1. Vehicles → Inspections tab → [`VehicleInspections`](<../../Design Artifact/fleet/Vehicle.html#VehicleInspections>).
 2. "+ Record inspection" → [`AdminInspectionForm`](<../../Design Artifact/fleet/FieldReports.html#AdminInspectionForm>) for the named driver; a Fail needs photo and description and drafts a WO (FLW-PLN-02).
-3. "Report breakdown" → [`AdminBreakdownForm`](<../../Design Artifact/fleet/FieldReports.html#AdminBreakdownForm>): location, description, photo; it drafts a WO with source Driver\_Breakdown.
+3. "Report breakdown" → [`AdminBreakdownForm`](<../../Design Artifact/fleet/FieldReports.html#AdminBreakdownForm>): location, description, photo; it drafts a WO with source Driver\_Breakdown, pre-seeded with exactly one Mobilisasi step whose destination is the reported location, and the description copied as its field-finding note (REQ-WO-003, DEC-90, DEC-91).
 
 **FLW-SA-05 Master data** (REQ-REG-001, REQ-MEC-005, REQ-PLC-013, REQ-DOC-002, REQ-BSL-007, REQ-PM-006, REQ-TYR-003).
 
@@ -259,7 +259,7 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 
 **FLW-DRV-02 Breakdown** (REQ-MOB-003, REQ-PM-005).
 
-1. [`DashboardDriver`](<../../Design Artifact/mobile/FieldReports.html#DashboardDriver>) → "Report breakdown" → [`DriverBreakdown`](<../../Design Artifact/mobile/FieldReports.html#DriverBreakdown>): location, description, photo → Send. It drafts a WO with source Driver\_Breakdown.
+1. [`DashboardDriver`](<../../Design Artifact/mobile/FieldReports.html#DashboardDriver>) → "Report breakdown" → [`DriverBreakdown`](<../../Design Artifact/mobile/FieldReports.html#DriverBreakdown>): location (captured once from the phone), description, photo → Send. It drafts a WO with source Driver\_Breakdown, pre-seeded with exactly one Mobilisasi step to the captured location, and the description copied as its field-finding note (REQ-WO-003, REQ-MOB-003, DEC-90, DEC-91).
 
 **FLW-DRV-03 Odometer** (REQ-MOB-003, REQ-VEH-005).
 
@@ -297,7 +297,7 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 **FLW-FC-05 Buy parts for a WO** (REQ-PUR-001 to 008).
 
 1. Purchase alert → [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) (web) or Purchases → [`FCMobilePurchase`](<../../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) (phone), with the suggested items.
-2. Pick the vendor, type receipt number and date, type the quantity bought and unit price of each listed part and take the receipt photo; the total is calculated as you type.
+2. Start → pick the vendor, type receipt number and date, type the quantity bought and unit price of each listed part and take the receipt photo; the total is calculated as you type. No part can be added to the list (DEC-63).
 3. Submit step; the next step opens (BR-05).
 
 ## 6.8a System Admin field menu (mobile, R1 step 7)
@@ -306,7 +306,7 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 
 1. [`MobileLogin`](<../../Design Artifact/mobile/MobileApp.html#MobileLogin>) → System Admin field menu → [`SAMobileHome`](<../../Design Artifact/mobile/MobileApp.html#SAMobileHome>): requests, purchases and open steps.
 2. Requests and Purchases work as FLW-FC-04 and FLW-FC-05.
-3. Steps → [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>): pick the stooring area; services, photos → Submit (marked Self-verified if the System Admin later verifies it).
+3. Steps → [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) → Start. A Mobilisasi step shows the route to the driver's captured location, records the location trail while In\_Progress and submits on arrival or with Finish stooring; its stooring area and fee come from the destination (REQ-MBL-002 to 006). A Mechanic Action step takes services and photos and has no stooring area (DEC-90) → Submit. Either is marked Self-verified if the System Admin later verifies it.
 
 ## 6.8b Accounting (web)
 

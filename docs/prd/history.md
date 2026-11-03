@@ -25,6 +25,12 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 | REQ-MEC-008 | P0 | Retired: a Mechanic Action step no longer captures the device position at submit. The work location for a field job is captured once from the Driver's breakdown report (`REQ-MOB-003`) and verified through the Mobilisasi step's location trail (`REQ-MBL-005`). | [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>), [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) |  | REQ-MBL-005 |
 | REQ-MEC-009 | P0 | Retired: a Mechanic Action step no longer charges the stooring (mobilisation) fee. The stooring fee is now produced by the Mobilisasi module (`REQ-MBL-006`); the WO stooring cost and its WO-document and WO-cost lines are unchanged in meaning, only their source step changes. | [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>), [WODocument](<../../Design Artifact/work-orders/WODocument.html#WODocument>) | work\_orders.stooring\_cost | REQ-MBL-006, BR-07 |
 
+## Retired acceptance criteria
+
+| ID | Verified | Acceptance criterion | Why retired |
+| --- | --- | --- | --- |
+| AC-STK-002 | REQ-STK-005 (retired) | IF an external line has no invoice image, THEN it SHALL be refused; WHEN it has one, it SHALL save and warehouse stock SHALL be unchanged. | DEC-60: the Stock step only cuts warehouse stock; parts bought outside, with their receipt photo, are the Part Purchase step (REQ-PUR-002 to 006, AC-PUR-003) |
+
 ## Retired transactions
 
 | ID | Name | What it writes |
@@ -102,6 +108,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 
 ## Change history
+
+v2.9 (2026-11-03) is editorial only: flows (6) brought in line with the decisions already in force: Start before editing a step and no Start for Part Replacement (DEC-87, DEC-95), automatic schedule roll-forward (DEC-92), Part Purchase lines from the WO's part list only (DEC-62, DEC-63), a breakdown draft pre-seeded with one Mobilisasi step and stooring moved off Mechanic Action (DEC-90, DEC-91). AC-STK-002 retired with REQ-STK-005; AC-STK-006 now verifies REQ-STK-004 and REQ-PUR-008 instead of the retired REQ-STK-010; AC-REG-002 reworded for WOs and presets (DEC-85); the traceability matrix (12) gets the missing AC ranges and a Part Check row. No rule changes.
 
 v2.8 (2026-11-03) adds DEC-96: the design artifact is the visual target of the end product (0.1, 0.6, 7.1, 7.7); visual style is no longer free at implementation.
 

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App shell · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="work-orders" data-roles="Planner:|Supervisor:|System Admin:|Accounting:|Access Manager:" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Shell</div><h1>Floating rail and main screen</h1><span class="grow"></span></div>
+      <section class="variant" id="AppShellCollapsed" data-label="Rail collapsed (default) and expanded"><div class="grid ge">
+        <div class="card "><h3><span class="circle-ic"><i data-i="expand"></i></span>Collapsed<span class="grow"></span></h3><p>A floating white capsule on the left holds the BMI logo in a circle, one circular icon per menu item, the expand button and the user circle. Names show as tooltips; waiting counts sit on the icon.</p></div>
+        <div class="card "><h3><span class="circle-ic"><i data-i="dashboard"></i></span>Expanded<span class="grow"></span></h3><p>Expand widens the same capsule to show names and counts. The choice is saved per user. The main screen keeps its full width and moves aside.</p></div>
+        <div class="card "><h3><span class="circle-ic"><i data-i="users"></i></span>Menu = capabilities<span class="grow"></span></h3><p>Items come from the 2.4 menu table filtered by the effective capabilities in <code>GET /me</code>, never from the role name (NAV-9). Switch "Viewed as" above to see the rail change.</p></div>
+        <div class="card "><h3><span class="circle-ic"><i data-i="eye"></i></span>Main screen first<span class="grow"></span></h3><p>One white sheet with a 30 px radius holds the title, the pill tabs and the content. Page header, tabs and actions live inside the sheet, not in a separate bar.</p></div>
+      </div></section></div>
+</main>
+</body>
+</html>

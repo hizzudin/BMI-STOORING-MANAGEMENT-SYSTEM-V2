@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retread · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="inventory" data-roles="Warehouse Manager:manage|System Admin:manage" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Tyres</div><h1>Retread</h1><span class="grow"></span><button class="btn pri" data-act="manage" type="button"><i data-i="plus"></i>Send to retread</button></div>
+      <section class="variant" id="RetreadList" data-label="Dispatches"><div class="tbl"><table><thead><tr><th>Dispatch</th><th>Vendor</th><th>Tyres</th><th>Status</th><th>Sent</th></tr></thead><tbody><tr><td>RD-0009</td><td>Vulkanisir Jaya</td><td>6</td><td><span class="pill warn">Partial</span></td><td>2026-10-20</td></tr><tr><td>RD-0008</td><td>Vulkanisir Jaya</td><td>4</td><td><span class="pill ok">Closed</span></td><td>2026-09-30</td></tr></tbody></table></div></section>
+      <section class="variant" id="RetreadDispatch" data-label="Send tyres to retread (no approval)"><div class="card white"><div class="field"><label>Vendor</label><input class="input" value="Vulkanisir Jaya"></div><div class="tbl"><table><thead><tr><th>Tyre</th><th>Size</th><th>Retreads</th></tr></thead><tbody><tr><td>TY-0187</td><td>11R22.5</td><td>1</td></tr><tr><td>TY-0201</td><td>11R22.5</td><td>0</td></tr></tbody></table></div><div class="bar"><button class="btn pri" data-act="manage" type="button">Confirm dispatch</button></div></div></section>
+      <section class="variant" id="RetreadDispatchDetail" data-label="Dispatch detail"><div class="card white"><h3>RD-0009 · Partial<span class="grow"></span></h3><div class="tbl"><table><thead><tr><th>Tyre</th><th>Result</th></tr></thead><tbody><tr><td>TY-0187</td><td><span class="pill ok">Accepted</span></td></tr><tr><td>TY-0201</td><td><span class="pill neu">Waiting</span></td></tr></tbody></table></div><div class="bar"><a class="btn" href="TyreReceive.html#RetreadReceipt" data-act="manage">Record return</a></div></div></section></div>
+</main>
+</body>
+</html>

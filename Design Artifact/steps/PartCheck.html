@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Part Check step · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="work-orders" data-roles="Mechanic:start,pause,submit,raise_cr|Planner:verify|System Admin:start,pause,submit,raise_cr,verify" data-root="../">
+<main class="stage">
+<div class="screen"><section class="variant" id="PartCheck" data-label="Part Check: Good, Repair or Replace per part with photos; not-good findings draft one follow-up WO"><div class="head"><div class="crumb">WO-0139 · B 9012 KX · Step 1 of 1</div><h1>Part Check</h1> <span class="pill info">In Progress</span><span class="grow"></span><span class="circle-ic r"><i data-i="search"></i></span></div>
+  <p class="muted" style="margin:6px 0 14px">Executor: Mechanic or System Admin · the check service bills on this WO</p><div class="card white"><h3>Parts to check<span class="grow"></span></h3><div class="row"><span class="circle-ic"><i data-i="search"></i></span><div class="grow"><b>Brake pads front</b></div><span class="seg"><span class="" title="Good">G</span><span class="" title="Repair">Rp</span><span class="on" title="Replace">R</span></span> <span class="pill bad">Replace</span></div><div class="row"><span class="circle-ic"><i data-i="search"></i></span><div class="grow"><b>Brake disc front</b></div><span class="seg"><span class="on" title="Good">G</span><span class="" title="Repair">Rp</span><span class="" title="Replace">R</span></span> <span class="pill ok">Good</span></div><div class="row"><span class="circle-ic"><i data-i="search"></i></span><div class="grow"><b>Brake hose</b></div><span class="seg"><span class="" title="Good">G</span><span class="on" title="Repair">Rp</span><span class="" title="Replace">R</span></span> <span class="pill warn">Repair</span></div><p class="small muted">G Good · Rp Repair · R Replace. Mark Unsafe to drive warns and notifies; it never blocks the vehicle.</p></div>
+  <div class="bar"><a class="btn ghost" href="../work-orders/ChangeRequest.html" data-act="raise_cr"><i data-i="edit"></i>Raise change request</a><span class="grow"></span>
+  <button class="btn " data-act="pause" type="button"><i data-i="pause"></i>Pause</button><button class="btn pri" data-act="start" type="button"><i data-i="play"></i>Start</button><button class="btn " data-act="submit" type="button">Save draft</button><button class="btn pri" data-act="submit" type="button">Submit step</button>
+  <button class="btn dan" data-act="verify" type="button">Return with note</button><button class="btn pri" data-act="verify" type="button">Verify</button></div></section>
+    </div>
+</main>
+</body>
+</html>

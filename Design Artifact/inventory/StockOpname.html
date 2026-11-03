@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock opname · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="inventory" data-roles="Warehouse Manager:manage|System Admin:manage" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Inventory</div><h1>Stock opname</h1><span class="grow"></span><button class="btn pri" data-act="manage" type="button">Submit for approval</button></div>
+      <section class="variant" id="StockOpname" data-label="One document, many SKU rows; approved by an Approver"><div class="tbl"><table><thead><tr><th>SKU</th><th>Part</th><th class="num">Stock</th><th class="num">Count</th><th class="num">Var</th></tr></thead><tbody><tr><td>FLT-OIL-01</td><td>Oil filter</td><td class="num">14</td><td class="num"><input class="input" value="13" style="width:70px"></td><td class="num">-1</td></tr><tr><td>OIL-1540</td><td>Engine oil</td><td class="num">120</td><td class="num"><input class="input" value="120" style="width:70px"></td><td class="num">0</td></tr></tbody></table></div></section>
+      <section class="variant" id="StockOpnameReturned" data-label="Returned by the approver with a reason"><div class="note bad"><i data-i="x"></i><div><b>Returned by Supervisor Budi S.</b>: recount oil filters on rack B.</div></div></section>
+      <hr class="rule">
+      <section class="variant" id="OpeningBalance" data-label="Opening balance (Setup mode only, no approval)"><div class="card white"><h3>Opening balance<span class="grow"></span></h3><div class="tbl"><table><thead><tr><th>SKU</th><th class="num">Qty</th><th>Avg cost</th></tr></thead><tbody><tr><td>FLT-OIL-01</td><td class="num"><input class="input" value="14"></td><td><input class="input" value="85.000"></td></tr></tbody></table></div><div class="bar"><button class="btn pri" data-act="manage" type="button">Save opening balance</button></div></div></section></div>
+</main>
+</body>
+</html>

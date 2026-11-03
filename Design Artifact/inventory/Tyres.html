@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tyres · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="inventory" data-roles="Warehouse Manager:manage|System Admin:manage|Planner:" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Tyres</h1><span class="grow"></span><a class="btn" href="Inventory.html"><i data-i="box"></i>Parts</a><a class="btn pri" href="TyreReceive.html" data-act="manage"><i data-i="plus"></i>Receive tyres</a></div><nav class="tabs" aria-label="Tabs"><a href="#" class="on">In stock</a><a href="#" class="">Mounted</a><a href="#" class="">Needs retread<i>12</i></a><a href="Retread.html" class="">On retread</a><a href="#TyreCount" class="">Tyre count</a></nav>
+      <section class="variant" id="Tyres" data-label="Tyres as individual assets"><div class="tbl"><table><thead><tr><th>Tyre</th><th>Serial</th><th>Brand</th><th>Size</th><th>Status</th><th>Retreads</th><th class="num">Tread</th></tr></thead><tbody><tr><td>TY-0318</td><td>BS2211-889</td><td>Bridgestone</td><td>11R22.5</td><td><span class="pill info">Mounted</span></td><td>0</td><td class="num">6,1 mm</td></tr><tr><td>TY-0187</td><td>GT8812-001</td><td>GT Radial</td><td>11R22.5</td><td><span class="pill warn">Needs retread</span></td><td>1</td><td class="num">2,4 mm</td></tr><tr><td>TY-0402</td><td>BS2211-901</td><td>Bridgestone</td><td>11R22.5</td><td><span class="pill ok">In stock</span></td><td>0</td><td class="num">14,0 mm</td></tr></tbody></table></div><div class="bar"><span class="grow"></span><button class="btn ghost" type="button"><i data-i="more"></i>Columns</button></div></section>
+      <section class="variant" id="TyreColumns" data-label="Column chooser (side panel), remembered per user"><div class="grid g2"><div></div><div class="panel"><label class="row"><input type="checkbox" checked> Tyre</label><label class="row"><input type="checkbox" checked> Serial</label><label class="row"><input type="checkbox" checked> Brand</label><label class="row"><input type="checkbox" checked> Size</label><label class="row"><input type="checkbox" checked> Status</label><label class="row"><input type="checkbox" checked> Position</label><label class="row"><input type="checkbox" checked> Retreads</label><label class="row"><input type="checkbox" checked> Tread</label></div></div></section>
+      <section class="variant" id="TyreWornOut" data-label="Worn out (dialog)"><div class="scrim"><div class="dialog"><h3>Mark TY-0187 worn out?</h3><p class="muted">A worn-out tyre cannot go to retread.</p><div class="bar"><button class="btn " type="button">Cancel</button><button class="btn dan" data-act="manage" type="button">Worn out</button></div></div></div></section>
+      <section class="variant" id="TyreScrap" data-label="Scrap (dialog)"><div class="scrim"><div class="dialog"><h3>Scrap TY-0187?</h3><div class="field"><label>Reason</label><textarea class="input" rows="2"></textarea></div><div class="bar"><button class="btn " type="button">Cancel</button><button class="btn dan" data-act="manage" type="button">Scrap</button></div></div></div></section>
+      <hr class="rule">
+      <section class="variant" id="TyreCount" data-label="Tyre count: Found or Missing per tyre; approved by an Approver"><div class="tbl"><table><thead><tr><th>Tyre</th><th>Status</th><th>Result</th></tr></thead><tbody><tr><td>TY-0402</td><td>In stock</td><td><span class="seg"><span class="on">✓</span><span>?</span></span></td></tr><tr><td>TY-0187</td><td>Needs retread</td><td><span class="seg"><span>✓</span><span class="on">?</span></span></td></tr></tbody></table></div><div class="bar"><button class="btn pri" data-act="manage" type="button">Submit for approval</button></div></section></div>
+</main>
+</body>
+</html>

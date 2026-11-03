@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documents · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="documents" data-roles="System Admin:manage|Planner:|Supervisor:|GM:|Mechanic:|Warehouse Manager:|Field Coordinator:|Accounting:" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Documents</h1><span class="grow"></span><a class="btn pri" href="DocumentForm.html" data-act="manage"><i data-i="plus"></i>Add document</a></div><nav class="tabs" aria-label="Tabs"><a href="#" class="on">Matrix</a><a href="#" class="">Expiring<i>3</i></a><a href="#" class="">Missing</a></nav>
+      <section class="variant" id="Documents" data-label="Vehicle x document type matrix; each cell is one status"><div class="tbl"><table><thead><tr><th>Vehicle</th><th>STNK</th><th>KIR</th><th>Insurance</th></tr></thead><tbody><tr><td><a href="../fleet/Vehicle.html" class="nowrap">B 9012 KX</a></td><td><span class="pill ok">Valid</span></td><td><span class="pill warn">Warning</span></td><td><span class="pill ok">Valid</span></td></tr><tr><td><a href="../fleet/Vehicle.html" class="nowrap">B 1234 ABC</a></td><td><span class="pill ok">Valid</span></td><td><span class="pill bad">Expired</span></td><td><span class="pill ok">Valid</span></td></tr><tr><td><a href="../fleet/Vehicle.html" class="nowrap">B 7710 TR</a></td><td><span class="pill ok">Valid</span></td><td><span class="pill ok">Valid</span></td><td><span class="pill bad">Missing</span></td></tr></tbody></table></div></section>
+      <section class="variant" id="DocumentScan" data-label="Opening a scan uses the shared photo and file viewer"><a class="btn" href="../components/PhotoViewer.html"><i data-i="eye"></i>Open in viewer</a></section></div>
+</main>
+</body>
+</html>

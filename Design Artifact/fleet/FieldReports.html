@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inspections and breakdowns · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="vehicles" data-roles="Driver:submit|System Admin:submit|Mechanic:submit" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Field reports</div><h1>Inspections and breakdowns</h1><span class="grow"></span></div>
+      <p class="muted">One module for daily inspections, breakdowns, odometer and field findings. The driver uses the phone; until then the System Admin records the same form on the web.</p>
+      <section class="variant" id="AdminInspectionForm" data-label="Daily inspection (web, for a driver)"><div class="grid g2"><div class="card white"><h3><span class="circle-ic"><i data-i="check"></i></span>B 9012 KX · driver Rudi<span class="grow"></span></h3><div class="row"><span class="circle-ic"><i data-i="check"></i></span><div class="grow">Lights</div><span class="seg"><span class="on">✓</span><span class="">✕</span></span></div><div class="row"><span class="circle-ic"><i data-i="check"></i></span><div class="grow">Brakes</div><span class="seg"><span class="on">✓</span><span class="">✕</span></span></div><div class="row"><span class="circle-ic"><i data-i="check"></i></span><div class="grow">Tyres</div><span class="seg"><span class="">✓</span><span class="on">✕</span></span></div><div class="row"><span class="circle-ic"><i data-i="check"></i></span><div class="grow">Mirrors</div><span class="seg"><span class="on">✓</span><span class="">✕</span></span></div><div class="field"><label>Odometer km</label><input class="input" value="48.210"></div></div><div class="card "><h3><span class="circle-ic"><i data-i="camera"></i></span>Fail details<span class="grow"></span></h3><div class="field"><label>Description</label><textarea class="input" rows="2">Ban P3 gundul</textarea></div><div class="thumbs"><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span></div></div></div><div class="bar"><button class="btn pri" data-act="submit" type="button">Submit inspection</button></div></section>
+      <hr class="rule">
+      <section class="variant" id="AdminBreakdownForm" data-label="Breakdown (web, for a driver): drafts a WO with one Mobilisasi step"><div class="grid g2"><div class="card white"><h3><span class="circle-ic"><i data-i="alert"></i></span>Breakdown<span class="grow"></span></h3><div class="field"><label>Location</label><input class="input" value="Tol Cikampek km 41"></div><div class="field"><label>Description</label><textarea class="input" rows="2">Mesin mati mendadak</textarea></div></div><div class="card "><h3><span class="circle-ic"><i data-i="camera"></i></span>Photos<span class="grow"></span></h3><div class="thumbs"><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span></div></div></div><div class="bar"><button class="btn pri" data-act="submit" type="button">Send</button></div></section>
+      </div>
+</main>
+</body>
+</html>

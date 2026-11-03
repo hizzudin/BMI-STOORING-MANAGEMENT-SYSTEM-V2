@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mechanic Action step · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="work-orders" data-roles="Mechanic:start,pause,submit,raise_cr|Field Coordinator:start,pause,submit,raise_cr|Planner:verify|System Admin:start,pause,submit,raise_cr,verify" data-root="../">
+<main class="stage">
+<div class="screen"><section class="variant" id="Mechanic" data-label="Mechanic Action (internal): services from the catalog, evidence photos"><div class="head"><div class="crumb">WO-0139 · B 9012 KX · Step 3 of 4</div><h1>Mechanic Action</h1> <span class="pill info">In Progress</span><span class="grow"></span><span class="circle-ic r"><i data-i="wrench"></i></span></div>
+  <p class="muted" style="margin:6px 0 14px">Executor: Mechanic or System Admin · the work time runs only between Start and Submit</p><div class="grid g2"><div class="card white"><h3><span class="circle-ic"><i data-i="wrench"></i></span>Services<span class="grow"></span></h3><div class="tbl"><table><thead><tr><th>Service</th><th>Code</th><th class="num">Price</th></tr></thead><tbody><tr><td>PM 20.000 km service</td><td>SVC-020</td><td class="num">Rp 650.000</td></tr><tr><td>Brake adjustment</td><td>SVC-031</td><td class="num">Rp 120.000</td></tr></tbody></table></div><div class="field"><label>Work notes</label><textarea class="input" rows="2">Oli diganti, filter udara baru.</textarea></div></div>
+      <div class="card "><h3><span class="circle-ic"><i data-i="camera"></i></span>Repair photos<span class="grow"></span></h3><div class="thumbs"><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span><span class="thumb"><i data-i="camera"></i><span class="st run"></span></span></div><p class="small muted">At least one photo; up to 10.</p></div></div>
+  <div class="bar"><a class="btn ghost" href="../work-orders/ChangeRequest.html" data-act="raise_cr"><i data-i="edit"></i>Raise change request</a><span class="grow"></span>
+  <button class="btn " data-act="pause" type="button"><i data-i="pause"></i>Pause</button><button class="btn pri" data-act="start" type="button"><i data-i="play"></i>Start</button><button class="btn " data-act="submit" type="button">Save draft</button><button class="btn pri" data-act="submit" type="button">Submit step</button>
+  <button class="btn dan" data-act="verify" type="button">Return with note</button><button class="btn pri" data-act="verify" type="button">Verify</button></div></section>
+    <hr class="rule">
+    <section class="variant" id="MechanicExternal" data-label="External workshop: price from the workshop invoice; Start is pressed at hand-over"><div class="grid g2"><div class="card white"><h3><span class="circle-ic"><i data-i="wrench"></i></span>External workshop<span class="grow"></span></h3><div class="field"><label>Workshop</label><input class="input" value="Bengkel Maju Motor"></div><div class="field"><label>Invoice total</label><input class="input" value="Rp 1.850.000"></div></div><div class="card "><h3><span class="circle-ic"><i data-i="doc"></i></span>Invoice<span class="grow"></span></h3><div class="thumbs"><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span></div></div></div></section>
+    </div>
+</main>
+</body>
+</html>

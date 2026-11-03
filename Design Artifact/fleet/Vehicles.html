@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vehicles · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="vehicles" data-roles="System Admin:manage|Planner:|Supervisor:|GM:|Mechanic:|Warehouse Manager:|Field Coordinator:|Accounting:" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Vehicles</h1><span class="grow"></span><input class="input search" placeholder="Search plate"><a class="btn pri" href="VehicleForm.html" data-act="manage"><i data-i="plus"></i>Add vehicle</a></div><nav class="tabs" aria-label="Tabs"><a href="#" class="on">All<i>94</i></a><a href="#" class="">Active</a><a href="#" class="">Repair</a><a href="#" class="">OFF</a><a href="#" class="">Blocked</a><a href="#" class="">Inactive</a></nav>
+      <section class="variant" id="Vehicles" data-label="Fleet list (same for every role that can see vehicles)"><div class="tbl"><table><thead><tr><th>Plate</th><th>Class</th><th>Customer</th><th>Odometer km</th><th>Status</th><th>Driver</th><th>Open WO</th></tr></thead><tbody><tr><td><a href="../fleet/Vehicle.html" class="nowrap">B 9012 KX</a></td><td>Tractor head</td><td>PT Logistik Raya</td><td>48.210</td><td><span class="pill warn">Repair</span></td><td>Rudi</td><td><a href="../work-orders/WorkOrder.html" class="b nowrap">WO-0139</a></td></tr><tr><td><a href="../fleet/Vehicle.html" class="nowrap">B 7710 TR</a></td><td>Wingbox rigid</td><td>PT Logistik Raya</td><td>120.455</td><td><span class="pill bad">OFF</span></td><td>Agus</td><td><a href="../work-orders/WorkOrder.html" class="b nowrap">WO-0131</a></td></tr><tr><td><a href="../fleet/Vehicle.html" class="nowrap">B 1234 ABC</a></td><td>Van</td><td>CV Sentosa</td><td>61.002</td><td><span class="pill bad">Blocked</span></td><td>Dedi</td><td>—</td></tr><tr><td><a href="../fleet/Vehicle.html" class="nowrap">B 5521 TT</a></td><td>Trailer tail</td><td>PT Logistik Raya</td><td>—</td><td><span class="pill info">Active</span></td><td>—</td><td><a href="../work-orders/WorkOrder.html" class="b nowrap">WO-0136</a></td></tr></tbody></table></div></section>
+      
+      </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup and go live · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="setup" data-roles="System Admin:golive" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Setup mode</div><h1>Setup and go live</h1><span class="grow"></span><button class="btn pri" data-act="golive" type="button">Go live</button></div>
+      <section class="variant" id="SetupGoLive" data-label="Checklist before the one-way switch to Live"><div class="steps"><div class="s done"><span class="n"><i data-i="check"></i></span>Accounts</div><div class="s done"><span class="n"><i data-i="check"></i></span>Master data</div><div class="s done"><span class="n"><i data-i="check"></i></span>Vehicles and documents</div><div class="s done"><span class="n"><i data-i="check"></i></span>Existing tyres</div><div class="s now"><span class="n">5</span>Parts baseline</div><div class="s "><span class="n">6</span>Opening balance</div><div class="s "><span class="n">7</span>Backup restore test</div><div class="s "><span class="n">8</span>Go live</div></div><div class="note warn"><i data-i="lock"></i><div>Only the System Admin and Access Managers can sign in while the system is in Setup mode.</div></div></section>
+      <hr class="rule">
+      <section class="variant" id="SetupImport" data-label="Bulk import (Setup mode only): template, preview, all rows or nothing"><div class="grid g2"><div class="card white"><h3><span class="circle-ic"><i data-i="upload"></i></span>Vehicles file<span class="grow"></span></h3><div class="tbl"><table><thead><tr><th>Row</th><th>Plate</th><th>Class</th><th>Check</th></tr></thead><tbody><tr><td>12</td><td>B 3301 KL</td><td>Tractor head</td><td><span class="pill ok">OK</span></td></tr><tr><td>47</td><td>B 8812 ZZ</td><td>Tronton</td><td><span class="pill bad">Unknown class</span></td></tr></tbody></table></div></div><div class="card "><h3><span class="circle-ic"><i data-i="setup"></i></span>Import<span class="grow"></span></h3><div class="row"><div class="grow">Rows</div><b>100</b></div><div class="row"><div class="grow">Errors</div><b style="color:var(--bad)">2</b></div><div class="bar"><button class="btn " type="button"><i data-i="download"></i>Download template</button><button class="btn pri" data-act="golive" type="button">Import</button></div></div></div></section></div>
+</main>
+</body>
+</html>

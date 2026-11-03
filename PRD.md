@@ -111,7 +111,7 @@ The company runs light delivery vans, medium trucks and heavy trucks. Breakdowns
 
 ### 1.4 Out of scope
 
-- A live WhatsApp gateway and email notifications (P2). Telematics is an adapter; Protrack is the first odometer provider (P1).
+- A live WhatsApp gateway and email notifications (P2); the only email in Release 1 is the password reset link (DEC-102). Telematics is an adapter; Protrack is the first odometer provider (P1).
 - Procurement and purchase orders beyond a PO number on a Goods Receipt; cash advances and reimbursement for parts bought by the Field Coordinator (the system records only price and receipt).
 - Parallel steps inside one WO (P2).
 - Driver payroll, tax filing and the accounting ledger (customer invoices are in scope, 4.23); video upload of any kind (DEC-31).
@@ -750,6 +750,9 @@ Release 1 is built in seven steps; each step ends with its acceptance criteria p
 | DEC-98 | The Mechanic mobile menu is essential and moves to Release 1, built in R1 step 7 with the Driver, Field Coordinator and System Admin menus: My steps for today (REQ-MOB-010), the step screens (Mechanic Action, Part Replacement, Part Check, Mobilisasi with route and location trail), field report (REQ-MOB-004), history and push. REQ-MOB-004 and REQ-MOB-010 become P0. The Supervisor/GM menu stays in Release 2. Supersedes the Mechanic part of DEC-41 | 2.1, 4.20, 4.19, 7.3, 10 |
 | DEC-99 | Part Check (DEC-88, DEC-89) and Mobilisasi (DEC-90) are essential Release 1 features: their server, web screens and verification are built in R1 step 4 with Mechanic Action; their phone screens in R1 step 7 | 10, 4.5, 4.5a |
 | DEC-100 | MobileProfile is P0 in Release 1, because every Release 1 mobile menu has a Profile tab: identity, language, app and session info and sign out. Its per-kind push mute (REQ-NTF-003) stays P1 | 7.3, REQ-MOB-001 |
+| DEC-101 | A Rejected WO stays Rejected with the rejector's note; its creator edits and resubmits it (T5) or cancels it with a reason (T6). DQ-06 is corrected to match SM-WO | 3.2, 7.11, REQ-WO-007 |
+| DEC-102 | The password reset of DQ-02 sends one transactional email with an expiring link, through an email adapter (NFR-11). It is the only email in Release 1; email notifications stay P2. The email provider account joins Q-03 | 1.4, 7.11, REQ-IAM-001, REQ-IAM-009 |
+| DEC-103 | In Release 1 the DashboardAdmin integration rows show status only and open nothing; SettingsIntegrations comes with the P1 and P2 adapters (DQ-05) | 7.11, REQ-DSH-005 |
 
 Fully superseded decisions (DEC-25, DEC-38, DEC-40, DEC-49, DEC-52, DEC-71) are in [docs/prd/history.md](docs/prd/history.md).
 
@@ -763,7 +766,7 @@ Every assumption ASM-01 to ASM-64 is confirmed or decided (DEC-58 and later). An
 | --- | --- |
 | Q-01 | Targets for G-2 (PM on time), G-6 (opname variance) and G-7 (WO cycle time), to set after about 3 months of live use (DEC-58). |
 | Q-02 | Answered by DEC-34 and DEC-58: the Field Coordinator creates draft WOs and executes Part Purchase steps (RL-6); there is no on-trip status in R1. |
-| Q-03 | Open, to define later (product owner): who owns the Google Cloud, Cloudflare, Firebase and Expo (EAS) accounts, and which domain the web app and API use. Needed before the first staging deploy (R1 step 1) and before the first APK build (R1 step 7). |
+| Q-03 | Open, to define later (product owner): who owns the Google Cloud, Cloudflare, Firebase and Expo (EAS) accounts and the email provider account for password reset (DEC-102), and which domain the web app and API use. Needed before the first staging deploy (R1 step 1) and before the first APK build (R1 step 7). |
 | Q-04 | Decided: the AI assistant (REQ-AI-001 to 004) and its settings page are deferred to a later release; they have no artboard and are not built in Release 1. |
 | Q-05 | Decided: the Indonesian translation of the UI is deferred to a later release. The current canvas screens are English only; Indonesian becomes the default language once the translation is delivered (NFR-09). |
 

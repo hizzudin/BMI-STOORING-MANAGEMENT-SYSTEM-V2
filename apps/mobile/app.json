@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "BMI Stooring System",
+    "slug": "bmi-stooring-system",
+    "scheme": "bmistooring",
+    "version": "0.0.0",
+    "orientation": "portrait",
+    "platforms": ["android"],
+    "android": {
+      "package": "id.bmi.stooring"
+    },
+    "plugins": ["expo-router", "expo-status-bar"]
+  }
+}

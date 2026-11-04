@@ -1,0 +1,12 @@
+{
+  "extends": "@bmi/config/tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-native",
+    "noEmit": true,
+    "exactOptionalPropertyTypes": false,
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["app", "expo-env.d.ts", ".expo/types/**/*.ts"]
+}

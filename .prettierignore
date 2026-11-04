@@ -1,0 +1,12 @@
+# The specification and the visual target are not code; generated output is not formatted either.
+Design Artifact/
+docs/
+specs/
+.claude/
+*.md
+pnpm-lock.yaml
+.next/
+.expo/
+.turbo/
+dist/
+coverage/

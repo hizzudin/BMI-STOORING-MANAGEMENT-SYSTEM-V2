@@ -90,13 +90,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-004
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:redis-patterns
   - _Verify_: DONE 2026-11-04: PostgreSQL 16.15, time zone UTC, redis PONG, both reachable from Windows; WSL needs the keep-alive of docs/dev-setup.md; `psql -h localhost -c "select version()"` shows 16.x; `redis-cli ping` → PONG; server time zone UTC
-- [ ] **TASK-006** Monorepo scaffold (pnpm, Turborepo, strict TS, ESLint, Prettier; api, web, mobile, shared, api-client, chassis-map, config)
+- [x] **TASK-006** Monorepo scaffold (pnpm, Turborepo, strict TS, ESLint, Prettier; api, web, mobile, shared, api-client, chassis-map, config)
   - _Scope_: PRD §8.2 layout; design.md §2 file structure. No feature code.
   - _Rules_: DEC-66, NFR-18
   - _Read_: `PRD.md` for DEC-66, NFR-18 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-005
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, react-native-expert, ecc:react-native-patterns, ecc:accessibility
-  - _Verify_: `pnpm install && pnpm build && pnpm lint && pnpm typecheck` green; API `/health` 200; web renders
+  - _Verify_: pnpm install/build/lint/typecheck green; /health 200; web renders; expo export android ok; RN minSdk 24 covers Android 8 (API 26); `pnpm install && pnpm build && pnpm lint && pnpm typecheck` green; API `/health` 200; web renders
 - [ ] **TASK-007** Test harness: Vitest presets, integration harness (template DB per worker, factories, fake WIB clock), Playwright, coverage gates
   - _Scope_: Design D-02, D-09.
   - _Rules_: NFR-01, NFR-14

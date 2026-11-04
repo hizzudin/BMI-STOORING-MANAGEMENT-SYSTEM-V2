@@ -1,6 +1,6 @@
 # TASK-008 CI
 
-Status: **open**. Everything that can run on this machine passes; "workflow green" needs a push, which the product owner has not asked for yet. Branch protection on `main` (D-06) is also the owner's to switch on.
+Status: **done**. GitHub Actions run 41806304702 on `d8eaa51` is green and every step ran (50 integration tests, 1 E2E). Branch protection on `main` (D-06) is still the owner's to switch on.
 
 ## Checked here
 
@@ -26,5 +26,5 @@ All planted files were removed and `specs/tasks.md` restored.
 
 ## Not verified
 
-- The workflow has never run on GitHub: the YAML, the service containers and `pnpm/action-setup` are unproven until the first push.
-- CI checks for generated client drift and migration drift arrive with TASK-010 and TASK-009.
+- The three deliberate failures ran on this machine with the same commands the workflow runs, not on GitHub.
+- GitHub warns that `actions/checkout@v4`, `actions/setup-node@v4` and `pnpm/action-setup@v4` target Node 20, which is deprecated; they run forced on Node 24.

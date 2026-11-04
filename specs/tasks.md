@@ -110,13 +110,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-006
   - _Skill_: test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations
   - _Verify_: unit, integration (12) and E2E pass; test_w1..3 used; coverage gate exits 1 at 45% lines; sample unit, integration and E2E tests pass; two workers use two databases; coverage gate fails below threshold
-- [ ] **TASK-008** CI: lint, typecheck, unit, integration, Playwright, layer rules, secret scan, PRD coverage check
+- [x] **TASK-008** CI: lint, typecheck, unit, integration, Playwright, layer rules, secret scan, PRD coverage check
   - _Scope_: Design D-06. CI also runs `node specs/tools/check-coverage.mjs --tests`, so a spec change that drops a PRD item fails, and so does a finished task whose acceptance criteria have no test named with their IDs. Every §8.3 practice that can be automated (engine never imports a module, generated client drift, migration drift) is a CI rule.
   - _Rules_: NFR-04, DEC-78, DEC-79
   - _Read_: `PRD.md` for NFR-04, DEC-78, DEC-79 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-007
   - _Skill_: ecc:deployment-patterns, ecc:docker-patterns, ecc:delivery-gate, ecc:canary-watch, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: PROGRESS: all steps pass locally and the three deliberate failures fail (specs/evidence/TASK-008.tdd.md); stays open until the workflow runs green on GitHub, which needs a push; workflow green; a deliberate engine → module import fails; a removed REQ in tasks.md fails the coverage step
+  - _Verify_: GitHub Actions run 41806304702 green on d8eaa51, every step ran; deliberate engine import, removed REQ and planted secret fail locally with the same commands; workflow green; a deliberate engine → module import fails; a removed REQ in tasks.md fails the coverage step
 - [x] **TASK-009** Data seam: SQL migration runner, Drizzle drift test, UnitOfWork, idempotency keys, optimistic lock, queue adapter
   - _Scope_: Design D-07, D-12. Migrations follow the TX-01 creation order; soft delete and `version` conventions of §9.0.
   - _Rules_: NFR-01, NFR-03, NFR-07, TX-01, TX-18, TX-22, BR-10, DEC-108

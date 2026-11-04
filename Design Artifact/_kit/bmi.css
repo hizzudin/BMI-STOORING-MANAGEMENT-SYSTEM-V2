@@ -89,6 +89,7 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
 .row:last-child{border-bottom:0}
 .row .grow{flex:1;min-width:0}
+.row .grow>b{white-space:nowrap}
 .muted{color:var(--subtle)}.small{font-size:12px}.b{font-weight:700}.nowrap{white-space:nowrap}
 .avatar{width:32px;height:32px;border-radius:50%;background:var(--mist);color:var(--petrol);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
 .circle-ic{width:36px;height:36px;border-radius:50%;background:var(--mist);color:var(--petrol);display:grid;place-items:center;flex:none}
@@ -257,17 +258,18 @@ svg.chassis{width:100%;max-width:300px;height:auto;overflow:visible;font-family:
 .chassis .m-tyre{cursor:pointer}
 .chassis .m-tyre:hover rect{filter:brightness(.96)}
 
-/* maintenance schedule: "Not on the schedule" tray beside the week; WO cards drag between them */
+/* maintenance schedule: "Not on the schedule" tray beside the week; SPK cards drag between them */
 .sched{display:grid;grid-template-columns:260px 1fr;gap:14px;align-items:start}
 .tray{background:var(--frost);border-radius:var(--r-card);padding:14px;position:sticky;top:18px;min-height:420px}
 .tray-head{display:flex;gap:10px;align-items:center}
 .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.week{display:grid;grid-template-columns:repeat(7,minmax(146px,1fr));gap:8px}
 .day{background:var(--frost);border-radius:var(--r-card);padding:8px;min-height:420px;transition:background .15s,box-shadow .15s}
 .day-head{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 6px;color:var(--muted)}
 .dnum{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:var(--text)}
 .day.today .dnum{background:var(--red);color:#fff}
 .wocard{display:flex;gap:6px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:9px 10px;margin-top:8px;font-size:12px;line-height:1.35}
+.wocard b{white-space:nowrap}
 .wocard .pill{font-size:10.5px;padding:1px 7px;margin-top:2px}
 .wocard .grip{color:var(--line-strong);font-size:12px;letter-spacing:-2px;line-height:1.6;display:none}
 .wocard.late{border-color:var(--bad);background:var(--bad-tint)}
@@ -279,11 +281,11 @@ svg.chassis{width:100%;max-width:300px;height:auto;overflow:visible;font-family:
 .drag-on .tray .drop-hint{display:block}
 /* the tray always stays beside the calendar; on a narrow screen the week scrolls sideways instead */
 .week-scroll{min-width:0;overflow-x:auto;padding-bottom:4px}
-@media (max-width:1100px){.sched{grid-template-columns:220px 1fr}.week{grid-template-columns:repeat(7,minmax(118px,1fr))}}
+@media (max-width:1100px){.sched{grid-template-columns:220px 1fr}}
 
 /* maintenance schedule: month view */
 .month-bar{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:15px}
-.month{display:grid;grid-template-columns:repeat(7,minmax(96px,1fr));gap:6px}
+.month{display:grid;grid-template-columns:repeat(7,minmax(146px,1fr));gap:6px}
 .mhead{font-size:12px;font-weight:700;color:var(--subtle);padding:0 6px}
 .mday{background:var(--frost);border-radius:18px;padding:6px;min-height:108px;transition:background .15s,box-shadow .15s}
 .mday .dnum{width:26px;height:26px;font-size:12px}

@@ -1,6 +1,6 @@
 ---
 name: BMI Stooring System
-description: Work Order driven fleet maintenance for BMI, on desktop web and an Android field app. Palette: Petrol Complement (DEC-84).
+description: Surat Perintah Kerja driven fleet maintenance for BMI, on desktop web and an Android field app. Palette: Petrol Complement (DEC-84).
 colors:
   brand-red: "#AD2713"
   brand-red-deep: "#8A1D0C"
@@ -180,7 +180,7 @@ components:
 
 BMI Stooring System looks like a well-kept workshop logbook: dense, ruled, legible at a glance, and every entry signed. Pages are white sheets on a pale page, divided by thin rules rather than boxes inside boxes. Information sits in label and value pairs, tables with one fact per column, and step cards in the order the work happens. The BMI red is the ink of authority. It marks the one action that moves the work forward, the page you are on, and the stamp that makes a decision official. A deep petrol, the complement of that red, is the second ink: it frames every screen, marks information and links, and colors the navigation icons. Everything else stays in quiet cool greys and the pale mist of a logbook page.
 
-The system is built for Operate mode. Office staff scan Work Orders, stock and approvals on desktop all day; drivers, field coordinators and mechanics use an Android phone outdoors, in sunlight, sometimes with gloves. Density is high on desktop (13 px body, compact rows) and generous on the phone (15 px body, 48 px targets). The brand lives in precise details: the red stamp, the logo in its white circle, tabular numerals, and friendly round shapes (circular icons, pill buttons, round step markers) that keep a dense tool approachable. The main screen comes first: one raised white sheet holds the whole page, and navigation floats beside it as a slim capsule (DEC-94).
+The system is built for Operate mode. Office staff scan Surat Perintah Kerja, stock and approvals on desktop all day; drivers, field coordinators and mechanics use an Android phone outdoors, in sunlight, sometimes with gloves. Density is high on desktop (13 px body, compact rows) and generous on the phone (15 px body, 48 px targets). The brand lives in precise details: the red stamp, the logo in its white circle, tabular numerals, and friendly round shapes (circular icons, pill buttons, round step markers) that keep a dense tool approachable. The main screen comes first: one raised white sheet holds the whole page, and navigation floats beside it as a slim capsule (DEC-94).
 
 Motion only confirms what the user just did or explains a change of state. There is one authored moment: when an approver approves, the stamp is pressed into the box with the time.
 
@@ -203,7 +203,7 @@ Petrol Complement: one brand red and its complement, a deep petrol, over cool ne
 - **Oxblood Seal** (brand-red-deep): hover and pressed state of primary actions and an approved button.
 
 ### Secondary
-- **Harbour Petrol** (petrol): the complement of BMI red (OKLCH hue about 225 against 31). In-text links, info and In Progress pills (as text on a pale petrol tint), the module icons on step cards and the WO designer, the Settings icon tiles, and the first series of any chart in Reports. Never used for the primary action or for an error.
+- **Harbour Petrol** (petrol): the complement of BMI red (OKLCH hue about 225 against 31). In-text links, info and In Progress pills (as text on a pale petrol tint), the module icons on step cards and the SPK designer, the Settings icon tiles, and the first series of any chart in Reports. Never used for the primary action or for an error.
 - **Logo Gold** (brand-gold): an accent from the logo, allowed only on dark surfaces (ink header, sidebar). It fails contrast on white (2.6:1) and is never text or a thin line on a light surface.
 - **Straw Highlight** (gold-light): text selection and the focus ring on dark surfaces.
 
@@ -256,7 +256,7 @@ Status colors are a separate family from the brand. Each status pairs a soft bac
 ### Named Rules
 **The One Face Rule.** The system font carries the whole product. Weight (400, 600, 700) and size steps do the work; no display face, no monospace costume.
 
-**The Counting Rule.** Numbers that are compared or added (quantities, km, Rp, dates in tables) use tabular numerals and stay on one line; dates, WO numbers, SKUs and plates never wrap.
+**The Counting Rule.** Numbers that are compared or added (quantities, km, Rp, dates in tables) use tabular numerals and stay on one line; dates, SPK numbers, SKUs and plates never wrap.
 
 ## Layout
 
@@ -275,7 +275,7 @@ Flat inside, lifted outside. The two layers that float over the pale page, the r
 
 ### Shadow Vocabulary
 - **Float** (`box-shadow: 0 12px 32px rgba(20,38,46,.10), 0 2px 6px rgba(20,38,46,.06)`): the rail capsule and the main sheet only (DEC-94).
-- **Dialog lift** (`box-shadow: 0 10px 30px rgba(0,0,0,.25)`): dialogs over the 55% petrol-ink scrim (Cancel WO, Void, Deactivate, Scrap, Worn out).
+- **Dialog lift** (`box-shadow: 0 10px 30px rgba(0,0,0,.25)`): dialogs over the 55% petrol-ink scrim (Cancel SPK, Void, Deactivate, Scrap, Worn out).
 - **Panel lift** (`box-shadow: 0 8px 24px rgba(0,0,0,.12)`): side panels such as the column chooser.
 
 ### Named Rules
@@ -283,7 +283,7 @@ Flat inside, lifted outside. The two layers that float over the pale page, the r
 
 ## Shapes
 
-Round and friendly (DEC-94). Circles carry identity and state: navigation icons, the logo, avatars, icon buttons, step markers, photo thumbnails and status dots are circles. Buttons, tabs, chips, search fields and statuses are pills (fully round). Inputs and selects use 14px corners, cards 22px, side panels and dialogs 26px, the main sheet 30px and the phone frame 44px. Print documents (WO document, invoice) stay square. Borders are 1px hairlines. The stamp box is dashed before a decision and becomes a solid 2px red line once stamped. The chassis map is drawn from data: rails and axles as plain bars, tyres as rounded rectangles colored by status, with a dashed outline for Act now.
+Round and friendly (DEC-94). Circles carry identity and state: navigation icons, the logo, avatars, icon buttons, step markers, photo thumbnails and status dots are circles. Buttons, tabs, chips, search fields and statuses are pills (fully round). Inputs and selects use 14px corners, cards 22px, side panels and dialogs 26px, the main sheet 30px and the phone frame 44px. Print documents (SPK document, invoice) stay square. Borders are 1px hairlines. The stamp box is dashed before a decision and becomes a solid 2px red line once stamped. The chassis map is drawn from data: rails and axles as plain bars, tyres as rounded rectangles colored by status, with a dashed outline for Act now.
 
 **The No Stripe Rule.** No thick colored border on one side of a card, list item or alert. Emphasis comes from a tint, a pill or the step badge.
 
@@ -294,14 +294,14 @@ Firm and tidy: one filled red button per region, everything else outlined.
 - **Shape:** pill (fully round); 9px 18px padding on desktop, at least 48px tall on the phone. Icon-only buttons are 40px circles with a tooltip.
 - **Primary:** BMI Ledger Red with white 600 text. Hover and pressed turn Oxblood Seal; pressing nudges the button down 1px and scales it to 98%.
 - **Secondary:** white with a Pencil Line border and Graphite text; hover fills with Logbook Mist.
-- **Danger:** outlined in alarm red with red text and an explicit verb (Cancel WO, Void reading, Deactivate part); hover fills with the danger tint. Never filled.
+- **Danger:** outlined in alarm red with red text and an explicit verb (Cancel SPK, Void reading, Deactivate part); hover fills with the danger tint. Never filled.
 - **Icon buttons:** Add and Back carry a 16px plus or arrow icon before the word; the label stays on one line.
 - **Focus:** a 2px brand-red ring offset by 2px.
 
 ### Chips and Pills
 - **Status pill:** fully round, 12px 600 text, soft status background with dark same-hue text. Always contains the status word.
-- **Urgency / WO priority pill:** the WO's priority (urgency) label is shown as a status pill that always carries its text label (The Words First Rule; status is never colour alone). Map the four priorities onto the existing pills: **Urgent** → `pill-danger` (red) with the word "Urgent"; **High** → `pill-warning` (amber) with "High"; **Normal** → `pill-info` (petrol) with "Normal"; **Low** → `pill-neutral` with "Low". Alarm red on the Urgent pill still appears only beside its status word (The Two Reds Rule).
-- **Module chip (WO designer):** white, Pencil Line border, 8px corners, the module icon in Harbour Petrol beside its name and a one-line description; hover shows a red border and a grab cursor.
+- **Urgency / SPK priority pill:** the SPK's priority (urgency) label is shown as a status pill that always carries its text label (The Words First Rule; status is never colour alone). Map the four priorities onto the existing pills: **Urgent** → `pill-danger` (red) with the word "Urgent"; **High** → `pill-warning` (amber) with "High"; **Normal** → `pill-info` (petrol) with "Normal"; **Low** → `pill-neutral` with "Low". Alarm red on the Urgent pill still appears only beside its status word (The Two Reds Rule).
+- **Module chip (SPK designer):** white, Pencil Line border, 8px corners, the module icon in Harbour Petrol beside its name and a one-line description; hover shows a red border and a grab cursor.
 
 ### Cards / Containers
 - **Corner Style:** 22px (desktop and mobile).
@@ -323,7 +323,7 @@ Firm and tidy: one filled red button per region, everything else outlined.
 - **Mobile bottom bar:** white with 28px top corners, four or five 46px circular destinations; the active one is a filled red circle.
 
 ### Step Card
-The heart of a Work Order. One card per step, in order: the module icon and "n Module" title, a status pill, who submitted or is assigned, and the step action. The step waiting for the current user has a red border and pulses twice when the WO opens. Locked steps say what they wait for.
+The heart of a Surat Perintah Kerja. One card per step, in order: the module icon and "n Module" title, a status pill, who submitted or is assigned, and the step action. The step waiting for the current user has a red border and pulses twice when the SPK opens. Locked steps say what they wait for.
 
 ### Approval Stamp
 A dashed box that says whose stamp will be placed ("Approved by Supervisor: Budi S."). On Approve, the box turns solid red on Pale Mist and the stamp is pressed in with the time (about 450ms, a slight scale and rotation settling flat); Reject dims. With reduced motion it simply fades in.
@@ -337,9 +337,9 @@ One drawing component for every unit type, generated only from the layout and dr
 - **Do** keep one filled BMI red button per region; make every other action secondary or outlined.
 - **Do** use petrol for links, info states, navigation icons and the first chart series.
 - **Do** write every status as text inside its pill; color only reinforces it.
-- **Do** place the logo in a white circle at the top of the rail (and of the phone header), blended into its surface, and in grayscale on printed WO documents and invoices.
+- **Do** place the logo in a white circle at the top of the rail (and of the phone header), blended into its surface, and in grayscale on printed SPK documents and invoices.
 - **Do** give every module one screen for every role that reaches it; a role changes only which actions show (allowedActions), never the layout.
-- **Do** use tabular numerals and single-line dates, WO numbers, SKUs and plates in tables.
+- **Do** use tabular numerals and single-line dates, SPK numbers, SKUs and plates in tables.
 - **Do** give every phone target at least 48px and every Pass/Fail control at least 44px tall.
 - **Do** put an outline icon beside the label in navigation, step cards, Settings items and Add or Back buttons, from the one icon set (24px grid, 2px stroke).
 - **Do** keep motion to feedback (100 to 200ms), dialogs (about 300ms) and the stamp (about 450ms), with a reduced-motion fade.

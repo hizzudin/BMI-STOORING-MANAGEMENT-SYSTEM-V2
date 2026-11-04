@@ -3,8 +3,10 @@
   "configurations": [
     {
       "name": "design-artifact",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["--yes", "serve@14.2.4", "Design Artifact", "-l", "4173"],
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "specs/tools/serve-artifact.mjs"
+      ],
       "port": 4173
     }
   ]

@@ -48,7 +48,7 @@
   // Menu table of PRD 2.4: [key, label, page, codes that show it, demo count]
   const NAV = [
     ['dashboard', 'Dashboard', 'dashboard/Dashboard.html', ['dashboard.view']],
-    ['work-orders', 'Work Orders', 'work-orders/WOList.html', ['wo.view'], 3],
+    ['work-orders', 'Surat Perintah Kerja', 'work-orders/WOList.html', ['wo.view'], 3],
     ['requests', 'Requests', 'work-orders/Requests.html', ['request.view'], 2],
     ['schedule', 'Schedule', 'schedule/Schedule.html', ['schedule.view', 'schedule.manage']],
     ['approvals', 'Approvals', 'approvals/Approvals.html', ['wo.approve', 'count.approve'], 4],
@@ -175,7 +175,7 @@
     window.addEventListener('hashchange', syncTabs);
     syncTabs();
 
-    // Drag a WO card between "Not on the schedule" and the days of the week.
+    // Drag an SPK card between "Not on the schedule" and the days of the week.
     let dragged = null;
     document.addEventListener('dragstart', (e) => {
       dragged = e.target.closest && e.target.closest('.wocard');

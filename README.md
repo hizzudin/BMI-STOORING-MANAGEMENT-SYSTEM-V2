@@ -1,6 +1,6 @@
 # BMI Stooring System
 
-Work Order driven fleet maintenance for BMI: a web app for the office and an Android app for the field. No maintenance happens on a vehicle unless an approved Work Order authorises it.
+Surat Perintah Kerja driven fleet maintenance for BMI: a web app for the office and an Android app for the field. No maintenance happens on a vehicle unless an approved Surat Perintah Kerja authorises it.
 
 The product is fully specified; the code is built from the specification with Claude Code, task by task, test first.
 
@@ -28,7 +28,7 @@ The product is fully specified; the code is built from the specification with Cl
    ```
 
    The second command must print `Coverage OK`. Once code exists, `--tests` also checks that every acceptance criterion of a finished task has a test named with its ID.
-3. View the design artifact through a local web server (the pages load a shared kit): `npx serve "Design Artifact"`, or the `design-artifact` entry of `.claude/launch.json`.
+3. View the design artifact through a local web server (the pages load a shared kit): `node specs/tools/serve-artifact.mjs` (port 4173), or the `design-artifact` entry of `.claude/launch.json`.
 
 ## Repository rules
 

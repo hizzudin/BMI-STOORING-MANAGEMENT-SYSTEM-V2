@@ -159,16 +159,18 @@ for (const block of tasks.split(/\n(?=- \[[ x]\] \*\*TASK-)/).slice(1)) {
 // the plan and the code alike. A retired-name sentence is allowed only in PRD 0.7 and the CLAUDE.md block.
 const RETIRED = /\bWOs?\b|\bWOD\b|\bWork Orders?\b|\bwork orders?\b|\bwork[_-]orders?|\bWorkOrder|\bwo_\w|_wo_|_wo\b|\bwo\.[a-z*]|\bwo\b|\bwocard|[a-z_]WO\b|\bWO[A-Z][a-z]|\b(REQ|AC)-WOD?-|\bSM-WO\b/;
 // Build output is not source: minified bundles hold arbitrary short identifiers.
-const GENERATED_DIR = /(^|[\\/])(node_modules|dist|\.next|\.expo|\.turbo|coverage|test-results|playwright-report)([\\/]|$)/;
+const GENERATED_DIR = /^(node_modules|dist|\.next|\.expo|\.turbo|coverage|test-results|playwright-report)$/;
 const namedFiles = (dir, pattern) => {
+  let entries;
   try {
-    return readdirSync(join(root, dir), { recursive: true })
-      .map(String)
-      .filter((f) => !GENERATED_DIR.test(f) && pattern.test(f))
-      .map((f) => join(dir, f));
+    entries = readdirSync(join(root, dir), { withFileTypes: true });
   } catch {
     return []; // the folder does not exist yet
   }
+  return entries.flatMap((e) => {
+    if (e.isDirectory()) return GENERATED_DIR.test(e.name) ? [] : namedFiles(join(dir, e.name), pattern);
+    return pattern.test(e.name) ? [join(dir, e.name)] : [];
+  });
 };
 const nameSources = [
   'DESIGN.md', 'PRODUCT.md', 'README.md', 'specs/requirements.md', 'specs/design.md', 'specs/tdd-user-journeys.md',

@@ -10,7 +10,11 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "turbo run test",
+    "test:int": "turbo run test:int",
+    "test:coverage": "turbo run test:coverage",
+    "e2e": "turbo run e2e"
   },
   "devDependencies": {
     "@bmi/config": "workspace:*",

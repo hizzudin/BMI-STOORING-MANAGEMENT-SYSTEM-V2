@@ -9,8 +9,12 @@
     "allowJs": false,
     "incremental": true,
     "exactOptionalPropertyTypes": false,
-    "plugins": [{ "name": "next" }]
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "app", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "app", ".next/types/**/*.ts", "e2e", "playwright.config.ts"],
   "exclude": ["node_modules"]
 }

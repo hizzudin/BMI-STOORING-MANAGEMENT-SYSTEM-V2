@@ -6,6 +6,7 @@
   "exports": {
     "./eslint": "./eslint.config.mjs",
     "./tsconfig.base.json": "./tsconfig.base.json",
-    "./tsconfig.lib.json": "./tsconfig.lib.json"
+    "./tsconfig.lib.json": "./tsconfig.lib.json",
+    "./vitest": "./vitest.mjs"
   }
 }

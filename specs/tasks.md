@@ -97,13 +97,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-005
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, react-native-expert, ecc:react-native-patterns, ecc:accessibility
   - _Verify_: pnpm install/build/lint/typecheck green; /health 200; web renders; expo export android ok; RN minSdk 24 covers Android 8 (API 26); `pnpm install && pnpm build && pnpm lint && pnpm typecheck` green; API `/health` 200; web renders
-- [ ] **TASK-007** Test harness: Vitest presets, integration harness (template DB per worker, factories, fake WIB clock), Playwright, coverage gates
+- [x] **TASK-007** Test harness: Vitest presets, integration harness (template DB per worker, factories, fake WIB clock), Playwright, coverage gates
   - _Scope_: Design D-02, D-09.
   - _Rules_: NFR-01, NFR-14
   - _Read_: `PRD.md` for NFR-01, NFR-14 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-006
   - _Skill_: test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations
-  - _Verify_: sample unit, integration and E2E tests pass; two workers use two databases; coverage gate fails below threshold
+  - _Verify_: unit, integration (12) and E2E pass; test_w1..3 used; coverage gate exits 1 at 45% lines; sample unit, integration and E2E tests pass; two workers use two databases; coverage gate fails below threshold
 - [ ] **TASK-008** CI: lint, typecheck, unit, integration, Playwright, layer rules, secret scan, PRD coverage check
   - _Scope_: Design D-06. CI also runs `node specs/tools/check-coverage.mjs --tests`, so a spec change that drops a PRD item fails, and so does a finished task whose acceptance criteria have no test named with their IDs. Every §8.3 practice that can be automated (engine never imports a module, generated client drift, migration drift) is a CI rule.
   - _Rules_: NFR-04, DEC-78, DEC-79

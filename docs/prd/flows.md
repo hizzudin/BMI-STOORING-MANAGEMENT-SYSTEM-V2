@@ -7,22 +7,22 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 ## 6.1 Planner (web)
 
-**FLW-PLN-01 Create a planned Surat Perintah Kerja** (REQ-WO-001, REQ-WO-004).
+**FLW-PLN-01 Create a planned Surat Perintah Kerja** (REQ-SPK-001, REQ-SPK-004).
 
 1. [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) → [`DashboardPlanner`](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>).
-2. Sidebar Surat Perintah Kerja → [`WOList`](<../../Design Artifact/work-orders/WOList.html#WOList>) → "+ Create SPK" → [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>): title, vehicle, category, description; start from a preset or drag modules into the step list, and fill each step's details on the same screen.
-3. Submit for approval. The SPK shows under the Pending approval tab of [`WOList`](<../../Design Artifact/work-orders/WOList.html#WOList>); the Approvers are notified (FLW-APR-01).
+2. Sidebar Surat Perintah Kerja → [`SPKList`](<../../Design Artifact/spk/SPKList.html#SPKList>) → "+ Create SPK" → [`CreateSPK`](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>): title, vehicle, category, description; start from a preset or drag modules into the step list, and fill each step's details on the same screen.
+3. Submit for approval. The SPK shows under the Pending approval tab of [`SPKList`](<../../Design Artifact/spk/SPKList.html#SPKList>); the Approvers are notified (FLW-APR-01).
 
-**FLW-PLN-02 Create an SPK from an alert or a vehicle** (REQ-WO-012, REQ-PM-003).
+**FLW-PLN-02 Create an SPK from an alert or a vehicle** (REQ-SPK-012, REQ-PM-003).
 
-1. [`DashboardPlanner`](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) shows PM, tyre, part and document alerts → "Create SPK" → [`CreateWOFromAlert`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromAlert>) with vehicle, source and the preset's steps filled.
-2. Or Vehicles → [`VehicleOverview`](<../../Design Artifact/fleet/Vehicle.html#VehicleOverview>) → "Create SPK" → [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) with the vehicle filled.
+1. [`DashboardPlanner`](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) shows PM, tyre, part and document alerts → "Create SPK" → [`CreateSPKFromAlert`](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) with vehicle, source and the preset's steps filled.
+2. Or Vehicles → [`VehicleOverview`](<../../Design Artifact/fleet/Vehicle.html#VehicleOverview>) → "Create SPK" → [`CreateSPK`](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) with the vehicle filled.
 3. Submit for approval, as in FLW-PLN-01.
 
-**FLW-PLN-03 Rejected SPK** (REQ-WO-007).
+**FLW-PLN-03 Rejected SPK** (REQ-SPK-007).
 
-1. Notification "SPK rejected" → [`WOList`](<../../Design Artifact/work-orders/WOList.html#WOList>), Rejected tab → [`WORejected`](<../../Design Artifact/work-orders/WorkOrder.html#WORejected>) shows the Approver's reason.
-2. "Edit and resubmit" → [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) in edit mode → Submit → Pending\_Approval again; or cancel the draft.
+1. Notification "SPK rejected" → [`SPKList`](<../../Design Artifact/spk/SPKList.html#SPKList>), Rejected tab → [`SPKRejected`](<../../Design Artifact/spk/SPKDetail.html#SPKRejected>) shows the Approver's reason.
+2. "Edit and resubmit" → [`CreateSPK`](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) in edit mode → Submit → Pending\_Approval again; or cancel the draft.
 
 **FLW-PLN-04 Plan the SPK on the maintenance schedule** (REQ-SCH-001 to REQ-SCH-004).
 
@@ -32,32 +32,32 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 **FLW-PLN-05 Verify a submitted step** (REQ-ENG-005, REQ-ENG-007).
 
-1. [`DashboardPlanner`](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) "To verify" or the notification → [`WODetailVerify`](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>).
+1. [`DashboardPlanner`](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) "To verify" or the notification → [`SPKDetailVerify`](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>).
 2. Verify on a submitted step → [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>): evidence, lines, executor stamp, note.
-3. Verify (stamp added) or Return to executor with a required note; the executor then sees [`StepReturned`](<../../Design Artifact/work-orders/WorkOrder.html#StepReturned>) (FLW-MEC-04).
+3. Verify (stamp added) or Return to executor with a required note; the executor then sees [`StepReturned`](<../../Design Artifact/spk/SPKDetail.html#StepReturned>) (FLW-MEC-04).
 4. A reversal raised in [`StockReversal`](<../../Design Artifact/steps/Stock.html#StockReversal>) (FLW-WHM-02) is verified the same way.
 
 **FLW-PLN-06 Revise an SPK after a change request** (REQ-CR-003).
 
-1. Notification "Change request" → [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) shows Pending\_Amendment; later steps show [`StepLocked`](<../../Design Artifact/work-orders/WorkOrder.html#StepLocked>).
-2. "Revise" → [`CreateWORevision`](<../../Design Artifact/work-orders/ChangeRequest.html#CreateWORevision>): the requested change, the reason and the editable content.
+1. Notification "Change request" → [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) shows Pending\_Amendment; later steps show [`StepLocked`](<../../Design Artifact/spk/SPKDetail.html#StepLocked>).
+2. "Revise" → [`CreateSPKRevision`](<../../Design Artifact/spk/ChangeRequest.html#CreateSPKRevision>): the requested change, the reason and the editable content.
 3. Send revision for approval → the Approver decides in [`AmendmentReview`](<../../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>) (FLW-APR-02).
 
 **FLW-PLN-07 Request completion** (REQ-ENG-006).
 
-1. When every step is Verified, [`WODetailVerify`](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) enables "Request completion approval".
-2. The Approver decides in [`CompletionReview`](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) (FLW-APR-03). After approval the SPK is Completed and [`WODocument`](<../../Design Artifact/work-orders/WODocument.html#WODocument>) holds every stamp.
+1. When every step is Verified, [`SPKDetailVerify`](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) enables "Request completion approval".
+2. The Approver decides in [`CompletionReview`](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) (FLW-APR-03). After approval the SPK is Completed and [`SPKDocument`](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>) holds every stamp.
 
 **FLW-PLN-08 Maintain SPK presets and PM packages, with the System Admin** (REQ-REG-001, REQ-REG-007).
 
-1. Settings → [`SettingsWOPresets`](<../../Design Artifact/settings/WOPresets.html#SettingsWOPresets>): rename or deactivate presets. A preset's steps are changed by opening it in [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) (Edit steps in Create SPK) and saving it again with Save as preset, which adds a version.
-2. Settings → [`SettingsPMPackages`](<../../Design Artifact/settings/WOPresets.html#SettingsPMPackages>): packages grouped by vehicle class, with intervals, tasks and suggested parts.
+1. Settings → [`SettingsSPKPresets`](<../../Design Artifact/settings/SPKPresets.html#SettingsSPKPresets>): rename or deactivate presets. A preset's steps are changed by opening it in [`CreateSPK`](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) (Edit steps in Create SPK) and saving it again with Save as preset, which adds a version.
+2. Settings → [`SettingsPMPackages`](<../../Design Artifact/settings/SPKPresets.html#SettingsPMPackages>): packages grouped by vehicle class, with intervals, tasks and suggested parts.
 
 ## 6.2 Mechanic (web or tablet, and mobile from R1 step 7)
 
 **FLW-MEC-01 Do a Mechanic Action step, internal team** (REQ-MEC-001, REQ-MEC-002).
 
-1. [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) → [`DashboardMechanic`](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>), "My steps" → Open. A step that is not open yet shows [`StepLocked`](<../../Design Artifact/work-orders/WorkOrder.html#StepLocked>).
+1. [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) → [`DashboardMechanic`](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>), "My steps" → Open. A step that is not open yet shows [`StepLocked`](<../../Design Artifact/spk/SPKDetail.html#StepLocked>).
 2. Start → [`Mechanic`](<../../Design Artifact/steps/MechanicAction.html#Mechanic>): team Internal, services from the catalog (fixed prices), at least one repair photo. The step asks no location and adds no stooring; that comes from the SPK's Mobilisasi step (REQ-MEC-009 retired, DEC-90).
 3. Submit step → waits for verification (FLW-PLN-05).
 
@@ -75,12 +75,12 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 **FLW-MEC-04 Returned step** (REQ-ENG-005).
 
-1. Notification "Step returned" → [`StepReturned`](<../../Design Artifact/work-orders/WorkOrder.html#StepReturned>) shows the verifier's note.
+1. Notification "Step returned" → [`StepReturned`](<../../Design Artifact/spk/SPKDetail.html#StepReturned>) shows the verifier's note.
 2. Start again → fix the content → Submit step again.
 
 **FLW-MEC-05 The SPK content is wrong** (REQ-CR-001, REQ-CR-002).
 
-1. Inside the open step → "Raise change request" → [`ChangeRequest`](<../../Design Artifact/work-orders/ChangeRequest.html#ChangeRequest>): what changes, requested change, reason.
+1. Inside the open step → "Raise change request" → [`ChangeRequest`](<../../Design Artifact/spk/ChangeRequest.html#ChangeRequest>): what changes, requested change, reason.
 2. Submit request → the SPK is Pending\_Amendment and later steps stay Locked until the Approver decides (FLW-PLN-06, FLW-APR-02).
 
 **FLW-MEC-06 Mobile app (R1 step 7)** (REQ-MOB-002, REQ-MOB-004, REQ-MOB-010, DEC-98).
@@ -96,12 +96,12 @@ Each flow lists the screens of the design canvas in the order the user meets the
 1. [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) → [`DashboardWarehouse`](<../../Design Artifact/dashboard/Dashboard.html#DashboardWarehouse>), "My steps" → Open → [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>).
 2. Start → for each line on the SPK list enter the quantity used; for each tyre line choose a tyre In Stock by code and serial number. When stock is short, issue what is on hand and confirm the shortfall: a Part Purchase step is added after this step (REQ-STK-004).
 3. Parts bought outside: [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) step. Its lines are the parts the Planner or System Admin listed on the SPK, picked from the parts catalog; the buyer types only the quantity bought and the unit price, sees each line total and the grand total at once to check against the receipt, and adds the receipt photo. No part can be added; warehouse stock does not change (REQ-PUR-002, REQ-PUR-003, DEC-62, DEC-63).
-4. If the list is wrong → "Raise change request" → [`ChangeRequest`](<../../Design Artifact/work-orders/ChangeRequest.html#ChangeRequest>) (FLW-MEC-05).
+4. If the list is wrong → "Raise change request" → [`ChangeRequest`](<../../Design Artifact/spk/ChangeRequest.html#ChangeRequest>) (FLW-MEC-05).
 5. Submit step → stock goes down, chosen tyres become Issued and the cost lands on the SPK.
 
 **FLW-WHM-02 Reverse an issue after submit** (REQ-STK-008).
 
-1. [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) → step 1 Stock → "Reverse issue" → [`StockReversal`](<../../Design Artifact/steps/Stock.html#StockReversal>): lines, quantities, reason.
+1. [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) → step 1 Stock → "Reverse issue" → [`StockReversal`](<../../Design Artifact/steps/Stock.html#StockReversal>): lines, quantities, reason.
 2. Submit → a Planner or System Admin verifies (FLW-PLN-05) → stock and cost return.
 
 **FLW-WHM-03 Goods Receipt, no approval** (REQ-INV-004, REQ-INV-005).
@@ -144,7 +144,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 ## 6.4 Supervisor and GM (web, mobile from P1)
 
-**FLW-APR-01 Approve SPK creation** (REQ-WO-005 to REQ-WO-007, REQ-APR-004).
+**FLW-APR-01 Approve SPK creation** (REQ-SPK-005 to REQ-SPK-007, REQ-APR-004).
 
 1. [`WebLogin`](<../../Design Artifact/shell/SignIn.html#WebLogin>) → [`Dashboard`](<../../Design Artifact/dashboard/Dashboard.html#Dashboard>) "Needs my action", or the notification → [`Approvals`](<../../Design Artifact/approvals/Approvals.html#Approvals>), Surat Perintah Kerja tab, chip Creation.
 2. Select the SPK → "Open review" → [`ApprovalReview`](<../../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>).
@@ -155,10 +155,10 @@ Each flow lists the screens of the design canvas in the order the user meets the
 1. [`Approvals`](<../../Design Artifact/approvals/Approvals.html#Approvals>), chip Amendment → [`AmendmentReview`](<../../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>): current and proposed content side by side, reason.
 2. Approve revision (the amendment number goes up and the step resumes with the new content) or Reject (the original content stays and the step resumes).
 
-**FLW-APR-03 Approve completion** (T13, T14 of SM-WO).
+**FLW-APR-03 Approve completion** (T13, T14 of SM-SPK).
 
 1. [`Approvals`](<../../Design Artifact/approvals/Approvals.html#Approvals>), chip Completion → [`CompletionReview`](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>): verified steps, cost, stamps.
-2. Approve: the SPK is Completed, the vehicle status is recalculated and [`WODocument`](<../../Design Artifact/work-orders/WODocument.html#WODocument>) is final. Reject with reason: the SPK stays Pending\_Verification.
+2. Approve: the SPK is Completed, the vehicle status is recalculated and [`SPKDocument`](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>) is final. Reject with reason: the SPK stays Pending\_Verification.
 
 **FLW-APR-04 Approve warehouse documents** (REQ-APR-003, REQ-INV-011, REQ-TYR-012).
 
@@ -166,10 +166,10 @@ Each flow lists the screens of the design canvas in the order the user meets the
 2. A stock opname → [`StockOpnameApproval`](<../../Design Artifact/approvals/ApprovalReview.html#StockOpnameApproval>); a tyre count → [`TyreCountApproval`](<../../Design Artifact/approvals/ApprovalReview.html#TyreCountApproval>).
 3. Approve (stock or tyre status is adjusted) or Reject with reason (back to Draft, marked Returned: FLW-WHM-05, FLW-WHM-09).
 
-**FLW-APR-05 Cancel an SPK** (REQ-WO-008).
+**FLW-APR-05 Cancel an SPK** (REQ-SPK-008).
 
-1. [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) → "Cancel SPK" → [`CancelWO`](<../../Design Artifact/components/Dialogs.html#CancelWO>): reason (required); posted issues are reversed and Issued tyres return to In Stock first.
-2. Confirm → the SPK shows Cancelled in [`WOList`](<../../Design Artifact/work-orders/WOList.html#WOList>).
+1. [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) → "Cancel SPK" → [`CancelSPK`](<../../Design Artifact/components/Dialogs.html#CancelSPK>): reason (required); posted issues are reversed and Issued tyres return to In Stock first.
+2. Confirm → the SPK shows Cancelled in [`SPKList`](<../../Design Artifact/spk/SPKList.html#SPKList>).
 
 **FLW-APR-06 Look back and follow up** (REQ-APR-007, REQ-RPT-001, REQ-SCH-005).
 
@@ -202,7 +202,7 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 1. [`VehicleOverview`](<../../Design Artifact/fleet/Vehicle.html#VehicleOverview>) → "Edit vehicle" → [`VehicleEdit`](<../../Design Artifact/fleet/VehicleForm.html#VehicleEdit>) (class and layout only when no tyre is mounted and no SPK is open).
 2. [`VehicleOdometer`](<../../Design Artifact/fleet/Vehicle.html#VehicleOdometer>): record a manual reading; a jump above 1.500 km per day warns. A wrong reading → "Void" → [`OdometerVoid`](<../../Design Artifact/fleet/Vehicle.html#OdometerVoid>) with a reason.
-3. [`VehicleWOHistory`](<../../Design Artifact/fleet/Vehicle.html#VehicleWOHistory>) for past SPKs and cost.
+3. [`VehicleSPKHistory`](<../../Design Artifact/fleet/Vehicle.html#VehicleSPKHistory>) for past SPKs and cost.
 4. Chassis and parts tab → "Correct baseline" → [`BaselineCorrect`](<../../Design Artifact/fleet/PartsBaseline.html#BaselineCorrect>) while no SPK has touched the part.
 5. Sold or out of service → [`VehicleDeactivate`](<../../Design Artifact/fleet/VehicleForm.html#VehicleDeactivate>) (no open SPK).
 
@@ -210,11 +210,11 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 1. Vehicles → Inspections tab → [`VehicleInspections`](<../../Design Artifact/fleet/Vehicle.html#VehicleInspections>).
 2. "+ Record inspection" → [`AdminInspectionForm`](<../../Design Artifact/fleet/FieldReports.html#AdminInspectionForm>) for the named driver; a Fail needs photo and description and drafts an SPK (FLW-PLN-02).
-3. "Report breakdown" → [`AdminBreakdownForm`](<../../Design Artifact/fleet/FieldReports.html#AdminBreakdownForm>): location, description, photo; it drafts an SPK with source Driver\_Breakdown, pre-seeded with exactly one Mobilisasi step whose destination is the reported location, and the description copied as its field-finding note (REQ-WO-003, DEC-90, DEC-91).
+3. "Report breakdown" → [`AdminBreakdownForm`](<../../Design Artifact/fleet/FieldReports.html#AdminBreakdownForm>): location, description, photo; it drafts an SPK with source Driver\_Breakdown, pre-seeded with exactly one Mobilisasi step whose destination is the reported location, and the description copied as its field-finding note (REQ-SPK-003, DEC-90, DEC-91).
 
 **FLW-SA-05 Master data** (REQ-REG-001, REQ-MEC-005, REQ-PLC-013, REQ-DOC-002, REQ-BSL-007, REQ-PM-006, REQ-TYR-003).
 
-1. [`Settings`](<../../Design Artifact/settings/Settings.html#Settings>) → [`SettingsWOPresets`](<../../Design Artifact/settings/WOPresets.html#SettingsWOPresets>), [`SettingsServiceCatalog`](<../../Design Artifact/settings/MasterData.html#SettingsServiceCatalog>), [`ChassisLayouts`](<../../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>), [`DocumentTypes`](<../../Design Artifact/settings/MasterData.html#DocumentTypes>), [`SettingsPartItemTypes`](<../../Design Artifact/settings/MasterData.html#SettingsPartItemTypes>), [`SettingsPMPackages`](<../../Design Artifact/settings/WOPresets.html#SettingsPMPackages>), `SettingsAlertRules, SettingsAlertThresholds`, [`SettingsTyreStatuses`](<../../Design Artifact/settings/MasterData.html#SettingsTyreStatuses>).
+1. [`Settings`](<../../Design Artifact/settings/Settings.html#Settings>) → [`SettingsSPKPresets`](<../../Design Artifact/settings/SPKPresets.html#SettingsSPKPresets>), [`SettingsServiceCatalog`](<../../Design Artifact/settings/MasterData.html#SettingsServiceCatalog>), [`ChassisLayouts`](<../../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>), [`DocumentTypes`](<../../Design Artifact/settings/MasterData.html#DocumentTypes>), [`SettingsPartItemTypes`](<../../Design Artifact/settings/MasterData.html#SettingsPartItemTypes>), [`SettingsPMPackages`](<../../Design Artifact/settings/SPKPresets.html#SettingsPMPackages>), `SettingsAlertRules, SettingsAlertThresholds`, [`SettingsTyreStatuses`](<../../Design Artifact/settings/MasterData.html#SettingsTyreStatuses>).
 2. Each page saves with its own audit record.
 
 **FLW-SA-06 Oversight** (REQ-DSH-005, REQ-IAM-007).
@@ -259,7 +259,7 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 
 **FLW-DRV-02 Breakdown** (REQ-MOB-003, REQ-PM-005).
 
-1. [`DashboardDriver`](<../../Design Artifact/mobile/FieldReports.html#DashboardDriver>) → "Report breakdown" → [`DriverBreakdown`](<../../Design Artifact/mobile/FieldReports.html#DriverBreakdown>): location (captured once from the phone), description, photo → Send. It drafts an SPK with source Driver\_Breakdown, pre-seeded with exactly one Mobilisasi step to the captured location, and the description copied as its field-finding note (REQ-WO-003, REQ-MOB-003, DEC-90, DEC-91).
+1. [`DashboardDriver`](<../../Design Artifact/mobile/FieldReports.html#DashboardDriver>) → "Report breakdown" → [`DriverBreakdown`](<../../Design Artifact/mobile/FieldReports.html#DriverBreakdown>): location (captured once from the phone), description, photo → Send. It drafts an SPK with source Driver\_Breakdown, pre-seeded with exactly one Mobilisasi step to the captured location, and the description copied as its field-finding note (REQ-SPK-003, REQ-MOB-003, DEC-90, DEC-91).
 
 **FLW-DRV-03 Odometer** (REQ-MOB-003, REQ-VEH-005).
 
@@ -288,11 +288,11 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 2. Schedule → [`DispatcherMobileSchedule`](<../../Design Artifact/mobile/Fleet.html#DispatcherMobileSchedule>) (week list per day, read only).
 3. Alerts → [`DispatcherMobileAlerts`](<../../Design Artifact/mobile/MobileApp.html#DispatcherMobileAlerts>); each alert also arrives as a push notification.
 
-**FLW-FC-04 Turn a driver request into an SPK** (REQ-WO-014, REQ-WO-001, RL-6).
+**FLW-FC-04 Turn a driver request into an SPK** (REQ-SPK-014, REQ-SPK-001, RL-6).
 
-1. [`DashboardDispatcher`](<../../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) → Requests → [`FCRequests`](<../../Design Artifact/work-orders/Requests.html#FCRequests>): Draft SPKs from inspections, breakdowns and field findings, with the report photos.
-2. Open one → [`FCCreateWO`](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>): vehicle and source prefilled; choose a suggested category, write the description, list the parts needed → Send to Planner, who adds the steps. Or "+ Create SPK" for a new request the driver phoned in (source Manual\_Field\_Coordinator).
-3. The Planner checks it, may change it, and submits it; it then waits for a Supervisor or GM (FLW-APR-01). The Field Coordinator cannot submit or approve it. On the phone: [`FCMobileRequests`](<../../Design Artifact/mobile/Requests.html#FCMobileRequests>) → [`FCMobileCreateWO`](<../../Design Artifact/mobile/Requests.html#FCMobileCreateWO>).
+1. [`DashboardDispatcher`](<../../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) → Requests → [`FCRequests`](<../../Design Artifact/spk/Requests.html#FCRequests>): Draft SPKs from inspections, breakdowns and field findings, with the report photos.
+2. Open one → [`FCCreateSPK`](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>): vehicle and source prefilled; choose a suggested category, write the description, list the parts needed → Send to Planner, who adds the steps. Or "+ Create SPK" for a new request the driver phoned in (source Manual\_Field\_Coordinator).
+3. The Planner checks it, may change it, and submits it; it then waits for a Supervisor or GM (FLW-APR-01). The Field Coordinator cannot submit or approve it. On the phone: [`FCMobileRequests`](<../../Design Artifact/mobile/Requests.html#FCMobileRequests>) → [`FCMobileCreateSPK`](<../../Design Artifact/mobile/Requests.html#FCMobileCreateSPK>).
 
 **FLW-FC-05 Buy parts for an SPK** (REQ-PUR-001 to 008).
 
@@ -356,18 +356,18 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 
 **FLW-PLN-09 Assign a step** (REQ-ENG-011).
 
-1. [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) → a step card → Assign (or Reassign with a reason) → pick a user of the step's executor role. The assignee is notified.
+1. [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) → a step card → Assign (or Reassign with a reason) → pick a user of the step's executor role. The assignee is notified.
 2. Without an assignment, the first executor who opens the step claims it; others see it read only. The assignee can Release it with a reason; the draft stays with the step.
 
-**FLW-WHM-10 Receive parts of a cancelled SPK** (REQ-WO-008).
+**FLW-WHM-10 Receive parts of a cancelled SPK** (REQ-SPK-008).
 
 1. Notification → [`GoodsReceiptForm`](<../../Design Artifact/inventory/GoodsReceipt.html#GoodsReceiptForm>) with type From cancelled SPK, prefilled with the Part Purchase items and prices; map each to a SKU or mark it not kept → Post receipt.
 
 ## 6.8e Step time, troubleshooting, mobilisation and OFF units
 
-**FLW-MEC-10 Send a field finding for review on the web** (REQ-WO-016, DEC-91, DEC-97).
+**FLW-MEC-10 Send a field finding for review on the web** (REQ-SPK-016, DEC-91, DEC-97).
 
-1. Surat Perintah Kerja → "+ Create SPK" → [`FCCreateWO`](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>), the same request screen the Field Coordinator uses (DEC-97): vehicle, suggested category, description, the field-finding note (required), the parts needed and photos; no steps.
+1. Surat Perintah Kerja → "+ Create SPK" → [`FCCreateSPK`](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>), the same request screen the Field Coordinator uses (DEC-97): vehicle, suggested category, description, the field-finding note (required), the parts needed and photos; no steps.
 2. Send to Planner: the SPK stays Draft, marked Sent for review, with source Manual\_Mechanic and the Mechanic as creator; the Planners and the System Admin are notified, and the Planner continues as in FLW-FC-04 step 3. The Mechanic cannot submit or approve it.
 
 **FLW-MEC-07 Start, pause and resume a step** (REQ-ENG-012 to REQ-ENG-016, DEC-87).
@@ -375,7 +375,7 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 1. Open a step that tracks work time: the form is read only and the waiting time runs from the moment the step opened; opening, viewing or Save draft never starts it.
 2. Start, or "I started earlier" for a forgotten Start: up to 2 hours back and never before the step opened, with a reason; the start is marked entered.
 3. Pause with a reason (Waiting for parts, Waiting for the vehicle, Waiting for vendor or agency, Break or shift ended, Other): work time stops, the form is read only and Submit is unavailable. Resume unlocks it at once. A change request pauses the step by itself with reason Change request and resumes it when the request is decided (FLW-MEC-05).
-4. Submit. A wrong time is corrected only by the System Admin on [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) (Correct time, with a reason and an audit record). A module that does not track work time, such as Part Replacement, skips this flow (DEC-95).
+4. Submit. A wrong time is corrected only by the System Admin on [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) (Correct time, with a reason and an audit record). A module that does not track work time, such as Part Replacement, skips this flow (DEC-95).
 
 **FLW-MEC-08 Do a Part Check step** (REQ-CHK-001, REQ-CHK-002, REQ-CHK-005, REQ-CHK-007, DEC-88, DEC-89).
 
@@ -387,13 +387,13 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 **FLW-PLN-10 Turn a Part Check into a repair SPK** (REQ-CHK-003, REQ-CHK-004, REQ-CHK-006).
 
 1. Verify the Part Check step in [`PartCheckVerify`](<../../Design Artifact/steps/StepVerify.html#PartCheckVerify>) (as FLW-PLN-05). When at least one part is Repair or Replace, the system creates one Draft SPK with source Part\_Check for the same vehicle, priority Urgent when a part is Unsafe to drive, with its steps built from the findings; when every part is Good, no draft is made.
-2. Open the draft → [`CreateWOFromCheck`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>): the findings and their photos are carried over; change the steps as in any SPK.
+2. Open the draft → [`CreateSPKFromCheck`](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>): the findings and their photos are carried over; change the steps as in any SPK.
 3. Activate: submit for approval; the SPK becomes Active only after an Approver approves it (FLW-APR-01), and the activating user counts as its creator for BR-03. Or Discard draft with a reason; the draft keeps its link to the check and is never made again for that step.
-4. The check SPK completes and is billed on its own; [`WODocumentCheck`](<../../Design Artifact/work-orders/WODocument.html#WODocumentCheck>) prints the Part Check section with the follow-up SPK number for reference.
+4. The check SPK completes and is billed on its own; [`SPKDocumentCheck`](<../../Design Artifact/spk/SPKDocument.html#SPKDocumentCheck>) prints the Part Check section with the follow-up SPK number for reference.
 
-**FLW-MEC-09 Mobilisasi to a broken-down vehicle** (REQ-MBL-001 to REQ-MBL-006, REQ-WO-003, DEC-90).
+**FLW-MEC-09 Mobilisasi to a broken-down vehicle** (REQ-MBL-001 to REQ-MBL-006, REQ-SPK-003, DEC-90).
 
-1. A breakdown (FLW-DRV-02, FLW-SA-04) drafts an SPK pre-seeded with one Mobilisasi step to the driver's captured location; the Planner adds the other steps in [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>), where Mobilisasi is also in the module palette, and submits it (FLW-PLN-01, FLW-APR-01).
+1. A breakdown (FLW-DRV-02, FLW-SA-04) drafts an SPK pre-seeded with one Mobilisasi step to the driver's captured location; the Planner adds the other steps in [`CreateSPK`](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>), where Mobilisasi is also in the module palette, and submits it (FLW-PLN-01, FLW-APR-01).
 2. When the step opens, the executor opens it on the phone ([`MobilisasiMobile`](<../../Design Artifact/mobile/Mobilisasi.html#MobilisasiMobile>), or [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) from the System Admin field menu, FLW-SA-07) and presses Start: the map shows the route to the destination, and the location trail is recorded while the step is In\_Progress and online.
 3. Reaching the destination submits the step by itself; Finish stooring submits it before arrival. Recording stops at submit.
 4. The stooring fee of the destination's area is charged as a snapshot: once per SPK per area per day, Rp 0 for the workshop. The Planner or System Admin sees the trail and the stooring duration in [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) and the SPK detail; every view is written to the access log. The trail never appears on the SPK document or the invoice.
@@ -409,14 +409,14 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 | Order | Role | Action | Screens | Transition |
 | --- | --- | --- | --- | --- |
 | 1 | System | Odometer reaches the PM interval and raises a PM alert | [`DashboardPlanner`](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) |  |
-| 2 | Planner | Creates the SPK from the alert and submits it | [`CreateWOFromAlert`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromAlert>) | T1, T2 |
+| 2 | Planner | Creates the SPK from the alert and submits it | [`CreateSPKFromAlert`](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) | T1, T2 |
 | 3 | Supervisor or GM | Approves creation | [`Approvals`](<../../Design Artifact/approvals/Approvals.html#Approvals>), [`ApprovalReview`](<../../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>) | T3 |
 | 4 | Planner | Places the SPK on a day; the Field Coordinator is alerted | [`MaintenanceSchedule`](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>), [`ScheduleDispatcher`](<../../Design Artifact/schedule/Schedule.html#ScheduleDispatcher>) |  |
 | 5 | Warehouse Manager | Issues parts and tyres in the Stock step | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>) | T7 |
-| 6 | Planner | Verifies step 1 | [`WODetailVerify`](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>), [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) |  |
+| 6 | Planner | Verifies step 1 | [`SPKDetailVerify`](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>), [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) |  |
 | 7 | [Mechanic](<../../Design Artifact/steps/MechanicAction.html#Mechanic>) | Does the service and fits the tyres | [`Mechanic`](<../../Design Artifact/steps/MechanicAction.html#Mechanic>), [`Placement`](<../../Design Artifact/steps/Placement.html#Placement>), [`PlacementReplace`](<../../Design Artifact/steps/Placement.html#PlacementReplace>) | T11 |
-| 8 | Planner | Verifies steps 2 and 3, requests completion | [`WODetailVerify`](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>), [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) |  |
+| 8 | Planner | Verifies steps 2 and 3, requests completion | [`SPKDetailVerify`](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>), [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) |  |
 | 9 | Supervisor or GM | Approves completion | [`CompletionReview`](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) | T13 |
-| 10 | All | The SPK is Completed; the vehicle is Active again | [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>), [`WODocument`](<../../Design Artifact/work-orders/WODocument.html#WODocument>), [`VehicleWOHistory`](<../../Design Artifact/fleet/Vehicle.html#VehicleWOHistory>) |  |
+| 10 | All | The SPK is Completed; the vehicle is Active again | [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>), [`SPKDocument`](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>), [`VehicleSPKHistory`](<../../Design Artifact/fleet/Vehicle.html#VehicleSPKHistory>) |  |
 
 Side paths: a wrong part list (FLW-MEC-05, FLW-PLN-06, FLW-APR-02), a returned step (FLW-PLN-05, FLW-MEC-04), a rejection (FLW-APR-01, FLW-PLN-03), a cancellation (FLW-APR-05) and a reversal (FLW-WHM-02).

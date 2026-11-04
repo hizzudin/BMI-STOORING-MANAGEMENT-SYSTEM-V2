@@ -51,19 +51,19 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`DashboardAdmin`](<../../Design Artifact/dashboard/Dashboard.html#DashboardAdmin>) | Dashboard (System Admin) | P0 | REQ-DSH-005 |
 | [`DashboardDispatcher`](<../../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) | Dashboard (Field Coordinator) | P0 | REQ-DSH-006 |
 | **Surat Perintah Kerja** |  |  |  |
-| [`WOList`](<../../Design Artifact/work-orders/WOList.html#WOList>) | Surat Perintah Kerja tab | P0 | REQ-WO-010 |
-| [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Create SPK | P0 | REQ-WO-001, REQ-WO-004, REQ-WO-017 |
-| [`CreateWOFromAlert`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromAlert>) | Create SPK from an alert | P0 | REQ-WO-012 |
-| [`WORejected`](<../../Design Artifact/work-orders/WorkOrder.html#WORejected>) | Surat Perintah Kerja rejected | P0 | REQ-WO-007 |
-| [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | Surat Perintah Kerja detail | P0 | REQ-WO-011 |
-| [`WODetailVerify`](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) | SPK detail: verification and completion | P0 | REQ-ENG-005, REQ-ENG-006 |
+| [`SPKList`](<../../Design Artifact/spk/SPKList.html#SPKList>) | Surat Perintah Kerja tab | P0 | REQ-SPK-010 |
+| [`CreateSPK`](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Create SPK | P0 | REQ-SPK-001, REQ-SPK-004, REQ-SPK-017 |
+| [`CreateSPKFromAlert`](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) | Create SPK from an alert | P0 | REQ-SPK-012 |
+| [`SPKRejected`](<../../Design Artifact/spk/SPKDetail.html#SPKRejected>) | Surat Perintah Kerja rejected | P0 | REQ-SPK-007 |
+| [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | Surat Perintah Kerja detail | P0 | REQ-SPK-011 |
+| [`SPKDetailVerify`](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) | SPK detail: verification and completion | P0 | REQ-ENG-005, REQ-ENG-006 |
 | [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) | Verify a step | P0 | REQ-ENG-005, REQ-ENG-007 |
-| [`StepLocked`](<../../Design Artifact/work-orders/WorkOrder.html#StepLocked>) | Step state: locked | P0 | REQ-ENG-008 |
-| [`StepReturned`](<../../Design Artifact/work-orders/WorkOrder.html#StepReturned>) | Step state: returned | P0 | REQ-ENG-008 |
-| [`CancelWO`](<../../Design Artifact/components/Dialogs.html#CancelWO>) | Cancel Surat Perintah Kerja (dialog) | P0 | REQ-WO-008 |
-| [`ChangeRequest`](<../../Design Artifact/work-orders/ChangeRequest.html#ChangeRequest>) | Raise a change request | P0 | REQ-CR-001 |
-| [`CreateWORevision`](<../../Design Artifact/work-orders/ChangeRequest.html#CreateWORevision>) | Revise an SPK (amendment) | P0 | REQ-CR-003 |
-| [`WODocument`](<../../Design Artifact/work-orders/WODocument.html#WODocument>) | SPK document | P0 | REQ-WOD-001 to REQ-WOD-003 |
+| [`StepLocked`](<../../Design Artifact/spk/SPKDetail.html#StepLocked>) | Step state: locked | P0 | REQ-ENG-008 |
+| [`StepReturned`](<../../Design Artifact/spk/SPKDetail.html#StepReturned>) | Step state: returned | P0 | REQ-ENG-008 |
+| [`CancelSPK`](<../../Design Artifact/components/Dialogs.html#CancelSPK>) | Cancel Surat Perintah Kerja (dialog) | P0 | REQ-SPK-008 |
+| [`ChangeRequest`](<../../Design Artifact/spk/ChangeRequest.html#ChangeRequest>) | Raise a change request | P0 | REQ-CR-001 |
+| [`CreateSPKRevision`](<../../Design Artifact/spk/ChangeRequest.html#CreateSPKRevision>) | Revise an SPK (amendment) | P0 | REQ-CR-003 |
+| [`SPKDocument`](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>) | SPK document | P0 | REQ-SPKD-001 to REQ-SPKD-003 |
 | **Steps** |  |  |  |
 | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>) | Step: Stock | P0 | REQ-STK-001 to REQ-STK-006 |
 | [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) | Step: Part Purchase (bought outside) | P0 | REQ-PUR-001 to 008 |
@@ -73,9 +73,9 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`PartCheck`](<../../Design Artifact/steps/PartCheck.html#PartCheck>) | Step: Part Check | P0 | REQ-CHK-002 |
 | [`Mobilisasi`](<../../Design Artifact/steps/Mobilisasi.html#Mobilisasi>) | Step: Mobilisasi (web view and verification of the route, trail and stooring) | P0 | REQ-MBL-002 to REQ-MBL-006, DEC-99 |
 | [`PartCheckVerify`](<../../Design Artifact/steps/StepVerify.html#PartCheckVerify>) | Verify a Part Check step | P0 | REQ-CHK-003 |
-| [`CreateWOFromCheck`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | Draft SPK from a Part Check | P0 | REQ-CHK-003, REQ-CHK-004 |
+| [`CreateSPKFromCheck`](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>) | Draft SPK from a Part Check | P0 | REQ-CHK-003, REQ-CHK-004 |
 | [`MechanicMobileCheck`](<../../Design Artifact/mobile/PartCheck.html#MechanicMobileCheck>) | Mobile: Part Check step | P0 (R1 step 7, DEC-98) | REQ-CHK-002 |
-| [`WODocumentCheck`](<../../Design Artifact/work-orders/WODocument.html#WODocumentCheck>) | SPK document of a Part Check SPK | P0 | REQ-CHK-006, REQ-CHK-007, REQ-WOD-008 |
+| [`SPKDocumentCheck`](<../../Design Artifact/spk/SPKDocument.html#SPKDocumentCheck>) | SPK document of a Part Check SPK | P0 | REQ-CHK-006, REQ-CHK-007, REQ-SPKD-008 |
 | [`Placement`](<../../Design Artifact/steps/Placement.html#Placement>) | Step: Part Replacement map | P0 | REQ-PLC-001 to REQ-PLC-010 |
 | [`PlacementReplace`](<../../Design Artifact/steps/Placement.html#PlacementReplace>) | Part Replacement: replace | P0 | REQ-PLC-003, REQ-PLC-004 |
 | [`PlacementRotate`](<../../Design Artifact/steps/Placement.html#PlacementRotate>) | Part Replacement: rotate | P0 | REQ-PLC-005 |
@@ -84,9 +84,9 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`Approvals`](<../../Design Artifact/approvals/Approvals.html#Approvals>) | Approvals (inbox) | P0 | REQ-APR-001, REQ-APR-002 |
 | [`ApprovalsWarehouse`](<../../Design Artifact/approvals/Approvals.html#ApprovalsWarehouse>) | Approvals: Warehouse tab | P0 | REQ-APR-003 |
 | [`ApprovalsHistory`](<../../Design Artifact/approvals/Approvals.html#ApprovalsHistory>) | Approvals: History | P0 | REQ-APR-007 |
-| [`ApprovalReview`](<../../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>) | Review approval: creation | P0 | REQ-WO-005, REQ-APR-004 |
+| [`ApprovalReview`](<../../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>) | Review approval: creation | P0 | REQ-SPK-005, REQ-APR-004 |
 | [`AmendmentReview`](<../../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>) | Review approval: amendment | P0 | REQ-CR-004, REQ-CR-005 |
-| [`CompletionReview`](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) | Review: completion approval | P0 | SM-WO T13, T14 |
+| [`CompletionReview`](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) | Review: completion approval | P0 | SM-SPK T13, T14 |
 | [`StockOpnameApproval`](<../../Design Artifact/approvals/ApprovalReview.html#StockOpnameApproval>) | Review: Stock opname | P0 | REQ-INV-011 |
 | [`TyreCountApproval`](<../../Design Artifact/approvals/ApprovalReview.html#TyreCountApproval>) | Review: Tyre count | P0 | REQ-TYR-012 |
 | **Schedule** |  |  |  |
@@ -97,7 +97,7 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`Vehicles`](<../../Design Artifact/fleet/Vehicles.html#Vehicles>) | Vehicles tab (Chassis and parts) | P0 | REQ-VEH-001, REQ-PLC-010 |
 | [`VehicleOverview`](<../../Design Artifact/fleet/Vehicle.html#VehicleOverview>) | Vehicles: Overview tab | P0 | REQ-VEH-001, REQ-VEH-006 |
 | [`VehicleDocuments`](<../../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) | Vehicles: Documents tab | P0 | REQ-DOC-011 |
-| [`VehicleWOHistory`](<../../Design Artifact/fleet/Vehicle.html#VehicleWOHistory>) | Vehicles: SPK history tab | P0 | REQ-VEH-008 |
+| [`VehicleSPKHistory`](<../../Design Artifact/fleet/Vehicle.html#VehicleSPKHistory>) | Vehicles: SPK history tab | P0 | REQ-VEH-008 |
 | [`VehicleInspections`](<../../Design Artifact/fleet/Vehicle.html#VehicleInspections>) | Vehicles: Inspections tab | P0 | REQ-PM-004 |
 | [`AddVehicle`](<../../Design Artifact/fleet/VehicleForm.html#AddVehicle>) | Add vehicle with first documents | P0 | REQ-VEH-002 |
 | [`VehicleEdit`](<../../Design Artifact/fleet/VehicleForm.html#VehicleEdit>) | Edit vehicle | P0 | REQ-VEH-003 |
@@ -140,13 +140,13 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`TyreCount`](<../../Design Artifact/inventory/Tyres.html#TyreCount>) | Inventory: Tyres, Tyre count | P0 | REQ-TYR-011 |
 | **Settings** |  |  |  |
 | [`Settings`](<../../Design Artifact/settings/Settings.html#Settings>) | Settings (home) | P0 | 7.2 |
-| [`SettingsWOPresets`](<../../Design Artifact/settings/WOPresets.html#SettingsWOPresets>) | Settings: SPK presets | P0 | REQ-REG-003, REQ-REG-005 |
+| [`SettingsSPKPresets`](<../../Design Artifact/settings/SPKPresets.html#SettingsSPKPresets>) | Settings: SPK presets | P0 | REQ-REG-003, REQ-REG-005 |
 | [`SettingsAlertRules`](<../../Design Artifact/settings/AlertRules.html#SettingsAlertRules>) | Settings: Alert rules | P0 | REQ-PM-007 to REQ-PM-010 |
 | [`ChassisLayouts`](<../../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>) | Vehicle classes and chassis layouts | P0 | REQ-PLC-013 |
 | [`DocumentTypes`](<../../Design Artifact/settings/MasterData.html#DocumentTypes>) | Settings: Document types | P0 | REQ-DOC-002 |
 | [`SettingsServiceCatalog`](<../../Design Artifact/settings/MasterData.html#SettingsServiceCatalog>) | Settings: Service catalog | P0 | REQ-MEC-005 |
 | [`SettingsPartItemTypes`](<../../Design Artifact/settings/MasterData.html#SettingsPartItemTypes>) | Settings: Part item types | P0 | REQ-BSL-007 |
-| [`SettingsPMPackages`](<../../Design Artifact/settings/WOPresets.html#SettingsPMPackages>) | Settings: PM packages and tasks | P0 | REQ-REG-007 |
+| [`SettingsPMPackages`](<../../Design Artifact/settings/SPKPresets.html#SettingsPMPackages>) | Settings: PM packages and tasks | P0 | REQ-REG-007 |
 | [`SettingsAlertThresholds`](<../../Design Artifact/settings/MasterData.html#SettingsAlertThresholds>) | Settings: Alert thresholds | P0 | REQ-PM-006 |
 | [`SettingsTyreStatuses`](<../../Design Artifact/settings/MasterData.html#SettingsTyreStatuses>) | Settings: Tyre statuses | P0 | REQ-TYR-003 |
 | `SettingsIntegrations` | Settings: Integrations (WhatsApp, Protrack/Cartrack, external tools) | P1 | DQ-05 (no artboard yet; follows 7.2) |
@@ -187,13 +187,13 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [MechanicMobileUpload](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileUpload>) | Mechanic: photos uploading in the background, submit when done | P0 (DEC-98) | REQ-FUP-006, REQ-FUP-011 to 015 |
 | [PhotoViewer](<../../Design Artifact/components/PhotoViewer.html#PhotoViewer>) | Component: photo and file viewer (dialog) | P0 | REQ-FUP-016, REQ-ENG-010, REQ-APR-009, REQ-APR-010 |
 | **Field Coordinator requests and purchases (R1)** | - | - | - |
-| [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>) | Requests: draft SPKs from drivers (Field Coordinator) | P0 | REQ-WO-014 |
-| [FCCreateWO](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>) | Complete and submit a draft SPK (Field Coordinator) | P0 | REQ-WO-001, REQ-WO-014 |
-| [FCMobileRequests](<../../Design Artifact/mobile/Requests.html#FCMobileRequests>) | Field Coordinator: requests | P0 | REQ-MOB-006, REQ-WO-014 |
-| [FCMobileCreateWO](<../../Design Artifact/mobile/Requests.html#FCMobileCreateWO>) | Field Coordinator: complete a draft SPK | P0 | REQ-MOB-006 |
+| [FCRequests](<../../Design Artifact/spk/Requests.html#FCRequests>) | Requests: draft SPKs from drivers (Field Coordinator) | P0 | REQ-SPK-014 |
+| [FCCreateSPK](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>) | Complete and submit a draft SPK (Field Coordinator) | P0 | REQ-SPK-001, REQ-SPK-014 |
+| [FCMobileRequests](<../../Design Artifact/mobile/Requests.html#FCMobileRequests>) | Field Coordinator: requests | P0 | REQ-MOB-006, REQ-SPK-014 |
+| [FCMobileCreateSPK](<../../Design Artifact/mobile/Requests.html#FCMobileCreateSPK>) | Field Coordinator: complete a draft SPK | P0 | REQ-MOB-006 |
 | [FCMobilePurchase](<../../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) | Field Coordinator: Part Purchase step | P0 | REQ-PUR-001 to 008, REQ-MOB-006 |
 | [SAMobileHome](<../../Design Artifact/mobile/MobileApp.html#SAMobileHome>) | System Admin: field menu | P0 | REQ-MOB-008 |
-| [FCDraftCancel](<../../Design Artifact/components/Dialogs.html#FCDraftCancel>) | Cancel draft SPK (dialog) | P0 | REQ-WO-014, DQ-11 |
+| [FCDraftCancel](<../../Design Artifact/components/Dialogs.html#FCDraftCancel>) | Cancel draft SPK (dialog) | P0 | REQ-SPK-014, DQ-11 |
 | **Invoices and customers** | - | - | - |
 | [DashboardAccounting](<../../Design Artifact/dashboard/Dashboard.html#DashboardAccounting>) | Dashboard (Accounting) | P0 | REQ-DSH-009 |
 | [InvoiceList](<../../Design Artifact/billing/Invoices.html#InvoiceList>) | Invoices | P0 | REQ-BIL-008, REQ-BIL-009 |
@@ -221,10 +221,10 @@ Regions are listed left to right, top to bottom. Screens not listed follow their
 | Screen | Layout | Primary actions |
 | --- | --- | --- |
 | [`Dashboard`](<../../Design Artifact/dashboard/Dashboard.html#Dashboard>) and role dashboards | Summary cards across the top; below, "Needs my action" (wider, left) and a status or work list (right) | Open the item |
-| [`WOList`](<../../Design Artifact/work-orders/WOList.html#WOList>) | Header with "+ Create SPK"; tabs with counts; filter row (search, type, vehicle); table (SPK, vehicle, type, status, current step, waiting on, action) | Open, Create |
-| [`CreateWO`](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Header: title, Start from preset, Save as preset. Left: Surat Perintah Kerja card (title, vehicle with chips, category, priority, Vehicle goes to the workshop, description) and Checks card. Right: Steps card with the module palette (draggable chips), drop zones that appear while dragging, one step card per step (drag handle, number, module icon and name, Optional, Move up, Move down, Remove; Executed by and Verified by; the module's details) and Add step. Bottom: Cancel, Save draft, Submit for approval | Submit for approval |
-| [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | Header (number, type, status; SPK document, Raise change request, Cancel SPK). A row of step cards with status and Open on the user's step (Reverse issue on a submitted Stock step). Below: left description, cost so far, timeline; right the approval block | Open step |
-| [`WODetailVerify`](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) | Step cards with Verify and Return on submitted steps; Completion card with "Request completion approval" (disabled with the reason until all steps are verified); approval block right | Verify, Request completion |
+| [`SPKList`](<../../Design Artifact/spk/SPKList.html#SPKList>) | Header with "+ Create SPK"; tabs with counts; filter row (search, type, vehicle); table (SPK, vehicle, type, status, current step, waiting on, action) | Open, Create |
+| [`CreateSPK`](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Header: title, Start from preset, Save as preset. Left: Surat Perintah Kerja card (title, vehicle with chips, category, priority, Vehicle goes to the workshop, description) and Checks card. Right: Steps card with the module palette (draggable chips), drop zones that appear while dragging, one step card per step (drag handle, number, module icon and name, Optional, Move up, Move down, Remove; Executed by and Verified by; the module's details) and Add step. Bottom: Cancel, Save draft, Submit for approval | Submit for approval |
+| [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | Header (number, type, status; SPK document, Raise change request, Cancel SPK). A row of step cards with status and Open on the user's step (Reverse issue on a submitted Stock step). Below: left description, cost so far, timeline; right the approval block | Open step |
+| [`SPKDetailVerify`](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) | Step cards with Verify and Return on submitted steps; Completion card with "Request completion approval" (disabled with the reason until all steps are verified); approval block right | Verify, Request completion |
 | [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) | Banner "Verify step n of N"; the work read only, with every photo and invoice as a thumbnail that opens PhotoViewer; executor stamp; verification card (note, required to return; stamp preview; Return to executor, Verify) | Verify |
 | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>) | Banner; part table (part, planned, source, in stock, quantity used, unit price) with a tyre picker (code, serial number) under each tyre line; cards for invoice images and change request; bottom bar | Submit step |
 | [`Mechanic`](<../../Design Artifact/steps/MechanicAction.html#Mechanic>) | Banner with the work to do; team switch Internal or External; services table (catalog service, fixed price, mechanic); repair photos; labor total left of the bottom bar | Submit step |
@@ -242,18 +242,18 @@ Regions are listed left to right, top to bottom. Screens not listed follow their
 | [`StockOpname`](<../../Design Artifact/inventory/StockOpname.html#StockOpname>), [`TyreCount`](<../../Design Artifact/inventory/Tyres.html#TyreCount>) | Banner; row with count date, counted by, rack filter, summary; the sheet; a row with a variance or Missing and no reason shows an error under the table; bottom Save draft, Submit for approval | Submit for approval |
 | [`ReceiveTyres`](<../../Design Artifact/inventory/TyreReceive.html#ReceiveTyres>), [`RetreadReceipt`](<../../Design Artifact/inventory/TyreReceive.html#RetreadReceipt>) | Receipt type switch on top (New tyres, Retread return). Header card and tyre table; right summary and "what confirming does"; bottom Cancel, Save draft, Confirm receipt | Confirm receipt |
 | [`Tyres`](<../../Design Artifact/inventory/Tyres.html#Tyres>) | Eight status cards; open-dispatch strip with Receive; filter row with column chooser; master-detail (tyre table left, detail with history and actions right) | Send to retread, Worn out, Scrap |
-| [`SettingsWOPresets`](<../../Design Artifact/settings/WOPresets.html#SettingsWOPresets>) | Left: table of presets (name, category, steps, used by, status) with search and a category filter. Right: the selected preset (version, category, workshop flag, PM packages that use it, its steps with module icon, executor and details); bottom Deactivate, Rename, Edit steps in Create SPK | Edit steps in Create SPK |
+| [`SettingsSPKPresets`](<../../Design Artifact/settings/SPKPresets.html#SettingsSPKPresets>) | Left: table of presets (name, category, steps, used by, status) with search and a category filter. Right: the selected preset (version, category, workshop flag, PM packages that use it, its steps with module icon, executor and details); bottom Deactivate, Rename, Edit steps in Create SPK | Edit steps in Create SPK |
 | [`SettingsAlertRules`](<../../Design Artifact/settings/AlertRules.html#SettingsAlertRules>) | Left: the alert rules in two groups, Maintenance due (PM due, Document expiry, Tyre tread, Part item life) and Reported problems (Inspection fail, Breakdown, Field report), each showing Drafts SPK with its preset or Alert only. Right: Trigger card for the selected rule (PM: due soon km and days, and a preset per package; Document: warning days and a preset per document type; Tyre: Act now and due soon tread, pressure tolerance; Part item: due soon % of life and check time; Inspection: any or critical Fail; Breakdown and Field report: nothing to set) and When it triggers card (Show the alert only or Show the alert and draft an SPK, Draft the SPK at, Preset, Priority, category of the SPK, Notify roles, Checks) | Save (refused while a check fails), Discard |
 | [`ChassisLayouts`](<../../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>) | Left classes; centre layout header and axle table; right preview drawn by the map component; bottom Discard, Save as new layout version | Save layout |
-| [`WODocument`](<../../Design Artifact/work-orders/WODocument.html#WODocument>) | Toolbar (Print, Download PDF) and a paper page: header, description, vehicle, one section per step with stamps, timestamps and cost, approval block at the bottom; black and white with no photos, attachments listed as text | Download PDF |
+| [`SPKDocument`](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>) | Toolbar (Print, Download PDF) and a paper page: header, description, vehicle, one section per step with stamps, timestamps and cost, approval block at the bottom; black and white with no photos, attachments listed as text | Download PDF |
 | [`Reports`](<../../Design Artifact/reports/Reports.html#Reports>) | Export; tabs Cost, Tyres, Maintenance, Inventory; filter row (period, class); summary cards, charts and tables per tab (REQ-RPT-002, REQ-RPT-003) | Export |
 | [`ReportsStepTime`](<../../Design Artifact/reports/Reports.html#ReportsStepTime>) | Reports tabs with Step time selected; filter row (period, category, vehicle class, internal or external); five summary cards (lead time, waiting to start, working, waiting for verification with the largest share marked, entered starts); Where the time goes per module (stacked bar per module: waiting to start, working, paused, waiting for verification); Pause reasons; Longest phases table (SPK, vehicle, step, executor, phase, time); By person table (GM and Supervisor only) | Export; row opens the SPK |
 | [`PartCheck`](<../../Design Artifact/steps/PartCheck.html#PartCheck>) | Context bar; step time bar (Start, Pause); SPK description. Left: one card per part (number, part, what to check, Complete or what is missing; Condition; Good, Repair, Replace; Unsafe to drive when not Good; photos with Add) and Add a finding not on the list. Right: Summary (Good, Repair, Replace, not decided, what happens at verification), Checks, Overall note | Save draft, Submit step (refused until every part is complete) |
-| [`CreateWOFromCheck`](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | Header with Draft and priority, link to the check SPK; note that Activate means submit for approval. Left: findings carried over with decision, Unsafe mark, condition and photos. Right: steps built from the findings with executors and Edit steps in Create SPK. Bottom: reason field | Discard draft (reason required), Activate: submit for approval |
+| [`CreateSPKFromCheck`](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>) | Header with Draft and priority, link to the check SPK; note that Activate means submit for approval. Left: findings carried over with decision, Unsafe mark, condition and photos. Right: steps built from the findings with executors and Edit steps in Create SPK. Bottom: reason field | Discard draft (reason required), Activate: submit for approval |
 | Mobile screens | Header, one task per screen, large touch targets, bottom navigation with the role's four or five menu items | per role |
 | [InvoiceList](<../../Design Artifact/billing/Invoices.html#InvoiceList>) | Header with the date filter; tabs Draft, Issued, Paid, Void, Not billable, All with counts; filter row (customer, vehicle, search); table (invoice, date, customer, vehicle, SPKs, total, status, due date) | Open |
 | [InvoiceDetail](<../../Design Artifact/billing/Invoices.html#InvoiceDetail>) | Header (number or Draft, status, Print, Void). Left: customer card, vehicle card, lines table (item, kind, SPK reference, quantity, unit price, amount) and adjustment lines. Right: totals card (subtotal, tax, total), payment card, history. Bottom: Issue invoice on a Draft, Record payment on an Issued invoice | Issue, Record payment |
-| [FCCreateWO](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>) | As CreateWO, with the source report (photos, driver, odometer) in the right column above the step preview | Submit for approval |
+| [FCCreateSPK](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>) | As CreateSPK, with the source report (photos, driver, odometer) in the right column above the step preview | Submit for approval |
 | [PartPurchase](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) | Banner; header card (vendor, receipt number and date, receipt photos); line table from the SPK part list (part, kind, shortfall hint and unit read only; quantity bought and unit price typed; line total), no add or remove; a large calculated total, updated as you type | Submit step |
 
 ## 7.5 Shared components
@@ -264,10 +264,10 @@ Each component exists once and takes its data from the spec, never from literals
 | --- | --- | --- |
 | AppShell | Every web screen | Navigation by role with an icon per item, collapsible to an icon rail with the state saved per user, and the page header (7.2) |
 | StepBanner | Every step screen | SPK number, plate, "Step n of N" and module, from the SPK's steps |
-| StepTracker, StepCard | [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>), [`WODetailVerify`](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) | One card per step, in order, with status |
+| StepTracker, StepCard | [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>), [`SPKDetailVerify`](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) | One card per step, in order, with status |
 | StatusPill | Everywhere | Always a text label; the look per status is a style choice |
 | ChassisMap | [`Placement`](<../../Design Artifact/steps/Placement.html#Placement>), [`Vehicles`](<../../Design Artifact/fleet/Vehicles.html#Vehicles>), [`ChassisLayouts`](<../../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>), [`MechanicMobilePlacement`](<../../Design Artifact/mobile/Placement.html#MechanicMobilePlacement>) | One component, drawn from the chassis layout; modes editable, read only, preview |
-| ApprovalBlock | [`WorkOrder`](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>), [`WODocument`](<../../Design Artifact/work-orders/WODocument.html#WODocument>) | Two lines (creation, completion): stamp, name, role, time, Self-approved mark |
+| ApprovalBlock | [`SPKDetail`](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>), [`SPKDocument`](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>) | Two lines (creation, completion): stamp, name, role, time, Self-approved mark |
 | AlertList | Dashboards, [`Vehicles`](<../../Design Artifact/fleet/Vehicles.html#Vehicles>) | Per alert "Create SPK" prefilled with vehicle and type |
 | FileDrop | Invoices, photos, scans | One profile per slot; compresses on the device and shows the file states of REQ-FUP-007 (FileUploadStates) |
 | ActionBar | Step screens and forms | Bottom, aligned right |
@@ -284,7 +284,7 @@ A module's step screen opens through its registry entry (`ui_component`), so a n
 
 | ID | Rule |
 | --- | --- |
-| NAV-1 | A step screen opens only from the SPK detail or from Open in [`WOList`](<../../Design Artifact/work-orders/WOList.html#WOList>) or a dashboard, and Back returns to the SPK detail. |
+| NAV-1 | A step screen opens only from the SPK detail or from Open in [`SPKList`](<../../Design Artifact/spk/SPKList.html#SPKList>) or a dashboard, and Back returns to the SPK detail. |
 | NAV-2 | Tabs change content inside the same page; they never open a new page. |
 | NAV-3 | On master-detail pages the right side follows the selected row. |
 | NAV-4 | Creation and edit forms are full pages \[A\]; confirmations and small actions are dialogs or side panels (7.2). |
@@ -336,8 +336,8 @@ The Action map (7.9) marks a few controls with a DQ code where the earlier revie
 | DQ-03 | The mobile "Profile" destination on every role's bottom bar. | One shared `MobileProfile` screen for every role: identity, notification settings (DQ-01), language, app and session info, Change password, Sign out. P1. |
 | DQ-04 | The mobile "History" destination for the Mechanic and Supervisor/GM menus. | `MechanicMobileHistory` (the mechanic's past steps, returns and field findings) and `SupervisorMobileHistory` (the Supervisor/GM's past approval decisions), read only, opening each record. P1. |
 | DQ-05 | DashboardAdmin "Integrations" rows — are they clickable, and to where? | In Release 1 they show each integration's status as text and are not clickable (DEC-103). The `SettingsIntegrations` screen, where the System Admin connects WhatsApp, the Protrack/Cartrack odometer API and other external tools (credentials, enable or disable, a connection test), comes with those adapters: P1; no artboard yet, follows 7.2. |
-| DQ-06 | Can the creator (or the rejector) cancel a Rejected SPK? | Yes, the creator can (DEC-101): a Rejected SPK stays Rejected with the rejector's note; its creator either edits and resubmits it (SM-WO T5) or cancels it with a reason (T6). The rejector cannot revert the rejection. |
-| DQ-07 | Who raises "Request amendment" on an SPK — the creator or the step executor? | The executor of the open step raises a change request when they disagree with the SPK creator's assignment design; it puts the SPK in Pending Amendment and the SPK creator (Planner or System Admin) receives and decides the amendment (REQ-CR-001, SM-WO T8 to T10). The SPK creator never raises it against their own design. |
+| DQ-06 | Can the creator (or the rejector) cancel a Rejected SPK? | Yes, the creator can (DEC-101): a Rejected SPK stays Rejected with the rejector's note; its creator either edits and resubmits it (SM-SPK T5) or cancels it with a reason (T6). The rejector cannot revert the rejection. |
+| DQ-07 | Who raises "Request amendment" on an SPK — the creator or the step executor? | The executor of the open step raises a change request when they disagree with the SPK creator's assignment design; it puts the SPK in Pending Amendment and the SPK creator (Planner or System Admin) receives and decides the amendment (REQ-CR-001, SM-SPK T8 to T10). The SPK creator never raises it against their own design. |
 | DQ-08 | "Open trail on map" in `StepVerify` — which map, and is this employee tracking? | For a Mobilisasi step it opens, on an external map, the mechanic's location trail and destination. Since DEC-90 the trail is recorded only while the step is In\_Progress (not a continuous background feed and no longer a one-time capture on Mechanic Action); it is scoped to stooring verification, visible to Planner and System Admin only, with access logged, and the privacy handling of RSK-09 / UU PDP applies. |
-| DQ-10 | FCRequests label "Complete and submit" — but the Field Coordinator cannot submit. | Rename the control to "Complete and send to Planner". The Field Coordinator completes the draft and sends it to the Planner, who submits it for approval (REQ-WO-016). |
-| DQ-11 | The FCRequests / FCCreateWO "Cancel draft" dialog. | Built as `FCDraftCancel`: a required reason marks the draft Cancelled, notifies the reporter, and keeps the original report in the vehicle history; nothing is billed and no SPK is created. |
+| DQ-10 | FCRequests label "Complete and submit" — but the Field Coordinator cannot submit. | Rename the control to "Complete and send to Planner". The Field Coordinator completes the draft and sends it to the Planner, who submits it for approval (REQ-SPK-016). |
+| DQ-11 | The FCRequests / FCCreateSPK "Cancel draft" dialog. | Built as `FCDraftCancel`: a required reason marks the draft Cancelled, notifies the reporter, and keeps the original report in the vehicle history; nothing is billed and no SPK is created. |

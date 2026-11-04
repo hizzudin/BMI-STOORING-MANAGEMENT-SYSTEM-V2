@@ -1,14 +1,14 @@
 /* BMI Stooring System — artboard kit (DEC-93, DEC-94).
    Renders the floating circle rail, the review strip (role + states) and icons.
    Page config on <body>:
-     data-nav="work-orders"                                       active rail item
+     data-nav="spk"                                       active rail item
      data-roles="Mechanic:start,submit|Planner:verify,return"     roles that reach this module and their allowedActions
    A control with data-act="verify" hides when the chosen role's allowedActions lacks "verify";
    an element with data-role-only="Planner|System Admin" shows only for those roles. */
 (function () {
   const P = {
     dashboard: '<rect x="3" y="3" width="7" height="7" rx="3.5"/><rect x="14" y="3" width="7" height="7" rx="3.5"/><rect x="3" y="14" width="7" height="7" rx="3.5"/><rect x="14" y="14" width="7" height="7" rx="3.5"/>',
-    wo: '<rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>',
+    spk: '<rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>',
     requests: '<path d="M4 13l2.5-7h11L20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13h4l1.5 2h5L16 13h4"/>',
     schedule: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',
     approvals: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
@@ -48,10 +48,10 @@
   // Menu table of PRD 2.4: [key, label, page, codes that show it, demo count]
   const NAV = [
     ['dashboard', 'Dashboard', 'dashboard/Dashboard.html', ['dashboard.view']],
-    ['work-orders', 'Surat Perintah Kerja', 'work-orders/WOList.html', ['wo.view'], 3],
-    ['requests', 'Requests', 'work-orders/Requests.html', ['request.view'], 2],
+    ['spk', 'Surat Perintah Kerja', 'spk/SPKList.html', ['spk.view'], 3],
+    ['requests', 'Requests', 'spk/Requests.html', ['request.view'], 2],
     ['schedule', 'Schedule', 'schedule/Schedule.html', ['schedule.view', 'schedule.manage']],
-    ['approvals', 'Approvals', 'approvals/Approvals.html', ['wo.approve', 'count.approve'], 4],
+    ['approvals', 'Approvals', 'approvals/Approvals.html', ['spk.approve', 'count.approve'], 4],
     ['inventory', 'Inventory', 'inventory/Inventory.html', ['inventory.manage', 'tyre.manage']],
     ['vehicles', 'Vehicles', 'fleet/Vehicles.html', ['vehicle.view', 'vehicle.manage']],
     ['documents', 'Documents', 'documents/Documents.html', ['vehicle.view', 'vehicle.manage']],
@@ -63,16 +63,16 @@
     ['audit', 'Audit log', 'access/AuditLog.html', ['audit.view']],
     ['setup', 'Setup and go live', 'setup/SetupGoLive.html', ['setup.golive']]
   ];
-  const ICON = { 'work-orders': 'wo' };
+  const ICON = { 'spk': 'spk' };
   // Default effective capabilities per role (PRD 2.2), enough to draw the menu
-  const base = ['dashboard.view', 'wo.view', 'vehicle.view'];
+  const base = ['dashboard.view', 'spk.view', 'vehicle.view'];
   const CAPS = {
     'Planner': [...base, 'request.view', 'schedule.manage', 'registry.manage', 'parttype.manage'],
     'Mechanic': [...base, 'schedule.view'],
     'Warehouse Manager': [...base, 'inventory.manage', 'tyre.manage', 'schedule.view'],
-    'Supervisor': [...base, 'wo.approve', 'count.approve', 'schedule.view', 'invoice.manage', 'report.view'],
-    'GM': [...base, 'wo.approve', 'count.approve', 'schedule.view', 'invoice.view', 'report.view', 'audit.view'],
-    'System Admin': [...base, 'request.view', 'schedule.manage', 'wo.approve', 'count.approve', 'inventory.manage', 'tyre.manage', 'invoice.manage', 'report.view', 'registry.manage', 'masterdata.manage', 'settings.manage', 'audit.view', 'setup.golive'],
+    'Supervisor': [...base, 'spk.approve', 'count.approve', 'schedule.view', 'invoice.manage', 'report.view'],
+    'GM': [...base, 'spk.approve', 'count.approve', 'schedule.view', 'invoice.view', 'report.view', 'audit.view'],
+    'System Admin': [...base, 'request.view', 'schedule.manage', 'spk.approve', 'count.approve', 'inventory.manage', 'tyre.manage', 'invoice.manage', 'report.view', 'registry.manage', 'masterdata.manage', 'settings.manage', 'audit.view', 'setup.golive'],
     'Access Manager': ['accounts.manage', 'audit.view'],
     'Field Coordinator': [...base, 'request.view', 'schedule.view'],
     'Accounting': ['dashboard.view', 'vehicle.view', 'invoice.manage', 'report.view'],
@@ -163,7 +163,7 @@
       // Schedule cards drag only for a role whose allowedActions include "move" (REQ-SCH-002).
       const canMove = role.acts.includes('move');
       body.classList.toggle('drag-on', canMove);
-      document.querySelectorAll('.wocard').forEach((c) => { c.draggable = canMove; });
+      document.querySelectorAll('.spkcard').forEach((c) => { c.draggable = canMove; });
     };
 
     // A tab that points at a state on this page lights up when that state is shown.
@@ -178,7 +178,7 @@
     // Drag an SPK card between "Not on the schedule" and the days of the week.
     let dragged = null;
     document.addEventListener('dragstart', (e) => {
-      dragged = e.target.closest && e.target.closest('.wocard');
+      dragged = e.target.closest && e.target.closest('.spkcard');
       if (!dragged) return;
       dragged.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
@@ -207,7 +207,7 @@
       const sched = zone.closest('.sched');
       const tray = sched && sched.querySelector('.tray');
       const count = tray && tray.querySelector('[data-count]');
-      if (count) count.textContent = tray.querySelectorAll('.wocard').length;
+      if (count) count.textContent = tray.querySelectorAll('.spkcard').length;
     });
     strip.addEventListener('click', (e) => {
       const b = e.target.closest('[data-role]');

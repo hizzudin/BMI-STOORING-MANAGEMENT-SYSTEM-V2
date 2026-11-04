@@ -12,6 +12,7 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 | DEC-49 | The Field Coordinator never cuts warehouse stock; any of the three Stock roles may submit the step. The WO creator sets each part line to Cut stock or Purchase mode, and Purchase mode raises a purchase alert (superseded by DEC-60) | REQ-STK-010 to 012 |
 | DEC-52 | Superseded by DEC-90: the stooring area and location no longer sit on the Mechanic Action step. The Mobilisasi module carries the stooring area (from the breakdown destination) and records the mechanic's location trail for the Planner and System Admin to check | REQ-MEC-007 (retired), REQ-MEC-008 (retired), REQ-MBL-005 |
 | DEC-71 | Superseded by DEC-90: the 15-second one-time position capture at Mechanic Action submit is removed with the capture itself; location now comes from the breakdown report and the Mobilisasi location trail | REQ-MEC-008 (retired), REQ-MBL-005 |
+| DEC-105 | Superseded by DEC-106 (one entity, one name). SPK and WO are one entity, not two: the rename of DEC-104 changes only the name people read. An agent never adds a second table, ID family, state machine, module, permission code, screen or number series for SPK, and never maps or migrates between the two names. An SPK is one row of work_orders (0.7) | 0.7 |
 
 ## Retired requirements
 
@@ -20,10 +21,10 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 | REQ-STK-005 | P0 | Retired (DEC-60): parts bought outside are recorded in the Part Purchase step (REQ-PUR-002 to 006). | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>), [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) | `work_order_parts`, `wo_attachments` | BR-06 |
 | REQ-STK-007 | P0 | Retired (DEC-60): a tyre bought outside is recorded in the Part Purchase step (REQ-PUR-005). | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>), [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) | `tyres`, `tyre_attachments` |  |
 | REQ-STK-010 | P0 | Retired (DEC-60): the Stock step is executed by the Warehouse Manager or the System Admin and cuts stock only; buying is the Part Purchase step (REQ-PUR-001). | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>), [`FCMobilePurchase`](<../../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) | `work_order_parts.done_by`, `done_at`, `work_order_assignments.executor_roles` | BR-03 |
-| REQ-STK-012 | P0 | Retired (DEC-60): there is no Cut stock or Purchase mode per line; the steps built in Create WO decide which steps exist, and the required part list holds only warehouse parts. | [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>), [FCCreateWO](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>), [Stock](<../../Design Artifact/steps/Stock.html#Stock>) | work\_order\_parts.- | BR-02 |
+| REQ-STK-012 | P0 | Retired (DEC-60): there is no Cut stock or Purchase mode per line; the steps built in Create WO decide which steps exist, and the required part list holds only warehouse parts. | [CreateWO](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>), [FCCreateWO](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>), [Stock](<../../Design Artifact/steps/Stock.html#Stock>) | work\_order\_parts.- | BR-02 |
 | REQ-MEC-007 | P0 | Retired: the stooring area is no longer picked on a Mechanic Action step. The stooring (mobilisation) fee is produced by the Mobilisasi module (`REQ-MBL-*`), which carries the stooring area; a Mechanic Action step neither asks a location nor charges stooring. | [`Mechanic`](<../../Design Artifact/steps/MechanicAction.html#Mechanic>), [`MechanicExternal`](<../../Design Artifact/steps/MechanicAction.html#MechanicExternal>) |  | REQ-MBL-002 |
 | REQ-MEC-008 | P0 | Retired: a Mechanic Action step no longer captures the device position at submit. The work location for a field job is captured once from the Driver's breakdown report (`REQ-MOB-003`) and verified through the Mobilisasi step's location trail (`REQ-MBL-005`). | [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>), [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) |  | REQ-MBL-005 |
-| REQ-MEC-009 | P0 | Retired: a Mechanic Action step no longer charges the stooring (mobilisation) fee. The stooring fee is now produced by the Mobilisasi module (`REQ-MBL-006`); the WO stooring cost and its WO-document and WO-cost lines are unchanged in meaning, only their source step changes. | [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>), [WODocument](<../../Design Artifact/work-orders/WODocument.html#WODocument>) | work\_orders.stooring\_cost | REQ-MBL-006, BR-07 |
+| REQ-MEC-009 | P0 | Retired: a Mechanic Action step no longer charges the stooring (mobilisation) fee. The stooring fee is now produced by the Mobilisasi module (`REQ-MBL-006`); the WO stooring cost and its WO-document and WO-cost lines are unchanged in meaning, only their source step changes. | [WorkOrder](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>), [WODocument](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>) | work\_orders.stooring\_cost | REQ-MBL-006, BR-07 |
 
 ## Retired acceptance criteria
 
@@ -108,6 +109,20 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 
 ## Change history
+
+v2.17 (2026-11-04) adds DEC-106: one entity, one name. The former name is replaced everywhere, also in IDs, tables, permission codes, artboards, files and code; 0.7 is rewritten; DEC-105 is superseded. Entries below this one and the retired items keep the old words as written at the time; this table translates them.
+
+| Former | Now |
+| --- | --- |
+| Work Order, WO | Surat Perintah Kerja, SPK |
+| REQ-WO-*, AC-WO-*, SM-WO, area WO | REQ-SPK-*, AC-SPK-*, SM-SPK, area SPK |
+| REQ-WOD-*, AC-WOD-*, area WOD | REQ-SPKD-*, AC-SPKD-*, area SPKD |
+| work_orders, work_order_*, wo_*, *_wo_id | spks, spk_*, spk_*, *_spk_id |
+| wo.* | spk.* |
+| CreateWO, WOList, WorkOrder, WODocument, CancelWO, WOPresets | CreateSPK, SPKList, SPKDetail, SPKDocument, CancelSPK, SPKPresets |
+| work-orders/, 4.1-wo.md, 4.9-wod.md | spk/, 4.1-spk.md, 4.9-spkd.md |
+
+v2.16 (2026-11-04) adds 0.7 and DEC-105: SPK and the former Work Order are one entity with two names, with a table of which name appears where. No rule or data changes.
 
 v2.15 (2026-11-04) adds DEC-104: Work Order is renamed Surat Perintah Kerja (SPK) in the spec, DESIGN.md, PRODUCT.md, README and every artboard, and the number becomes SPK-yymmddNNNN (NFR-15, `wo_number_seq` in 9.6; the running part never resets). Requirement IDs, tables, permission codes and artboard names keep WO. Entries below this one and the retired items of this file keep the old name as written at the time.
 

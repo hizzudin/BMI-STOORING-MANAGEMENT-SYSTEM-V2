@@ -26,6 +26,14 @@ in this precedence:
                            and DESIGN.md is corrected.
   PRODUCT.md (root)      — product summary for context.
 
+ONE ENTITY, ONE NAME (PRD §0.7, DEC-106):
+  The entity is SPK (Surat Perintah Kerja) everywhere: screens, documents,
+  IDs (REQ-SPK-*, AC-SPK-*, SM-SPK), tables (spks, spk_*), permissions (spk.*),
+  artboards and files (CreateSPK, spk/) and code (SpkGateway). The former name
+  (Work Order, WO) is retired; it survives only in docs/prd/history.md. Never
+  reintroduce it in spec, code, IDs or file names. If you read or hear it, it
+  means SPK: there is no second entity and nothing to map.
+
 Load only what a task needs (PRD §0.6): PRD.md + the task's area file +
 the matching part of data-model.md + its artboard.
 
@@ -43,7 +51,20 @@ FIRST SESSION (nothing below exists yet):
 EVERY LATER SESSION, BEFORE ANY ACTION:
   0. Read specs/CONTEXT.md — it has session state
   1. Read specs/requirements.md and specs/design.md
-  2. Read specs/tasks.md — pick the next incomplete [ ] task
+  2. Read specs/tasks.md — pick the next incomplete [ ] task, and follow its
+     "How an agent works a task" rules. Open EVERY file on the task's _Read_
+     line and read the full PRD text of every ID it names; the task line is
+     a pointer, never the requirement. Build all of it: no feature, field,
+     control or rule may be reduced, merged or postponed without the
+     product owner's approval and a PRD update first.
+     tasks.md and decision-index.md are generated: edit
+     specs/tools/tasks.source.mjs, run `node specs/tools/build-tasks.mjs`,
+     then `node specs/tools/check-coverage.mjs` (must print Coverage OK).
+     Tests come from three sources, all required: every acceptance
+     criterion of the task (specs/acceptance-tests.md, one test per AC
+     named by its ID), every user flow (specs/tdd-user-journeys.md, one
+     E2E spec per FLW) and every rule or transition (BR, SM, TX, NFR).
+     Before closing a task run check-coverage.mjs --tests.
   3. Load every skill on that task's _Skill_ line: bare names from
      .claude/skills/, `ecc:` names with the Skill tool (ECC plugin; if it
      is not installed, skip them and say so in the report)
@@ -89,7 +110,8 @@ HARD CONSTRAINTS:
   ✗ Never decide a permission, menu item or button from the role name:
     use the effective capability set and allowedActions (PRD §2.4, DEC-93)
   ✗ Never build a control, field or rule seen only in an artboard — ask;
-    never import artboard HTML/CSS or its sample data (re-create the look)
+    never import artboard HTML/CSS or its sample data (re-create the look;
+    a staging-only seed may re-type the canvas values, docs/adr/0001)
   ✗ Never mark a task [x] without running its _Verify_ step
   ✗ Never guess when a requirement is ambiguous — consult the PRD; if
     still unresolved, ask
@@ -98,7 +120,7 @@ HARD CONSTRAINTS:
 GIT DISCIPLINE (every task):
   1. Branch: type/phaseN-taskNNN-slug  (feat/fix/chore/test/perf/ci/docs/build)
   2. Conventional Commits referencing the TASK + REQ IDs,
-     e.g.  feat(wo): lifecycle + assignment engine [TASK-108]
+     e.g.  feat(spk): lifecycle + assignment engine [TASK-108]
   3. Stage specific files (never `git add -A`); keep PRs small
   4. Never force-push, reset --hard, or skip hooks unless explicitly asked
 

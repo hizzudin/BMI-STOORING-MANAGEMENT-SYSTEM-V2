@@ -268,14 +268,14 @@ svg.chassis{width:100%;max-width:300px;height:auto;overflow:visible;font-family:
 .day-head{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 6px;color:var(--muted)}
 .dnum{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:var(--text)}
 .day.today .dnum{background:var(--red);color:#fff}
-.wocard{display:flex;gap:6px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:9px 10px;margin-top:8px;font-size:12px;line-height:1.35}
-.wocard b{white-space:nowrap}
-.wocard .pill{font-size:10.5px;padding:1px 7px;margin-top:2px}
-.wocard .grip{color:var(--line-strong);font-size:12px;letter-spacing:-2px;line-height:1.6;display:none}
-.wocard.late{border-color:var(--bad);background:var(--bad-tint)}
-.drag-on .wocard{cursor:grab}
-.drag-on .wocard .grip{display:block}
-.wocard.dragging{opacity:.45;cursor:grabbing}
+.spkcard{display:flex;gap:6px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:9px 10px;margin-top:8px;font-size:12px;line-height:1.35}
+.spkcard b{white-space:nowrap}
+.spkcard .pill{font-size:10.5px;padding:1px 7px;margin-top:2px}
+.spkcard .grip{color:var(--line-strong);font-size:12px;letter-spacing:-2px;line-height:1.6;display:none}
+.spkcard.late{border-color:var(--bad);background:var(--bad-tint)}
+.drag-on .spkcard{cursor:grab}
+.drag-on .spkcard .grip{display:block}
+.spkcard.dragging{opacity:.45;cursor:grabbing}
 [data-drop].over{background:var(--mist);box-shadow:inset 0 0 0 2px var(--petrol)}
 .drop-hint{display:none;text-align:center;margin-top:12px}
 .drag-on .tray .drop-hint{display:block}
@@ -292,10 +292,10 @@ svg.chassis{width:100%;max-width:300px;height:auto;overflow:visible;font-family:
 .mday.today .dnum{background:var(--red);color:#fff}
 .mday.out{background:transparent;border:1px dashed var(--line)}
 .mday.out .dnum{color:var(--line-strong)}
-.wocard.mini{margin-top:4px;padding:4px 8px;border-radius:999px;align-items:center;gap:6px;font-size:11.5px;white-space:nowrap}
+.spkcard.mini{margin-top:4px;padding:4px 8px;border-radius:999px;align-items:center;gap:6px;font-size:11.5px;white-space:nowrap}
 .udot{width:9px;height:9px;border-radius:50%;flex:none}
 .u-urgent{background:var(--bad)}.u-high{background:var(--warn)}.u-normal{background:var(--petrol)}.u-low{background:var(--line-strong)}
 .mday .more{display:block;font-size:11px;font-weight:700;margin:4px 0 0 8px;text-decoration:none}
 /* a full card dropped onto a month day turns compact like the others */
-.mday .wocard:not(.mini){margin-top:4px;padding:4px 8px;border-radius:999px;font-size:11.5px;white-space:nowrap}
-.mday .wocard:not(.mini) .small,.mday .wocard:not(.mini) .pill,.mday .wocard:not(.mini) .grip{display:none}
+.mday .spkcard:not(.mini){margin-top:4px;padding:4px 8px;border-radius:999px;font-size:11.5px;white-space:nowrap}
+.mday .spkcard:not(.mini) .small,.mday .spkcard:not(.mini) .pill,.mday .spkcard:not(.mini) .grip{display:none}

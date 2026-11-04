@@ -23,15 +23,15 @@ CREATE TYPE doc_status_t      AS ENUM ('Valid','Warning','Expired','Missing');
 CREATE TYPE odo_source_t      AS ENUM ('Admin','Driver','GPS');
 CREATE TYPE trigger_t         AS ENUM ('Mileage','Time');
 CREATE TYPE alert_type_t      AS ENUM ('PM','Part_Item','Tyre','Document');
-CREATE TYPE alert_status_t    AS ENUM ('Pending','Converted_To_WO','Dismissed');
-CREATE TYPE wo_status_t       AS ENUM ('Draft','Pending_Approval','Rejected','Active','In_Progress','Pending_Verification','Pending_Amendment','Completed','Cancelled');
-CREATE TYPE wo_source_t       AS ENUM ('System_PM','Tyre_Alert','Document_Alert','Driver_DVIR','Driver_Breakdown','Part_Check','Manual_Planner','Manual_Mechanic','Manual_Field_Coordinator','Manual_Admin');
-CREATE TYPE wo_category_t     AS ENUM ('PM','Corrective','Tyre','Document','Other');   -- DEC-85
+CREATE TYPE alert_status_t    AS ENUM ('Pending','Converted_To_SPK','Dismissed');
+CREATE TYPE spk_status_t       AS ENUM ('Draft','Pending_Approval','Rejected','Active','In_Progress','Pending_Verification','Pending_Amendment','Completed','Cancelled');
+CREATE TYPE spk_source_t       AS ENUM ('System_PM','Tyre_Alert','Document_Alert','Driver_DVIR','Driver_Breakdown','Part_Check','Manual_Planner','Manual_Mechanic','Manual_Field_Coordinator','Manual_Admin');
+CREATE TYPE spk_category_t     AS ENUM ('PM','Corrective','Tyre','Document','Other');   -- DEC-85
 CREATE TYPE asg_status_t      AS ENUM ('Locked','Open','In_Progress','Submitted','Verified','Skipped');
 CREATE TYPE approval_stage_t  AS ENUM ('Creation','Completion','Amendment');
 CREATE TYPE approval_action_t AS ENUM ('Submit','Approve','Reject','Cancel','Request_Completion');
 CREATE TYPE cr_status_t       AS ENUM ('Submitted','In_Revision','Pending_Approval','Approved','Rejected');
-CREATE TYPE part_source_t     AS ENUM ('Warehouse');   -- the Stock step cuts stock only; outside purchases live in work_order_purchases (DEC-60)
+CREATE TYPE part_source_t     AS ENUM ('Warehouse');   -- the Stock step cuts stock only; outside purchases live in spk_purchases (DEC-60)
 CREATE TYPE invoice_status_t  AS ENUM ('Draft','Issued','Paid','Void');
 CREATE TYPE location_capture_t AS ENUM ('Captured','Denied','Unavailable');
 CREATE TYPE team_t            AS ENUM ('Internal','External');
@@ -65,7 +65,7 @@ CREATE UNIQUE INDEX uq_one_role_per_user ON user_roles (user_id);               
 CREATE UNIQUE INDEX uq_one_system_admin  ON user_roles (role) WHERE role = 'System_Admin';   -- BR-14
 CREATE TABLE role_permissions (               -- [A] permission matrix of 2.2, edited by the Access Manager
   role role_t NOT NULL,
-  permission_code VARCHAR(60) NOT NULL,       -- for example wo.create, wo.approve, stock.issue
+  permission_code VARCHAR(60) NOT NULL,       -- for example spk.create, spk.approve, stock.issue
   allowed BOOLEAN NOT NULL,
   is_locked BOOLEAN NOT NULL DEFAULT false,   -- fixed by a business rule; cannot be changed
   PRIMARY KEY (role, permission_code)
@@ -163,7 +163,7 @@ CREATE TABLE document_types (
   name VARCHAR(100) NOT NULL,
   usual_validity_months SMALLINT,             -- prefills the new expiry on renewal (REQ-DOC-007)
   warning_days SMALLINT NOT NULL DEFAULT 30 CHECK (warning_days > 0),  -- also edited in Settings: Alert rules (DEC-86)
-  preset_id BIGINT REFERENCES wo_presets(id), -- preset of the SPK its expiry alert drafts (REQ-PM-008)
+  preset_id BIGINT REFERENCES spk_presets(id), -- preset of the SPK its expiry alert drafts (REQ-PM-008)
   receipt_required BOOLEAN NOT NULL DEFAULT true,
   is_active BOOLEAN NOT NULL DEFAULT true
 );
@@ -197,7 +197,7 @@ CREATE TABLE document_view_logs (             -- AO
   user_id BIGINT NOT NULL REFERENCES users(id),
   at TIMESTAMP NOT NULL DEFAULT now()
 );
--- document_renewals is in 9.6 because it references work_orders
+-- document_renewals is in 9.6 because it references spks
 ```
 
 ## 9.5 Maintenance rules, part items, alerts and inspections
@@ -209,7 +209,7 @@ CREATE TABLE pm_packages (
   package_name VARCHAR(100) NOT NULL,
   interval_km INT CHECK (interval_km > 0),     -- NULL for a Towed class (REQ-PLC-018)
   interval_days INT NOT NULL CHECK (interval_days > 0),
-  preset_id BIGINT NOT NULL REFERENCES wo_presets(id),   -- steps drafted for this package's alerts (REQ-REG-007, REQ-WO-012)
+  preset_id BIGINT NOT NULL REFERENCES spk_presets(id),   -- steps drafted for this package's alerts (REQ-REG-007, REQ-SPK-012)
   UNIQUE (vehicle_class_id, package_code),
   is_active BOOLEAN NOT NULL DEFAULT true
 );
@@ -250,13 +250,13 @@ CREATE TABLE vehicle_part_items (             -- baseline and current state of e
   life_km INT, life_days INT,                 -- copied from the type, editable per vehicle
   next_due_km INT, next_due_date DATE,
   source VARCHAR(10) NOT NULL DEFAULT 'Baseline' CHECK (source IN ('Baseline','Work_Order')),
-  last_work_order_id BIGINT REFERENCES work_orders(id),   -- set once an SPK touched it; Correct baseline is then refused
+  last_spk_id BIGINT REFERENCES spks(id),   -- set once an SPK touched it; Correct baseline is then refused
   UNIQUE (vehicle_id, part_item_type_id),
-  CHECK (source = 'Baseline' OR last_work_order_id IS NOT NULL)
+  CHECK (source = 'Baseline' OR last_spk_id IS NOT NULL)
 );
 CREATE TABLE early_failure_events (           -- AO, REQ-BSL-009; never blocks an SPK
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
   part_item_id BIGINT REFERENCES vehicle_part_items(id),
   tyre_id BIGINT REFERENCES tyres(id),
   stage VARCHAR(10) NOT NULL CHECK (stage IN ('Submitted','Completed')),
@@ -285,14 +285,14 @@ CREATE UNIQUE INDEX uq_open_part_alert ON maintenance_alerts (part_item_id) WHER
 CREATE UNIQUE INDEX uq_open_tyre_alert ON maintenance_alerts (tyre_id) WHERE status = 'Pending' AND tyre_id IS NOT NULL;
 CREATE TABLE alert_rules (                    -- SD, one row per alert kind; Settings: Alert rules (DEC-86)
   rule_kind VARCHAR(20) NOT NULL UNIQUE CHECK (rule_kind IN ('PM','Document','Tyre','Part_Item','Inspection_Fail','Breakdown','Field_Report')),
-  drafts_wo BOOLEAN NOT NULL DEFAULT true,    -- false = Show the alert only
+  drafts_spk BOOLEAN NOT NULL DEFAULT true,    -- false = Show the alert only
   draft_at VARCHAR(12) CHECK (draft_at IN ('Due_Soon','Due','Warning','Expiry','Act_Now')),
-  preset_id BIGINT REFERENCES wo_presets(id), -- Tyre, Part_Item and reported problems; NULL = no preset, the Planner adds steps; PM uses pm_packages.preset_id, Document uses document_types.preset_id
+  preset_id BIGINT REFERENCES spk_presets(id), -- Tyre, Part_Item and reported problems; NULL = no preset, the Planner adds steps; PM uses pm_packages.preset_id, Document uses document_types.preset_id
   priority VARCHAR(6) NOT NULL DEFAULT 'Normal' CHECK (priority IN ('Normal','High','Urgent')),
   notify_roles role_t[] NOT NULL DEFAULT '{Planner}',
   trigger_config JSONB NOT NULL DEFAULT '{}', -- PM: due_soon_km, due_soon_days; Tyre: act_now_mm = 3, due_soon_mm = 4, pressure_pct = 10; Part_Item: due_soon_pct = 10, check_time; Inspection_Fail: Any or Critical
   updated_by BIGINT NOT NULL REFERENCES users(id),
-  CHECK (drafts_wo OR rule_kind IN ('PM','Document','Tyre','Part_Item'))   -- reported problems always draft
+  CHECK (drafts_spk OR rule_kind IN ('PM','Document','Tyre','Part_Item'))   -- reported problems always draft
 );
 CREATE TABLE dvir_logs (                      -- daily inspection
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),
@@ -329,7 +329,7 @@ CREATE TABLE assignment_modules (             -- module registry (REQ-REG-002)
   description TEXT,
   ui_component VARCHAR(80) NOT NULL,
   config_schema JSONB,
-  creation_schema JSONB,                       -- fields the SPK creator fills for this module's step; NULL = none (REQ-WO-017)
+  creation_schema JSONB,                       -- fields the SPK creator fills for this module's step; NULL = none (REQ-SPK-017)
   executor_roles role_t[] NOT NULL,
   scope_rules JSONB NOT NULL,
   completion_section JSONB NOT NULL,
@@ -338,17 +338,17 @@ CREATE TABLE assignment_modules (             -- module registry (REQ-REG-002)
   is_active BOOLEAN NOT NULL DEFAULT true,
   sort_order INT NOT NULL DEFAULT 0
 );
-CREATE TABLE wo_presets (                     -- SD; saved step sequences, a starting point only (DEC-85)
+CREATE TABLE spk_presets (                     -- SD; saved step sequences, a starting point only (DEC-85)
   name VARCHAR(100) NOT NULL,
-  category wo_category_t NOT NULL,
+  category spk_category_t NOT NULL,
   requires_downtime BOOLEAN NOT NULL DEFAULT true,
   version INT NOT NULL DEFAULT 1,             -- Save as preset with an existing name adds a version (REQ-REG-003)
   created_by BIGINT NOT NULL REFERENCES users(id),
   is_active BOOLEAN NOT NULL DEFAULT true,
   UNIQUE (name, version)
 );
-CREATE TABLE wo_preset_steps (                -- one row per step per preset version
-  preset_id BIGINT NOT NULL REFERENCES wo_presets(id),
+CREATE TABLE spk_preset_steps (                -- one row per step per preset version
+  preset_id BIGINT NOT NULL REFERENCES spk_presets(id),
   sequence_no INT NOT NULL CHECK (sequence_no > 0),
   module VARCHAR(40) NOT NULL REFERENCES assignment_modules(code),
   step_config JSONB NOT NULL DEFAULT '{}',
@@ -357,26 +357,26 @@ CREATE TABLE wo_preset_steps (                -- one row per step per preset ver
   verifier_role role_t NOT NULL CHECK (verifier_role IN ('Planner','System_Admin')),
   UNIQUE (preset_id, sequence_no)             -- the same module may repeat; step_config holds the saved step details
 );
-CREATE SEQUENCE wo_number_seq;                -- running part of SPK-yymmddNNNN, never reset, never reused (NFR-15, DEC-104)
-CREATE TABLE work_orders (                    -- SD, OL
-  wo_number VARCHAR(30) NOT NULL UNIQUE,      -- SPK-yymmddNNNN: WIB creation date + wo_number_seq, at least 4 digits
+CREATE SEQUENCE spk_number_seq;                -- running part of SPK-yymmddNNNN, never reset, never reused (NFR-15, DEC-104)
+CREATE TABLE spks (                    -- SD, OL
+  spk_number VARCHAR(30) NOT NULL UNIQUE,      -- SPK-yymmddNNNN: WIB creation date + spk_number_seq, at least 4 digits
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),
   title VARCHAR(150) NOT NULL,                -- prefilled from the preset name, editable
-  category wo_category_t NOT NULL,            -- lists, filters and reports
-  requires_downtime BOOLEAN NOT NULL DEFAULT true,   -- Vehicle goes to the workshop (REQ-WO-009)
-  preset_id BIGINT REFERENCES wo_presets(id), -- where the steps started from; NULL = built from blank; never followed later
-  request_source wo_source_t NOT NULL,
+  category spk_category_t NOT NULL,            -- lists, filters and reports
+  requires_downtime BOOLEAN NOT NULL DEFAULT true,   -- Vehicle goes to the workshop (REQ-SPK-009)
+  preset_id BIGINT REFERENCES spk_presets(id), -- where the steps started from; NULL = built from blank; never followed later
+  request_source spk_source_t NOT NULL,
   alert_id BIGINT REFERENCES maintenance_alerts(id),
   dvir_log_id BIGINT REFERENCES dvir_logs(id),
   breakdown_report_id BIGINT REFERENCES breakdown_reports(id),
   vehicle_document_id BIGINT REFERENCES vehicle_documents(id),   -- Document SPK
-  source_assignment_id BIGINT,                -- the verified Part Check step this draft came from (REQ-CHK-003); FK added after work_order_assignments
+  source_assignment_id BIGINT,                -- the verified Part Check step this draft came from (REQ-CHK-003); FK added after spk_assignments
   priority VARCHAR(10) NOT NULL DEFAULT 'Normal',
   description TEXT NOT NULL,
   finding_note TEXT,                          -- the originator's field-finding / breakdown narrative (Driver, Field Coordinator or Mechanic); set once at draft / send-for-review and never overwritten when the Planner edits description (DEC-91). Copied from breakdown_reports.description for Driver_Breakdown and from dvir_logs.notes for Driver_DVIR; typed by the FC or Mechanic and mandatory for Manual_Field_Coordinator and Manual_Mechanic (CHECK below)
-  status wo_status_t NOT NULL DEFAULT 'Draft',
-  sent_for_review_at TIMESTAMP,                -- a Mechanic or Field Coordinator sent the draft to the Planner (REQ-WO-016)
-  status_before_amendment wo_status_t,
+  status spk_status_t NOT NULL DEFAULT 'Draft',
+  sent_for_review_at TIMESTAMP,                -- a Mechanic or Field Coordinator sent the draft to the Planner (REQ-SPK-016)
+  status_before_amendment spk_status_t,
   amendment_no INT NOT NULL DEFAULT 0,
   created_by BIGINT NOT NULL REFERENCES users(id),
   approved_by BIGINT REFERENCES users(id),
@@ -396,18 +396,18 @@ CREATE TABLE work_orders (                    -- SD, OL
   off_last_counted_date DATE,                       -- the last WIB day already counted into off_days; the idempotent daily job (00:30 WIB, NFR-14) increments off_days once per day only when off_last_counted_date < today, so a re-run never double-counts; cleared of effect once the SPK is Completed or Cancelled (counting stops)
   version INT NOT NULL DEFAULT 1,
   CHECK (status <> 'Cancelled' OR cancel_reason IS NOT NULL),
-  CHECK (request_source NOT IN ('Manual_Field_Coordinator','Manual_Mechanic') OR finding_note IS NOT NULL)   -- a Field Coordinator or Mechanic draft must carry a field-finding note (DEC-91, REQ-WO-016)
+  CHECK (request_source NOT IN ('Manual_Field_Coordinator','Manual_Mechanic') OR finding_note IS NOT NULL)   -- a Field Coordinator or Mechanic draft must carry a field-finding note (DEC-91, REQ-SPK-016)
 );
 -- one live SPK per source; the source finds its SPK through these keys (DEC-80)
-CREATE UNIQUE INDEX uq_wo_alert     ON work_orders (alert_id)            WHERE alert_id IS NOT NULL AND status <> 'Cancelled';
-CREATE UNIQUE INDEX uq_wo_dvir      ON work_orders (dvir_log_id)         WHERE dvir_log_id IS NOT NULL AND status <> 'Cancelled';
-CREATE UNIQUE INDEX uq_wo_breakdown ON work_orders (breakdown_report_id) WHERE breakdown_report_id IS NOT NULL AND status <> 'Cancelled';
+CREATE UNIQUE INDEX uq_spk_alert     ON spks (alert_id)            WHERE alert_id IS NOT NULL AND status <> 'Cancelled';
+CREATE UNIQUE INDEX uq_spk_dvir      ON spks (dvir_log_id)         WHERE dvir_log_id IS NOT NULL AND status <> 'Cancelled';
+CREATE UNIQUE INDEX uq_spk_breakdown ON spks (breakdown_report_id) WHERE breakdown_report_id IS NOT NULL AND status <> 'Cancelled';
 -- approver <> creator is a service-layer rule (BR-03) because the System Admin may self-approve
-CREATE UNIQUE INDEX uq_open_document_wo ON work_orders (vehicle_document_id)
+CREATE UNIQUE INDEX uq_open_document_spk ON spks (vehicle_document_id)
   WHERE vehicle_document_id IS NOT NULL AND status NOT IN ('Completed','Cancelled');
-CREATE UNIQUE INDEX uq_wo_check ON work_orders (source_assignment_id) WHERE source_assignment_id IS NOT NULL;   -- one follow-up draft per Part Check step, kept even when discarded
-CREATE TABLE work_order_assignments (         -- the SPK's steps, one row per step; edited in Create SPK while Draft or Rejected, frozen at approval (TX-02)
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
+CREATE UNIQUE INDEX uq_spk_check ON spks (source_assignment_id) WHERE source_assignment_id IS NOT NULL;   -- one follow-up draft per Part Check step, kept even when discarded
+CREATE TABLE spk_assignments (         -- the SPK's steps, one row per step; edited in Create SPK while Draft or Rejected, frozen at approval (TX-02)
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
   sequence_no INT NOT NULL,
   module VARCHAR(40) NOT NULL REFERENCES assignment_modules(code),
   step_config JSONB NOT NULL DEFAULT '{}',
@@ -436,11 +436,11 @@ CREATE TABLE work_order_assignments (         -- the SPK's steps, one row per st
   self_verified BOOLEAN NOT NULL DEFAULT false,
   return_note TEXT,                           -- set when returned; shown as Returned
   skip_reason TEXT,
-  UNIQUE (work_order_id, sequence_no)
+  UNIQUE (spk_id, sequence_no)
 );
 -- verifier <> executor is a service-layer rule (BR-03)
 CREATE TABLE step_time_events (               -- AO, every Open, Start, Pause, Resume, Submit, Return, Verify of a step (DEC-87)
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   attempt_no SMALLINT NOT NULL,
   event VARCHAR(8) NOT NULL CHECK (event IN ('Open','Start','Pause','Resume','Submit','Return','Verify','Skip')),
   at TIMESTAMP NOT NULL,                      -- when it happened; server time, or phone time for an offline phone
@@ -463,16 +463,16 @@ CREATE TABLE step_time_corrections (          -- AO, System Admin only; the orig
   corrected_at TIMESTAMP NOT NULL DEFAULT now()
 );   -- reports and the SPK document use the latest correction of each event
 CREATE TABLE mobilisation_location_trail (    -- AO; the mechanic's location trail while a Mobilisasi step is In_Progress (REQ-MBL-005, RSK-09)
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),   -- a Mobilisasi step
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),   -- a Mobilisasi step
   attempt_no SMALLINT NOT NULL,
   lat NUMERIC(9,6) NOT NULL, lng NUMERIC(9,6) NOT NULL,
   accuracy_m INT,
   recorded_at TIMESTAMP NOT NULL,             -- only between Start and Submit of the step; recording stops at Submit
   received_at TIMESTAMP NOT NULL DEFAULT now()
 );   -- visible to Planner and System Admin only; every read is written to an access log (RSK-09, NFR-04)
-CREATE TABLE wo_change_requests (
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),
+CREATE TABLE spk_change_requests (
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   requested_by BIGINT NOT NULL REFERENCES users(id),   -- executor of the open step
   reason TEXT NOT NULL,
   requested_change JSONB NOT NULL,
@@ -484,9 +484,9 @@ CREATE TABLE wo_change_requests (
   decision_note TEXT,
   amendment_no_applied INT
 );
-CREATE TABLE work_order_approvals (           -- AO, feeds the approval block
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
-  change_request_id BIGINT REFERENCES wo_change_requests(id),
+CREATE TABLE spk_approvals (           -- AO, feeds the approval block
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  change_request_id BIGINT REFERENCES spk_change_requests(id),
   stage approval_stage_t NOT NULL,
   action approval_action_t NOT NULL,
   acted_by BIGINT NOT NULL REFERENCES users(id),
@@ -497,9 +497,9 @@ CREATE TABLE work_order_approvals (           -- AO, feeds the approval block
   CHECK (action NOT IN ('Approve','Reject') OR approver_role IN ('Supervisor','GM','System_Admin','Planner')),   -- Planner only while planner approval is on (REQ-IAM-008), service layer
   CHECK (action <> 'Reject' OR note IS NOT NULL)
 );
-ALTER TABLE work_orders ADD FOREIGN KEY (source_assignment_id) REFERENCES work_order_assignments(id);
-CREATE TABLE work_order_check_items (         -- Part Check lines (DEC-88): requested by the SPK creator, or added by the executor
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),
+ALTER TABLE spks ADD FOREIGN KEY (source_assignment_id) REFERENCES spk_assignments(id);
+CREATE TABLE spk_check_items (         -- Part Check lines (DEC-88): requested by the SPK creator, or added by the executor
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   line_no INT NOT NULL,
   sku VARCHAR(40) REFERENCES parts_catalog(sku),
   part_item_type_id BIGINT REFERENCES part_item_types(id),
@@ -515,27 +515,27 @@ CREATE TABLE work_order_check_items (         -- Part Check lines (DEC-88): requ
   CHECK (decision IS NOT NULL OR NOT unsafe_to_drive),
   CHECK (decision IS DISTINCT FROM 'Good' OR NOT unsafe_to_drive)
 );   -- submit guard: every line has condition_note, decision and at least one Check_Photo
-CREATE TABLE wo_attachments (
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),
-  work_order_part_id BIGINT REFERENCES work_order_parts(id),
-  work_order_service_id BIGINT REFERENCES work_order_services(id),
-  check_item_id BIGINT REFERENCES work_order_check_items(id),   -- Check_Photo of one checked part (REQ-CHK-002)
+CREATE TABLE spk_attachments (
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
+  spk_part_id BIGINT REFERENCES spk_parts(id),
+  spk_service_id BIGINT REFERENCES spk_services(id),
+  check_item_id BIGINT REFERENCES spk_check_items(id),   -- Check_Photo of one checked part (REQ-CHK-002)
   attachment_type attachment_t NOT NULL,
   label VARCHAR(10) CHECK (label IN ('Before','After')),   -- P1
   file_url VARCHAR(500) NOT NULL,
   file_name VARCHAR(255), mime_type VARCHAR(100), size_bytes INT,
   uploaded_by BIGINT NOT NULL REFERENCES users(id)
 );
-CREATE TABLE work_order_part_requests (       -- parts named in a draft by a Field Coordinator or Mechanic (REQ-WO-016)
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
+CREATE TABLE spk_part_requests (       -- parts named in a draft by a Field Coordinator or Mechanic (REQ-SPK-016)
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
   part_id BIGINT NOT NULL REFERENCES parts_catalog(id),
   requested_by BIGINT NOT NULL REFERENCES users(id),
   note TEXT
 );
 CREATE TABLE document_renewals (              -- written by the Document step
   vehicle_document_id BIGINT NOT NULL REFERENCES vehicle_documents(id),
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),   -- guard
+  spk_id BIGINT NOT NULL REFERENCES spks(id),   -- guard
   old_number VARCHAR(60), new_number VARCHAR(60) NOT NULL,
   old_expiry DATE NOT NULL, new_expiry DATE NOT NULL,
   issue_date DATE,
@@ -557,9 +557,9 @@ CREATE TABLE service_catalog (                -- SD, Internal services
   part_item_type_id BIGINT REFERENCES part_item_types(id),   -- [A] resets that part item when an SPK completes
   is_active BOOLEAN NOT NULL DEFAULT true
 );
-CREATE TABLE work_order_parts (               -- planned lines (required list) and actual lines
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
-  assignment_id BIGINT REFERENCES work_order_assignments(id),   -- set when actual use is recorded
+CREATE TABLE spk_parts (               -- planned lines (required list) and actual lines
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  assignment_id BIGINT REFERENCES spk_assignments(id),   -- set when actual use is recorded
   sku VARCHAR(40) REFERENCES parts_catalog(sku),
   tyre_size VARCHAR(30),                      -- planned tyre line: size and quantity, for example 11R22.5 x 2
   tyre_id BIGINT REFERENCES tyres(id),        -- actual tyre line: one row per chosen tyre
@@ -570,13 +570,13 @@ CREATE TABLE work_order_parts (               -- planned lines (required list) a
   unit_price NUMERIC(14,4) NOT NULL DEFAULT 0,   -- snapshot (BR-07)
   source part_source_t,
   goods_issue_item_id BIGINT REFERENCES goods_issue_items(id),
-  reverses_line_id BIGINT REFERENCES work_order_parts(id),
+  reverses_line_id BIGINT REFERENCES spk_parts(id),
   CHECK (sku IS NOT NULL OR tyre_size IS NOT NULL OR tyre_id IS NOT NULL),
   CHECK (source IS DISTINCT FROM 'Warehouse' OR qty = 0 OR goods_issue_item_id IS NOT NULL OR tyre_id IS NOT NULL)
 );
-CREATE TABLE work_order_purchases (          -- Part Purchase step header (REQ-PUR-004)
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),
+CREATE TABLE spk_purchases (          -- Part Purchase step header (REQ-PUR-004)
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   vendor_id BIGINT REFERENCES vendors(id),
   vendor_other VARCHAR(150),                  -- typed when the vendor is not in the master [A]
   receipt_number VARCHAR(60),
@@ -586,9 +586,9 @@ CREATE TABLE work_order_purchases (          -- Part Purchase step header (REQ-P
   bought_by BIGINT NOT NULL REFERENCES users(id),
   CHECK (vendor_id IS NOT NULL OR vendor_other IS NOT NULL OR nothing_bought_reason IS NOT NULL)
 );
-CREATE TABLE work_order_purchase_lines (     -- part from the catalog, typed quantity and price (REQ-PUR-002)
-  purchase_id BIGINT NOT NULL REFERENCES work_order_purchases(id),
-  work_order_part_id BIGINT NOT NULL REFERENCES work_order_parts(id),   -- the planned line it buys (DEC-63)
+CREATE TABLE spk_purchase_lines (     -- part from the catalog, typed quantity and price (REQ-PUR-002)
+  purchase_id BIGINT NOT NULL REFERENCES spk_purchases(id),
+  spk_part_id BIGINT NOT NULL REFERENCES spk_parts(id),   -- the planned line it buys (DEC-63)
   kind VARCHAR(5) NOT NULL DEFAULT 'Part' CHECK (kind IN ('Part','Tyre')),
   sku VARCHAR(40) REFERENCES parts_catalog(sku),   -- copied from the planned line; NULL only for a Tyre line
   item_name VARCHAR(150) NOT NULL,            -- snapshot of the catalog name
@@ -606,9 +606,9 @@ CREATE TABLE stooring_rates (                 -- SD, master data of the System A
   price NUMERIC(14,2) NOT NULL CHECK (price >= 0),   -- 0 for the workshop
   is_active BOOLEAN NOT NULL DEFAULT true
 );
-CREATE TABLE work_order_services (
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),
+CREATE TABLE spk_services (
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   team team_t NOT NULL,
   service_id BIGINT REFERENCES service_catalog(id),
   vendor_name VARCHAR(150),
@@ -618,8 +618,8 @@ CREATE TABLE work_order_services (
   CHECK ((team = 'Internal' AND service_id IS NOT NULL AND vendor_name IS NULL)
       OR (team = 'External' AND service_id IS NULL AND vendor_name IS NOT NULL))
 );
--- Part_Check has cost_kind Labor and uses work_order_services for its check service; at least one line is required (REQ-CHK-007).
--- Evidence on submit: Internal needs at least one Repair_Photo (for Part_Check: a Check_Photo per checked part); External services and Part Purchase steps need at least one Invoice or receipt in wo_attachments.
+-- Part_Check has cost_kind Labor and uses spk_services for its check service; at least one line is required (REQ-CHK-007).
+-- Evidence on submit: Internal needs at least one Repair_Photo (for Part_Check: a Check_Photo per checked part); External services and Part Purchase steps need at least one Invoice or receipt in spk_attachments.
 ```
 
 ## 9.8 Parts inventory and stock ledger
@@ -652,7 +652,7 @@ CREATE TABLE goods_receipts (                 -- SD; posted without approval (BR
   gr_number VARCHAR(30) NOT NULL UNIQUE,      -- generated
   po_number VARCHAR(40),
   supplier_name VARCHAR(150) NOT NULL,          -- replaced by vendor_id (REQ-INV-014) in the build
-  source_work_order_id BIGINT REFERENCES work_orders(id),   -- set for a receipt of parts bought for a cancelled SPK (REQ-WO-008)
+  source_spk_id BIGINT REFERENCES spks(id),   -- set for a receipt of parts bought for a cancelled SPK (REQ-SPK-008)
   invoice_number VARCHAR(60) NOT NULL,        -- invoice or delivery note
   received_date DATE NOT NULL,
   status VARCHAR(10) NOT NULL DEFAULT 'Draft' CHECK (status IN ('Draft','Posted')),
@@ -681,8 +681,8 @@ CREATE TABLE gr_corrections (                 -- fixes a posted receipt line; no
 );
 CREATE TABLE goods_issues (                   -- Warehouse source only
   gi_number VARCHAR(30) NOT NULL UNIQUE,
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),          -- guard (BR-01)
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),
+  spk_id BIGINT NOT NULL REFERENCES spks(id),          -- guard (BR-01)
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),               -- guard: equals the SPK vehicle (BR-02)
   issued_date DATE NOT NULL,
   issued_by BIGINT NOT NULL REFERENCES users(id),
@@ -723,7 +723,7 @@ CREATE TABLE stock_cards (                    -- AO ledger
   sku VARCHAR(40) NOT NULL REFERENCES parts_catalog(sku),
   transaction_type stock_tx_t NOT NULL,
   reference_doc_id VARCHAR(30) NOT NULL,      -- GR, GRC, GI or SA number: no movement without a document (BR-06)
-  work_order_id BIGINT REFERENCES work_orders(id),
+  spk_id BIGINT REFERENCES spks(id),
   vehicle_id BIGINT REFERENCES vehicles(id),  -- for GI and GIR
   qty_in INT NOT NULL DEFAULT 0 CHECK (qty_in >= 0),
   qty_out INT NOT NULL DEFAULT 0 CHECK (qty_out >= 0),
@@ -789,7 +789,7 @@ CREATE TABLE tyres (                          -- SD; individual assets, never in
   rack_location VARCHAR(30),                  -- while in the warehouse
   retread_count INT NOT NULL DEFAULT 0,
   last_retread_vendor VARCHAR(150),
-  issued_wo_id BIGINT REFERENCES work_orders(id),   -- set only while status is Issued
+  issued_spk_id BIGINT REFERENCES spks(id),   -- set only while status is Issued
   UNIQUE (brand, serial_number)               -- [A] unique per brand
 );
 CREATE TABLE tyre_events (                    -- AO history
@@ -854,8 +854,8 @@ CREATE TABLE tyre_min_levels (                -- P1, low stock per size [A]
 );
 CREATE TABLE tyre_inspections (               -- tread and pressure recorded in an SPK step
   tyre_id BIGINT NOT NULL REFERENCES tyres(id),
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),   -- guard
-  assignment_id BIGINT NOT NULL REFERENCES work_order_assignments(id),
+  spk_id BIGINT NOT NULL REFERENCES spks(id),   -- guard
+  assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   tread_depth_mm NUMERIC(4,1) NOT NULL CHECK (tread_depth_mm >= 0),
   pressure_psi NUMERIC(5,1),
   odometer INT,
@@ -872,20 +872,20 @@ CREATE TABLE part_placements (                -- OL; the current tyre at each po
   tyre_id BIGINT NOT NULL REFERENCES tyres(id),
   status VARCHAR(10) NOT NULL DEFAULT 'Active' CHECK (status IN ('Active','Removed')),
   is_baseline BOOLEAN NOT NULL DEFAULT false,
-  installed_wo_id BIGINT REFERENCES work_orders(id),
-  installed_assignment_id BIGINT REFERENCES work_order_assignments(id),
+  installed_spk_id BIGINT REFERENCES spks(id),
+  installed_assignment_id BIGINT REFERENCES spk_assignments(id),
   installed_odometer INT NOT NULL,
   installed_at TIMESTAMP NOT NULL,
-  removed_wo_id BIGINT REFERENCES work_orders(id),
+  removed_spk_id BIGINT REFERENCES spks(id),
   removed_at TIMESTAMP,
   version INT NOT NULL DEFAULT 1,
-  CHECK (is_baseline OR installed_wo_id IS NOT NULL)        -- BR-01
+  CHECK (is_baseline OR installed_spk_id IS NOT NULL)        -- BR-01
 );
 CREATE UNIQUE INDEX uq_active_slot ON part_placements (position_id, vehicle_id) WHERE status = 'Active';
 CREATE UNIQUE INDEX uq_active_tyre ON part_placements (tyre_id) WHERE status = 'Active';
 CREATE TABLE part_placement_logs (            -- AO
-  work_order_id BIGINT REFERENCES work_orders(id),
-  assignment_id BIGINT REFERENCES work_order_assignments(id),
+  spk_id BIGINT REFERENCES spks(id),
+  assignment_id BIGINT REFERENCES spk_assignments(id),
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),
   action_type placement_act_t NOT NULL,
   tyre_id BIGINT NOT NULL REFERENCES tyres(id),
@@ -894,11 +894,11 @@ CREATE TABLE part_placement_logs (            -- AO
   odometer_at_action INT NOT NULL,
   accumulated_km INT NOT NULL DEFAULT 0,
   logged_by BIGINT NOT NULL REFERENCES users(id),
-  CHECK (action_type = 'Baseline' OR work_order_id IS NOT NULL)   -- BR-01
+  CHECK (action_type = 'Baseline' OR spk_id IS NOT NULL)   -- BR-01
 );
 CREATE TABLE placement_map_snapshots (        -- [A] saved when a Part Replacement step is submitted
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
-  assignment_id BIGINT NOT NULL UNIQUE REFERENCES work_order_assignments(id),
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  assignment_id BIGINT NOT NULL UNIQUE REFERENCES spk_assignments(id),
   snapshot JSONB NOT NULL
 );
 ```
@@ -906,15 +906,15 @@ CREATE TABLE placement_map_snapshots (        -- [A] saved when a Part Replaceme
 ## 9.11 Maintenance schedule
 
 ```sql
-CREATE TABLE wo_schedule (                    -- a plan only; never changes an SPK (BR-13)
-  work_order_id BIGINT NOT NULL UNIQUE REFERENCES work_orders(id),
+CREATE TABLE spk_schedule (                    -- a plan only; never changes an SPK (BR-13)
+  spk_id BIGINT NOT NULL UNIQUE REFERENCES spks(id),
   planned_date DATE NOT NULL,                 -- the daily job rolls this forward to the next day each time the card is missed, with no limit, until the SPK is Completed or Cancelled (REQ-SCH-003, DEC-92)
   placed_by BIGINT NOT NULL REFERENCES users(id),
   is_missed BOOLEAN NOT NULL DEFAULT false,   -- set by the daily job
   is_rolled_over BOOLEAN NOT NULL DEFAULT false   -- the card has been auto-moved forward at least once (rolled-over / late); shown on the Planner card and the Mechanic mobile list (REQ-SCH-003, REQ-MOB-010, DEC-92)
 );
-CREATE TABLE wo_schedule_log (                -- AO
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
+CREATE TABLE spk_schedule_log (                -- AO
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
   old_date DATE,
   new_date DATE,
   action VARCHAR(10) NOT NULL CHECK (action IN ('Placed','Moved','Removed','Missed')),
@@ -922,7 +922,7 @@ CREATE TABLE wo_schedule_log (                -- AO
   at TIMESTAMP NOT NULL DEFAULT now()
 );
 CREATE TABLE schedule_alerts (                -- shown to the Field Coordinator; also raises a notification
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
   alert_type VARCHAR(10) NOT NULL CHECK (alert_type IN ('Placed','Moved','Missed','Today')),
   recipient_id BIGINT NOT NULL REFERENCES users(id),
   read_at TIMESTAMP
@@ -1025,26 +1025,26 @@ CREATE TABLE ai_query_logs (                  -- P1, AO
 
 | ID | Rule or transaction | Steps, all in one database transaction unless stated |
 | --- | --- | --- |
-| TX-01 | Creation order | Create enums, then tables in the order of 9.2 to 9.12, then 9.14 (customers before the foreign key vehicles.customer\_id). Add the circular foreign keys last: `vehicle_part_items` → `parts_catalog`, `work_orders`; `maintenance_alerts` → `tyres`, `work_orders`; `dvir_logs`, `breakdown_reports` → `work_orders`; `wo_attachments` → `work_order_parts`, `work_order_services`; `work_order_parts` → `tyres`, `goods_issue_items`; `tyres.issued_wo_id`. |
-| TX-02 | Approve creation (T3) | Lock the SPK; check status Pending\_Approval, BR-03 and the step checks of REQ-REG-004; freeze the SPK's `work_order_assignments` (module, order, `step_config`, roles); set step 1 Open, the rest Locked; write `work_order_approvals` (`self_approved` when the System Admin approves its own SPK) and `audit_logs`; notify the executor of step 1. |
-| TX-03 | Stock step submit | Lock the part rows (`SELECT … FOR UPDATE`); check the SPK is Active or In\_Progress, the step is Open or In\_Progress and each SKU and tyre size is on the SPK list; check stock; insert `goods_issues` and `goods_issue_items`; decrease `parts_catalog.stock_qty`; insert `stock_cards` (GI); write `work_order_parts` at the average cost; for each chosen tyre set Issued, `issued_wo_id`, write a `work_order_parts` row at its purchase cost and a `tyre_events` row (Issued); set the step Submitted and open the next one; write `audit_logs`. Any failure rolls back everything. |
-| TX-05 | Issue reversal | On submit write the reversing `goods_issues` row with reason and no stock change; on verification increase `stock_qty` at the original `unit_cost`, insert `stock_cards` (GIR), write the reversing `work_order_parts` line, and set any Issued tyre back to In\_Stock (event Released). |
+| TX-01 | Creation order | Create enums, then tables in the order of 9.2 to 9.12, then 9.14 (customers before the foreign key vehicles.customer\_id). Add the circular foreign keys last: `vehicle_part_items` → `parts_catalog`, `spks`; `maintenance_alerts` → `tyres`, `spks`; `dvir_logs`, `breakdown_reports` → `spks`; `spk_attachments` → `spk_parts`, `spk_services`; `spk_parts` → `tyres`, `goods_issue_items`; `tyres.issued_spk_id`. |
+| TX-02 | Approve creation (T3) | Lock the SPK; check status Pending\_Approval, BR-03 and the step checks of REQ-REG-004; freeze the SPK's `spk_assignments` (module, order, `step_config`, roles); set step 1 Open, the rest Locked; write `spk_approvals` (`self_approved` when the System Admin approves its own SPK) and `audit_logs`; notify the executor of step 1. |
+| TX-03 | Stock step submit | Lock the part rows (`SELECT … FOR UPDATE`); check the SPK is Active or In\_Progress, the step is Open or In\_Progress and each SKU and tyre size is on the SPK list; check stock; insert `goods_issues` and `goods_issue_items`; decrease `parts_catalog.stock_qty`; insert `stock_cards` (GI); write `spk_parts` at the average cost; for each chosen tyre set Issued, `issued_spk_id`, write a `spk_parts` row at its purchase cost and a `tyre_events` row (Issued); set the step Submitted and open the next one; write `audit_logs`. Any failure rolls back everything. |
+| TX-05 | Issue reversal | On submit write the reversing `goods_issues` row with reason and no stock change; on verification increase `stock_qty` at the original `unit_cost`, insert `stock_cards` (GIR), write the reversing `spk_parts` line, and set any Issued tyre back to In\_Stock (event Released). |
 | TX-06 | Post a Goods Receipt | Set Posted; for each line increase `stock_qty`, recompute `average_cost = (old_qty × old_cost + qty × unit_price) / (old_qty + qty)`, insert `stock_cards` (GR). A GR correction does the same with its signed change and writes GRC. |
 | TX-07 | Approve a stock opname | For each row set `stock_qty = physical_qty`, insert `stock_cards` (SA) for non-zero variance; set Approved, `approved_by`, `self_approved`; write `audit_logs`. |
 | TX-08 | Confirm Receive tyres | New: one `tyres` row per tyre with `tyre_code` from `tyre_code_seq`, status In\_Stock, a `tyre_events` row (Received) and the invoice in `tyre_attachments`. Retread return: per tyre update `retread_order_items`, set In\_Stock (+1 `retread_count`, cost added, `last_retread_vendor`) or Scrapped, write `tyre_events`; set the dispatch Partial or Closed. Never writes `goods_receipts`, `parts_catalog` or `stock_cards`. |
-| TX-09 | Mount, demount, rotate | Mount only a tyre with status Issued and `issued_wo_id` = this SPK, not Active in `part_placements`, at a position of the vehicle's layout; mount sets Mounted and clears `issued_wo_id`. Demount sets the chosen status. Each writes `part_placements`, `part_placement_logs` and `tyre_events`. |
+| TX-09 | Mount, demount, rotate | Mount only a tyre with status Issued and `issued_spk_id` = this SPK, not Active in `part_placements`, at a position of the vehicle's layout; mount sets Mounted and clears `issued_spk_id`. Demount sets the chosen status. Each writes `part_placements`, `part_placement_logs` and `tyre_events`. |
 | TX-10 | Approve a tyre count | For each Missing row write `tyre_events` (Missing, then Lost) and set status Lost; set Approved; write `audit_logs`. |
 | TX-11 | Baseline save | Write `vehicle_part_items`, set the chosen tyres Mounted, write `part_placements` (`is_baseline = true`), `part_placement_logs` (Baseline), `tyre_events` (document\_ref BASELINE) and `audit_logs`; no SPK. |
 | TX-12 | Change request decision | Approve: apply `revision` to the SPK content, increment `amendment_no`, restore `status_before_amendment`, write the previous content to `audit_logs`. Reject: discard `revision`, restore the status only. |
 | TX-13 | Completion request and approval | `completion_requested_at` is set only if every step is Verified or Skipped. Approval sets Completed, writes the completion approval, recalculates the vehicle status, resets linked `vehicle_part_items` \[A\], and releases still-Issued tyres to In\_Stock (event Released). |
 | TX-14 | Cancel | Reverse posted goods issues (TX-05 without verification \[A\]), release Issued tyres, set Cancelled with reason, remove the card from the open schedule lists, write `audit_logs`. |
-| TX-15 | Document first entry and renewal | First entry inserts `vehicle_documents` and `audit_logs` with no SPK and no `document_renewals` row. Correct entry writes `document_corrections`, refused once a `document_renewals` row exists. A verified Document step writes `document_renewals` (with `work_order_id`), updates `vehicle_documents`, recalculates status and vehicle status, and adds the cost to `work_orders.document_cost`. A required type with no row counts as Missing and blocks trips. |
-| TX-16 | Daily job (NFR-12) | Document statuses and one Document SPK per Warning document; PM, part item and tyre alerts (one pending per subject); schedule Missed marks, the roll-forward of each Missed card to the next day with `wo_schedule.is_rolled_over` and a Moved row in `wo_schedule_log` (REQ-SCH-003), late alerts (REQ-SCH-007) and Today alerts; `work_orders.off_days` +1 once per WIB day for each SPK whose vehicle is OFF, guarded by `off_last_counted_date` (DEC-92); vehicle status recalculation. Each part is idempotent (NFR-12). |
+| TX-15 | Document first entry and renewal | First entry inserts `vehicle_documents` and `audit_logs` with no SPK and no `document_renewals` row. Correct entry writes `document_corrections`, refused once a `document_renewals` row exists. A verified Document step writes `document_renewals` (with `spk_id`), updates `vehicle_documents`, recalculates status and vehicle status, and adds the cost to `spks.document_cost`. A required type with no row counts as Missing and blocks trips. |
+| TX-16 | Daily job (NFR-12) | Document statuses and one Document SPK per Warning document; PM, part item and tyre alerts (one pending per subject); schedule Missed marks, the roll-forward of each Missed card to the next day with `spk_schedule.is_rolled_over` and a Moved row in `spk_schedule_log` (REQ-SCH-003), late alerts (REQ-SCH-007) and Today alerts; `spks.off_days` +1 once per WIB day for each SPK whose vehicle is OFF, guarded by `off_last_counted_date` (DEC-92); vehicle status recalculation. Each part is idempotent (NFR-12). |
 | TX-17 | Shared map data | The Vehicles tab and the Part Replacement step both read `part_positions` of the vehicle's layout and the Active `part_placements`; there is no second copy of a layout. |
 | TX-18 | Soft delete | Unique indexes on soft-deleted tables ignore rows where `deleted_at` is set. |
 | TX-19 | Bill a completed SPK | Inside TX-13: find the Draft invoice of the vehicle for the completion date or create it (customer from vehicles.customer\_id); insert an invoice\_wos row and one invoice\_lines row per part, tyre and service line of the SPK (parts and tyres at cost × (1 + invoice\_part\_markup\_pct), services at their price), never merged; recompute subtotal, tax and total. No customer: insert the invoice\_wos row with invoice\_id NULL (Not billable) and no lines until a customer is set. Write audit\_logs. |
 | TX-20 | Planner approval switch | Set app\_settings.planner\_approval\_until (or null to switch off), write audit\_logs with the reason, notify Supervisors and GMs. Every approval by a Planner checks the switch and BR-03 at decision time. |
-| TX-21 | Part Purchase step submit | Write work\_order\_purchases and its lines with the calculated total, create a tyres row (status Issued, issued\_wo\_id) for each Tyre line, attach the receipt photos, add the total to work\_orders.parts\_cost; never touch parts\_catalog, goods\_issues or stock\_cards (DEC-60). |
+| TX-21 | Part Purchase step submit | Write work\_order\_purchases and its lines with the calculated total, create a tyres row (status Issued, issued\_spk\_id) for each Tyre line, attach the receipt photos, add the total to work\_orders.parts\_cost; never touch parts\_catalog, goods\_issues or stock\_cards (DEC-60). |
 
 ## 9.14 Customers and invoices
 
@@ -1078,10 +1078,10 @@ CREATE TABLE invoices (                       -- OL, one per vehicle per day (DE
 CREATE UNIQUE INDEX uq_one_draft_per_vehicle_day ON invoices (vehicle_id, service_date) WHERE status = 'Draft';
 CREATE TABLE invoice_wos (                    -- which completed SPKs an invoice bills (BR-15)
   invoice_id BIGINT REFERENCES invoices(id),  -- NULL = Not billable (vehicle without a customer)
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
   is_void BOOLEAN NOT NULL DEFAULT false      -- set when its invoice is voided
 );
-CREATE UNIQUE INDEX uq_wo_billed_once ON invoice_wos (work_order_id) WHERE NOT is_void;   -- BR-15
+CREATE UNIQUE INDEX uq_spk_billed_once ON invoice_wos (spk_id) WHERE NOT is_void;   -- BR-15
 CREATE TABLE invoice_lines (                  -- parts, tyres and services used, never one line per SPK (DEC-44)
   invoice_id BIGINT NOT NULL REFERENCES invoices(id),
   kind VARCHAR(10) NOT NULL CHECK (kind IN ('Part','Tyre','Service','Document','Stooring','Off_Unit','Adjustment')),   -- Off_Unit = off_days × off_unit_daily_rate, at cost, no markup (REQ-BIL-003, DEC-92)
@@ -1097,9 +1097,9 @@ CREATE TABLE invoice_lines (                  -- parts, tyres and services used,
 );
 CREATE TABLE invoice_line_sources (           -- traceability: which SPK lines make up an invoice line
   invoice_line_id BIGINT NOT NULL REFERENCES invoice_lines(id),
-  work_order_id BIGINT NOT NULL REFERENCES work_orders(id),
-  work_order_part_id BIGINT REFERENCES work_order_parts(id),
-  work_order_service_id BIGINT REFERENCES work_order_services(id)
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  spk_part_id BIGINT REFERENCES spk_parts(id),
+  spk_service_id BIGINT REFERENCES spk_services(id)
 );
 CREATE TABLE invoice_payments (               -- AO
   invoice_id BIGINT NOT NULL REFERENCES invoices(id),

@@ -9,33 +9,33 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 
 | ID | Control | What it does and where it goes | Ref |
 | --- | --- | --- | --- |
-| C-01 | Sidebar item (web) | Opens the area's first page: Dashboard → the role's dashboard; Surat Perintah Kerja → [WOList](<../../Design Artifact/work-orders/WOList.html#WOList>); Requests → [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>); Schedule → [MaintenanceSchedule](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>) (ScheduleDispatcher for read-only roles); Approvals → [Approvals](<../../Design Artifact/approvals/Approvals.html#Approvals>); Inventory → [Inventory](<../../Design Artifact/inventory/Inventory.html#Inventory>) (last Parts/Tyres mode, NAV-7); Vehicles → [Vehicles](<../../Design Artifact/fleet/Vehicles.html#Vehicles>); Documents → [Documents](<../../Design Artifact/documents/Documents.html#Documents>); Reports → the first Reports tab the role may see; Settings → [Settings](<../../Design Artifact/settings/Settings.html#Settings>); Invoices → [InvoiceList](<../../Design Artifact/billing/Invoices.html#InvoiceList>); Customers → [Customers](<../../Design Artifact/billing/Customers.html#Customers>); Users and roles → [UsersRoles](<../../Design Artifact/access/UsersRoles.html#UsersRoles>); Audit log → [AuditLog](<../../Design Artifact/access/AuditLog.html#AuditLog>); Setup and go live → [SetupGoLive](<../../Design Artifact/setup/SetupGoLive.html#SetupGoLive>). Items shown per role as in 7.2 | 7.2, 2.2 |
+| C-01 | Sidebar item (web) | Opens the area's first page: Dashboard → the role's dashboard; Surat Perintah Kerja → [SPKList](<../../Design Artifact/spk/SPKList.html#SPKList>); Requests → [FCRequests](<../../Design Artifact/spk/Requests.html#FCRequests>); Schedule → [MaintenanceSchedule](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>) (ScheduleDispatcher for read-only roles); Approvals → [Approvals](<../../Design Artifact/approvals/Approvals.html#Approvals>); Inventory → [Inventory](<../../Design Artifact/inventory/Inventory.html#Inventory>) (last Parts/Tyres mode, NAV-7); Vehicles → [Vehicles](<../../Design Artifact/fleet/Vehicles.html#Vehicles>); Documents → [Documents](<../../Design Artifact/documents/Documents.html#Documents>); Reports → the first Reports tab the role may see; Settings → [Settings](<../../Design Artifact/settings/Settings.html#Settings>); Invoices → [InvoiceList](<../../Design Artifact/billing/Invoices.html#InvoiceList>); Customers → [Customers](<../../Design Artifact/billing/Customers.html#Customers>); Users and roles → [UsersRoles](<../../Design Artifact/access/UsersRoles.html#UsersRoles>); Audit log → [AuditLog](<../../Design Artifact/access/AuditLog.html#AuditLog>); Setup and go live → [SetupGoLive](<../../Design Artifact/setup/SetupGoLive.html#SetupGoLive>). Items shown per role as in 7.2 | 7.2, 2.2 |
 | C-02 | Collapse menu | Toggles the icon rail (AppShellCollapsed); saved per user; no navigation | DEC-82 |
 | C-03 | Bell in the page header | Opens NotificationCenter as a panel over the current page; the badge shows the unread count | REQ-NTF-001, DQ-01 |
 | C-04 | User and role in the page header | Opens the user menu: Change password (ChangePassword), Notification settings (P1), Sign out (ends the session, back to WebLogin; a dirty form asks first, C-13) | \[New\], DQ-01 |
 | C-05 | Mobile bottom bar item | Driver: Home → [DashboardDriver](<../../Design Artifact/mobile/FieldReports.html#DashboardDriver>), Inspection → [DriverInspection](<../../Design Artifact/mobile/FieldReports.html#DriverInspection>), History → [DriverHistory](<../../Design Artifact/mobile/FieldReports.html#DriverHistory>), Profile → MobileProfile. Field Coordinator: Fleet → [DispatcherMobileFleet](<../../Design Artifact/mobile/Fleet.html#DispatcherMobileFleet>), Requests → [FCMobileRequests](<../../Design Artifact/mobile/Requests.html#FCMobileRequests>), Purchases → [FCMobilePurchase](<../../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) list, Schedule → [DispatcherMobileSchedule](<../../Design Artifact/mobile/Fleet.html#DispatcherMobileSchedule>), Alerts → [DispatcherMobileAlerts](<../../Design Artifact/mobile/MobileApp.html#DispatcherMobileAlerts>); Profile from the header. System Admin: Requests → [FCMobileRequests](<../../Design Artifact/mobile/Requests.html#FCMobileRequests>), Purchases → [FCMobilePurchase](<../../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) list, Steps → [SAMobileHome](<../../Design Artifact/mobile/MobileApp.html#SAMobileHome>) (open steps), Profile → MobileProfile. Mechanic (P1): My steps → [MechanicMobileHome](<../../Design Artifact/mobile/MobileApp.html#MechanicMobileHome>), Report → [MechanicMobileFieldReport](<../../Design Artifact/mobile/Requests.html#MechanicMobileFieldReport>), History → MechanicMobileHistory, Profile → MobileProfile. Supervisor and GM (P1): Approvals → [SupervisorMobileHome](<../../Design Artifact/mobile/Approvals.html#SupervisorMobileHome>), Fleet → [SupervisorMobileFleet](<../../Design Artifact/mobile/Fleet.html#SupervisorMobileFleet>), History → SupervisorMobileHistory, Profile → MobileProfile | REQ-MOB-001, DQ-03, DQ-04 |
 | C-06 | Tab (inside a page) | Changes the content of the same page and keeps the filters of that tab; never opens a new page; the count in the label is live | NAV-2 |
 | C-07 | Row, list card or calendar card (click) | On a master-detail page selects the row and fills the right panel; on a list page opens the record's page. A row the user may only read opens it read only | NAV-3, 7.2 |
-| C-08 | Open (on a row or item) | Opens the exact record named: a step → its step screen (NAV-1), an SPK → [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>), an invoice → [InvoiceDetail](<../../Design Artifact/billing/Invoices.html#InvoiceDetail>), a document → the document panel, a count → its count page | NAV-5 |
+| C-08 | Open (on a row or item) | Opens the exact record named: a step → its step screen (NAV-1), an SPK → [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>), an invoice → [InvoiceDetail](<../../Design Artifact/billing/Invoices.html#InvoiceDetail>), a document → the document panel, a count → its count page | NAV-5 |
 | C-09 | View (on a row) | Same as Open, read only, for a row that is not waiting for this user (no action bar) | \[New\] |
-| C-10 | Review (on a dashboard item) | Opens the matching review: creation → [ApprovalReview](<../../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>), amendment → [AmendmentReview](<../../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>), completion → [CompletionReview](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>), stock opname → [StockOpnameApproval](<../../Design Artifact/approvals/ApprovalReview.html#StockOpnameApproval>), tyre count → [TyreCountApproval](<../../Design Artifact/approvals/ApprovalReview.html#TyreCountApproval>), odometer void request → [OdometerVoid](<../../Design Artifact/fleet/Vehicle.html#OdometerVoid>) in review mode, a part-check draft → [CreateWOFromCheck](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | NAV-5 |
-| C-11 | Create SPK / Create SPK | From a header: CreateWO blank. From an alert row: CreateWOFromAlert with vehicle, source and the alert rule's preset. From a vehicle: CreateWO with the vehicle. Only roles that may create an SPK see it (Planner, System Admin; Field Coordinator and Mechanic get the draft form FCCreateWO) | REQ-WO-012, FLW-PLN-02 |
+| C-10 | Review (on a dashboard item) | Opens the matching review: creation → [ApprovalReview](<../../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>), amendment → [AmendmentReview](<../../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>), completion → [CompletionReview](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>), stock opname → [StockOpnameApproval](<../../Design Artifact/approvals/ApprovalReview.html#StockOpnameApproval>), tyre count → [TyreCountApproval](<../../Design Artifact/approvals/ApprovalReview.html#TyreCountApproval>), odometer void request → [OdometerVoid](<../../Design Artifact/fleet/Vehicle.html#OdometerVoid>) in review mode, a part-check draft → [CreateSPKFromCheck](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>) | NAV-5 |
+| C-11 | Create SPK / Create SPK | From a header: CreateSPK blank. From an alert row: CreateSPKFromAlert with vehicle, source and the alert rule's preset. From a vehicle: CreateSPK with the vehicle. Only roles that may create an SPK see it (Planner, System Admin; Field Coordinator and Mechanic get the draft form FCCreateSPK) | REQ-SPK-012, FLW-PLN-02 |
 | C-12 | Cancel (form page) | Leaves the form without saving and returns to the page it came from; if anything was typed, asks Leave without saving? (Leave, Stay) | \[New\] |
 | C-13 | Leaving a page with unsaved changes (any way) | Same question as C-12; Save draft is never automatic except the mobile offline draft (REQ-MOB-009) | \[New\] |
 | C-14 | Cancel (dialog) / Close / × | Closes the dialog or panel; nothing changes | \[New\] |
 | C-15 | Save draft | Saves what is typed without the submit checks; stays on the page; shows Saved at hh:mm; only the owner and the SPK creator see a draft | \[New\] |
 | C-16 | Discard / Discard changes (settings and masters) | Reverts the page to the last saved version after Discard your changes? (Discard, Keep editing); no navigation | \[New\] |
 | C-17 | Save (settings and masters) | Runs the page checks, saves one version with an audit record, stays on the page and shows Saved; refused with the reason when a check fails | FLW-SA-05 |
-| C-18 | Submit step / Submit step again | Runs the module's submit checks; on success stamps the executor, sets Submitted, opens the next step and returns to WorkOrder with Step n submitted. Disabled with the reason while a check fails, while paused (REQ-ENG-013) or while files are still uploading (shows Sending when photos finish) | REQ-ENG-002, NAV-1 |
+| C-18 | Submit step / Submit step again | Runs the module's submit checks; on success stamps the executor, sets Submitted, opens the next step and returns to SPKDetail with Step n submitted. Disabled with the reason while a check fails, while paused (REQ-ENG-013) or while files are still uploading (shows Sending when photos finish) | REQ-ENG-002, NAV-1 |
 | C-19 | Start work / Start | Sets the real start time and unlocks the form (DEC-87); claims an unassigned step. Not shown on a step whose module does not track work time (Part Replacement): there the first save or action claims the step (DEC-95) | REQ-ENG-012, REQ-ENG-017 |
 | C-20 | I started earlier | Opens the Start earlier panel: Started (15 min, 30 min, 1 h, 2 h ago; never before the step opened) and Why (Forgot to press Start, No signal, Phone was off) → Start from that time; marked entered | REQ-ENG-014 |
 | C-21 | Pause (not on a module that does not track work time, REQ-ENG-017) | Opens the Why are you pausing? dialog (web) or sheet (phone): Waiting for parts, Waiting for the vehicle, Waiting for vendor or agency, Break or shift ended, Other with a note → Pause. Form read only while paused | REQ-ENG-013 |
 | C-22 | Resume | Ends the pause at once (no dialog) and unlocks the form | REQ-ENG-013 |
 | C-23 | Raise change request | Opens ChangeRequest for the open step | REQ-CR-001 |
 | C-24 | Approve (decision card) | Commits at once, adds the stamp with the time (7.5 motion) and disables Reject; there is no undo; the page then shows Decided and a link back to the inbox | REQ-APR-004, \[New\] no undo |
-| C-25 | Reject (decision card) | Enabled only when the reason has text; commits at once with the reason; no undo | REQ-WO-006 |
+| C-25 | Reject (decision card) | Enabled only when the reason has text; commits at once with the reason; no undo | REQ-SPK-006 |
 | C-26 | Export | Opens the Export dialog (StockCardExport pattern): format xlsx or csv (pdf where the page is a document), what is exported = the current table with its filters and only the columns the role may see → Export; written to export\_logs | REQ-RPT-001, \[New\] |
-| C-27 | Print / Download PDF | Print opens the browser print of the document page; Download PDF saves the same page. Before the SPK is Completed the document carries the mark Not final on every page | REQ-WOD-001, \[New\] Not final mark |
+| C-27 | Print / Download PDF | Print opens the browser print of the document page; Download PDF saves the same page. Before the SPK is Completed the document carries the mark Not final on every page | REQ-SPKD-001, \[New\] Not final mark |
 | C-28 | Back / Back to … / Back to SPK / Back to vehicle | Returns to the named parent page, keeping its tab and filters | NAV-1 |
 | C-29 | Thumbnail or file name | Opens PhotoViewer on that file (previous and next walk the files of the same record) | REQ-FUP-016 |
 | C-30 | Remove (line in a form) | Removes the line from the form at once; nothing is saved until Save draft or the main action | \[New\] |
@@ -73,17 +73,17 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [Dashboard](<../../Design Artifact/dashboard/Dashboard.html#Dashboard>) | View (bottleneck row) | Opens ReportsStepTime filtered to open steps whose phase is Waiting for verification over 8 hours | REQ-DSH-010, \[New\] |
 | [Dashboard](<../../Design Artifact/dashboard/Dashboard.html#Dashboard>) | Vehicle row, early failure row | Vehicle → [VehicleOverview](<../../Design Artifact/fleet/Vehicle.html#VehicleOverview>); early failure → the SPK's ApprovalReview read only | NAV-5 |
 | [Dashboard](<../../Design Artifact/dashboard/Dashboard.html#Dashboard>) | Invoices rows | InvoiceList on the Issued tab (Overdue row adds the overdue filter) | \[New\] |
-| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Create SPK | C-11 (CreateWO blank) | FLW-PLN-01 |
-| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Verify | WODetailVerify of that SPK, scrolled to the step | FLW-PLN-05 |
-| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Revise | CreateWORevision of the change request | FLW-PLN-06 |
-| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Request | WODetailVerify with the Completion card | FLW-PLN-07 |
-| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Open (draft row) | CreateWO in edit mode for that draft | FLW-PLN-02 |
-| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Review (part-check draft) | [CreateWOFromCheck](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | REQ-CHK-004 |
+| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Create SPK | C-11 (CreateSPK blank) | FLW-PLN-01 |
+| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Verify | SPKDetailVerify of that SPK, scrolled to the step | FLW-PLN-05 |
+| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Revise | CreateSPKRevision of the change request | FLW-PLN-06 |
+| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Request | SPKDetailVerify with the Completion card | FLW-PLN-07 |
+| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Open (draft row) | CreateSPK in edit mode for that draft | FLW-PLN-02 |
+| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Review (part-check draft) | [CreateSPKFromCheck](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>) | REQ-CHK-004 |
 | [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Create SPK (alert row) | C-11 from an alert | FLW-PLN-02 |
-| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Summary cards | Each opens WOList on the matching tab, or the schedule for Not on the schedule | \[New\] |
-| [DashboardMechanic](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>) | Create SPK | FCCreateWO as a Mechanic draft (no steps; sent to the Planner) | REQ-WO-016 |
+| [DashboardPlanner](<../../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) | Summary cards | Each opens SPKList on the matching tab, or the schedule for Not on the schedule | \[New\] |
+| [DashboardMechanic](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>) | Create SPK | FCCreateSPK as a Mechanic draft (no steps; sent to the Planner) | REQ-SPK-016 |
 | [DashboardMechanic](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>) | Open | The step screen (C-08) | FLW-MEC-01 |
-| [DashboardMechanic](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>) | View (locked step) | [StepLocked](<../../Design Artifact/work-orders/WorkOrder.html#StepLocked>) | REQ-ENG-008 |
+| [DashboardMechanic](<../../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>) | View (locked step) | [StepLocked](<../../Design Artifact/spk/SPKDetail.html#StepLocked>) | REQ-ENG-008 |
 | [DashboardWarehouse](<../../Design Artifact/dashboard/Dashboard.html#DashboardWarehouse>) | Goods Receipt | [GoodsReceiptForm](<../../Design Artifact/inventory/GoodsReceipt.html#GoodsReceiptForm>) | FLW-WHM-03 |
 | [DashboardWarehouse](<../../Design Artifact/dashboard/Dashboard.html#DashboardWarehouse>) | Receive tyres | [ReceiveTyres](<../../Design Artifact/inventory/TyreReceive.html#ReceiveTyres>) | FLW-WHM-06 |
 | [DashboardWarehouse](<../../Design Artifact/dashboard/Dashboard.html#DashboardWarehouse>) | Open | The Stock step, StockOpnameReturned or the item named | C-08 |
@@ -95,8 +95,8 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [DashboardAdmin](<../../Design Artifact/dashboard/Dashboard.html#DashboardAdmin>) | Parts baseline | PartsBaseline for that vehicle | FLW-SA-01 |
 | [DashboardAdmin](<../../Design Artifact/dashboard/Dashboard.html#DashboardAdmin>) | Manage (master data row) | The matching Settings page (DocumentTypes, ChassisLayouts, …) | NAV-6 |
 | [DashboardAdmin](<../../Design Artifact/dashboard/Dashboard.html#DashboardAdmin>) | Integrations rows | Show each integration's status; a row opens `SettingsIntegrations`, where the System Admin connects WhatsApp, the Protrack/Cartrack odometer API and other external tools (credentials, enable/disable, connection test). Decided (DQ-05, 7.11) | DQ-05, 7.11, REQ-AI-002 |
-| [DashboardDispatcher](<../../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) | Create SPK | FCCreateWO (source Manual\_Field\_Coordinator) | FLW-FC-04 |
-| [DashboardDispatcher](<../../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) | Open requests | [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>) | FLW-FC-04 |
+| [DashboardDispatcher](<../../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) | Create SPK | FCCreateSPK (source Manual\_Field\_Coordinator) | FLW-FC-04 |
+| [DashboardDispatcher](<../../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) | Open requests | [FCRequests](<../../Design Artifact/spk/Requests.html#FCRequests>) | FLW-FC-04 |
 | [DashboardDispatcher](<../../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) | Not available row | VehicleOverview read only | FLW-FC-01 |
 | [DashboardAccounting](<../../Design Artifact/dashboard/Dashboard.html#DashboardAccounting>) | Open | InvoiceDetail of that invoice | FLW-ACC-01 |
 | [DashboardAccounting](<../../Design Artifact/dashboard/Dashboard.html#DashboardAccounting>) | Summary cards | InvoiceList on the matching tab | \[New\] |
@@ -108,68 +108,68 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 
 | Screen | Control | What it does and where it goes | Ref |
 | --- | --- | --- | --- |
-| [WOList](<../../Design Artifact/work-orders/WOList.html#WOList>) | Create SPK | C-11 | FLW-PLN-01 |
-| [WOList](<../../Design Artifact/work-orders/WOList.html#WOList>) | Tabs (Active, My steps, Draft, Pending approval, Rejected, Completed, Cancelled, All) | C-06; Rejected rows open WORejected | FLW-PLN-03 |
-| [WOList](<../../Design Artifact/work-orders/WOList.html#WOList>) | Open | The user's step (C-08) or, for a draft, CreateWO in edit mode | NAV-1 |
-| [WOList](<../../Design Artifact/work-orders/WOList.html#WOList>) | View | WorkOrder read only (C-09) | C-09 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Start from preset | Replaces the steps with the preset's (asks first when steps exist); title and category are filled only when empty | REQ-REG-003 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Save as preset / Save preset | Opens the name panel; Save preset stores the steps, roles and details (not the vehicle) as a new preset or a new version of a preset with that name | REQ-REG-003 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Module chip (drag) / Add step menu | Adds the module as a step at the drop place / at the end | REQ-WO-017 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Move step up, Move step down, drag handle | Reorders; numbers follow | AC-REG-004 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Remove step | Removes the step at once (C-30) | C-30 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Add part, Add part to buy, Add part to check, Remove part | Edits the step's lines | REQ-WO-017, REQ-CHK-001 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Position chips (Part Replacement) | Toggle the positions to change | REQ-PLC-001 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Cancel | C-12; a new SPK never saved leaves nothing behind | C-12 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Save draft | C-15; the SPK stays Draft in WOList | C-15 |
-| [CreateWO](<../../Design Artifact/work-orders/CreateWO.html#CreateWO>) | Submit for approval | Disabled while Checks shows an error; sends to the Approvers; WOList Pending approval | REQ-WO-004 |
-| [CreateWOFromAlert](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromAlert>) | Remove, Add part | C-30 and step lines as CreateWO | REQ-WO-012 |
-| [CreateWOFromAlert](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromAlert>) | Cancel | C-12; the alert stays Pending | C-12 |
-| [CreateWOFromAlert](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromAlert>) | Save draft | C-15; the alert shows Draft SPK | C-15 |
-| [CreateWOFromAlert](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromAlert>) | Submit for approval | As CreateWO | REQ-WO-004 |
-| [CreateWORevision](<../../Design Artifact/work-orders/ChangeRequest.html#CreateWORevision>) | Remove, Add part | Edit steps not yet started (DEC-85) | REQ-CR-003 |
-| [CreateWORevision](<../../Design Artifact/work-orders/ChangeRequest.html#CreateWORevision>) | Cancel | C-12; the change request stays In\_Revision | C-12 |
-| [CreateWORevision](<../../Design Artifact/work-orders/ChangeRequest.html#CreateWORevision>) | Save draft | C-15 | C-15 |
-| [CreateWORevision](<../../Design Artifact/work-orders/ChangeRequest.html#CreateWORevision>) | Send revision for approval | AmendmentReview for the Approvers | FLW-PLN-06 |
-| [WORejected](<../../Design Artifact/work-orders/WorkOrder.html#WORejected>) | Edit and resubmit | CreateWO in edit mode | FLW-PLN-03 |
-| [WORejected](<../../Design Artifact/work-orders/WorkOrder.html#WORejected>) | (no Cancel) | A rejected SPK returns to its creator as a Draft carrying the rejector's note; there is no cancel or un-reject on this screen, and even the rejector cannot revert the rejection. The creator edits the Draft and submits it for approval again (SM-WO T5). Decided (DQ-06, 7.11) | DQ-06, 7.11 |
-| [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | SPK document (PDF) | WODocument (or WODocumentCheck for a Part Check SPK), C-27 | REQ-WOD-001 |
-| [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | Raise change request (step executor) | [ChangeRequest](<../../Design Artifact/work-orders/ChangeRequest.html#ChangeRequest>) raised by the executor of the open step when they disagree with the SPK creator's assignment design; it puts the SPK in Pending Amendment and the SPK creator (Planner or System Admin) receives and decides the amendment (SM-WO T8 to T10, FLW-MEC-05). Only the open step's executor raises it, never the SPK creator. Decided (DQ-07, 7.11) | REQ-CR-001, DQ-07, 7.11 |
-| [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | Cancel SPK | CancelWO (Supervisor, GM, System Admin only) | FLW-APR-05 |
-| [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | Reverse issue | StockReversal (Warehouse Manager, System Admin) | FLW-WHM-02 |
-| [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | Open step | The step screen | NAV-1 |
-| [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | Assign / Reassign | Assign step dialog: pick an active user of the step's executor roles; Reassign also needs a reason; the user is notified | FLW-PLN-09, \[New\] dialog |
-| [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | Correct time (System Admin, on a step's time line) | Correct step time dialog: event, new time, reason → Save; writes step\_time\_corrections and the audit log | REQ-ENG-014, \[New\] dialog |
-| [WODetailVerify](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) | SPK document (PDF) | C-27 | REQ-WOD-001 |
-| [WODetailVerify](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) | Reverse issue | [StockReversal](<../../Design Artifact/steps/Stock.html#StockReversal>) | FLW-WHM-02 |
-| [WODetailVerify](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) | Verify | StepVerify (PartCheckVerify for Part Check) | FLW-PLN-05 |
-| [WODetailVerify](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) | Return | StepVerify with the note field focused | FLW-PLN-05 |
-| [WODetailVerify](<../../Design Artifact/work-orders/WorkOrder.html#WODetailVerify>) | Request completion approval | Disabled with the reason until every step is Verified or Skipped; sends to CompletionReview | FLW-PLN-07 |
+| [SPKList](<../../Design Artifact/spk/SPKList.html#SPKList>) | Create SPK | C-11 | FLW-PLN-01 |
+| [SPKList](<../../Design Artifact/spk/SPKList.html#SPKList>) | Tabs (Active, My steps, Draft, Pending approval, Rejected, Completed, Cancelled, All) | C-06; Rejected rows open SPKRejected | FLW-PLN-03 |
+| [SPKList](<../../Design Artifact/spk/SPKList.html#SPKList>) | Open | The user's step (C-08) or, for a draft, CreateSPK in edit mode | NAV-1 |
+| [SPKList](<../../Design Artifact/spk/SPKList.html#SPKList>) | View | SPKDetail read only (C-09) | C-09 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Start from preset | Replaces the steps with the preset's (asks first when steps exist); title and category are filled only when empty | REQ-REG-003 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Save as preset / Save preset | Opens the name panel; Save preset stores the steps, roles and details (not the vehicle) as a new preset or a new version of a preset with that name | REQ-REG-003 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Module chip (drag) / Add step menu | Adds the module as a step at the drop place / at the end | REQ-SPK-017 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Move step up, Move step down, drag handle | Reorders; numbers follow | AC-REG-004 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Remove step | Removes the step at once (C-30) | C-30 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Add part, Add part to buy, Add part to check, Remove part | Edits the step's lines | REQ-SPK-017, REQ-CHK-001 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Position chips (Part Replacement) | Toggle the positions to change | REQ-PLC-001 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Cancel | C-12; a new SPK never saved leaves nothing behind | C-12 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Save draft | C-15; the SPK stays Draft in SPKList | C-15 |
+| [CreateSPK](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>) | Submit for approval | Disabled while Checks shows an error; sends to the Approvers; SPKList Pending approval | REQ-SPK-004 |
+| [CreateSPKFromAlert](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) | Remove, Add part | C-30 and step lines as CreateSPK | REQ-SPK-012 |
+| [CreateSPKFromAlert](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) | Cancel | C-12; the alert stays Pending | C-12 |
+| [CreateSPKFromAlert](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) | Save draft | C-15; the alert shows Draft SPK | C-15 |
+| [CreateSPKFromAlert](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) | Submit for approval | As CreateSPK | REQ-SPK-004 |
+| [CreateSPKRevision](<../../Design Artifact/spk/ChangeRequest.html#CreateSPKRevision>) | Remove, Add part | Edit steps not yet started (DEC-85) | REQ-CR-003 |
+| [CreateSPKRevision](<../../Design Artifact/spk/ChangeRequest.html#CreateSPKRevision>) | Cancel | C-12; the change request stays In\_Revision | C-12 |
+| [CreateSPKRevision](<../../Design Artifact/spk/ChangeRequest.html#CreateSPKRevision>) | Save draft | C-15 | C-15 |
+| [CreateSPKRevision](<../../Design Artifact/spk/ChangeRequest.html#CreateSPKRevision>) | Send revision for approval | AmendmentReview for the Approvers | FLW-PLN-06 |
+| [SPKRejected](<../../Design Artifact/spk/SPKDetail.html#SPKRejected>) | Edit and resubmit | CreateSPK in edit mode | FLW-PLN-03 |
+| [SPKRejected](<../../Design Artifact/spk/SPKDetail.html#SPKRejected>) | (no Cancel) | A rejected SPK returns to its creator as a Draft carrying the rejector's note; there is no cancel or un-reject on this screen, and even the rejector cannot revert the rejection. The creator edits the Draft and submits it for approval again (SM-SPK T5). Decided (DQ-06, 7.11) | DQ-06, 7.11 |
+| [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | SPK document (PDF) | SPKDocument (or SPKDocumentCheck for a Part Check SPK), C-27 | REQ-SPKD-001 |
+| [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | Raise change request (step executor) | [ChangeRequest](<../../Design Artifact/spk/ChangeRequest.html#ChangeRequest>) raised by the executor of the open step when they disagree with the SPK creator's assignment design; it puts the SPK in Pending Amendment and the SPK creator (Planner or System Admin) receives and decides the amendment (SM-SPK T8 to T10, FLW-MEC-05). Only the open step's executor raises it, never the SPK creator. Decided (DQ-07, 7.11) | REQ-CR-001, DQ-07, 7.11 |
+| [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | Cancel SPK | CancelSPK (Supervisor, GM, System Admin only) | FLW-APR-05 |
+| [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | Reverse issue | StockReversal (Warehouse Manager, System Admin) | FLW-WHM-02 |
+| [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | Open step | The step screen | NAV-1 |
+| [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | Assign / Reassign | Assign step dialog: pick an active user of the step's executor roles; Reassign also needs a reason; the user is notified | FLW-PLN-09, \[New\] dialog |
+| [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | Correct time (System Admin, on a step's time line) | Correct step time dialog: event, new time, reason → Save; writes step\_time\_corrections and the audit log | REQ-ENG-014, \[New\] dialog |
+| [SPKDetailVerify](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) | SPK document (PDF) | C-27 | REQ-SPKD-001 |
+| [SPKDetailVerify](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) | Reverse issue | [StockReversal](<../../Design Artifact/steps/Stock.html#StockReversal>) | FLW-WHM-02 |
+| [SPKDetailVerify](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) | Verify | StepVerify (PartCheckVerify for Part Check) | FLW-PLN-05 |
+| [SPKDetailVerify](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) | Return | StepVerify with the note field focused | FLW-PLN-05 |
+| [SPKDetailVerify](<../../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) | Request completion approval | Disabled with the reason until every step is Verified or Skipped; sends to CompletionReview | FLW-PLN-07 |
 | [StepVerify](<../../Design Artifact/steps/StepVerify.html#StepVerify>) | Return to executor | Needs the note; the step becomes Open (Returned) and the executor is notified (StepReturned) | REQ-ENG-005, REQ-ENG-015 |
-| [StepVerify](<../../Design Artifact/steps/StepVerify.html#StepVerify>) | Verify | Adds the verifier stamp; back to WODetailVerify | REQ-ENG-005 |
+| [StepVerify](<../../Design Artifact/steps/StepVerify.html#StepVerify>) | Verify | Adds the verifier stamp; back to SPKDetailVerify | REQ-ENG-005 |
 | [StepVerify](<../../Design Artifact/steps/StepVerify.html#StepVerify>) | Open trail on map | For a Mobilisasi step, opens the mechanic's recorded location trail and destination on an external map. The trail is recorded only while the step is In\_Progress and is scoped to the stooring verification (duration and route), visible to Planner and System Admin only, with every access logged; it is not continuous or deliberate employee tracking outside the step (DEC-90, REQ-MBL-005, RSK-09). Decided (DQ-08, 7.11) | DQ-08, 7.11 |
 | [StepVerify](<../../Design Artifact/steps/StepVerify.html#StepVerify>) | Thumbnails | C-29 | C-29 |
-| [StepLocked](<../../Design Artifact/work-orders/WorkOrder.html#StepLocked>) | Back to SPK | C-28 | NAV-1 |
-| [StepReturned](<../../Design Artifact/work-orders/WorkOrder.html#StepReturned>) | Pause | C-21 | C-21 |
-| [StepReturned](<../../Design Artifact/work-orders/WorkOrder.html#StepReturned>) | Internal team / External workshop | Switches the team as in Mechanic | REQ-MEC-003 |
-| [StepReturned](<../../Design Artifact/work-orders/WorkOrder.html#StepReturned>) | Save draft | C-15 | C-15 |
-| [StepReturned](<../../Design Artifact/work-orders/WorkOrder.html#StepReturned>) | Submit step again | C-18 | REQ-ENG-005 |
-| [CancelWO](<../../Design Artifact/components/Dialogs.html#CancelWO>) | SPK document (PDF) | C-27 | C-27 |
-| [CancelWO](<../../Design Artifact/components/Dialogs.html#CancelWO>) | Cancel SPK | Needs the reason; reverses posted issues, returns Issued tyres to In Stock, notifies the creator and executors; WOList Cancelled | REQ-WO-008 |
-| [CancelWO](<../../Design Artifact/components/Dialogs.html#CancelWO>) | Keep the SPK | C-14 | C-14 |
-| [ChangeRequest](<../../Design Artifact/work-orders/ChangeRequest.html#ChangeRequest>) | Cancel | C-12 | C-12 |
-| [ChangeRequest](<../../Design Artifact/work-orders/ChangeRequest.html#ChangeRequest>) | Submit request | Needs the reason and the requested change; the SPK becomes Pending\_Amendment; the step pauses with reason Change request | REQ-CR-001, REQ-ENG-013 |
-| [WODocument](<../../Design Artifact/work-orders/WODocument.html#WODocument>) | Print, Download PDF | C-27 | C-27 |
-| [WODocumentCheck](<../../Design Artifact/work-orders/WODocument.html#WODocumentCheck>) | Print, Download PDF | C-27 | C-27 |
-| [WODocumentCheck](<../../Design Artifact/work-orders/WODocument.html#WODocumentCheck>) | Follow-up SPK number | Opens WorkOrder of the follow-up SPK when the reader may see it; prints as text | REQ-CHK-006 |
-| [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>) | Create SPK | FCCreateWO (Manual\_Field\_Coordinator) | FLW-FC-04 |
-| [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>) | Tabs | C-06 | C-06 |
-| [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>) | Open | Selects the draft in the right panel | NAV-3 |
-| [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>) | Complete and send to Planner | [FCCreateWO](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>) for that draft; the Field Coordinator completes it and sends it to the Planner, who submits it for approval (REQ-WO-016). The control is labelled "Complete and send to Planner", never "submit". Decided (DQ-10, 7.11) | REQ-WO-016, DQ-10, 7.11 |
-| [FCRequests](<../../Design Artifact/work-orders/Requests.html#FCRequests>) | Cancel draft | Opens [FCDraftCancel](<../../Design Artifact/components/Dialogs.html#FCDraftCancel>): reason → the draft is Cancelled, the reporter is notified, the report stays in the vehicle history. Decided (DQ-11, 7.11) | DQ-11, 7.11 |
-| [FCCreateWO](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>) | Remove, Add part | Edits Parts needed | REQ-WO-016 |
-| [FCCreateWO](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>) | Cancel draft | Opens [FCDraftCancel](<../../Design Artifact/components/Dialogs.html#FCDraftCancel>), as FCRequests. Decided (DQ-11, 7.11) | DQ-11, 7.11 |
-| [FCCreateWO](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>) | Save draft | C-15 | C-15 |
-| [FCCreateWO](<../../Design Artifact/work-orders/CreateWO.html#FCCreateWO>) | Send to Planner | Sends the draft; the Planner adds the steps | REQ-WO-016 |
+| [StepLocked](<../../Design Artifact/spk/SPKDetail.html#StepLocked>) | Back to SPK | C-28 | NAV-1 |
+| [StepReturned](<../../Design Artifact/spk/SPKDetail.html#StepReturned>) | Pause | C-21 | C-21 |
+| [StepReturned](<../../Design Artifact/spk/SPKDetail.html#StepReturned>) | Internal team / External workshop | Switches the team as in Mechanic | REQ-MEC-003 |
+| [StepReturned](<../../Design Artifact/spk/SPKDetail.html#StepReturned>) | Save draft | C-15 | C-15 |
+| [StepReturned](<../../Design Artifact/spk/SPKDetail.html#StepReturned>) | Submit step again | C-18 | REQ-ENG-005 |
+| [CancelSPK](<../../Design Artifact/components/Dialogs.html#CancelSPK>) | SPK document (PDF) | C-27 | C-27 |
+| [CancelSPK](<../../Design Artifact/components/Dialogs.html#CancelSPK>) | Cancel SPK | Needs the reason; reverses posted issues, returns Issued tyres to In Stock, notifies the creator and executors; SPKList Cancelled | REQ-SPK-008 |
+| [CancelSPK](<../../Design Artifact/components/Dialogs.html#CancelSPK>) | Keep the SPK | C-14 | C-14 |
+| [ChangeRequest](<../../Design Artifact/spk/ChangeRequest.html#ChangeRequest>) | Cancel | C-12 | C-12 |
+| [ChangeRequest](<../../Design Artifact/spk/ChangeRequest.html#ChangeRequest>) | Submit request | Needs the reason and the requested change; the SPK becomes Pending\_Amendment; the step pauses with reason Change request | REQ-CR-001, REQ-ENG-013 |
+| [SPKDocument](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>) | Print, Download PDF | C-27 | C-27 |
+| [SPKDocumentCheck](<../../Design Artifact/spk/SPKDocument.html#SPKDocumentCheck>) | Print, Download PDF | C-27 | C-27 |
+| [SPKDocumentCheck](<../../Design Artifact/spk/SPKDocument.html#SPKDocumentCheck>) | Follow-up SPK number | Opens SPKDetail of the follow-up SPK when the reader may see it; prints as text | REQ-CHK-006 |
+| [FCRequests](<../../Design Artifact/spk/Requests.html#FCRequests>) | Create SPK | FCCreateSPK (Manual\_Field\_Coordinator) | FLW-FC-04 |
+| [FCRequests](<../../Design Artifact/spk/Requests.html#FCRequests>) | Tabs | C-06 | C-06 |
+| [FCRequests](<../../Design Artifact/spk/Requests.html#FCRequests>) | Open | Selects the draft in the right panel | NAV-3 |
+| [FCRequests](<../../Design Artifact/spk/Requests.html#FCRequests>) | Complete and send to Planner | [FCCreateSPK](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>) for that draft; the Field Coordinator completes it and sends it to the Planner, who submits it for approval (REQ-SPK-016). The control is labelled "Complete and send to Planner", never "submit". Decided (DQ-10, 7.11) | REQ-SPK-016, DQ-10, 7.11 |
+| [FCRequests](<../../Design Artifact/spk/Requests.html#FCRequests>) | Cancel draft | Opens [FCDraftCancel](<../../Design Artifact/components/Dialogs.html#FCDraftCancel>): reason → the draft is Cancelled, the reporter is notified, the report stays in the vehicle history. Decided (DQ-11, 7.11) | DQ-11, 7.11 |
+| [FCCreateSPK](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>) | Remove, Add part | Edits Parts needed | REQ-SPK-016 |
+| [FCCreateSPK](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>) | Cancel draft | Opens [FCDraftCancel](<../../Design Artifact/components/Dialogs.html#FCDraftCancel>), as FCRequests. Decided (DQ-11, 7.11) | DQ-11, 7.11 |
+| [FCCreateSPK](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>) | Save draft | C-15 | C-15 |
+| [FCCreateSPK](<../../Design Artifact/spk/CreateSPK.html#FCCreateSPK>) | Send to Planner | Sends the draft; the Planner adds the steps | REQ-SPK-016 |
 
 ## Action map: Step screens
 
@@ -209,10 +209,10 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [PartCheckVerify](<../../Design Artifact/steps/StepVerify.html#PartCheckVerify>) | Return with note | As StepVerify; no draft is made | REQ-CHK-003 |
 | [PartCheckVerify](<../../Design Artifact/steps/StepVerify.html#PartCheckVerify>) | Verify | Stamps the step and makes the follow-up Draft SPK when a part is Repair or Replace | REQ-CHK-003 |
 | [PartCheckVerify](<../../Design Artifact/steps/StepVerify.html#PartCheckVerify>) | Thumbnails | C-29 | C-29 |
-| [CreateWOFromCheck](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | Open SPK-2611040181 (check SPK) | WorkOrder of the check SPK | REQ-CHK-004 |
-| [CreateWOFromCheck](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | Edit steps in Create SPK | CreateWO in edit mode for this draft | REQ-CHK-004 |
-| [CreateWOFromCheck](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | Discard draft | Needs the reason; the draft is Cancelled and keeps its link to the check; never made again | REQ-CHK-004 |
-| [CreateWOFromCheck](<../../Design Artifact/work-orders/CreateWO.html#CreateWOFromCheck>) | Activate: submit for approval | Submits for approval like CreateWO; the activating user counts as creator for BR-03 | REQ-CHK-004, \[New\] BR-03 |
+| [CreateSPKFromCheck](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>) | Open SPK-2611040181 (check SPK) | SPKDetail of the check SPK | REQ-CHK-004 |
+| [CreateSPKFromCheck](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>) | Edit steps in Create SPK | CreateSPK in edit mode for this draft | REQ-CHK-004 |
+| [CreateSPKFromCheck](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>) | Discard draft | Needs the reason; the draft is Cancelled and keeps its link to the check; never made again | REQ-CHK-004 |
+| [CreateSPKFromCheck](<../../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>) | Activate: submit for approval | Submits for approval like CreateSPK; the activating user counts as creator for BR-03 | REQ-CHK-004, \[New\] BR-03 |
 | [Placement](<../../Design Artifact/steps/Placement.html#Placement>) | Pause | C-21 | C-21 |
 | [Placement](<../../Design Artifact/steps/Placement.html#Placement>) | Replace | PlacementReplace in the right panel for the selected position | FLW-MEC-03 |
 | [Placement](<../../Design Artifact/steps/Placement.html#Placement>) | Rotate | PlacementRotate in the right panel | FLW-MEC-03 |
@@ -246,12 +246,12 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [ApprovalsWarehouse](<../../Design Artifact/approvals/Approvals.html#ApprovalsWarehouse>) | Open review | C-10 for the selected item | FLW-APR-01 |
 | [ApprovalsHistory](<../../Design Artifact/approvals/Approvals.html#ApprovalsHistory>) | Tabs Surat Perintah Kerja, Warehouse, History | C-06 | C-06 |
 | [ApprovalsHistory](<../../Design Artifact/approvals/Approvals.html#ApprovalsHistory>) | Type chips | Filter the list | C-33 |
-| [ApprovalsHistory](<../../Design Artifact/approvals/Approvals.html#ApprovalsHistory>) | Open SPK | WorkOrder read only | FLW-APR-06 |
+| [ApprovalsHistory](<../../Design Artifact/approvals/Approvals.html#ApprovalsHistory>) | Open SPK | SPKDetail read only | FLW-APR-06 |
 | [ApprovalReview](<../../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>) | Reject | C-25 | C-25 |
 | [ApprovalReview](<../../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>) | Approve | C-24; the SPK becomes Active and step 1 opens | FLW-APR-01 |
 | [AmendmentReview](<../../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>) | Reject | C-25; the original content stays | FLW-APR-02 |
 | [AmendmentReview](<../../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>) | Approve revision | C-24; amendment number +1, the step resumes | FLW-APR-02 |
-| [CompletionReview](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) | Open SPK document | WODocument (Not final) | C-27 |
+| [CompletionReview](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) | Open SPK document | SPKDocument (Not final) | C-27 |
 | [CompletionReview](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) | Reject | C-25; SPK stays Pending\_Verification | FLW-APR-03 |
 | [CompletionReview](<../../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) | Approve completion | C-24; SPK Completed, vehicle status recalculated | FLW-APR-03 |
 | [StockOpnameApproval](<../../Design Artifact/approvals/ApprovalReview.html#StockOpnameApproval>) | Reject | C-25; back to Draft, marked Returned | FLW-APR-04 |
@@ -260,9 +260,9 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [TyreCountApproval](<../../Design Artifact/approvals/ApprovalReview.html#TyreCountApproval>) | Approve count | C-24; missing tyres become Lost | FLW-APR-04 |
 | [MaintenanceSchedule](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>) | ‹ ›, Today, Week/Month | Moves the period; no data change | \[New\] |
 | [MaintenanceSchedule](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>) | Drag a card | Places or moves the SPK on a day; the Field Coordinators are alerted; the SPK never changes | REQ-SCH-001 to 004 |
-| [MaintenanceSchedule](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>) | Card (click) | [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | C-07 |
+| [MaintenanceSchedule](<../../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>) | Card (click) | [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | C-07 |
 | [ScheduleDispatcher](<../../Design Artifact/schedule/Schedule.html#ScheduleDispatcher>) | ‹ › | Moves the period | \[New\] |
-| [ScheduleDispatcher](<../../Design Artifact/schedule/Schedule.html#ScheduleDispatcher>) | Card (click) | WorkOrder read only; cards cannot move | REQ-SCH-005 |
+| [ScheduleDispatcher](<../../Design Artifact/schedule/Schedule.html#ScheduleDispatcher>) | Card (click) | SPKDetail read only; cards cannot move | REQ-SCH-005 |
 
 ## Action map: Vehicles and documents
 
@@ -281,11 +281,11 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [VehicleDocuments](<../../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) | Vehicle tabs, Add vehicle, Edit vehicle, Parts baseline, Create SPK | As VehicleOverview | C-06 |
 | [VehicleDocuments](<../../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) | Add document | AddDocument for that type | FLW-SA-02 |
 | [VehicleDocuments](<../../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) | View scan | [DocumentScan](<../../Design Artifact/documents/Documents.html#DocumentScan>) | FLW-SA-02 |
-| [VehicleDocuments](<../../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) | Open SPK | WorkOrder of the renewal SPK | NAV-5 |
+| [VehicleDocuments](<../../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) | Open SPK | SPKDetail of the renewal SPK | NAV-5 |
 | [VehicleDocuments](<../../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) | Correct entry | DocumentCorrectEntry (only before the first renewal) | REQ-DOC-011 |
-| [VehicleWOHistory](<../../Design Artifact/fleet/Vehicle.html#VehicleWOHistory>) | Vehicle tabs, Add vehicle, Edit vehicle, Parts baseline, Create SPK | As VehicleOverview | C-06 |
-| [VehicleWOHistory](<../../Design Artifact/fleet/Vehicle.html#VehicleWOHistory>) | Row (click) | [WorkOrder](<../../Design Artifact/work-orders/WorkOrder.html#WorkOrder>) | C-07 |
-| [VehicleWOHistory](<../../Design Artifact/fleet/Vehicle.html#VehicleWOHistory>) | Document | WODocument of that SPK | REQ-WOD-001 |
+| [VehicleSPKHistory](<../../Design Artifact/fleet/Vehicle.html#VehicleSPKHistory>) | Vehicle tabs, Add vehicle, Edit vehicle, Parts baseline, Create SPK | As VehicleOverview | C-06 |
+| [VehicleSPKHistory](<../../Design Artifact/fleet/Vehicle.html#VehicleSPKHistory>) | Row (click) | [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) | C-07 |
+| [VehicleSPKHistory](<../../Design Artifact/fleet/Vehicle.html#VehicleSPKHistory>) | Document | SPKDocument of that SPK | REQ-SPKD-001 |
 | [VehicleInspections](<../../Design Artifact/fleet/Vehicle.html#VehicleInspections>) | Vehicle tabs, Add vehicle, Edit vehicle, Parts baseline, Create SPK | As VehicleOverview | C-06 |
 | [VehicleInspections](<../../Design Artifact/fleet/Vehicle.html#VehicleInspections>) | Report breakdown | [AdminBreakdownForm](<../../Design Artifact/fleet/FieldReports.html#AdminBreakdownForm>) | FLW-SA-04 |
 | [VehicleInspections](<../../Design Artifact/fleet/Vehicle.html#VehicleInspections>) | Record inspection | [AdminInspectionForm](<../../Design Artifact/fleet/FieldReports.html#AdminInspectionForm>) | FLW-SA-04 |
@@ -318,7 +318,7 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [AdminBreakdownForm](<../../Design Artifact/fleet/FieldReports.html#AdminBreakdownForm>) | Send breakdown report | Drafts an SPK with source Driver\_Breakdown | REQ-PM-005 |
 | [Documents](<../../Design Artifact/documents/Documents.html#Documents>) | Create SPK | C-11 for a document in Warning or Expired with no open renewal SPK | FLW-SA-02 |
 | [Documents](<../../Design Artifact/documents/Documents.html#Documents>) | Add (Missing cell) | AddDocument for that vehicle and type | FLW-SA-02 |
-| [Documents](<../../Design Artifact/documents/Documents.html#Documents>) | Open SPK-… | WorkOrder of the renewal SPK | NAV-5 |
+| [Documents](<../../Design Artifact/documents/Documents.html#Documents>) | Open SPK-… | SPKDetail of the renewal SPK | NAV-5 |
 | [Documents](<../../Design Artifact/documents/Documents.html#Documents>) | View scan | [DocumentScan](<../../Design Artifact/documents/Documents.html#DocumentScan>) | FLW-SA-02 |
 | [Documents](<../../Design Artifact/documents/Documents.html#Documents>) | Matrix cell | Selects it (NAV-3) | C-07 |
 | [AddDocument](<../../Design Artifact/documents/DocumentForm.html#AddDocument>) | Cancel | C-12 | C-12 |

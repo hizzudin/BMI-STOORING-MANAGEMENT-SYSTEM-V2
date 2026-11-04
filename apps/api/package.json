@@ -12,13 +12,17 @@
     "lint": "eslint src test",
     "test": "vitest run --project unit --passWithNoTests",
     "test:int": "vitest run --project int",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "db:migrate": "node dist/infra/db/migrate-cli.js"
   },
   "dependencies": {
     "@bmi/shared": "workspace:*",
     "@nestjs/common": "^12.3.2",
     "@nestjs/core": "^12.3.2",
     "@nestjs/platform-express": "^12.3.2",
+    "bullmq": "^6.5.4",
+    "drizzle-orm": "^0.45.4",
+    "ioredis": "^6.0.0",
     "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"

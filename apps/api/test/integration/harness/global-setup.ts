@@ -1,13 +1,8 @@
-import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { runMigrations } from '../../../src/infra/db/migrate.js';
 import { adminUrl, TEMPLATE_DATABASE, urlForDatabase, withConnection } from './database.js';
 
 const MIGRATIONS_DIR = join(import.meta.dirname, '../../../migrations');
-
-async function migrationFiles(): Promise<string[]> {
-  const names = await readdir(MIGRATIONS_DIR).catch(() => []);
-  return names.filter((name) => name.endsWith('.sql')).sort();
-}
 
 // D-02: the migrations run once, into the template every worker database is copied from.
 export default async function setup(): Promise<void> {
@@ -21,9 +16,7 @@ export default async function setup(): Promise<void> {
   });
 
   await withConnection(urlForDatabase(TEMPLATE_DATABASE), async (template) => {
-    for (const name of await migrationFiles()) {
-      await template.query(await readFile(join(MIGRATIONS_DIR, name), 'utf8'));
-    }
+    await runMigrations(template, MIGRATIONS_DIR);
     // Lives only in test databases, never in a migration: §9 stays exact.
     await template.query(
       'CREATE TABLE harness_probe (id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, marker TEXT NOT NULL)',

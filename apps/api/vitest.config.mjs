@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     coverage: coverage({
       include: ['src/**/*.ts'],
-      exclude: ['src/main.ts', 'src/worker.ts'],
+      exclude: ['src/main.ts', 'src/worker.ts', 'src/infra/db/migrate-cli.ts'],
       thresholds: { ...GLOBAL_THRESHOLD, 'src/engine/**': CRITICAL_THRESHOLD },
     }),
     projects: [

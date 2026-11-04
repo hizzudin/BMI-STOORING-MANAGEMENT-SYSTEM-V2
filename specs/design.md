@@ -80,6 +80,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - `UnitOfWork.run(async (tx) => …)` hands every gateway the same transaction; each TX-* of §9.13 is exactly one `run`. Retries are idempotent through an `Idempotency-Key` on every mutating request (NFR-01), stored with its response.
 - Row locks (`SELECT … FOR UPDATE`) for TX-03, TX-05 and TX-21 live inside gateway methods (`lockSkus(ids)`), never in a service.
 - Optimistic lock (NFR-03): every update of an `-- OL` table carries `WHERE version = $n`; a miss raises `ConcurrentUpdateError` → HTTP 409 with a clear message.
+- Migrations: `infra/db/migrate.ts` applies numbered files, each in one transaction, and refuses an applied file that was edited. Its ledger `meta.schema_migrations` lives in schema `meta`, outside the §9 tables in `public`.
 - Schema: the plain SQL migrations are the source of truth (enums, CHECKs, triggers, partial unique indexes of §9). Drizzle table definitions match them and are checked against the migrated database in CI (drift test), so §9 is never changed through Drizzle (D-12).
 
 ## 4. State machines and transition endpoints (D-05)

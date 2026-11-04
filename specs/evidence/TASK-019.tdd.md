@@ -29,4 +29,4 @@ Spec and visual task (DEC-107, PRD v2.18). No code and no requirement change.
 - `Save draft`, `Save`, `Remove` and similar stay on the page: they change no screen.
 - Master-detail rows do not change the right panel: sample data is static.
 - Reports (P1), `SettingsIntegrations` (P1) and new dialogs were designed from the spec text in the kit's style and have not been reviewed by the product owner.
-- About 15 of the 180 pages were looked at by eye as screenshots; the rest passed the automatic checks only.
+- About 10 of the 180 pages were looked at by eye as screenshots; the rest passed the automatic checks only.

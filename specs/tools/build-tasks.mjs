@@ -92,9 +92,8 @@ const derived = TASKS.map((t) => {
   if (!read_.length) read_.push('`PRD.md` sections named in _Scope_; `specs/design.md`');
 
   const verify = [];
-  if (acIds.length) verify.push(`\`int "${acIds.join('|')}"\``);
+  // The int and qa lines are added below, once acceptance criteria and screens have their final task.
   for (const f of t.flows ?? []) verify.push(`\`e2e ${f}\``);
-  if (screenNames.length) verify.push(`\`qa\` ${screenNames.join(', ')} against their artboards`);
   verify.push(...(t.verify ?? []));
   return { ...t, reqIds, screenNames, tables, rules, acIds, skills, read: read_, verifyLines: verify, sections };
 });
@@ -137,7 +136,6 @@ const touchedLabel = (t, s) => {
 for (const t of derived) {
   t.owned = t.screenNames.filter((s) => screenOwner.get(s) === t.id);
   t.touched = t.screenNames.filter((s) => screenOwner.get(s) !== t.id);
-  t.verifyLines = t.verifyLines.filter((v) => !v.startsWith('`int "') && !v.startsWith('`qa`'));
   const head = [];
   if (t.acIds.length) head.push(`\`int "${t.acIds.join('|')}"\``);
   t.verifyLines = [...head, ...t.verifyLines];

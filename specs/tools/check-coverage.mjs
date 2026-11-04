@@ -91,7 +91,7 @@ for (const block of tasks.split(/\n(?=- \[[ x]\] \*\*TASK-)/).slice(1)) {
   const id = block.match(/\*\*(TASK-\d+)\*\*/)[1];
   if (!/_Read_:/.test(block)) gap('Task without _Read_', id);
   if (!/_Skill_:.*ecc:/.test(block)) gap('Task without an ecc: skill', id);
-  if (!/_Verify_:/.test(block)) gap('Task without _Verify_', id);
+  if (!/_Verify_: *\S/.test(block)) gap('Task without _Verify_', id);
   if (/\b(REQ|AC)-[A-Z]+-\d+ to \d+/.test(block.split('\n')[0])) gap('Task with an ID range on its line', id);
 }
 

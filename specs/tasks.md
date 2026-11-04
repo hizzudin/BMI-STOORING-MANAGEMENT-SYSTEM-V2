@@ -83,13 +83,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `PRD.md` sections named in _Scope_; `specs/design.md`
   - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
   - _Verify_: `node specs/tools/check-coverage.mjs` prints Coverage OK; product owner review of the branch
-- [ ] **TASK-005** Local services: WSL Ubuntu on D:, PostgreSQL 16, Redis, docs/dev-setup.md
+- [x] **TASK-005** Local services: WSL Ubuntu on D:, PostgreSQL 16, Redis, docs/dev-setup.md
   - _Scope_: Design D-01. Starts only after the owner says the source files are ready.
   - _Rules_: NFR-14
   - _Read_: `PRD.md` for NFR-14 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-004
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:redis-patterns
-  - _Verify_: `psql -h localhost -c "select version()"` shows 16.x; `redis-cli ping` → PONG; server time zone UTC
+  - _Verify_: DONE 2026-11-04: PostgreSQL 16.15, time zone UTC, redis PONG, both reachable from Windows; WSL needs the keep-alive of docs/dev-setup.md; `psql -h localhost -c "select version()"` shows 16.x; `redis-cli ping` → PONG; server time zone UTC
 - [ ] **TASK-006** Monorepo scaffold (pnpm, Turborepo, strict TS, ESLint, Prettier; api, web, mobile, shared, api-client, chassis-map, config)
   - _Scope_: PRD §8.2 layout; design.md §2 file structure. No feature code.
   - _Rules_: DEC-66, NFR-18
@@ -117,7 +117,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `PRD.md` for NFR-01, NFR-03, NFR-07, BR-10 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-007
   - _Skill_: ecc:hexagonal-architecture, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:redis-patterns
-  - _Verify_: 
+  - _Verify_: `int "UnitOfWork|idempotency|optimistic|TX-18"`; drift test fails on a hand-edited Drizzle column
 - [ ] **TASK-010** OpenAPI pipeline: Zod DTOs → OpenAPI → @bmi/api-client with drift check
   - _Scope_: PRD §8.2 "API contract first".
   - _Rules_: DEC-66
@@ -153,7 +153,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/data-model.md` §9.12, §9.2 (users, user_roles, role_permissions, audit_logs, app_settings, stored_files, user_table_preferences) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-10, BR-14, NFR-02 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-009
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations
-  - _Verify_: 
+  - _Verify_: `int "BR-14|BR-10"`; migration drift test green
 - [ ] **TASK-104** Sign-in, password rules and reset, first sign-in change, lockout, sessions [REQ-IAM-001, REQ-IAM-009]
   - _Scope_: Web session and mobile tokens (§8.2); 5 failures lock 15 min; web idle 30 min, mobile 30 days; "Forgot password?" sends one reset email with an expiring link through an EmailPort adapter (DQ-02, DEC-102); the provider account is part of Q-03, so tests use a fake adapter.
   - _Rules_: NFR-05, NFR-11, DQ-02, DEC-102
@@ -173,14 +173,14 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-005, REQ-IAM-006, REQ-IAM-012, REQ-IAM-013); `docs/prd/data-model.md` §9.2 (role_permissions) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-04, RL-7, BR-03, RL-1, RL-2, RL-3, RL-4, RL-5, RL-6, RL-8, RL-9, RL-10, DEC-08, DEC-09, DEC-10, DEC-19, DEC-29, DEC-34, DEC-37, DEC-93 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AMRolesPermissions, MobileLogin; `docs/prd/ui-action-map.md`: every row of MobileLogin and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-104
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `int "capability matrix"`
 - [ ] **TASK-106** allowedActions framework and its per-record contract test; menu table from capabilities [REQ-IAM-014]
   - _Scope_: Every record type returned later uses this; buttons never come from the role name.
   - _Rules_: BR-02, BR-03, NAV-9
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-014); `PRD.md` for BR-02, BR-03 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-105
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `int "allowedActions contract"`
 - [ ] **TASK-107** Access Manager area: accounts with one role, lock/unlock, deactivate, move System Admin [REQ-IAM-002, REQ-IAM-003, REQ-IAM-004]
   - _Scope_: Users and roles is the Access Manager's own area; the System Admin never opens it.
   - _Acceptance_: AC-IAM-001, AC-IAM-002, AC-IAM-003, AC-IAM-004
@@ -247,7 +247,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/areas/8.1-fup.md` (REQ-FUP-004, REQ-FUP-008); `docs/prd/data-model.md` §9.12 (stored_files) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-13, NFR-11, DEC-32 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-009, TASK-103
   - _Skill_: ecc:hexagonal-architecture, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `int "storage contract"` (R2 run in TASK-128)
 - [ ] **TASK-114** Upload pipeline, server: profiles, type sniffing, worker compression, thumbnails, cleanup, retries, limits [REQ-FUP-001, REQ-FUP-002, REQ-FUP-003, REQ-FUP-005, REQ-FUP-009, REQ-FUP-010, REQ-FUP-013]
   - _Scope_: PRD 8.1 upload profiles and file rules.
   - _Acceptance_: AC-FUP-001, AC-FUP-002, AC-FUP-003, AC-FUP-005, AC-FUP-006, AC-FUP-008
@@ -316,7 +316,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/data-model.md` §9.6, §9.7 (spks, spk_approvals, spk_attachments, spk_part_requests, spk_parts, assignment_modules, spk_assignments) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-15, DEC-104 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-103
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `int "SpkGateway|SPK numbering"`; migration drift test green
 - [ ] **TASK-121** Create SPK header and Submit for approval; SPK sources and priorities; scope lock policy [REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015]
   - _Scope_: Header fields of CreateSPK (title, vehicle, category, priority as an urgency pill, workshop flag, description, source); the step composer is TASK-207. The scope lock (BR-02) is one policy every module calls.
   - _Rules_: BR-01, BR-02, DEC-85, DEC-92
@@ -425,7 +425,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/data-model.md` §9.6 (spk_presets, spk_preset_steps, step_time_events, step_time_corrections, spk_change_requests, mobilisation_location_trail, spk_check_items) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-95 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-120
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `int "assignment migrations"`; migration drift test green
 - [ ] **TASK-202** Engine core on a dummy module: freeze at approval, Locked/Open, submit opens next, executor check [REQ-ENG-001, REQ-ENG-002, REQ-ENG-003]
   - _Scope_: Critical tier (§8.4): design note reviewed first (ADR-0002); the engine imports no module (CI rule).
   - _Acceptance_: AC-ENG-001, AC-SPK-002 (here because it needs steps (engine))
@@ -567,7 +567,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/data-model.md` §9.7, §9.8 (parts_catalog, stock_cards, goods_receipts, goods_receipt_items, gr_corrections, goods_issues, goods_issue_items, stock_adjustments, stock_adjustment_items, spk_purchases, spk_purchase_lines) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-06, DEC-11 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-201
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `unit @bmi/api "stock ledger"`; `int "BR-06"`
 - [ ] **TASK-302** Parts master: add, edit, detail, deactivate [REQ-INV-001, REQ-INV-002, REQ-INV-003]
   - _Scope_: Inventory in Parts mode (REQ-TYR-004 adds Tyres mode).
   - _Acceptance_: AC-INV-005
@@ -606,7 +606,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/areas/4.13-inv.md` (REQ-INV-009); `docs/prd/data-model.md` §9.8 (parts_catalog) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DashboardWarehouse; `docs/prd/ui-action-map.md`: every row of DashboardWarehouse and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-304
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `int "REQ-INV-009"`
 - [ ] **TASK-306** Stock module: issue parts, scope lock, insufficient stock, per-SKU lock, one transaction [REQ-STK-001, REQ-STK-002, REQ-STK-003, REQ-STK-009, REQ-STK-011]
   - _Scope_: Reference module (§8.3) with Mechanic Action; passes the module contract suite; concurrency tests for stock.
   - _Acceptance_: AC-STK-003
@@ -680,7 +680,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `PRD.md` for NFR-12 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-301
   - _Skill_: ecc:redis-patterns, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `int "job idempotency|reconciliation"`
 - [ ] **TASK-313** Goods Receipt "From cancelled SPK" [REQ-SPK-008]
   - _Scope_: Parts bought for a cancelled SPK enter stock and are never billed.
   - _Rules_: BR-06, DEC-58
@@ -791,7 +791,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/data-model.md` §9.10, §9.5, §9.9 (tyre_statuses, tyres, tyre_events, tyre_attachments, tyre_receipts, retread_orders, retread_order_items, retread_attachments, tyre_counts, tyre_count_items, tyre_inspections, part_placements, part_placement_logs, placement_map_snapshots, part_item_types, part_item_type_classes, vehicle_part_items, early_failure_events, maintenance_alerts) and §9.13 for the TX named in _Rules_
   - _Depends_: TASK-301
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: 
+  - _Verify_: `int "tyre migrations"`; migration drift test green
 - [ ] **TASK-502** Tyre status service (always writes tyre_events); tyre statuses master; release of Issued tyres [REQ-TYR-001, REQ-TYR-002, REQ-TYR-003, REQ-TYR-013]
   - _Scope_: §8.3: one service for every tyre change, tested like the SPK machine.
   - _Acceptance_: AC-TYR-007

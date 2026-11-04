@@ -299,3 +299,16 @@ svg.chassis{width:100%;max-width:300px;height:auto;overflow:visible;font-family:
 /* a full card dropped onto a month day turns compact like the others */
 .mday .spkcard:not(.mini){margin-top:4px;padding:4px 8px;border-radius:999px;font-size:11.5px;white-space:nowrap}
 .mday .spkcard:not(.mini) .small,.mday .spkcard:not(.mini) .pill,.mday .spkcard:not(.mini) .grip{display:none}
+
+/* One page per screen: a dialog or side panel is drawn over the page it opens from. */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(20,38,46,.55);display:grid;place-items:center;padding:24px;overflow:auto}
+.overlay.right{place-items:stretch end;padding:18px}
+.overlay.right .panel{width:min(460px,100%);overflow:auto;border-radius:26px}
+.overlay .dialog{max-height:100%;overflow:auto}
+[hidden]{display:none!important}
+tr[data-href]{cursor:pointer}
+tr[data-href]:hover td{background:var(--mist-light)}
+.seg a{padding:6px 14px;border-radius:999px;border:1px solid var(--line-strong);color:var(--muted);text-decoration:none;font-weight:600}
+.seg a.on{background:var(--red);border-color:var(--red);color:#fff}
+a.row{display:flex}
+.head + section.variant,.head + p + section.variant{margin-top:16px}

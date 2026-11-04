@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receive tyres · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="inventory" data-roles="Warehouse Manager:manage|System Admin:manage" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Inventory / Tyres</div><h1>Receive tyres</h1> <span class="seg"><a href="ReceiveTyres.html" class="">New tyres</a><a href="RetreadReceipt.html" class="on">Retread return</a></span><span class="grow"></span></div><section class="variant" id="RetreadReceipt" data-label="Retread return: Accepted goes back to stock, Rejected is scrapped"><div class="grid g2" style="margin-top:14px"><div><div class="card white"><h3><span class="circle-ic"><i data-i="route"></i></span>Dispatch<span class="grow"></span></h3><div class="field"><label>Dispatch</label><select class="input"><option selected>RD-0009 · Vulkanisir Jaya</option></select></div></div><div style="height:14px"></div><div class="tbl"><table><thead><tr><th>Tyre</th><th>Result</th><th class="num">Cost</th></tr></thead><tbody><tr><td>TY-0187</td><td><select class="input"><option>Accepted</option><option>Rejected</option><option>Not returned yet</option></select></td><td class="num"><input class="input" value="1.250.000"></td></tr><tr><td>TY-0201</td><td><select class="input"><option>Not returned yet</option><option>Accepted</option><option>Rejected</option></select></td><td class="num"></td></tr></tbody></table></div></div><div><div class="note "><i data-i="tyre"></i><div>Accepted goes back In Stock with the retread count up by 1; Rejected is Scrapped; Not returned yet stays On Retread.</div></div></div></div><div class="bar"><a class="btn " href="Tyres.html">Cancel</a><button class="btn " type="button">Save draft</button><a class="btn pri" href="Tyres.html" data-act="manage">Confirm receipt</a></div></section></div>
+</main>
+</body>
+</html>

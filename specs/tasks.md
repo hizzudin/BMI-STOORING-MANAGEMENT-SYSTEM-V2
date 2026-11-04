@@ -78,6 +78,12 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `PRD.md` for DEC-106 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
   - _Verify_: check-coverage naming guard; all artboards load after the file renames
+- [x] **TASK-019** Design artifact: one page per screen, dialog and panel; tabs, links and controls of the action map (PRD v2.18)
+  - _Scope_: Design Artifact/ and every link to it. No requirement, table or rule changes.
+  - _Rules_: DEC-107
+  - _Read_: `PRD.md` for DEC-107 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
+  - _Verify_: Every page loads in Chromium with no script error, no empty page and no horizontal overflow; every in-page tab shows content; no broken link; every action map control checked against its page
 - [x] **TASK-004** Build specs: requirements, design, generated tasks, decision index, CONTEXT, ADRs, coverage tool
   - _Scope_: specs/ mirrors the PRD; specs/tools/check-coverage.mjs proves it.
   - _Read_: `PRD.md` sections named in _Scope_; `specs/design.md`
@@ -157,18 +163,18 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-104** Sign-in, password rules and reset, first sign-in change, lockout, sessions [REQ-IAM-001, REQ-IAM-009]
   - _Scope_: Web session and mobile tokens (§8.2); 5 failures lock 15 min; web idle 30 min, mobile 30 days; "Forgot password?" sends one reset email with an expiring link through an EmailPort adapter (DQ-02, DEC-102); the provider account is part of Q-03, so tests use a fake adapter.
   - _Rules_: NFR-05, NFR-11, DQ-02, DEC-102
-  - _Screens built here (visual target)_: [`WebLogin`](<../Design Artifact/shell/SignIn.html#WebLogin>), [`ChangePassword`](<../Design Artifact/shell/SignIn.html#ChangePassword>)
-  - _Screens touched_: [`MobileLogin`](<../Design Artifact/mobile/MobileApp.html#MobileLogin>) (built later in TASK-704, which shows what this task provides), [`AMAccountForm`](<../Design Artifact/access/UsersRoles.html#AMAccountForm>) (built later in TASK-107, which shows what this task provides)
+  - _Screens built here (visual target)_: [`WebLogin`](<../Design Artifact/shell/WebLogin.html#WebLogin>), [`ChangePassword`](<../Design Artifact/shell/ChangePassword.html#ChangePassword>), [`ForgotPassword`](<../Design Artifact/shell/ForgotPassword.html#ForgotPassword>), [`ResetPassword`](<../Design Artifact/shell/ResetPassword.html#ResetPassword>)
+  - _Screens touched_: [`MobileLogin`](<../Design Artifact/mobile/MobileLogin.html#MobileLogin>) (built later in TASK-704, which shows what this task provides), [`AMAccountForm`](<../Design Artifact/access/AMAccountForm.html#AMAccountForm>) (built later in TASK-107, which shows what this task provides)
   - _Data_: `users` (§9.2)
   - _Journey_: FLW-AM-04 Lock, unlock or deactivate an account
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-001, REQ-IAM-009); `docs/prd/data-model.md` §9.2 (users) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-05, NFR-11, DEC-102 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for WebLogin, MobileLogin, AMAccountForm, ChangePassword; `docs/prd/ui-action-map.md`: every row of WebLogin, MobileLogin, ChangePassword and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-AM-04 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-103, TASK-010, TASK-126
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, security-reviewer, ecc:security-review, ecc:production-audit, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-AM-04`; `e2e auth`; `qa` WebLogin, ChangePassword against their artboards
+  - _Verify_: `e2e FLW-AM-04`; `e2e auth`; `qa` WebLogin, ChangePassword, ForgotPassword, ResetPassword against their artboards
 - [ ] **TASK-105** Permission catalogue, role_permissions seed from §2.2, effective capabilities, guard decorator, GET /me, role × capability matrix test [REQ-IAM-005, REQ-IAM-006, REQ-IAM-012, REQ-IAM-013]
   - _Scope_: PRD §2.1 to §2.4 exactly: ten roles, the catalogue codes, X/V/S/L cells, Setup-mode removal, System Admin rules.
   - _Rules_: NFR-04, RL-7, BR-03, NAV-9, RL-1, RL-2, RL-3, RL-4, RL-5, RL-6, RL-8, RL-9, RL-10, DEC-08, DEC-09, DEC-10, DEC-19, DEC-29, DEC-34, DEC-37, DEC-93
-  - _Screens touched_: [`AMRolesPermissions`](<../Design Artifact/access/UsersRoles.html#AMRolesPermissions>) (built later in TASK-108, which shows what this task provides), [`MobileLogin`](<../Design Artifact/mobile/MobileApp.html#MobileLogin>) (built later in TASK-704, which shows what this task provides)
+  - _Screens touched_: [`AMRolesPermissions`](<../Design Artifact/access/AMRolesPermissions.html#AMRolesPermissions>) (built later in TASK-108, which shows what this task provides), [`MobileLogin`](<../Design Artifact/mobile/MobileLogin.html#MobileLogin>) (built later in TASK-704, which shows what this task provides)
   - _Data_: `role_permissions` (§9.2)
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-005, REQ-IAM-006, REQ-IAM-012, REQ-IAM-013); `docs/prd/data-model.md` §9.2 (role_permissions) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-04, RL-7, BR-03, RL-1, RL-2, RL-3, RL-4, RL-5, RL-6, RL-8, RL-9, RL-10, DEC-08, DEC-09, DEC-10, DEC-19, DEC-29, DEC-34, DEC-37, DEC-93 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AMRolesPermissions, MobileLogin; `docs/prd/ui-action-map.md`: every row of MobileLogin and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-104
@@ -185,8 +191,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Users and roles is the Access Manager's own area; the System Admin never opens it.
   - _Acceptance_: AC-IAM-001, AC-IAM-002, AC-IAM-003, AC-IAM-004
   - _Rules_: RL-1, RL-4, BR-14, DEC-28
-  - _Screens built here (visual target)_: [`UsersRoles`](<../Design Artifact/access/UsersRoles.html#UsersRoles>), [`AMAccountForm`](<../Design Artifact/access/UsersRoles.html#AMAccountForm>)
-  - _Screens touched_: [`AMAccessHistory`](<../Design Artifact/access/UsersRoles.html#AMAccessHistory>) (built later in TASK-110, which shows what this task provides)
+  - _Screens built here (visual target)_: [`UsersRoles`](<../Design Artifact/access/UsersRoles.html#UsersRoles>), [`AMAccountForm`](<../Design Artifact/access/AMAccountForm.html#AMAccountForm>)
+  - _Screens touched_: [`AMAccessHistory`](<../Design Artifact/access/AMAccessHistory.html#AMAccessHistory>) (built later in TASK-110, which shows what this task provides)
   - _Data_: `users` (§9.2), `user_roles` (§9.2), `audit_logs` (§9.2)
   - _Journey_: FLW-AM-01 Create an account; FLW-AM-03 Move the System Admin role; FLW-AM-04 Lock, unlock or deactivate an account
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-002, REQ-IAM-003, REQ-IAM-004); `docs/prd/data-model.md` §9.2 (users, user_roles, audit_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for RL-1, RL-4, BR-14, DEC-28 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for UsersRoles, AMAccountForm, AMAccessHistory; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-AM-01, FLW-AM-03, FLW-AM-04 and `specs/tdd-user-journeys.md` for the same IDs
@@ -195,7 +201,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Verify_: `int "AC-IAM-001|AC-IAM-002|AC-IAM-003|AC-IAM-004"`; `e2e FLW-AM-01`; `e2e FLW-AM-03`; `e2e FLW-AM-04`; `qa` UsersRoles, AMAccountForm against their artboards
 - [ ] **TASK-108** Roles and permissions matrix with locked cells [REQ-IAM-005]
   - _Scope_: Edits change what users see on the next page load (NAV-9).
-  - _Screens built here (visual target)_: [`AMRolesPermissions`](<../Design Artifact/access/UsersRoles.html#AMRolesPermissions>)
+  - _Screens built here (visual target)_: [`AMRolesPermissions`](<../Design Artifact/access/AMRolesPermissions.html#AMRolesPermissions>)
   - _Data_: `role_permissions` (§9.2)
   - _Journey_: FLW-AM-02 Change a role or its permissions
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-005); `docs/prd/data-model.md` §9.2 (role_permissions) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AMRolesPermissions; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-AM-02 and `specs/tdd-user-journeys.md` for the same IDs
@@ -205,7 +211,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-109** Planner approval switch with kinds, end time, audit and notice [REQ-IAM-008]
   - _Scope_: BR-03 still applies to Planners.
   - _Rules_: RL-7, BR-04, TX-20, DEC-35, DEC-48
-  - _Screens touched_: [`AMRolesPermissions`](<../Design Artifact/access/UsersRoles.html#AMRolesPermissions>) (built in TASK-108; extend and regression-check it)
+  - _Screens touched_: [`AMRolesPermissions`](<../Design Artifact/access/AMRolesPermissions.html#AMRolesPermissions>) (built in TASK-108; extend and regression-check it)
   - _Journey_: FLW-AM-06 Let Planners approve for a while
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-008); `PRD.md` for RL-7, BR-04, DEC-35, DEC-48 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AMRolesPermissions; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-AM-06 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-108
@@ -214,7 +220,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-110** Audit writer, Audit log page with export, access history, monthly audit archive [REQ-IAM-007]
   - _Scope_: Every later state change writes through this writer with before, after and the self-decision flag.
   - _Rules_: NFR-02, NFR-17, DEC-57, DEC-74
-  - _Screens built here (visual target)_: [`AuditLog`](<../Design Artifact/access/AuditLog.html#AuditLog>), [`AMAccessHistory`](<../Design Artifact/access/UsersRoles.html#AMAccessHistory>)
+  - _Screens built here (visual target)_: [`AuditLog`](<../Design Artifact/access/AuditLog.html#AuditLog>), [`AMAccessHistory`](<../Design Artifact/access/AMAccessHistory.html#AMAccessHistory>)
   - _Data_: `audit_logs` (§9.2), `export_logs` (§9.12)
   - _Journey_: FLW-SA-06 Oversight; FLW-AM-05 Review access changes
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-007); `docs/prd/data-model.md` §9.12, §9.2 (audit_logs, export_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-02, NFR-17, DEC-57, DEC-74 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AuditLog, AMAccessHistory; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-06, FLW-AM-05 and `specs/tdd-user-journeys.md` for the same IDs
@@ -225,16 +231,16 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: One-way switch; only the System Admin and Access Managers sign in during Setup.
   - _Acceptance_: AC-IAM-006
   - _Rules_: BR-04, BR-12, DEC-55, DEC-56
-  - _Screens built here (visual target)_: [`SetupGoLive`](<../Design Artifact/setup/SetupGoLive.html#SetupGoLive>)
-  - _Screens touched_: [`OpeningBalance`](<../Design Artifact/inventory/StockOpname.html#OpeningBalance>) (built later in TASK-311, which shows what this task provides)
+  - _Screens built here (visual target)_: [`SetupGoLive`](<../Design Artifact/setup/SetupGoLive.html#SetupGoLive>), [`GoLiveConfirm`](<../Design Artifact/setup/GoLiveConfirm.html#GoLiveConfirm>)
+  - _Screens touched_: [`OpeningBalance`](<../Design Artifact/inventory/OpeningBalance.html#OpeningBalance>) (built later in TASK-311, which shows what this task provides)
   - _Journey_: FLW-SA-08 Set up and go live
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-010); `PRD.md` for BR-04, BR-12, DEC-55, DEC-56 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for SetupGoLive, OpeningBalance; `docs/prd/ui-action-map.md`: every row of OpeningBalance and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-08 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-105
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-IAM-006"`; `e2e FLW-SA-08`; `qa` SetupGoLive against their artboards
+  - _Verify_: `int "AC-IAM-006"`; `e2e FLW-SA-08`; `qa` SetupGoLive, GoLiveConfirm against their artboards
 - [ ] **TASK-112** Vendor master [REQ-INV-014]
   - _Scope_: Used later by GR, Part Purchase, external services and retread dispatch.
-  - _Screens built here (visual target)_: [`SettingsVendors`](<../Design Artifact/settings/MasterData.html#SettingsVendors>)
+  - _Screens built here (visual target)_: [`SettingsVendors`](<../Design Artifact/settings/SettingsVendors.html#SettingsVendors>)
   - _Journey_: FLW-SA-09 Maintain vendors
   - _Read_: `docs/prd/areas/4.13-inv.md` (REQ-INV-014); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for SettingsVendors; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-09 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-106, TASK-126
@@ -252,7 +258,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: PRD 8.1 upload profiles and file rules.
   - _Acceptance_: AC-FUP-001, AC-FUP-002, AC-FUP-003, AC-FUP-005, AC-FUP-006, AC-FUP-008
   - _Rules_: NFR-06, DEC-31
-  - _Screens touched_: [`FileUploadStates`](<../Design Artifact/components/FileUpload.html#FileUploadStates>) (built later in TASK-115, which shows what this task provides)
+  - _Screens touched_: [`FileUploadStates`](<../Design Artifact/components/FileUploadStates.html#FileUploadStates>) (built later in TASK-115, which shows what this task provides)
   - _Data_: `stored_files` (§9.12)
   - _Read_: `docs/prd/areas/8.1-fup.md` (REQ-FUP-001, REQ-FUP-002, REQ-FUP-003, REQ-FUP-005, REQ-FUP-009, REQ-FUP-010, REQ-FUP-013); `docs/prd/data-model.md` §9.12 (stored_files) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-06, DEC-31 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for FileUploadStates; `docs/prd/ui-action-map.md`: every row of FileUploadStates and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-113
@@ -262,8 +268,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: One FileDrop and one PhotoViewer used by every screen with a file slot (7.5).
   - _Acceptance_: AC-FUP-004, AC-FUP-009
   - _Rules_: C-29, DEC-33
-  - _Screens built here (visual target)_: [`FileUploadStates`](<../Design Artifact/components/FileUpload.html#FileUploadStates>), [`PhotoViewer`](<../Design Artifact/components/PhotoViewer.html#PhotoViewer>)
-  - _Screens touched_: [`MechanicMobileUpload`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileUpload>) (built later in TASK-712, which shows what this task provides)
+  - _Screens built here (visual target)_: [`FileUploadStates`](<../Design Artifact/components/FileUploadStates.html#FileUploadStates>), [`PhotoViewer`](<../Design Artifact/components/PhotoViewer.html#PhotoViewer>)
+  - _Screens touched_: [`MechanicMobileUpload`](<../Design Artifact/mobile/MechanicMobileUpload.html#MechanicMobileUpload>) (built later in TASK-712, which shows what this task provides)
   - _Read_: `docs/prd/areas/8.1-fup.md` (REQ-FUP-006, REQ-FUP-007, REQ-FUP-012, REQ-FUP-014, REQ-FUP-016); `PRD.md` for DEC-33 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for FileUploadStates, MechanicMobileUpload, PhotoViewer; `docs/prd/ui-action-map.md`: every row of FileUploadStates, PhotoViewer and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-114, TASK-126
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
@@ -273,7 +279,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Acceptance_: AC-PLC-007, AC-PLC-010
   - _Rules_: BR-01, DEC-68, DEC-69, DEC-73
   - _Screens built here (visual target)_: [`ChassisLayouts`](<../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>)
-  - _Screens touched_: [`PlacementTrailer`](<../Design Artifact/steps/Placement.html#PlacementTrailer>) (built later in TASK-508, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built later in TASK-119, which shows what this task provides)
+  - _Screens touched_: [`PlacementTrailer`](<../Design Artifact/steps/PlacementTrailer.html#PlacementTrailer>) (built later in TASK-508, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built later in TASK-119, which shows what this task provides)
   - _Data_: `vehicle_classes` (§9.3), `chassis_layouts` (§9.3), `part_positions` (§9.3)
   - _Journey_: FLW-SA-05 Master data
   - _Read_: `docs/prd/areas/4.6-plc.md` (REQ-PLC-013, REQ-PLC-017, REQ-PLC-019, REQ-PLC-020); `docs/prd/data-model.md` §9.3 (vehicle_classes, chassis_layouts, part_positions) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, DEC-68, DEC-69, DEC-73 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ChassisLayouts, PlacementTrailer, Placement, Vehicles; `docs/prd/ui-action-map.md`: every row of PlacementTrailer, Placement, Vehicles and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-05 and `specs/tdd-user-journeys.md` for the same IDs
@@ -290,7 +296,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-118** Document types master [REQ-DOC-001, REQ-DOC-002]
   - _Scope_: Warning days per type (DEC-20; also editable in Alert rules, DEC-86).
   - _Rules_: DEC-20
-  - _Screens built here (visual target)_: [`DocumentTypes`](<../Design Artifact/settings/MasterData.html#DocumentTypes>)
+  - _Screens built here (visual target)_: [`DocumentTypes`](<../Design Artifact/settings/DocumentTypes.html#DocumentTypes>)
   - _Data_: `document_types` (§9.4), `document_type_classes` (§9.4), `vehicle_documents` (§9.4), `document_corrections` (§9.4)
   - _Journey_: FLW-SA-02 Documents
   - _Read_: `docs/prd/areas/4.7-doc.md` (REQ-DOC-001, REQ-DOC-002); `docs/prd/data-model.md` §9.4 (document_types, document_type_classes, vehicle_documents, document_corrections) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-20 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DocumentTypes; `docs/prd/ui-action-map.md`: every row of DocumentTypes and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-02 and `specs/tdd-user-journeys.md` for the same IDs
@@ -301,14 +307,14 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: A head and a trailer tail are separate vehicles (REQ-PLC-020).
   - _Acceptance_: AC-VEH-003, AC-IAM-009 (here because it needs the Vehicles item and GET /vehicles)
   - _Rules_: BR-10, DEC-17
-  - _Screens built here (visual target)_: [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>), [`VehicleOverview`](<../Design Artifact/fleet/Vehicle.html#VehicleOverview>), [`AddVehicle`](<../Design Artifact/fleet/VehicleForm.html#AddVehicle>), [`VehicleEdit`](<../Design Artifact/fleet/VehicleForm.html#VehicleEdit>), [`VehicleDeactivate`](<../Design Artifact/fleet/VehicleForm.html#VehicleDeactivate>)
-  - _Screens touched_: [`VehicleDocuments`](<../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) (built later in TASK-601, which shows what this task provides), [`VehicleSPKHistory`](<../Design Artifact/fleet/Vehicle.html#VehicleSPKHistory>) (built later in TASK-606, which shows what this task provides), [`VehicleInspections`](<../Design Artifact/fleet/Vehicle.html#VehicleInspections>) (built later in TASK-609, which shows what this task provides), [`PlacementTrailer`](<../Design Artifact/steps/Placement.html#PlacementTrailer>) (built later in TASK-508, which shows what this task provides)
+  - _Screens built here (visual target)_: [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>), [`VehicleOverview`](<../Design Artifact/fleet/VehicleOverview.html#VehicleOverview>), [`AddVehicle`](<../Design Artifact/fleet/AddVehicle.html#AddVehicle>), [`VehicleEdit`](<../Design Artifact/fleet/VehicleEdit.html#VehicleEdit>), [`VehicleDeactivate`](<../Design Artifact/fleet/VehicleDeactivate.html#VehicleDeactivate>), [`VehicleChassis`](<../Design Artifact/fleet/VehicleChassis.html#VehicleChassis>), [`ChangeDriver`](<../Design Artifact/fleet/ChangeDriver.html#ChangeDriver>)
+  - _Screens touched_: [`VehicleDocuments`](<../Design Artifact/fleet/VehicleDocuments.html#VehicleDocuments>) (built later in TASK-601, which shows what this task provides), [`VehicleSPKHistory`](<../Design Artifact/fleet/VehicleSPKHistory.html#VehicleSPKHistory>) (built later in TASK-606, which shows what this task provides), [`VehicleInspections`](<../Design Artifact/fleet/VehicleInspections.html#VehicleInspections>) (built later in TASK-609, which shows what this task provides), [`PlacementTrailer`](<../Design Artifact/steps/PlacementTrailer.html#PlacementTrailer>) (built later in TASK-508, which shows what this task provides)
   - _Data_: `vehicles` (§9.3), `vehicle_documents` (§9.4), `audit_logs` (§9.2), `drivers` (§9.3)
   - _Journey_: FLW-SA-01 Add a vehicle with its first data; FLW-SA-03 Keep a vehicle up to date
   - _Read_: `docs/prd/areas/4.10-veh.md` (REQ-VEH-001, REQ-VEH-002, REQ-VEH-003, REQ-VEH-004); `docs/prd/areas/4.6-plc.md` (REQ-PLC-018); `docs/prd/data-model.md` §9.2, §9.3, §9.4 (vehicles, vehicle_documents, audit_logs, drivers) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-10, DEC-17 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Vehicles, VehicleOverview, VehicleDocuments, VehicleSPKHistory, VehicleInspections, AddVehicle, VehicleEdit, VehicleDeactivate, PlacementTrailer; `docs/prd/ui-action-map.md`: every row of Vehicles, VehicleOverview, VehicleDocuments, VehicleSPKHistory, VehicleInspections, AddVehicle, VehicleEdit, VehicleDeactivate, PlacementTrailer and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-01, FLW-SA-03 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-116, TASK-118, TASK-106
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-VEH-003|AC-IAM-009"`; `e2e FLW-SA-01`; `e2e FLW-SA-03`; `qa` Vehicles, VehicleOverview, AddVehicle, VehicleEdit, VehicleDeactivate against their artboards
+  - _Verify_: `int "AC-VEH-003|AC-IAM-009"`; `e2e FLW-SA-01`; `e2e FLW-SA-03`; `qa` Vehicles, VehicleOverview, AddVehicle, VehicleEdit, VehicleDeactivate, VehicleChassis, ChangeDriver against their artboards
 - [ ] **TASK-120** SPK migrations and gateway, SPK numbering
   - _Scope_: §9.6 SPK tables used in step 1 (the engine tables come in TASK-201), and spk_number_seq: the number is SPK-yymmddNNNN, yymmdd the WIB date of creation, NNNN at least four digits, never reset and never reused, also after cancel (DEC-104).
   - _Rules_: NFR-15, DEC-104
@@ -320,20 +326,20 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-121** Create SPK header and Submit for approval; SPK sources and priorities; scope lock policy [REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015]
   - _Scope_: Header fields of CreateSPK (title, vehicle, category, priority as an urgency pill, workshop flag, description, source); the step composer is TASK-207. The scope lock (BR-02) is one policy every module calls.
   - _Rules_: BR-01, BR-02, DEC-85, DEC-92
-  - _Screens built here (visual target)_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>)
+  - _Screens built here (visual target)_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>), [`PartPicker`](<../Design Artifact/spk/PartPicker.html#PartPicker>)
   - _Screens touched_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built later in TASK-125, which shows what this task provides), [`Approvals`](<../Design Artifact/approvals/Approvals.html#Approvals>) (built later in TASK-122, which shows what this task provides)
   - _Data_: `spks` (§9.6), `spk_parts` (§9.7), `vehicles` (§9.3)
   - _Journey_: FLW-PLN-01 Create a planned Surat Perintah Kerja
   - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015); `docs/prd/data-model.md` §9.3, §9.6, §9.7 (spks, spk_parts, vehicles) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, BR-02, DEC-85, DEC-92 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, SPKList, Approvals; `docs/prd/ui-action-map.md`: every row of CreateSPK, SPKList, Approvals and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-01 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-120, TASK-119, TASK-106, TASK-130
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-PLN-01`; `qa` CreateSPK against their artboards
+  - _Verify_: `e2e FLW-PLN-01`; `qa` CreateSPK, PartPicker against their artboards
 - [ ] **TASK-122** Approvals inbox, ApprovalReview, canApprove policy, stamps, Self-approved [REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007]
   - _Scope_: One canApprove for every approval kind (§8.3); the stamp is the one authored motion (DEC-83).
   - _Acceptance_: AC-SPK-001, AC-SPK-005, AC-SPK-006, AC-APR-001, AC-APR-002, AC-APR-003, AC-APR-004, AC-IAM-005 (here because it needs the Approvals inbox)
   - _Rules_: BR-04, BR-05, BR-03, C-24, C-25, DEC-02, DEC-03, DEC-83
-  - _Screens built here (visual target)_: [`ApprovalReview`](<../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>), [`Approvals`](<../Design Artifact/approvals/Approvals.html#Approvals>), [`ApprovalsHistory`](<../Design Artifact/approvals/Approvals.html#ApprovalsHistory>)
-  - _Screens touched_: [`SPKRejected`](<../Design Artifact/spk/SPKDetail.html#SPKRejected>) (built later in TASK-123, which shows what this task provides), [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built in TASK-125; extend and regression-check it), [`Dashboard`](<../Design Artifact/dashboard/Dashboard.html#Dashboard>) (built later in TASK-615, which shows what this task provides), [`AmendmentReview`](<../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>) (built later in TASK-611, which shows what this task provides), [`CompletionReview`](<../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) (built later in TASK-210, which shows what this task provides), [`StockOpnameApproval`](<../Design Artifact/approvals/ApprovalReview.html#StockOpnameApproval>) (built later in TASK-310, which shows what this task provides), [`TyreCountApproval`](<../Design Artifact/approvals/ApprovalReview.html#TyreCountApproval>) (built later in TASK-506, which shows what this task provides)
+  - _Screens built here (visual target)_: [`ApprovalReview`](<../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>), [`Approvals`](<../Design Artifact/approvals/Approvals.html#Approvals>), [`ApprovalsHistory`](<../Design Artifact/approvals/ApprovalsHistory.html#ApprovalsHistory>)
+  - _Screens touched_: [`SPKRejected`](<../Design Artifact/spk/SPKRejected.html#SPKRejected>) (built later in TASK-123, which shows what this task provides), [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built in TASK-125; extend and regression-check it), [`Dashboard`](<../Design Artifact/dashboard/Dashboard.html#Dashboard>) (built later in TASK-615, which shows what this task provides), [`AmendmentReview`](<../Design Artifact/approvals/AmendmentReview.html#AmendmentReview>) (built later in TASK-611, which shows what this task provides), [`CompletionReview`](<../Design Artifact/approvals/CompletionReview.html#CompletionReview>) (built later in TASK-210, which shows what this task provides), [`StockOpnameApproval`](<../Design Artifact/approvals/StockOpnameApproval.html#StockOpnameApproval>) (built later in TASK-310, which shows what this task provides), [`TyreCountApproval`](<../Design Artifact/approvals/TyreCountApproval.html#TyreCountApproval>) (built later in TASK-506, which shows what this task provides)
   - _Data_: `spks` (§9.6), `spk_assignments` (§9.6), `spk_approvals` (§9.6)
   - _Journey_: FLW-APR-01 Approve SPK creation; FLW-APR-06 Look back and follow up
   - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-005, REQ-SPK-006, REQ-SPK-007); `docs/prd/areas/4.15-apr.md` (REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007); `docs/prd/data-model.md` §9.6 (spks, spk_assignments, spk_approvals) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-04, BR-05, BR-03, DEC-02, DEC-03, DEC-83 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ApprovalReview, SPKRejected, SPKList, Approvals, Dashboard, AmendmentReview, CompletionReview, StockOpnameApproval, TyreCountApproval, ApprovalsHistory; `docs/prd/ui-action-map.md`: every row of ApprovalReview, SPKRejected, SPKList, Approvals, Dashboard, AmendmentReview, CompletionReview, StockOpnameApproval, TyreCountApproval, ApprovalsHistory and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-APR-01, FLW-APR-06 and `specs/tdd-user-journeys.md` for the same IDs
@@ -344,7 +350,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: T5 (edit and resubmit) and T6 (creator cancels a Draft or Rejected SPK with a reason) of SM-SPK, as DEC-101 confirms; the rejector cannot revert a rejection.
   - _Acceptance_: AC-SPK-005
   - _Rules_: DQ-06, DEC-101
-  - _Screens built here (visual target)_: [`SPKRejected`](<../Design Artifact/spk/SPKDetail.html#SPKRejected>)
+  - _Screens built here (visual target)_: [`SPKRejected`](<../Design Artifact/spk/SPKRejected.html#SPKRejected>)
   - _Screens touched_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built in TASK-125; extend and regression-check it)
   - _Data_: `spk_approvals` (§9.6)
   - _Journey_: FLW-PLN-03 Rejected SPK
@@ -355,18 +361,18 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-124** Approver cancel with reason (reversals completed by TASK-308 and TASK-502) [REQ-SPK-008]
   - _Scope_: T15 of SM-SPK; TASK-308 adds the reversal of posted issues and TASK-502 the release of Issued tyres.
   - _Rules_: BR-06, TX-14
-  - _Screens built here (visual target)_: [`CancelSPK`](<../Design Artifact/components/Dialogs.html#CancelSPK>)
+  - _Screens built here (visual target)_: [`CancelSPK`](<../Design Artifact/spk/CancelSPK.html#CancelSPK>), [`AssignStep`](<../Design Artifact/spk/AssignStep.html#AssignStep>), [`CorrectStepTime`](<../Design Artifact/spk/CorrectStepTime.html#CorrectStepTime>)
   - _Screens touched_: [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
   - _Data_: `spks` (§9.6), `goods_issues` (§9.8; this task's part is extended in TASK-308), `tyres` (§9.9; this task's part is extended in TASK-502)
   - _Journey_: FLW-APR-05 Cancel an SPK
   - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-008); `docs/prd/data-model.md` §9.6, §9.8, §9.9 (spks, goods_issues, tyres) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-06 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CancelSPK, SPKDetail; `docs/prd/ui-action-map.md`: every row of CancelSPK, SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-APR-05 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-122
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-APR-05`; `qa` CancelSPK against their artboards; regression check of SPKDetail
+  - _Verify_: `e2e FLW-APR-05`; `qa` CancelSPK, AssignStep, CorrectStepTime against their artboards; regression check of SPKDetail
 - [ ] **TASK-125** SPK list tabs and SPK detail with step cards and stamps [REQ-SPK-010, REQ-SPK-011]
   - _Scope_: StepTracker and StepCard components (7.5).
   - _Screens built here (visual target)_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>)
-  - _Screens touched_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) (built later in TASK-205, which shows what this task provides)
+  - _Screens touched_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetailVerify.html#SPKDetailVerify>) (built later in TASK-205, which shows what this task provides)
   - _Data_: `spks` (§9.6), `spk_assignments` (§9.6)
   - _Journey_: FLW-PLN-01 Create a planned Surat Perintah Kerja
   - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-010, REQ-SPK-011); `docs/prd/data-model.md` §9.6 (spks, spk_assignments) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKList, SPKDetail, SPKDetailVerify; `docs/prd/ui-action-map.md`: every row of SPKList, SPKDetail, SPKDetailVerify and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-01 and `specs/tdd-user-journeys.md` for the same IDs
@@ -376,11 +382,11 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-126** Web shell and design kit: floating rail, main sheet, pill tabs, header, Settings home, tables, dialogs, shared controls, navigation rules
   - _Scope_: Re-create the shell, tokens and kit from DESIGN.md and Design Artifact/_kit, shell/ and components/ (never import them). Every shared component of ui.md 7.5 exists once. Every shared control C-01 to C-34 behaves as ui-action-map.md says. English only until the translation (Q-05). Menu items from capabilities are wired in TASK-106; this task builds the shell and kit only.
   - _Rules_: NFR-08, NFR-09, NFR-10, C-01, C-02, C-03, C-04, C-06, C-07, C-08, C-09, C-10, C-11, C-12, C-13, C-14, C-15, C-16, C-17, C-26, C-27, C-28, C-30, C-31, C-32, C-33, C-34, NAV-1, NAV-2, NAV-3, NAV-4, NAV-5, NAV-6, NAV-7, NAV-8, DEC-81, DEC-82, DEC-84, DEC-94, DEC-96
-  - _Screens built here (visual target)_: [`AppShellCollapsed`](<../Design Artifact/shell/AppShell.html#AppShellCollapsed>), [`Settings`](<../Design Artifact/settings/Settings.html#Settings>)
+  - _Screens built here (visual target)_: [`AppShellCollapsed`](<../Design Artifact/shell/AppShellCollapsed.html#AppShellCollapsed>), [`Settings`](<../Design Artifact/settings/Settings.html#Settings>), [`UserMenu`](<../Design Artifact/shell/UserMenu.html#UserMenu>), [`LeaveConfirm`](<../Design Artifact/components/LeaveConfirm.html#LeaveConfirm>), [`DiscardConfirm`](<../Design Artifact/components/DiscardConfirm.html#DiscardConfirm>), [`DeactivateMaster`](<../Design Artifact/components/DeactivateMaster.html#DeactivateMaster>)
   - _Read_: `PRD.md` for NFR-08, NFR-09, NFR-10, DEC-81, DEC-82, DEC-84, DEC-94, DEC-96 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AppShellCollapsed, Settings; `docs/prd/ui-action-map.md`: every row of AppShellCollapsed and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-006
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `qa` AppShellCollapsed, Settings against their artboards
+  - _Verify_: `qa` AppShellCollapsed, Settings, UserMenu, LeaveConfirm, DiscardConfirm, DeactivateMaster against their artboards
 - [ ] **TASK-127** Mobile spike: A) sign-in, camera, location on an Android 8 phone; B) push and signed APK — B BLOCKED Q-03
   - _Scope_: §8.3 mobile spike; design D-11.
   - _Rules_: NFR-18, DEC-66
@@ -398,7 +404,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-130** In-app notifications foundation: outbox, recipient matrix, notification center, bell [REQ-NTF-001, REQ-NTF-005]
   - _Scope_: §8.3 outbox with a dedupe key. Built in phase 1 because approvers are notified from T2 on; every later task adds its own events to the REQ-NTF-005 matrix.
   - _Rules_: C-03, DEC-27
-  - _Screens built here (visual target)_: [`NotificationCenter`](<../Design Artifact/shell/Notifications.html#NotificationCenter>)
+  - _Screens built here (visual target)_: [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>)
   - _Data_: `notifications` (§9.12), `notification_deliveries` (§9.12)
   - _Read_: `docs/prd/areas/4.19-ntf.md` (REQ-NTF-001, REQ-NTF-005); `docs/prd/data-model.md` §9.12 (notifications, notification_deliveries) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-27 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for NotificationCenter; `docs/prd/ui-action-map.md`: every row of NotificationCenter and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-103, TASK-009, TASK-126
@@ -439,28 +445,30 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-203** Module contract, registry service and the contract test suite [REQ-REG-002, REQ-REG-005, REQ-REG-006]
   - _Scope_: A module is one API folder plus one step screen, wired only through its registry row (§8.2).
   - _Rules_: BR-10, NFR-11, DEC-05
-  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`SettingsSPKPresets`](<../Design Artifact/settings/SPKPresets.html#SettingsSPKPresets>) (built later in TASK-208, which shows what this task provides)
+  - _Screens built here (visual target)_: [`StartFromPreset`](<../Design Artifact/spk/StartFromPreset.html#StartFromPreset>), [`SavePreset`](<../Design Artifact/spk/SavePreset.html#SavePreset>)
+  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`SettingsSPKPresets`](<../Design Artifact/settings/SettingsSPKPresets.html#SettingsSPKPresets>) (built later in TASK-208, which shows what this task provides)
   - _Data_: `assignment_modules` (§9.6)
   - _Read_: `docs/prd/areas/4.3-reg.md` (REQ-REG-002, REQ-REG-005, REQ-REG-006); `docs/prd/data-model.md` §9.6 (assignment_modules) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-10, NFR-11, DEC-05 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, SettingsSPKPresets; `docs/prd/ui-action-map.md`: every row of CreateSPK and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-202
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: regression check of CreateSPK
+  - _Verify_: `qa` StartFromPreset, SavePreset against their artboards; regression check of CreateSPK
 - [ ] **TASK-204** Step time: Start, Start earlier, Pause/Resume, external hand-over start, tracks_work_time, System Admin time correction [REQ-ENG-012, REQ-ENG-013, REQ-ENG-014, REQ-ENG-015, REQ-ENG-016, REQ-ENG-017]
   - _Scope_: Append-only step time log per attempt.
   - _Acceptance_: AC-ENG-007, AC-ENG-008, AC-ENG-009, AC-ENG-010
   - _Rules_: DEC-87, DEC-95, C-19, C-20, C-21, C-22
-  - _Screens touched_: [`Mechanic`](<../Design Artifact/steps/MechanicAction.html#Mechanic>) (built later in TASK-402, which shows what this task provides), [`Stock`](<../Design Artifact/steps/Stock.html#Stock>) (built later in TASK-306, which shows what this task provides), [`PartPurchase`](<../Design Artifact/steps/PartPurchase.html#PartPurchase>) (built later in TASK-309, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`DocStep`](<../Design Artifact/steps/DocStep.html#DocStep>) (built later in TASK-603, which shows what this task provides), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`StepReturned`](<../Design Artifact/spk/SPKDetail.html#StepReturned>) (built later in TASK-205, which shows what this task provides), [`MechanicExternal`](<../Design Artifact/steps/MechanicAction.html#MechanicExternal>) (built later in TASK-402, which shows what this task provides)
+  - _Screens built here (visual target)_: [`PauseStep`](<../Design Artifact/steps/PauseStep.html#PauseStep>), [`StartEarlier`](<../Design Artifact/steps/StartEarlier.html#StartEarlier>), [`ReleaseStep`](<../Design Artifact/steps/ReleaseStep.html#ReleaseStep>), [`SwitchTeam`](<../Design Artifact/steps/SwitchTeam.html#SwitchTeam>), [`CatalogPicker`](<../Design Artifact/steps/CatalogPicker.html#CatalogPicker>), [`NothingBought`](<../Design Artifact/steps/NothingBought.html#NothingBought>), [`StepPaused`](<../Design Artifact/steps/StepPaused.html#StepPaused>), [`MobilePauseSheet`](<../Design Artifact/mobile/MobilePauseSheet.html#MobilePauseSheet>)
+  - _Screens touched_: [`Mechanic`](<../Design Artifact/steps/Mechanic.html#Mechanic>) (built later in TASK-402, which shows what this task provides), [`Stock`](<../Design Artifact/steps/Stock.html#Stock>) (built later in TASK-306, which shows what this task provides), [`PartPurchase`](<../Design Artifact/steps/PartPurchase.html#PartPurchase>) (built later in TASK-309, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`DocStep`](<../Design Artifact/steps/DocStep.html#DocStep>) (built later in TASK-603, which shows what this task provides), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`StepReturned`](<../Design Artifact/spk/StepReturned.html#StepReturned>) (built later in TASK-205, which shows what this task provides), [`MechanicExternal`](<../Design Artifact/steps/MechanicExternal.html#MechanicExternal>) (built later in TASK-402, which shows what this task provides)
   - _Data_: `spk_assignments` (§9.6), `step_time_events` (§9.6), `step_time_corrections` (§9.6), `audit_logs` (§9.2), `assignment_modules` (§9.6)
   - _Journey_: FLW-MEC-07 Start, pause and resume a step
   - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-012, REQ-ENG-013, REQ-ENG-014, REQ-ENG-015, REQ-ENG-016, REQ-ENG-017); `docs/prd/data-model.md` §9.2, §9.6 (spk_assignments, step_time_events, step_time_corrections, audit_logs, assignment_modules) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-87, DEC-95 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Mechanic, Stock, PartPurchase, Placement, DocStep, MechanicMobileStep, SPKDetail, StepReturned, MechanicExternal; `docs/prd/ui-action-map.md`: every row of Mechanic, Stock, PartPurchase, Placement, DocStep, SPKDetail, StepReturned, MechanicExternal and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-MEC-07 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-202
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-ENG-007|AC-ENG-008|AC-ENG-009|AC-ENG-010"`; `e2e FLW-MEC-07`; regression check of SPKDetail
+  - _Verify_: `int "AC-ENG-007|AC-ENG-008|AC-ENG-009|AC-ENG-010"`; `e2e FLW-MEC-07`; `qa` PauseStep, StartEarlier, ReleaseStep, SwitchTeam, CatalogPicker, NothingBought, StepPaused, MobilePauseSheet against their artboards; regression check of SPKDetail
 - [ ] **TASK-205** Verify and Return with attempts; verification screens [REQ-ENG-005, REQ-ENG-007, REQ-ENG-010, REQ-ENG-015]
   - _Scope_: Photos open in the shared viewer (DEC-33).
   - _Acceptance_: AC-ENG-004, AC-ENG-005
   - _Rules_: BR-03, BR-05, DEC-87, C-18, DEC-04
-  - _Screens built here (visual target)_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>), [`StepVerify`](<../Design Artifact/steps/StepVerify.html#StepVerify>), [`StepReturned`](<../Design Artifact/spk/SPKDetail.html#StepReturned>), [`StepLocked`](<../Design Artifact/spk/SPKDetail.html#StepLocked>)
+  - _Screens built here (visual target)_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetailVerify.html#SPKDetailVerify>), [`StepVerify`](<../Design Artifact/steps/StepVerify.html#StepVerify>), [`StepReturned`](<../Design Artifact/spk/StepReturned.html#StepReturned>), [`StepLocked`](<../Design Artifact/spk/StepLocked.html#StepLocked>)
   - _Screens touched_: [`PhotoViewer`](<../Design Artifact/components/PhotoViewer.html#PhotoViewer>) (built in TASK-115; extend and regression-check it)
   - _Data_: `step_time_events` (§9.6)
   - _Journey_: FLW-PLN-05 Verify a submitted step; FLW-MEC-04 Returned step
@@ -472,7 +480,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: The draft moves with the step.
   - _Acceptance_: AC-ENG-006
   - _Rules_: BR-03, DEC-58, DEC-59
-  - _Screens touched_: [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`MechanicMobileHome`](<../Design Artifact/mobile/MobileApp.html#MechanicMobileHome>) (built later in TASK-712, which shows what this task provides)
+  - _Screens touched_: [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`MechanicMobileHome`](<../Design Artifact/mobile/MechanicMobileHome.html#MechanicMobileHome>) (built later in TASK-712, which shows what this task provides)
   - _Journey_: FLW-PLN-09 Assign a step
   - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-011); `PRD.md` for BR-03, DEC-58, DEC-59 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKDetail, MechanicMobileHome; `docs/prd/ui-action-map.md`: every row of SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-09 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-202
@@ -482,7 +490,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Each module's creation section comes from its registry entry; nothing is hard-coded per module.
   - _Acceptance_: AC-SPK-003, AC-REG-001, AC-REG-002, AC-REG-004
   - _Rules_: DEC-65, DEC-85
-  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`FCCreateSPK`](<../Design Artifact/spk/CreateSPK.html#FCCreateSPK>) (built later in TASK-610, which shows what this task provides), [`FCMobileCreateSPK`](<../Design Artifact/mobile/Requests.html#FCMobileCreateSPK>) (built later in TASK-707, which shows what this task provides), [`CreateSPKFromAlert`](<../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) (built later in TASK-607, which shows what this task provides)
+  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`FCCreateSPK`](<../Design Artifact/spk/FCCreateSPK.html#FCCreateSPK>) (built later in TASK-610, which shows what this task provides), [`FCMobileCreateSPK`](<../Design Artifact/mobile/FCMobileCreateSPK.html#FCMobileCreateSPK>) (built later in TASK-707, which shows what this task provides), [`CreateSPKFromAlert`](<../Design Artifact/spk/CreateSPKFromAlert.html#CreateSPKFromAlert>) (built later in TASK-607, which shows what this task provides)
   - _Data_: `spk_parts` (§9.7), `spks` (§9.6), `spk_assignments` (§9.6), `assignment_modules` (§9.6)
   - _Journey_: FLW-PLN-01 Create a planned Surat Perintah Kerja
   - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-004, REQ-SPK-017); `docs/prd/areas/4.3-reg.md` (REQ-REG-001, REQ-REG-004); `docs/prd/data-model.md` §9.6, §9.7 (spk_parts, spks, spk_assignments, assignment_modules) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-65, DEC-85 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, FCCreateSPK, FCMobileCreateSPK, CreateSPKFromAlert; `docs/prd/ui-action-map.md`: every row of CreateSPK, FCCreateSPK, CreateSPKFromAlert and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-01 and `specs/tdd-user-journeys.md` for the same IDs
@@ -492,7 +500,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-208** SPK presets: Save as preset (versions), start from preset, presets page [REQ-REG-003, REQ-ENG-004]
   - _Scope_: An SPK never follows later preset versions.
   - _Acceptance_: AC-ENG-003, AC-REG-005
-  - _Screens built here (visual target)_: [`SettingsSPKPresets`](<../Design Artifact/settings/SPKPresets.html#SettingsSPKPresets>)
+  - _Screens built here (visual target)_: [`SettingsSPKPresets`](<../Design Artifact/settings/SettingsSPKPresets.html#SettingsSPKPresets>)
   - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it)
   - _Data_: `spk_presets` (§9.6), `spk_preset_steps` (§9.6)
   - _Journey_: FLW-PLN-08 Maintain SPK presets and PM packages, with the System Admin
@@ -503,7 +511,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-209** PM packages per vehicle class [REQ-REG-007]
   - _Scope_: A Towed class uses days only.
   - _Rules_: DEC-70
-  - _Screens built here (visual target)_: [`SettingsPMPackages`](<../Design Artifact/settings/SPKPresets.html#SettingsPMPackages>)
+  - _Screens built here (visual target)_: [`SettingsPMPackages`](<../Design Artifact/settings/SettingsPMPackages.html#SettingsPMPackages>)
   - _Data_: `pm_packages` (§9.5), `pm_tasks` (§9.5), `vehicle_pm_schedule` (§9.5)
   - _Journey_: FLW-PLN-08 Maintain SPK presets and PM packages, with the System Admin
   - _Read_: `docs/prd/areas/4.3-reg.md` (REQ-REG-007); `docs/prd/data-model.md` §9.5 (pm_packages, pm_tasks, vehicle_pm_schedule) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-70 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for SettingsPMPackages; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-08 and `specs/tdd-user-journeys.md` for the same IDs
@@ -514,8 +522,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: T11 to T14 of SM-SPK; completion effects of other areas are added by TASK-513 and TASK-702.
   - _Acceptance_: AC-ENG-002
   - _Rules_: BR-05, TX-13, BR-16, DEC-39
-  - _Screens built here (visual target)_: [`CompletionReview`](<../Design Artifact/approvals/ApprovalReview.html#CompletionReview>)
-  - _Screens touched_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) (built in TASK-205; extend and regression-check it)
+  - _Screens built here (visual target)_: [`CompletionReview`](<../Design Artifact/approvals/CompletionReview.html#CompletionReview>)
+  - _Screens touched_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetailVerify.html#SPKDetailVerify>) (built in TASK-205; extend and regression-check it)
   - _Journey_: FLW-PLN-07 Request completion; FLW-APR-03 Approve completion
   - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-006); `PRD.md` for BR-05, BR-16, DEC-39 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKDetailVerify, CompletionReview; `docs/prd/ui-action-map.md`: every row of SPKDetailVerify, CompletionReview and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-07, FLW-APR-03 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-205
@@ -523,7 +531,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Verify_: `int "AC-ENG-002"`; `e2e FLW-PLN-07`; `e2e FLW-APR-03`; `qa` CompletionReview against their artboards; regression check of SPKDetailVerify
 - [ ] **TASK-211** Step banner on every step screen; step cards with times on the SPK detail [REQ-ENG-008, REQ-SPK-011]
   - _Scope_: StepBanner and StepCard of 7.5.
-  - _Screens touched_: [`Stock`](<../Design Artifact/steps/Stock.html#Stock>) (built later in TASK-306, which shows what this task provides), [`Mechanic`](<../Design Artifact/steps/MechanicAction.html#Mechanic>) (built later in TASK-402, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`DocStep`](<../Design Artifact/steps/DocStep.html#DocStep>) (built later in TASK-603, which shows what this task provides), [`StepLocked`](<../Design Artifact/spk/SPKDetail.html#StepLocked>) (built in TASK-205; extend and regression-check it), [`StepReturned`](<../Design Artifact/spk/SPKDetail.html#StepReturned>) (built in TASK-205; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetail.html#SPKDetailVerify>) (built in TASK-205; extend and regression-check it)
+  - _Screens touched_: [`Stock`](<../Design Artifact/steps/Stock.html#Stock>) (built later in TASK-306, which shows what this task provides), [`Mechanic`](<../Design Artifact/steps/Mechanic.html#Mechanic>) (built later in TASK-402, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`DocStep`](<../Design Artifact/steps/DocStep.html#DocStep>) (built later in TASK-603, which shows what this task provides), [`StepLocked`](<../Design Artifact/spk/StepLocked.html#StepLocked>) (built in TASK-205; extend and regression-check it), [`StepReturned`](<../Design Artifact/spk/StepReturned.html#StepReturned>) (built in TASK-205; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetailVerify.html#SPKDetailVerify>) (built in TASK-205; extend and regression-check it)
   - _Data_: `spk_assignments` (§9.6)
   - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-008); `docs/prd/areas/4.1-spk.md` (REQ-SPK-011); `docs/prd/data-model.md` §9.6 (spk_assignments) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Stock, Mechanic, Placement, DocStep, StepLocked, StepReturned, SPKDetail, SPKDetailVerify; `docs/prd/ui-action-map.md`: every row of Stock, Mechanic, Placement, DocStep, StepLocked, StepReturned, SPKDetail, SPKDetailVerify and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-205
@@ -571,7 +579,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-302** Parts master: add, edit, detail, deactivate [REQ-INV-001, REQ-INV-002, REQ-INV-003]
   - _Scope_: Inventory in Parts mode (REQ-TYR-004 adds Tyres mode).
   - _Acceptance_: AC-INV-005
-  - _Screens built here (visual target)_: [`Inventory`](<../Design Artifact/inventory/Inventory.html#Inventory>), [`PartDetail`](<../Design Artifact/inventory/Inventory.html#PartDetail>), [`AddPart`](<../Design Artifact/inventory/PartForm.html#AddPart>), [`PartEdit`](<../Design Artifact/inventory/PartForm.html#PartEdit>), [`PartDeactivate`](<../Design Artifact/inventory/Inventory.html#PartDeactivate>)
+  - _Screens built here (visual target)_: [`Inventory`](<../Design Artifact/inventory/Inventory.html#Inventory>), [`PartDetail`](<../Design Artifact/inventory/PartDetail.html#PartDetail>), [`AddPart`](<../Design Artifact/inventory/AddPart.html#AddPart>), [`PartEdit`](<../Design Artifact/inventory/PartEdit.html#PartEdit>), [`PartDeactivate`](<../Design Artifact/inventory/PartDeactivate.html#PartDeactivate>)
   - _Data_: `parts_catalog` (§9.8), `audit_logs` (§9.2)
   - _Journey_: FLW-WHM-04 Parts master and stock card
   - _Read_: `docs/prd/areas/4.13-inv.md` (REQ-INV-001, REQ-INV-002, REQ-INV-003); `docs/prd/data-model.md` §9.2, §9.8 (parts_catalog, audit_logs) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Inventory, PartDetail, AddPart, PartEdit, PartDeactivate; `docs/prd/ui-action-map.md`: every row of Inventory, PartDetail, AddPart, PartEdit, PartDeactivate and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-04 and `specs/tdd-user-journeys.md` for the same IDs
@@ -582,7 +590,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: No approval; a GR never holds tyres.
   - _Acceptance_: AC-INV-001, AC-INV-002
   - _Rules_: BR-06, BR-12, TX-06, DEC-12
-  - _Screens built here (visual target)_: [`GoodsReceipts`](<../Design Artifact/inventory/GoodsReceipt.html#GoodsReceipts>), [`GoodsReceiptForm`](<../Design Artifact/inventory/GoodsReceipt.html#GoodsReceiptForm>), [`GoodsReceiptDetail`](<../Design Artifact/inventory/GoodsReceipt.html#GoodsReceiptDetail>), [`GRCorrection`](<../Design Artifact/inventory/GoodsReceipt.html#GRCorrection>)
+  - _Screens built here (visual target)_: [`GoodsReceipts`](<../Design Artifact/inventory/GoodsReceipts.html#GoodsReceipts>), [`GoodsReceiptForm`](<../Design Artifact/inventory/GoodsReceiptForm.html#GoodsReceiptForm>), [`GoodsReceiptDetail`](<../Design Artifact/inventory/GoodsReceiptDetail.html#GoodsReceiptDetail>), [`GRCorrection`](<../Design Artifact/inventory/GRCorrection.html#GRCorrection>)
   - _Data_: `goods_receipts` (§9.8), `goods_receipt_items` (§9.8), `stock_cards` (§9.8), `gr_corrections` (§9.8)
   - _Journey_: FLW-WHM-03 Goods Receipt, no approval
   - _Read_: `docs/prd/areas/4.13-inv.md` (REQ-INV-004, REQ-INV-005); `docs/prd/data-model.md` §9.8 (goods_receipts, goods_receipt_items, stock_cards, gr_corrections) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-06, BR-12, DEC-12 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for GoodsReceipts, GoodsReceiptForm, GoodsReceiptDetail, GRCorrection; `docs/prd/ui-action-map.md`: every row of GoodsReceipts, GoodsReceiptForm, GoodsReceiptDetail, GRCorrection and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-03 and `specs/tdd-user-journeys.md` for the same IDs
@@ -592,16 +600,16 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-304** Stock card, documents-only stock changes, stock card export [REQ-INV-006, REQ-INV-007, REQ-INV-008]
   - _Scope_: xlsx and CSV via ExcelJS (§8.2).
   - _Rules_: BR-06, DEC-74
-  - _Screens built here (visual target)_: [`StockCard`](<../Design Artifact/inventory/Inventory.html#StockCard>), [`StockCardExport`](<../Design Artifact/inventory/Inventory.html#StockCardExport>)
+  - _Screens built here (visual target)_: [`StockCard`](<../Design Artifact/inventory/StockCard.html#StockCard>), [`StockCardExport`](<../Design Artifact/inventory/StockCardExport.html#StockCardExport>), [`ExportDialog`](<../Design Artifact/components/ExportDialog.html#ExportDialog>)
   - _Data_: `stock_cards` (§9.8), `export_logs` (§9.12)
   - _Journey_: FLW-WHM-04 Parts master and stock card
   - _Read_: `docs/prd/areas/4.13-inv.md` (REQ-INV-006, REQ-INV-007, REQ-INV-008); `docs/prd/data-model.md` §9.12, §9.8 (stock_cards, export_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-06, DEC-74 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for StockCard, StockCardExport; `docs/prd/ui-action-map.md`: every row of StockCard, StockCardExport and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-04 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-303, TASK-110
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-WHM-04`; `qa` StockCard, StockCardExport against their artboards
+  - _Verify_: `e2e FLW-WHM-04`; `qa` StockCard, StockCardExport, ExportDialog against their artboards
 - [ ] **TASK-305** Reorder point and low stock alert [REQ-INV-009]
   - _Scope_: Shown on the Warehouse dashboard (TASK-615).
-  - _Screens touched_: [`DashboardWarehouse`](<../Design Artifact/dashboard/Dashboard.html#DashboardWarehouse>) (built later in TASK-615, which shows what this task provides)
+  - _Screens touched_: [`DashboardWarehouse`](<../Design Artifact/dashboard/DashboardWarehouse.html#DashboardWarehouse>) (built later in TASK-615, which shows what this task provides)
   - _Data_: `parts_catalog` (§9.8)
   - _Read_: `docs/prd/areas/4.13-inv.md` (REQ-INV-009); `docs/prd/data-model.md` §9.8 (parts_catalog) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DashboardWarehouse; `docs/prd/ui-action-map.md`: every row of DashboardWarehouse and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-304
@@ -612,7 +620,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Acceptance_: AC-STK-003
   - _Rules_: BR-02, BR-06, BR-07, NFR-01, NFR-06, TX-03, BR-01, NFR-03, DEC-60
   - _Screens built here (visual target)_: [`Stock`](<../Design Artifact/steps/Stock.html#Stock>)
-  - _Screens touched_: [`PartPurchase`](<../Design Artifact/steps/PartPurchase.html#PartPurchase>) (built later in TASK-309, which shows what this task provides), [`ChangeRequest`](<../Design Artifact/spk/ChangeRequest.html#ChangeRequest>) (built later in TASK-611, which shows what this task provides), [`NotificationCenter`](<../Design Artifact/shell/Notifications.html#NotificationCenter>) (built in TASK-130; extend and regression-check it)
+  - _Screens touched_: [`PartPurchase`](<../Design Artifact/steps/PartPurchase.html#PartPurchase>) (built later in TASK-309, which shows what this task provides), [`ChangeRequest`](<../Design Artifact/spk/ChangeRequest.html#ChangeRequest>) (built later in TASK-611, which shows what this task provides), [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>) (built in TASK-130; extend and regression-check it)
   - _Data_: `spk_parts` (§9.7), `goods_issues` (§9.8), `goods_issue_items` (§9.8), `parts_catalog` (§9.8), `stock_cards` (§9.8), `spk_attachments` (§9.6), `notifications` (§9.12)
   - _Journey_: FLW-WHM-01 Issue parts and tyres for an SPK
   - _Read_: `docs/prd/areas/4.4-stk.md` (REQ-STK-001, REQ-STK-002, REQ-STK-003, REQ-STK-009, REQ-STK-011); `docs/prd/data-model.md` §9.12, §9.6, §9.7, §9.8 (spk_parts, goods_issues, goods_issue_items, parts_catalog, stock_cards, spk_attachments, notifications) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-02, BR-06, BR-07, NFR-01, NFR-06, BR-01, NFR-03, DEC-60 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Stock, PartPurchase, ChangeRequest, NotificationCenter; `docs/prd/ui-action-map.md`: every row of Stock, PartPurchase, ChangeRequest, NotificationCenter and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-01 and `specs/tdd-user-journeys.md` for the same IDs
@@ -633,7 +641,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Stock returns at the original unit cost.
   - _Acceptance_: AC-STK-005
   - _Rules_: BR-06, TX-05, TX-14
-  - _Screens built here (visual target)_: [`StockReversal`](<../Design Artifact/steps/Stock.html#StockReversal>)
+  - _Screens built here (visual target)_: [`StockReversal`](<../Design Artifact/steps/StockReversal.html#StockReversal>)
   - _Screens touched_: [`StepVerify`](<../Design Artifact/steps/StepVerify.html#StepVerify>) (built in TASK-205; extend and regression-check it)
   - _Data_: `goods_issues` (§9.8), `spk_parts` (§9.7)
   - _Journey_: FLW-WHM-02 Reverse an issue after submit; FLW-APR-05 Cancel an SPK
@@ -646,7 +654,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Acceptance_: AC-PUR-001, AC-PUR-002, AC-PUR-003, AC-PUR-005, AC-PUR-006
   - _Rules_: BR-02, NFR-16, NFR-06, BR-06, TX-21, DEC-58, DEC-60, DEC-61, DEC-62, DEC-63, DEC-64
   - _Screens built here (visual target)_: [`PartPurchase`](<../Design Artifact/steps/PartPurchase.html#PartPurchase>)
-  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`FCMobilePurchase`](<../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) (built later in TASK-707, which shows what this task provides)
+  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`FCMobilePurchase`](<../Design Artifact/mobile/FCMobilePurchase.html#FCMobilePurchase>) (built later in TASK-707, which shows what this task provides)
   - _Data_: `assignment_modules` (§9.6), `spk_purchases` (§9.7), `spk_purchase_lines` (§9.7), `spk_attachments` (§9.6), `spks` (§9.6)
   - _Journey_: FLW-FC-05 Buy parts for an SPK
   - _Read_: `docs/prd/areas/4.4a-pur.md` (REQ-PUR-001, REQ-PUR-002, REQ-PUR-003, REQ-PUR-004, REQ-PUR-006, REQ-PUR-007, REQ-PUR-009); `docs/prd/data-model.md` §9.6, §9.7 (assignment_modules, spk_purchases, spk_purchase_lines, spk_attachments, spks) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-02, NFR-16, NFR-06, BR-06, DEC-58, DEC-60, DEC-61, DEC-62, DEC-63, DEC-64 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, PartPurchase, FCMobilePurchase; `docs/prd/ui-action-map.md`: every row of CreateSPK, PartPurchase and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-FC-05 and `specs/tdd-user-journeys.md` for the same IDs
@@ -657,7 +665,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: The Warehouse tab lists stock opname sheets here and tyre counts from TASK-506. Reject returns the sheet to Draft marked Returned.
   - _Acceptance_: AC-INV-003, AC-INV-004, AC-IAM-008 (here because it needs stock opname approval)
   - _Rules_: BR-12, BR-03, TX-07
-  - _Screens built here (visual target)_: [`StockOpname`](<../Design Artifact/inventory/StockOpname.html#StockOpname>), [`StockOpnameApproval`](<../Design Artifact/approvals/ApprovalReview.html#StockOpnameApproval>), [`StockOpnameReturned`](<../Design Artifact/inventory/StockOpname.html#StockOpnameReturned>), [`ApprovalsWarehouse`](<../Design Artifact/approvals/Approvals.html#ApprovalsWarehouse>)
+  - _Screens built here (visual target)_: [`StockOpname`](<../Design Artifact/inventory/StockOpname.html#StockOpname>), [`StockOpnameApproval`](<../Design Artifact/approvals/StockOpnameApproval.html#StockOpnameApproval>), [`StockOpnameReturned`](<../Design Artifact/inventory/StockOpnameReturned.html#StockOpnameReturned>), [`ApprovalsWarehouse`](<../Design Artifact/approvals/ApprovalsWarehouse.html#ApprovalsWarehouse>)
   - _Data_: `stock_adjustments` (§9.8), `stock_adjustment_items` (§9.8), `tyre_counts` (§9.9; this task's part is extended in TASK-506)
   - _Journey_: FLW-WHM-05 Stock opname; FLW-APR-04 Approve warehouse documents
   - _Read_: `docs/prd/areas/4.13-inv.md` (REQ-INV-010, REQ-INV-011); `docs/prd/areas/4.15-apr.md` (REQ-APR-003); `docs/prd/data-model.md` §9.8, §9.9 (stock_adjustments, stock_adjustment_items, tyre_counts) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-12, BR-03 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for StockOpname, StockOpnameApproval, StockOpnameReturned, ApprovalsWarehouse; `docs/prd/ui-action-map.md`: every row of StockOpname, StockOpnameApproval, StockOpnameReturned, ApprovalsWarehouse and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-05, FLW-APR-04 and `specs/tdd-user-journeys.md` for the same IDs
@@ -668,7 +676,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Refused after Go live.
   - _Acceptance_: AC-INV-006
   - _Rules_: BR-06, BR-12, DEC-54, DEC-55
-  - _Screens built here (visual target)_: [`OpeningBalance`](<../Design Artifact/inventory/StockOpname.html#OpeningBalance>)
+  - _Screens built here (visual target)_: [`OpeningBalance`](<../Design Artifact/inventory/OpeningBalance.html#OpeningBalance>)
   - _Journey_: FLW-SA-08 Set up and go live
   - _Read_: `docs/prd/areas/4.13-inv.md` (REQ-INV-013); `PRD.md` for BR-06, BR-12, DEC-54, DEC-55 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for OpeningBalance; `docs/prd/ui-action-map.md`: every row of OpeningBalance and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-08 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-303, TASK-111
@@ -684,7 +692,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-313** Goods Receipt "From cancelled SPK" [REQ-SPK-008]
   - _Scope_: Parts bought for a cancelled SPK enter stock and are never billed.
   - _Rules_: BR-06, DEC-58
-  - _Screens touched_: [`CancelSPK`](<../Design Artifact/components/Dialogs.html#CancelSPK>) (built in TASK-124; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
+  - _Screens touched_: [`CancelSPK`](<../Design Artifact/spk/CancelSPK.html#CancelSPK>) (built in TASK-124; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
   - _Data_: `spks` (§9.6), `goods_issues` (§9.8), `tyres` (§9.9; this task's part is extended in TASK-502)
   - _Journey_: FLW-WHM-10 Receive parts of a cancelled SPK
   - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-008); `docs/prd/data-model.md` §9.6, §9.8, §9.9 (spks, goods_issues, tyres) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-06, DEC-58 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CancelSPK, SPKDetail; `docs/prd/ui-action-map.md`: every row of CancelSPK, SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-10 and `specs/tdd-user-journeys.md` for the same IDs
@@ -708,7 +716,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-401** Service catalog (incl. Diagnosis) and stooring rates [REQ-MEC-005, REQ-MEC-010]
   - _Scope_: Prices are snapshots on lines (BR-07).
   - _Rules_: BR-07, DEC-51, DEC-89
-  - _Screens built here (visual target)_: [`SettingsServiceCatalog`](<../Design Artifact/settings/MasterData.html#SettingsServiceCatalog>), [`SettingsStooringRates`](<../Design Artifact/settings/MasterData.html#SettingsStooringRates>)
+  - _Screens built here (visual target)_: [`SettingsServiceCatalog`](<../Design Artifact/settings/SettingsServiceCatalog.html#SettingsServiceCatalog>), [`SettingsStooringRates`](<../Design Artifact/settings/SettingsStooringRates.html#SettingsStooringRates>)
   - _Data_: `service_catalog` (§9.7), `stooring_rates` (§9.7)
   - _Read_: `docs/prd/areas/4.5-mec.md` (REQ-MEC-005, REQ-MEC-010); `docs/prd/data-model.md` §9.7 (service_catalog, stooring_rates) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-07, DEC-51, DEC-89 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for SettingsServiceCatalog, SettingsStooringRates; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-203, TASK-126
@@ -718,7 +726,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Reference module (§8.3); no position and no stooring on this step.
   - _Acceptance_: AC-MEC-001, AC-MEC-002, AC-MEC-003, AC-MEC-004, AC-MEC-005
   - _Rules_: BR-07, DEC-39, DEC-53, DEC-90
-  - _Screens built here (visual target)_: [`Mechanic`](<../Design Artifact/steps/MechanicAction.html#Mechanic>), [`MechanicExternal`](<../Design Artifact/steps/MechanicAction.html#MechanicExternal>)
+  - _Screens built here (visual target)_: [`Mechanic`](<../Design Artifact/steps/Mechanic.html#Mechanic>), [`MechanicExternal`](<../Design Artifact/steps/MechanicExternal.html#MechanicExternal>)
   - _Screens touched_: [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
   - _Data_: `spk_assignments` (§9.6), `spk_services` (§9.7), `service_catalog` (§9.7), `spk_attachments` (§9.6), `spks` (§9.6)
   - _Journey_: FLW-MEC-01 Do a Mechanic Action step, internal team; FLW-MEC-02 Repair at an outside workshop
@@ -731,7 +739,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Acceptance_: AC-CHK-001
   - _Rules_: DEC-88, DEC-89, BR-07, DEC-99
   - _Screens built here (visual target)_: [`PartCheck`](<../Design Artifact/steps/PartCheck.html#PartCheck>)
-  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`MechanicMobileCheck`](<../Design Artifact/mobile/PartCheck.html#MechanicMobileCheck>) (built later in TASK-712, which shows what this task provides), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built in TASK-119; extend and regression-check it), [`NotificationCenter`](<../Design Artifact/shell/Notifications.html#NotificationCenter>) (built in TASK-130; extend and regression-check it), [`SettingsServiceCatalog`](<../Design Artifact/settings/MasterData.html#SettingsServiceCatalog>) (built in TASK-401; extend and regression-check it), [`InvoiceDetail`](<../Design Artifact/billing/Invoices.html#InvoiceDetail>) (built later in TASK-703, which shows what this task provides)
+  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`MechanicMobileCheck`](<../Design Artifact/mobile/MechanicMobileCheck.html#MechanicMobileCheck>) (built later in TASK-712, which shows what this task provides), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built in TASK-119; extend and regression-check it), [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>) (built in TASK-130; extend and regression-check it), [`SettingsServiceCatalog`](<../Design Artifact/settings/SettingsServiceCatalog.html#SettingsServiceCatalog>) (built in TASK-401; extend and regression-check it), [`InvoiceDetail`](<../Design Artifact/billing/InvoiceDetail.html#InvoiceDetail>) (built later in TASK-703, which shows what this task provides)
   - _Data_: `spk_check_items` (§9.6), `spk_attachments` (§9.6), `spk_services` (§9.7), `service_catalog` (§9.7)
   - _Journey_: FLW-MEC-08 Do a Part Check step
   - _Read_: `docs/prd/areas/4.5-mec.md` (REQ-CHK-001, REQ-CHK-002, REQ-CHK-005, REQ-CHK-007); `docs/prd/areas/4.2-eng.md` (acceptance criteria); `docs/prd/data-model.md` §9.6, §9.7 (spk_check_items, spk_attachments, spk_services, service_catalog) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-88, DEC-89, BR-07, DEC-99 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, PartCheck, MechanicMobileCheck, Vehicles, NotificationCenter, SettingsServiceCatalog, InvoiceDetail; `docs/prd/ui-action-map.md`: every row of CreateSPK, PartCheck, Vehicles, NotificationCenter and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-MEC-08 and `specs/tdd-user-journeys.md` for the same IDs
@@ -742,8 +750,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: The draft is never Active on its own.
   - _Acceptance_: AC-CHK-002, AC-CHK-003
   - _Rules_: BR-03
-  - _Screens built here (visual target)_: [`PartCheckVerify`](<../Design Artifact/steps/StepVerify.html#PartCheckVerify>), [`CreateSPKFromCheck`](<../Design Artifact/spk/CreateSPK.html#CreateSPKFromCheck>), [`SPKDocumentCheck`](<../Design Artifact/spk/SPKDocument.html#SPKDocumentCheck>)
-  - _Screens touched_: [`DashboardPlanner`](<../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) (built later in TASK-615, which shows what this task provides), [`SPKDocument`](<../Design Artifact/spk/SPKDocument.html#SPKDocument>) (built in TASK-212; extend and regression-check it)
+  - _Screens built here (visual target)_: [`PartCheckVerify`](<../Design Artifact/steps/PartCheckVerify.html#PartCheckVerify>), [`CreateSPKFromCheck`](<../Design Artifact/spk/CreateSPKFromCheck.html#CreateSPKFromCheck>), [`SPKDocumentCheck`](<../Design Artifact/spk/SPKDocumentCheck.html#SPKDocumentCheck>)
+  - _Screens touched_: [`DashboardPlanner`](<../Design Artifact/dashboard/DashboardPlanner.html#DashboardPlanner>) (built later in TASK-615, which shows what this task provides), [`SPKDocument`](<../Design Artifact/spk/SPKDocument.html#SPKDocument>) (built in TASK-212; extend and regression-check it)
   - _Data_: `spks` (§9.6), `spk_assignments` (§9.6), `spk_check_items` (§9.6)
   - _Journey_: FLW-PLN-10 Turn a Part Check into a repair SPK
   - _Read_: `docs/prd/areas/4.5-mec.md` (REQ-CHK-003, REQ-CHK-004, REQ-CHK-006); `docs/prd/areas/4.2-eng.md` (acceptance criteria); `docs/prd/data-model.md` §9.6 (spks, spk_assignments, spk_check_items) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-03 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for PartCheckVerify, CreateSPKFromCheck, DashboardPlanner, SPKDocument, SPKDocumentCheck; `docs/prd/ui-action-map.md`: every row of PartCheckVerify, CreateSPKFromCheck, DashboardPlanner, SPKDocument, SPKDocumentCheck and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-10 and `specs/tdd-user-journeys.md` for the same IDs
@@ -754,7 +762,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: RSK-09: trail only between Start and Submit, visible to Planner and System Admin, every read logged (§8.3).
   - _Acceptance_: AC-MBL-001, AC-MBL-003, AC-MBL-004
   - _Rules_: BR-01, BR-02, NFR-04, BR-07, DQ-08, DEC-90, DEC-99
-  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides), [`StepVerify`](<../Design Artifact/steps/StepVerify.html#StepVerify>) (built in TASK-205; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`SPKDocument`](<../Design Artifact/spk/SPKDocument.html#SPKDocument>) (built in TASK-212; extend and regression-check it)
+  - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides), [`StepVerify`](<../Design Artifact/steps/StepVerify.html#StepVerify>) (built in TASK-205; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`SPKDocument`](<../Design Artifact/spk/SPKDocument.html#SPKDocument>) (built in TASK-212; extend and regression-check it)
   - _Data_: `assignment_modules` (§9.6), `spk_assignments` (§9.6), `breakdown_reports` (§9.5), `stooring_rates` (§9.7), `mobilisation_location_trail` (§9.6), `spks` (§9.6), `dvir_logs` (§9.5)
   - _Read_: `docs/prd/areas/4.5a-mbl.md` (REQ-MBL-001, REQ-MBL-002, REQ-MBL-005, REQ-MBL-006); `docs/prd/data-model.md` §9.5, §9.6, §9.7 (assignment_modules, spk_assignments, breakdown_reports, stooring_rates, mobilisation_location_trail, spks, dvir_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, BR-02, NFR-04, BR-07, DEC-90, DEC-99 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, MechanicMobileStep, StepVerify, SPKDetail, SPKDocument; `docs/prd/ui-action-map.md`: every row of CreateSPK, StepVerify, SPKDetail, SPKDocument and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-401, TASK-204, TASK-212
@@ -765,7 +773,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Acceptance_: AC-MBL-002
   - _Rules_: SM-STEP
   - _Screens built here (visual target)_: [`Mobilisasi`](<../Design Artifact/steps/Mobilisasi.html#Mobilisasi>)
-  - _Screens touched_: [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides)
+  - _Screens touched_: [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides)
   - _Data_: `spk_assignments` (§9.6), `breakdown_reports` (§9.5), `step_time_events` (§9.6)
   - _Read_: `docs/prd/areas/4.5a-mbl.md` (REQ-MBL-003, REQ-MBL-004); `docs/prd/data-model.md` §9.5, §9.6 (spk_assignments, breakdown_reports, step_time_events) and §9.13 for the TX named in _Rules_; `PRD.md` for SM-STEP (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for MechanicMobileStep, Mobilisasi; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-405
@@ -796,7 +804,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: §8.3: one service for every tyre change, tested like the SPK machine.
   - _Acceptance_: AC-TYR-007
   - _Rules_: BR-11, DEC-13, DEC-14
-  - _Screens built here (visual target)_: [`SettingsTyreStatuses`](<../Design Artifact/settings/MasterData.html#SettingsTyreStatuses>)
+  - _Screens built here (visual target)_: [`SettingsTyreStatuses`](<../Design Artifact/settings/SettingsTyreStatuses.html#SettingsTyreStatuses>)
   - _Screens touched_: [`Tyres`](<../Design Artifact/inventory/Tyres.html#Tyres>) (built later in TASK-504, which shows what this task provides), [`Stock`](<../Design Artifact/steps/Stock.html#Stock>) (built in TASK-306; extend and regression-check it), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`PartsBaseline`](<../Design Artifact/fleet/PartsBaseline.html#PartsBaseline>) (built later in TASK-511, which shows what this task provides)
   - _Data_: `tyres` (§9.9), `tyre_statuses` (§9.9), `tyre_events` (§9.9)
   - _Read_: `docs/prd/areas/4.14-tyr.md` (REQ-TYR-001, REQ-TYR-002, REQ-TYR-003, REQ-TYR-013); `docs/prd/data-model.md` §9.9 (tyres, tyre_statuses, tyre_events) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-11, DEC-13, DEC-14 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Tyres, Stock, Placement, PartsBaseline, SettingsTyreStatuses; `docs/prd/ui-action-map.md`: every row of Tyres, Stock, Placement, PartsBaseline and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
@@ -806,7 +814,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-503** Receive tyres (New Supplier / Existing, Retread return) [REQ-TYR-006, REQ-TYR-007]
   - _Scope_: Receive tyres is the only door for new tyres.
   - _Rules_: BR-11, TX-08, DEC-12
-  - _Screens built here (visual target)_: [`ReceiveTyres`](<../Design Artifact/inventory/TyreReceive.html#ReceiveTyres>)
+  - _Screens built here (visual target)_: [`ReceiveTyres`](<../Design Artifact/inventory/ReceiveTyres.html#ReceiveTyres>)
   - _Data_: `tyre_receipts` (§9.9), `tyres` (§9.9), `tyre_attachments` (§9.9)
   - _Journey_: FLW-WHM-06 Receive tyres
   - _Read_: `docs/prd/areas/4.14-tyr.md` (REQ-TYR-006, REQ-TYR-007); `docs/prd/data-model.md` §9.9 (tyre_receipts, tyres, tyre_attachments) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-11, DEC-12 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ReceiveTyres; `docs/prd/ui-action-map.md`: every row of ReceiveTyres and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-06 and `specs/tdd-user-journeys.md` for the same IDs
@@ -816,7 +824,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-504** Tyres mode of Inventory: status cards, list, column chooser, Worn out, Scrap [REQ-TYR-004, REQ-TYR-005, REQ-TYR-010]
   - _Scope_: ColumnChooser saved per user (user_table_preferences).
   - _Rules_: NFR-08, NAV-7, NAV-8
-  - _Screens built here (visual target)_: [`Tyres`](<../Design Artifact/inventory/Tyres.html#Tyres>), [`TyreColumns`](<../Design Artifact/inventory/Tyres.html#TyreColumns>), [`TyreWornOut`](<../Design Artifact/inventory/Tyres.html#TyreWornOut>), [`TyreScrap`](<../Design Artifact/inventory/Tyres.html#TyreScrap>)
+  - _Screens built here (visual target)_: [`Tyres`](<../Design Artifact/inventory/Tyres.html#Tyres>), [`TyreColumns`](<../Design Artifact/inventory/TyreColumns.html#TyreColumns>), [`TyreWornOut`](<../Design Artifact/inventory/TyreWornOut.html#TyreWornOut>), [`TyreScrap`](<../Design Artifact/inventory/TyreScrap.html#TyreScrap>)
   - _Screens touched_: [`Inventory`](<../Design Artifact/inventory/Inventory.html#Inventory>) (built in TASK-302; extend and regression-check it)
   - _Data_: `user_table_preferences` (§9.12), `tyres` (§9.9), `tyre_events` (§9.9)
   - _Journey_: FLW-WHM-08 Tyre condition and list
@@ -827,7 +835,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-505** Retread dispatch and return [REQ-TYR-008, REQ-TYR-009]
   - _Scope_: Partial until every tyre is Accepted or Rejected.
   - _Acceptance_: AC-TYR-002, AC-TYR-003, AC-TYR-004, AC-TYR-005
-  - _Screens built here (visual target)_: [`RetreadDispatch`](<../Design Artifact/inventory/Retread.html#RetreadDispatch>), [`RetreadList`](<../Design Artifact/inventory/Retread.html#RetreadList>), [`RetreadDispatchDetail`](<../Design Artifact/inventory/Retread.html#RetreadDispatchDetail>), [`RetreadReceipt`](<../Design Artifact/inventory/TyreReceive.html#RetreadReceipt>)
+  - _Screens built here (visual target)_: [`RetreadDispatch`](<../Design Artifact/inventory/RetreadDispatch.html#RetreadDispatch>), [`RetreadList`](<../Design Artifact/inventory/RetreadList.html#RetreadList>), [`RetreadDispatchDetail`](<../Design Artifact/inventory/RetreadDispatchDetail.html#RetreadDispatchDetail>), [`RetreadReceipt`](<../Design Artifact/inventory/RetreadReceipt.html#RetreadReceipt>)
   - _Data_: `retread_orders` (§9.9), `retread_order_items` (§9.9), `tyre_receipts` (§9.9), `tyres` (§9.9)
   - _Journey_: FLW-WHM-07 Retread
   - _Read_: `docs/prd/areas/4.14-tyr.md` (REQ-TYR-008, REQ-TYR-009); `docs/prd/data-model.md` §9.9 (retread_orders, retread_order_items, tyre_receipts, tyres) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for RetreadDispatch, RetreadList, RetreadDispatchDetail, RetreadReceipt; `docs/prd/ui-action-map.md`: every row of RetreadDispatch, RetreadList, RetreadDispatchDetail, RetreadReceipt and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-07 and `specs/tdd-user-journeys.md` for the same IDs
@@ -838,8 +846,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Missing tyres become Lost on approval.
   - _Acceptance_: AC-TYR-006
   - _Rules_: BR-12, BR-03, TX-10
-  - _Screens built here (visual target)_: [`TyreCount`](<../Design Artifact/inventory/Tyres.html#TyreCount>), [`TyreCountApproval`](<../Design Artifact/approvals/ApprovalReview.html#TyreCountApproval>)
-  - _Screens touched_: [`StockOpnameReturned`](<../Design Artifact/inventory/StockOpname.html#StockOpnameReturned>) (built in TASK-310; extend and regression-check it), [`ApprovalsWarehouse`](<../Design Artifact/approvals/Approvals.html#ApprovalsWarehouse>) (built in TASK-310; extend and regression-check it)
+  - _Screens built here (visual target)_: [`TyreCount`](<../Design Artifact/inventory/TyreCount.html#TyreCount>), [`TyreCountApproval`](<../Design Artifact/approvals/TyreCountApproval.html#TyreCountApproval>)
+  - _Screens touched_: [`StockOpnameReturned`](<../Design Artifact/inventory/StockOpnameReturned.html#StockOpnameReturned>) (built in TASK-310; extend and regression-check it), [`ApprovalsWarehouse`](<../Design Artifact/approvals/ApprovalsWarehouse.html#ApprovalsWarehouse>) (built in TASK-310; extend and regression-check it)
   - _Data_: `tyre_counts` (§9.9), `tyre_count_items` (§9.9), `tyre_events` (§9.9), `stock_adjustments` (§9.8)
   - _Journey_: FLW-WHM-09 Tyre count; FLW-APR-04 Approve warehouse documents
   - _Read_: `docs/prd/areas/4.14-tyr.md` (REQ-TYR-011, REQ-TYR-012); `docs/prd/areas/4.15-apr.md` (REQ-APR-003); `docs/prd/data-model.md` §9.8, §9.9 (tyre_counts, tyre_count_items, tyre_events, stock_adjustments) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-12, BR-03 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for TyreCount, TyreCountApproval, StockOpnameReturned, ApprovalsWarehouse; `docs/prd/ui-action-map.md`: every row of TyreCount, TyreCountApproval, StockOpnameReturned, ApprovalsWarehouse and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-WHM-09, FLW-APR-04 and `specs/tdd-user-journeys.md` for the same IDs
@@ -861,8 +869,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: No Start or Pause (tracks_work_time false).
   - _Acceptance_: AC-TYR-001, AC-PLC-001, AC-PLC-002, AC-PLC-003, AC-PLC-004, AC-PLC-009 (here because it needs a spare swap in the step)
   - _Rules_: BR-01, BR-02, BR-11, NFR-03, TX-09, DEC-07, DEC-95
-  - _Screens built here (visual target)_: [`Placement`](<../Design Artifact/steps/Placement.html#Placement>), [`PlacementReplace`](<../Design Artifact/steps/Placement.html#PlacementReplace>), [`PlacementRotate`](<../Design Artifact/steps/Placement.html#PlacementRotate>), [`PlacementTrailer`](<../Design Artifact/steps/Placement.html#PlacementTrailer>)
-  - _Screens touched_: [`SettingsAlertRules`](<../Design Artifact/settings/AlertRules.html#SettingsAlertRules>) (built later in TASK-608, which shows what this task provides), [`SPKDocument`](<../Design Artifact/spk/SPKDocument.html#SPKDocument>) (built in TASK-212; extend and regression-check it)
+  - _Screens built here (visual target)_: [`Placement`](<../Design Artifact/steps/Placement.html#Placement>), [`PlacementReplace`](<../Design Artifact/steps/PlacementReplace.html#PlacementReplace>), [`PlacementRotate`](<../Design Artifact/steps/PlacementRotate.html#PlacementRotate>), [`PlacementTrailer`](<../Design Artifact/steps/PlacementTrailer.html#PlacementTrailer>)
+  - _Screens touched_: [`SettingsAlertRules`](<../Design Artifact/settings/SettingsAlertRules.html#SettingsAlertRules>) (built later in TASK-608, which shows what this task provides), [`SPKDocument`](<../Design Artifact/spk/SPKDocument.html#SPKDocument>) (built in TASK-212; extend and regression-check it)
   - _Data_: `part_placements` (§9.10), `part_placement_logs` (§9.10), `tyres` (§9.9), `tyre_events` (§9.9), `tyre_inspections` (§9.9), `app_settings` (§9.12), `placement_map_snapshots` (§9.10)
   - _Journey_: FLW-MEC-03 Part Replacement step
   - _Read_: `docs/prd/areas/4.6-plc.md` (REQ-PLC-001, REQ-PLC-002, REQ-PLC-003, REQ-PLC-004, REQ-PLC-005, REQ-PLC-006, REQ-PLC-007, REQ-PLC-009, REQ-PLC-014); `docs/prd/areas/4.14-tyr.md` (acceptance criteria); `docs/prd/data-model.md` §9.10, §9.12, §9.9 (part_placements, part_placement_logs, tyres, tyre_events, tyre_inspections, app_settings, placement_map_snapshots) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, BR-02, BR-11, NFR-03, DEC-07, DEC-95 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Placement, PlacementReplace, PlacementRotate, SettingsAlertRules, SPKDocument; `docs/prd/ui-action-map.md`: every row of Placement, PlacementReplace, PlacementRotate, SPKDocument and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-MEC-03 and `specs/tdd-user-journeys.md` for the same IDs
@@ -882,7 +890,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-510** Part item types with normal life and early-failure tolerance [REQ-BSL-007]
   - _Scope_: Maintained by the Planner or the System Admin.
   - _Rules_: DEC-36, DEC-47
-  - _Screens built here (visual target)_: [`SettingsPartItemTypes`](<../Design Artifact/settings/MasterData.html#SettingsPartItemTypes>)
+  - _Screens built here (visual target)_: [`SettingsPartItemTypes`](<../Design Artifact/settings/SettingsPartItemTypes.html#SettingsPartItemTypes>)
   - _Data_: `part_item_types` (§9.5), `part_item_type_classes` (§9.5)
   - _Read_: `docs/prd/areas/4.12-bsl.md` (REQ-BSL-007); `docs/prd/data-model.md` §9.5 (part_item_types, part_item_type_classes) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-36, DEC-47 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for SettingsPartItemTypes; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-501, TASK-126
@@ -892,8 +900,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: No SPK; refused once an SPK touched the part.
   - _Acceptance_: AC-BSL-001, AC-BSL-002, AC-BSL-003, AC-BSL-004
   - _Rules_: BR-01, BR-11, TX-11, DEC-23
-  - _Screens built here (visual target)_: [`PartsBaseline`](<../Design Artifact/fleet/PartsBaseline.html#PartsBaseline>), [`BaselineCorrect`](<../Design Artifact/fleet/PartsBaseline.html#BaselineCorrect>)
-  - _Screens touched_: [`SettingsPartItemTypes`](<../Design Artifact/settings/MasterData.html#SettingsPartItemTypes>) (built in TASK-510; extend and regression-check it), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built in TASK-119; extend and regression-check it)
+  - _Screens built here (visual target)_: [`PartsBaseline`](<../Design Artifact/fleet/PartsBaseline.html#PartsBaseline>), [`BaselineCorrect`](<../Design Artifact/fleet/BaselineCorrect.html#BaselineCorrect>)
+  - _Screens touched_: [`SettingsPartItemTypes`](<../Design Artifact/settings/SettingsPartItemTypes.html#SettingsPartItemTypes>) (built in TASK-510; extend and regression-check it), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built in TASK-119; extend and regression-check it)
   - _Data_: `vehicle_part_items` (§9.5), `part_placements` (§9.10), `tyres` (§9.9), `tyre_events` (§9.9), `part_item_types` (§9.5), `maintenance_alerts` (§9.5), `audit_logs` (§9.2)
   - _Journey_: FLW-SA-01 Add a vehicle with its first data; FLW-SA-03 Keep a vehicle up to date
   - _Read_: `docs/prd/areas/4.12-bsl.md` (REQ-BSL-001, REQ-BSL-002, REQ-BSL-003, REQ-BSL-004, REQ-BSL-005, REQ-BSL-006); `docs/prd/data-model.md` §9.10, §9.2, §9.5, §9.9 (vehicle_part_items, part_placements, tyres, tyre_events, part_item_types, maintenance_alerts, audit_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, BR-11, DEC-23 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for PartsBaseline, SettingsPartItemTypes, Vehicles, BaselineCorrect; `docs/prd/ui-action-map.md`: every row of PartsBaseline, Vehicles, BaselineCorrect and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-01, FLW-SA-03 and `specs/tdd-user-journeys.md` for the same IDs
@@ -904,7 +912,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: §8.3: one life-used function (km or days; days only for Towed) shared by tyres, part items and PM.
   - _Acceptance_: AC-BSL-005, AC-APR-005, AC-PLC-008 (here because it needs tyre life used)
   - _Rules_: BR-04, DEC-36, DEC-58
-  - _Screens touched_: [`ApprovalReview`](<../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>) (built in TASK-122; extend and regression-check it), [`Dashboard`](<../Design Artifact/dashboard/Dashboard.html#Dashboard>) (built later in TASK-615, which shows what this task provides), [`NotificationCenter`](<../Design Artifact/shell/Notifications.html#NotificationCenter>) (built in TASK-130; extend and regression-check it), [`CompletionReview`](<../Design Artifact/approvals/ApprovalReview.html#CompletionReview>) (built in TASK-210; extend and regression-check it), [`PhotoViewer`](<../Design Artifact/components/PhotoViewer.html#PhotoViewer>) (built in TASK-115; extend and regression-check it)
+  - _Screens touched_: [`ApprovalReview`](<../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>) (built in TASK-122; extend and regression-check it), [`Dashboard`](<../Design Artifact/dashboard/Dashboard.html#Dashboard>) (built later in TASK-615, which shows what this task provides), [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>) (built in TASK-130; extend and regression-check it), [`CompletionReview`](<../Design Artifact/approvals/CompletionReview.html#CompletionReview>) (built in TASK-210; extend and regression-check it), [`PhotoViewer`](<../Design Artifact/components/PhotoViewer.html#PhotoViewer>) (built in TASK-115; extend and regression-check it)
   - _Data_: `early_failure_events` (§9.5), `part_item_types` (§9.5)
   - _Journey_: FLW-APR-08 Early failure on a review
   - _Read_: `docs/prd/areas/4.12-bsl.md` (REQ-BSL-009); `docs/prd/areas/4.15-apr.md` (REQ-APR-009, REQ-APR-010, REQ-APR-011); `docs/prd/data-model.md` §9.5 (early_failure_events, part_item_types) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-04, DEC-36, DEC-58 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ApprovalReview, Dashboard, NotificationCenter, CompletionReview, PhotoViewer; `docs/prd/ui-action-map.md`: every row of ApprovalReview, Dashboard, NotificationCenter, CompletionReview, PhotoViewer and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-APR-08 and `specs/tdd-user-journeys.md` for the same IDs
@@ -938,8 +946,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: First entry and correction happen outside an SPK.
   - _Acceptance_: AC-DOC-004, AC-DOC-005, AC-DOC-006
   - _Rules_: BR-08, BR-01, TX-15, DEC-20, DEC-21
-  - _Screens built here (visual target)_: [`AddDocument`](<../Design Artifact/documents/DocumentForm.html#AddDocument>), [`DocumentCorrectEntry`](<../Design Artifact/documents/DocumentForm.html#DocumentCorrectEntry>), [`Documents`](<../Design Artifact/documents/Documents.html#Documents>), [`VehicleDocuments`](<../Design Artifact/fleet/Vehicle.html#VehicleDocuments>), [`DocumentScan`](<../Design Artifact/documents/Documents.html#DocumentScan>)
-  - _Screens touched_: [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built in TASK-119; extend and regression-check it), [`DashboardDispatcher`](<../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) (built later in TASK-615, which shows what this task provides), [`DocStep`](<../Design Artifact/steps/DocStep.html#DocStep>) (built later in TASK-603, which shows what this task provides), [`AddVehicle`](<../Design Artifact/fleet/VehicleForm.html#AddVehicle>) (built in TASK-119; extend and regression-check it)
+  - _Screens built here (visual target)_: [`AddDocument`](<../Design Artifact/documents/AddDocument.html#AddDocument>), [`DocumentCorrectEntry`](<../Design Artifact/documents/DocumentCorrectEntry.html#DocumentCorrectEntry>), [`Documents`](<../Design Artifact/documents/Documents.html#Documents>), [`VehicleDocuments`](<../Design Artifact/fleet/VehicleDocuments.html#VehicleDocuments>), [`DocumentScan`](<../Design Artifact/documents/DocumentScan.html#DocumentScan>)
+  - _Screens touched_: [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built in TASK-119; extend and regression-check it), [`DashboardDispatcher`](<../Design Artifact/dashboard/DashboardDispatcher.html#DashboardDispatcher>) (built later in TASK-615, which shows what this task provides), [`DocStep`](<../Design Artifact/steps/DocStep.html#DocStep>) (built later in TASK-603, which shows what this task provides), [`AddVehicle`](<../Design Artifact/fleet/AddVehicle.html#AddVehicle>) (built in TASK-119; extend and regression-check it)
   - _Data_: `vehicles` (§9.3), `vehicle_documents` (§9.4), `audit_logs` (§9.2), `document_corrections` (§9.4), `document_view_logs` (§9.4)
   - _Journey_: FLW-SA-02 Documents; FLW-FC-01 Check which vehicles can go on trips
   - _Read_: `docs/prd/areas/4.7-doc.md` (REQ-DOC-005, REQ-DOC-006, REQ-DOC-008, REQ-DOC-009, REQ-DOC-011); `docs/prd/data-model.md` §9.2, §9.3, §9.4 (vehicles, vehicle_documents, audit_logs, document_corrections, document_view_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-08, BR-01, DEC-20, DEC-21 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Vehicles, DashboardDispatcher, AddDocument, DocumentCorrectEntry, DocStep, AddVehicle, Documents, VehicleDocuments, DocumentScan; `docs/prd/ui-action-map.md`: every row of Vehicles, DashboardDispatcher, AddDocument, DocumentCorrectEntry, DocStep, AddVehicle, Documents, VehicleDocuments, DocumentScan and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-02, FLW-FC-01 and `specs/tdd-user-journeys.md` for the same IDs
@@ -950,7 +958,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Idempotent; tested with the fake clock.
   - _Acceptance_: AC-DOC-001
   - _Rules_: BR-04, TX-16, NFR-12
-  - _Screens touched_: [`Documents`](<../Design Artifact/documents/Documents.html#Documents>) (built in TASK-601; extend and regression-check it), [`VehicleDocuments`](<../Design Artifact/fleet/Vehicle.html#VehicleDocuments>) (built in TASK-601; extend and regression-check it)
+  - _Screens touched_: [`Documents`](<../Design Artifact/documents/Documents.html#Documents>) (built in TASK-601; extend and regression-check it), [`VehicleDocuments`](<../Design Artifact/fleet/VehicleDocuments.html#VehicleDocuments>) (built in TASK-601; extend and regression-check it)
   - _Data_: `vehicle_documents` (§9.4)
   - _Read_: `docs/prd/areas/4.7-doc.md` (REQ-DOC-003, REQ-DOC-004); `docs/prd/data-model.md` §9.4 (vehicle_documents) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-04, NFR-12 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Documents, VehicleDocuments; `docs/prd/ui-action-map.md`: every row of Documents, VehicleDocuments and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-601, TASK-312
@@ -982,8 +990,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Readings are never lower than the last valid one.
   - _Acceptance_: AC-VEH-001, AC-VEH-002
   - _Rules_: BR-09, BR-10, DEC-22, DEC-76
-  - _Screens built here (visual target)_: [`VehicleOdometer`](<../Design Artifact/fleet/Vehicle.html#VehicleOdometer>), [`OdometerVoid`](<../Design Artifact/fleet/Vehicle.html#OdometerVoid>)
-  - _Screens touched_: [`VehicleOverview`](<../Design Artifact/fleet/Vehicle.html#VehicleOverview>) (built in TASK-119; extend and regression-check it)
+  - _Screens built here (visual target)_: [`VehicleOdometer`](<../Design Artifact/fleet/VehicleOdometer.html#VehicleOdometer>), [`OdometerVoid`](<../Design Artifact/fleet/OdometerVoid.html#OdometerVoid>)
+  - _Screens touched_: [`VehicleOverview`](<../Design Artifact/fleet/VehicleOverview.html#VehicleOverview>) (built in TASK-119; extend and regression-check it)
   - _Data_: `odometer_logs` (§9.3), `vehicle_pm_schedule` (§9.5)
   - _Journey_: FLW-SA-03 Keep a vehicle up to date
   - _Read_: `docs/prd/areas/4.10-veh.md` (REQ-VEH-005, REQ-VEH-006, REQ-VEH-007); `docs/prd/data-model.md` §9.3, §9.5 (odometer_logs, vehicle_pm_schedule) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-09, BR-10, DEC-22, DEC-76 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for VehicleOdometer, VehicleOverview, OdometerVoid; `docs/prd/ui-action-map.md`: every row of VehicleOdometer, VehicleOverview, OdometerVoid and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-03 and `specs/tdd-user-journeys.md` for the same IDs
@@ -994,8 +1002,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Both drivers are notified.
   - _Acceptance_: AC-VEH-004
   - _Rules_: RL-6, DEC-58
-  - _Screens built here (visual target)_: [`VehicleSPKHistory`](<../Design Artifact/fleet/Vehicle.html#VehicleSPKHistory>)
-  - _Screens touched_: [`VehicleOverview`](<../Design Artifact/fleet/Vehicle.html#VehicleOverview>) (built in TASK-119; extend and regression-check it), [`DashboardDriver`](<../Design Artifact/mobile/FieldReports.html#DashboardDriver>) (built later in TASK-706, which shows what this task provides)
+  - _Screens built here (visual target)_: [`VehicleSPKHistory`](<../Design Artifact/fleet/VehicleSPKHistory.html#VehicleSPKHistory>)
+  - _Screens touched_: [`VehicleOverview`](<../Design Artifact/fleet/VehicleOverview.html#VehicleOverview>) (built in TASK-119; extend and regression-check it), [`DashboardDriver`](<../Design Artifact/mobile/DashboardDriver.html#DashboardDriver>) (built later in TASK-706, which shows what this task provides)
   - _Data_: `spks` (§9.6)
   - _Journey_: FLW-SA-03 Keep a vehicle up to date; FLW-SA-10 Set a vehicle's driver
   - _Read_: `docs/prd/areas/4.10-veh.md` (REQ-VEH-008, REQ-VEH-010); `docs/prd/data-model.md` §9.6 (spks) and §9.13 for the TX named in _Rules_; `PRD.md` for RL-6, DEC-58 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for VehicleSPKHistory, VehicleOverview, DashboardDriver; `docs/prd/ui-action-map.md`: every row of VehicleSPKHistory, VehicleOverview, DashboardDriver and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-03, FLW-SA-10 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1006,8 +1014,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: One pending alert per subject; drafts are never Active.
   - _Acceptance_: AC-PM-001, AC-PM-005, AC-PM-003
   - _Rules_: DEC-86, BR-04, TX-16, DEC-24, DEC-70
-  - _Screens built here (visual target)_: [`CreateSPKFromAlert`](<../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>)
-  - _Screens touched_: [`DashboardPlanner`](<../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>) (built later in TASK-615, which shows what this task provides), [`SettingsPMPackages`](<../Design Artifact/settings/SPKPresets.html#SettingsPMPackages>) (built in TASK-209; extend and regression-check it), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built in TASK-119; extend and regression-check it), [`SettingsAlertRules`](<../Design Artifact/settings/AlertRules.html#SettingsAlertRules>) (built later in TASK-608, which shows what this task provides), [`DocumentTypes`](<../Design Artifact/settings/MasterData.html#DocumentTypes>) (built in TASK-118; extend and regression-check it), [`FCRequests`](<../Design Artifact/spk/Requests.html#FCRequests>) (built later in TASK-610, which shows what this task provides), [`VehicleOverview`](<../Design Artifact/fleet/Vehicle.html#VehicleOverview>) (built in TASK-119; extend and regression-check it)
+  - _Screens built here (visual target)_: [`CreateSPKFromAlert`](<../Design Artifact/spk/CreateSPKFromAlert.html#CreateSPKFromAlert>)
+  - _Screens touched_: [`DashboardPlanner`](<../Design Artifact/dashboard/DashboardPlanner.html#DashboardPlanner>) (built later in TASK-615, which shows what this task provides), [`SettingsPMPackages`](<../Design Artifact/settings/SettingsPMPackages.html#SettingsPMPackages>) (built in TASK-209; extend and regression-check it), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built in TASK-119; extend and regression-check it), [`SettingsAlertRules`](<../Design Artifact/settings/SettingsAlertRules.html#SettingsAlertRules>) (built later in TASK-608, which shows what this task provides), [`DocumentTypes`](<../Design Artifact/settings/DocumentTypes.html#DocumentTypes>) (built in TASK-118; extend and regression-check it), [`FCRequests`](<../Design Artifact/spk/FCRequests.html#FCRequests>) (built later in TASK-610, which shows what this task provides), [`VehicleOverview`](<../Design Artifact/fleet/VehicleOverview.html#VehicleOverview>) (built in TASK-119; extend and regression-check it)
   - _Data_: `maintenance_alerts` (§9.5), `vehicle_pm_schedule` (§9.5), `pm_packages` (§9.5), `pm_tasks` (§9.5), `document_types` (§9.4), `alert_rules` (§9.5), `spks` (§9.6), `spk_assignments` (§9.6), `breakdown_reports` (§9.5), `dvir_logs` (§9.5)
   - _Journey_: FLW-PLN-02 Create an SPK from an alert or a vehicle
   - _Read_: `docs/prd/areas/4.11-pm.md` (REQ-PM-001, REQ-PM-002, REQ-PM-003, REQ-PM-008, REQ-PM-009); `docs/prd/areas/4.1-spk.md` (REQ-SPK-003, REQ-SPK-012); `docs/prd/data-model.md` §9.4, §9.5, §9.6 (maintenance_alerts, vehicle_pm_schedule, pm_packages, pm_tasks, document_types, alert_rules, spks, spk_assignments, breakdown_reports, dvir_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-86, BR-04, DEC-24, DEC-70 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for DashboardPlanner, SettingsPMPackages, Vehicles, SettingsAlertRules, DocumentTypes, FCRequests, CreateSPKFromAlert, VehicleOverview; `docs/prd/ui-action-map.md`: every row of DashboardPlanner, Vehicles, DocumentTypes, FCRequests, CreateSPKFromAlert, VehicleOverview and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-02 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1018,7 +1026,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Save is refused while a drafting rule lacks a preset.
   - _Acceptance_: AC-PM-004
   - _Rules_: DEC-86
-  - _Screens built here (visual target)_: [`SettingsAlertThresholds`](<../Design Artifact/settings/MasterData.html#SettingsAlertThresholds>), [`SettingsAlertRules`](<../Design Artifact/settings/AlertRules.html#SettingsAlertRules>)
+  - _Screens built here (visual target)_: [`SettingsAlertThresholds`](<../Design Artifact/settings/SettingsAlertThresholds.html#SettingsAlertThresholds>), [`SettingsAlertRules`](<../Design Artifact/settings/SettingsAlertRules.html#SettingsAlertRules>)
   - _Data_: `app_settings` (§9.12), `alert_rules` (§9.5)
   - _Read_: `docs/prd/areas/4.11-pm.md` (REQ-PM-006, REQ-PM-007, REQ-PM-010); `docs/prd/data-model.md` §9.12, §9.5 (app_settings, alert_rules) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-86 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SettingsAlertThresholds, SettingsAlertRules; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-607, TASK-508
@@ -1028,8 +1036,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: The field-finding note is copied from the report.
   - _Acceptance_: AC-PM-002
   - _Rules_: BR-04, DEC-24, DEC-90, DEC-91
-  - _Screens built here (visual target)_: [`VehicleInspections`](<../Design Artifact/fleet/Vehicle.html#VehicleInspections>), [`AdminInspectionForm`](<../Design Artifact/fleet/FieldReports.html#AdminInspectionForm>), [`AdminBreakdownForm`](<../Design Artifact/fleet/FieldReports.html#AdminBreakdownForm>)
-  - _Screens touched_: [`CreateSPKFromAlert`](<../Design Artifact/spk/CreateSPK.html#CreateSPKFromAlert>) (built in TASK-607; extend and regression-check it)
+  - _Screens built here (visual target)_: [`VehicleInspections`](<../Design Artifact/fleet/VehicleInspections.html#VehicleInspections>), [`AdminInspectionForm`](<../Design Artifact/fleet/AdminInspectionForm.html#AdminInspectionForm>), [`AdminBreakdownForm`](<../Design Artifact/fleet/AdminBreakdownForm.html#AdminBreakdownForm>)
+  - _Screens touched_: [`CreateSPKFromAlert`](<../Design Artifact/spk/CreateSPKFromAlert.html#CreateSPKFromAlert>) (built in TASK-607; extend and regression-check it)
   - _Data_: `dvir_logs` (§9.5), `breakdown_reports` (§9.5), `spk_assignments` (§9.6), `spks` (§9.6), `maintenance_alerts` (§9.5)
   - _Journey_: FLW-SA-04 Enter driver data in release 1
   - _Read_: `docs/prd/areas/4.11-pm.md` (REQ-PM-004, REQ-PM-005); `docs/prd/areas/4.1-spk.md` (REQ-SPK-003); `docs/prd/data-model.md` §9.5, §9.6 (dvir_logs, breakdown_reports, spk_assignments, spks, maintenance_alerts) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-04, DEC-24, DEC-90, DEC-91 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for VehicleInspections, AdminInspectionForm, AdminBreakdownForm, CreateSPKFromAlert; `docs/prd/ui-action-map.md`: every row of VehicleInspections, AdminInspectionForm, AdminBreakdownForm, CreateSPKFromAlert and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-04 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1039,8 +1047,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-610** Requests list; send for review by Field Coordinator and Mechanic on one screen; cancel a draft [REQ-SPK-014, REQ-SPK-016]
   - _Scope_: Neither the Field Coordinator nor the Mechanic can submit or approve.
   - _Rules_: RL-6, DQ-10, DQ-11, DEC-34, DEC-64, DEC-91, DEC-97
-  - _Screens built here (visual target)_: [`FCRequests`](<../Design Artifact/spk/Requests.html#FCRequests>), [`FCCreateSPK`](<../Design Artifact/spk/CreateSPK.html#FCCreateSPK>), [`FCDraftCancel`](<../Design Artifact/components/Dialogs.html#FCDraftCancel>)
-  - _Screens touched_: [`FCMobileRequests`](<../Design Artifact/mobile/Requests.html#FCMobileRequests>) (built later in TASK-707, which shows what this task provides), [`FCMobileCreateSPK`](<../Design Artifact/mobile/Requests.html#FCMobileCreateSPK>) (built later in TASK-707, which shows what this task provides), [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it)
+  - _Screens built here (visual target)_: [`FCRequests`](<../Design Artifact/spk/FCRequests.html#FCRequests>), [`FCCreateSPK`](<../Design Artifact/spk/FCCreateSPK.html#FCCreateSPK>), [`FCDraftCancel`](<../Design Artifact/spk/FCDraftCancel.html#FCDraftCancel>)
+  - _Screens touched_: [`FCMobileRequests`](<../Design Artifact/mobile/FCMobileRequests.html#FCMobileRequests>) (built later in TASK-707, which shows what this task provides), [`FCMobileCreateSPK`](<../Design Artifact/mobile/FCMobileCreateSPK.html#FCMobileCreateSPK>) (built later in TASK-707, which shows what this task provides), [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it)
   - _Journey_: FLW-FC-04 Turn a driver request into an SPK; FLW-MEC-10 Send a field finding for review on the web
   - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-014, REQ-SPK-016); `PRD.md` for RL-6, DEC-34, DEC-64, DEC-91, DEC-97 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for FCRequests, FCCreateSPK, FCMobileRequests, FCMobileCreateSPK, CreateSPK, FCDraftCancel; `docs/prd/ui-action-map.md`: every row of FCRequests, FCCreateSPK, CreateSPK and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-FC-04, FLW-MEC-10 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-609, TASK-207
@@ -1050,8 +1058,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: The open step pauses with reason Change request and resumes on the decision.
   - _Acceptance_: AC-CR-001, AC-CR-002, AC-CR-003, AC-CR-004, AC-CR-005
   - _Rules_: BR-04, TX-12, SM-CR, C-23, DQ-07, DEC-06, DEC-72
-  - _Screens built here (visual target)_: [`ChangeRequest`](<../Design Artifact/spk/ChangeRequest.html#ChangeRequest>), [`CreateSPKRevision`](<../Design Artifact/spk/ChangeRequest.html#CreateSPKRevision>), [`AmendmentReview`](<../Design Artifact/approvals/ApprovalReview.html#AmendmentReview>)
-  - _Screens touched_: [`StepLocked`](<../Design Artifact/spk/SPKDetail.html#StepLocked>) (built in TASK-205; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
+  - _Screens built here (visual target)_: [`ChangeRequest`](<../Design Artifact/spk/ChangeRequest.html#ChangeRequest>), [`CreateSPKRevision`](<../Design Artifact/spk/CreateSPKRevision.html#CreateSPKRevision>), [`AmendmentReview`](<../Design Artifact/approvals/AmendmentReview.html#AmendmentReview>)
+  - _Screens touched_: [`StepLocked`](<../Design Artifact/spk/StepLocked.html#StepLocked>) (built in TASK-205; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
   - _Data_: `spk_change_requests` (§9.6), `spks` (§9.6), `audit_logs` (§9.2)
   - _Journey_: FLW-MEC-05 The SPK content is wrong; FLW-PLN-06 Revise an SPK after a change request; FLW-APR-02 Approve an amendment
   - _Read_: `docs/prd/areas/4.8-cr.md` (REQ-CR-001, REQ-CR-002, REQ-CR-003, REQ-CR-004, REQ-CR-005, REQ-CR-006, REQ-CR-007, REQ-CR-008); `docs/prd/data-model.md` §9.2, §9.6 (spk_change_requests, spks, audit_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-04, SM-CR, DEC-06, DEC-72 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ChangeRequest, StepLocked, SPKDetail, CreateSPKRevision, AmendmentReview; `docs/prd/ui-action-map.md`: every row of ChangeRequest, StepLocked, SPKDetail, CreateSPKRevision, AmendmentReview and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-MEC-05, FLW-PLN-06, FLW-APR-02 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1062,8 +1070,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: §8.3: a mature drag-and-drop library; the server decides, the screen proposes.
   - _Acceptance_: AC-SCH-002, AC-SCH-004
   - _Rules_: RL-6, SM-SCH, DEC-18
-  - _Screens built here (visual target)_: [`MaintenanceSchedule`](<../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>), [`ScheduleDispatcher`](<../Design Artifact/schedule/Schedule.html#ScheduleDispatcher>), [`ScheduleMonth`](<../Design Artifact/schedule/Schedule.html#ScheduleMonth>)
-  - _Screens touched_: [`DashboardDispatcher`](<../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) (built later in TASK-615, which shows what this task provides)
+  - _Screens built here (visual target)_: [`MaintenanceSchedule`](<../Design Artifact/schedule/MaintenanceSchedule.html#MaintenanceSchedule>), [`ScheduleDispatcher`](<../Design Artifact/schedule/ScheduleDispatcher.html#ScheduleDispatcher>), [`ScheduleMonth`](<../Design Artifact/schedule/ScheduleMonth.html#ScheduleMonth>)
+  - _Screens touched_: [`DashboardDispatcher`](<../Design Artifact/dashboard/DashboardDispatcher.html#DashboardDispatcher>) (built later in TASK-615, which shows what this task provides)
   - _Data_: `spk_schedule` (§9.11), `spk_schedule_log` (§9.11)
   - _Journey_: FLW-PLN-04 Plan the SPK on the maintenance schedule; FLW-FC-02 Follow the maintenance schedule
   - _Read_: `docs/prd/areas/4.17-sch.md` (REQ-SCH-001, REQ-SCH-002, REQ-SCH-005, REQ-SCH-006); `docs/prd/data-model.md` §9.11 (spk_schedule, spk_schedule_log) and §9.13 for the TX named in _Rules_; `PRD.md` for RL-6, SM-SCH, DEC-18 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for MaintenanceSchedule, ScheduleDispatcher, DashboardDispatcher, ScheduleMonth; `docs/prd/ui-action-map.md`: every row of MaintenanceSchedule, ScheduleDispatcher, DashboardDispatcher and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-04, FLW-FC-02 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1074,7 +1082,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Run twice in tests; counts once.
   - _Acceptance_: AC-SCH-001 (here because it needs the notification outbox), AC-SCH-003, AC-SCH-005
   - _Rules_: BR-13, DEC-92, TX-16
-  - _Screens touched_: [`MaintenanceSchedule`](<../Design Artifact/schedule/Schedule.html#MaintenanceSchedule>) (built in TASK-612; extend and regression-check it), [`NotificationCenter`](<../Design Artifact/shell/Notifications.html#NotificationCenter>) (built in TASK-130; extend and regression-check it), [`DispatcherMobileAlerts`](<../Design Artifact/mobile/MobileApp.html#DispatcherMobileAlerts>) (built later in TASK-707, which shows what this task provides)
+  - _Screens touched_: [`MaintenanceSchedule`](<../Design Artifact/schedule/MaintenanceSchedule.html#MaintenanceSchedule>) (built in TASK-612; extend and regression-check it), [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>) (built in TASK-130; extend and regression-check it), [`DispatcherMobileAlerts`](<../Design Artifact/mobile/DispatcherMobileAlerts.html#DispatcherMobileAlerts>) (built later in TASK-707, which shows what this task provides)
   - _Data_: `spk_schedule` (§9.11), `spk_schedule_log` (§9.11), `schedule_alerts` (§9.11), `notifications` (§9.12)
   - _Journey_: FLW-PLN-04 Plan the SPK on the maintenance schedule; FLW-APR-09 Follow an SPK that overruns its planned day
   - _Read_: `docs/prd/areas/4.17-sch.md` (REQ-SCH-003, REQ-SCH-004, REQ-SCH-007); `docs/prd/data-model.md` §9.11, §9.12 (spk_schedule, spk_schedule_log, schedule_alerts, notifications) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-13, DEC-92 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for MaintenanceSchedule, NotificationCenter, DispatcherMobileAlerts; `docs/prd/ui-action-map.md`: every row of MaintenanceSchedule, NotificationCenter and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-04, FLW-APR-09 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1084,7 +1092,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-615** Role dashboards [REQ-DSH-001, REQ-DSH-002, REQ-DSH-003, REQ-DSH-004, REQ-DSH-005, REQ-DSH-006, REQ-DSH-008]
   - _Scope_: §8.3: aggregates from views or a refreshed cache. DashboardAdmin integration rows show status only and open nothing (DEC-103).
   - _Rules_: DQ-05, DEC-37, DEC-103
-  - _Screens built here (visual target)_: [`Dashboard`](<../Design Artifact/dashboard/Dashboard.html#Dashboard>), [`DashboardPlanner`](<../Design Artifact/dashboard/Dashboard.html#DashboardPlanner>), [`DashboardMechanic`](<../Design Artifact/dashboard/Dashboard.html#DashboardMechanic>), [`DashboardWarehouse`](<../Design Artifact/dashboard/Dashboard.html#DashboardWarehouse>), [`DashboardAdmin`](<../Design Artifact/dashboard/Dashboard.html#DashboardAdmin>), [`DashboardDispatcher`](<../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>)
+  - _Screens built here (visual target)_: [`Dashboard`](<../Design Artifact/dashboard/Dashboard.html#Dashboard>), [`DashboardPlanner`](<../Design Artifact/dashboard/DashboardPlanner.html#DashboardPlanner>), [`DashboardMechanic`](<../Design Artifact/dashboard/DashboardMechanic.html#DashboardMechanic>), [`DashboardWarehouse`](<../Design Artifact/dashboard/DashboardWarehouse.html#DashboardWarehouse>), [`DashboardAdmin`](<../Design Artifact/dashboard/DashboardAdmin.html#DashboardAdmin>), [`DashboardDispatcher`](<../Design Artifact/dashboard/DashboardDispatcher.html#DashboardDispatcher>)
   - _Journey_: FLW-FC-01 Check which vehicles can go on trips; FLW-SA-06 Oversight
   - _Read_: `docs/prd/areas/4.16-dsh.md` (REQ-DSH-001, REQ-DSH-002, REQ-DSH-003, REQ-DSH-004, REQ-DSH-005, REQ-DSH-006, REQ-DSH-008); `PRD.md` for DEC-37, DEC-103 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Dashboard, DashboardPlanner, DashboardMechanic, DashboardWarehouse, DashboardAdmin, DashboardDispatcher; `docs/prd/ui-action-map.md`: every row of Dashboard, DashboardPlanner, DashboardMechanic, DashboardWarehouse, DashboardAdmin, DashboardDispatcher and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-FC-01, FLW-SA-06 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-613, TASK-610, TASK-305, TASK-404
@@ -1094,7 +1102,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Refused when Live.
   - _Acceptance_: AC-IAM-007
   - _Rules_: DEC-75
-  - _Screens built here (visual target)_: [`SetupImport`](<../Design Artifact/setup/SetupGoLive.html#SetupImport>)
+  - _Screens built here (visual target)_: [`SetupImport`](<../Design Artifact/setup/SetupImport.html#SetupImport>)
   - _Screens touched_: [`SetupGoLive`](<../Design Artifact/setup/SetupGoLive.html#SetupGoLive>) (built in TASK-111; extend and regression-check it)
   - _Data_: `vehicle_documents` (§9.4), `import_batches` (§9.12)
   - _Journey_: FLW-SA-08 Set up and go live
@@ -1119,8 +1127,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-701** Customers and billing settings (PPN, markup, OFF-unit rate) [REQ-BIL-001, REQ-BIL-010, REQ-BIL-012]
   - _Scope_: Internal vehicles without a customer are never invoiced.
   - _Rules_: RL-9, DEC-44, DEC-92, DEC-42, DEC-45, DEC-69
-  - _Screens built here (visual target)_: [`Customers`](<../Design Artifact/billing/Customers.html#Customers>), [`CustomerForm`](<../Design Artifact/billing/Customers.html#CustomerForm>), [`SettingsBilling`](<../Design Artifact/settings/MasterData.html#SettingsBilling>)
-  - _Screens touched_: [`AddVehicle`](<../Design Artifact/fleet/VehicleForm.html#AddVehicle>) (built in TASK-119; extend and regression-check it)
+  - _Screens built here (visual target)_: [`Customers`](<../Design Artifact/billing/Customers.html#Customers>), [`CustomerForm`](<../Design Artifact/billing/CustomerForm.html#CustomerForm>), [`SettingsBilling`](<../Design Artifact/settings/SettingsBilling.html#SettingsBilling>)
+  - _Screens touched_: [`AddVehicle`](<../Design Artifact/fleet/AddVehicle.html#AddVehicle>) (built in TASK-119; extend and regression-check it)
   - _Data_: `customers` (§9.14), `vehicles` (§9.3), `audit_logs` (§9.2)
   - _Journey_: FLW-ACC-03 Maintain customers
   - _Read_: `docs/prd/areas/4.23-bil.md` (REQ-BIL-001, REQ-BIL-010, REQ-BIL-012); `docs/prd/data-model.md` §9.14, §9.2, §9.3 (customers, vehicles, audit_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for RL-9, DEC-44, DEC-92, DEC-42, DEC-45, DEC-69 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for Customers, CustomerForm, AddVehicle, SettingsBilling; `docs/prd/ui-action-map.md`: every row of AddVehicle and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-ACC-03 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1131,7 +1139,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Inside the completion transaction (TX-13 → TX-19).
   - _Acceptance_: AC-BIL-001, AC-BIL-004, AC-BIL-005, AC-CHK-004 (here because it needs the invoice)
   - _Rules_: BR-15, BR-07, NFR-08, TX-19, NFR-16, SM-INV, DEC-43, DEC-44, DEC-50, DEC-92
-  - _Screens touched_: [`InvoiceList`](<../Design Artifact/billing/Invoices.html#InvoiceList>) (built later in TASK-703, which shows what this task provides), [`InvoiceDetail`](<../Design Artifact/billing/Invoices.html#InvoiceDetail>) (built later in TASK-703, which shows what this task provides), [`SettingsBilling`](<../Design Artifact/settings/MasterData.html#SettingsBilling>) (built in TASK-701; extend and regression-check it)
+  - _Screens touched_: [`InvoiceList`](<../Design Artifact/billing/InvoiceList.html#InvoiceList>) (built later in TASK-703, which shows what this task provides), [`InvoiceDetail`](<../Design Artifact/billing/InvoiceDetail.html#InvoiceDetail>) (built later in TASK-703, which shows what this task provides), [`SettingsBilling`](<../Design Artifact/settings/SettingsBilling.html#SettingsBilling>) (built in TASK-701; extend and regression-check it)
   - _Data_: `invoices` (§9.14), `invoice_lines` (§9.14), `app_settings` (§9.12), `invoice_wos` (§9.14), `invoice_line_sources` (§9.14)
   - _Journey_: FLW-ACC-01 Issue the daily invoices; FLW-ACC-03 Maintain customers; FLW-APR-09 Follow an SPK that overruns its planned day
   - _Read_: `docs/prd/areas/4.23-bil.md` (REQ-BIL-002, REQ-BIL-003, REQ-BIL-004, REQ-BIL-009); `docs/prd/data-model.md` §9.12, §9.14 (invoices, invoice_lines, app_settings, invoice_wos, invoice_line_sources) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-15, BR-07, NFR-08, NFR-16, SM-INV, DEC-43, DEC-44, DEC-50, DEC-92 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for InvoiceList, InvoiceDetail, SettingsBilling; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-ACC-01, FLW-ACC-03, FLW-APR-09 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1142,7 +1150,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: §8.3: the invoice number comes from a sequence inside Issue; golden-file PDF.
   - _Acceptance_: AC-BIL-002, AC-BIL-003, AC-IAM-010 (here because it needs invoices), AC-SPKD-008 (here because it needs an invoiced SPK)
   - _Rules_: SM-INV, BR-10, DEC-33, BR-15, BR-16, DEC-46, DEC-50
-  - _Screens built here (visual target)_: [`InvoiceDetail`](<../Design Artifact/billing/Invoices.html#InvoiceDetail>), [`InvoicePayment`](<../Design Artifact/billing/Invoices.html#InvoicePayment>), [`InvoiceVoid`](<../Design Artifact/billing/Invoices.html#InvoiceVoid>), [`InvoiceDocument`](<../Design Artifact/billing/InvoiceDocument.html#InvoiceDocument>), [`InvoiceList`](<../Design Artifact/billing/Invoices.html#InvoiceList>), [`DashboardAccounting`](<../Design Artifact/dashboard/Dashboard.html#DashboardAccounting>)
+  - _Screens built here (visual target)_: [`InvoiceDetail`](<../Design Artifact/billing/InvoiceDetail.html#InvoiceDetail>), [`InvoicePayment`](<../Design Artifact/billing/InvoicePayment.html#InvoicePayment>), [`InvoiceVoid`](<../Design Artifact/billing/InvoiceVoid.html#InvoiceVoid>), [`InvoiceDocument`](<../Design Artifact/billing/InvoiceDocument.html#InvoiceDocument>), [`InvoiceList`](<../Design Artifact/billing/InvoiceList.html#InvoiceList>), [`DashboardAccounting`](<../Design Artifact/dashboard/DashboardAccounting.html#DashboardAccounting>)
   - _Data_: `invoices` (§9.14), `invoice_payments` (§9.14)
   - _Journey_: FLW-ACC-01 Issue the daily invoices; FLW-ACC-02 Record a payment or void
   - _Read_: `docs/prd/areas/4.23-bil.md` (REQ-BIL-005, REQ-BIL-006, REQ-BIL-007, REQ-BIL-008); `docs/prd/areas/4.16-dsh.md` (REQ-DSH-009); `docs/prd/data-model.md` §9.14 (invoices, invoice_payments) and §9.13 for the TX named in _Rules_; `PRD.md` for SM-INV, BR-10, DEC-33, BR-15, BR-16, DEC-46, DEC-50 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for InvoiceDetail, InvoicePayment, InvoiceVoid, InvoiceDocument, InvoiceList, DashboardAccounting; `docs/prd/ui-action-map.md`: every row of DashboardAccounting and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-ACC-01, FLW-ACC-02 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1153,8 +1161,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: One app; the menu follows the role from GET /me; the push mute stays P1 (DEC-100).
   - _Acceptance_: AC-MOB-003
   - _Rules_: RL-1, BR-01, BR-02, C-05, C-35, DQ-01, DQ-03, DEC-26, DEC-41, DEC-100, NFR-18
-  - _Screens built here (visual target)_: [`MobileLogin`](<../Design Artifact/mobile/MobileApp.html#MobileLogin>), [`MobileProfile`](<../Design Artifact/mobile/MobileApp.html#MobileProfile>)
-  - _Screens touched_: [`MechanicMobileHome`](<../Design Artifact/mobile/MobileApp.html#MechanicMobileHome>) (built later in TASK-712, which shows what this task provides), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides), [`MechanicMobilePlacement`](<../Design Artifact/mobile/Placement.html#MechanicMobilePlacement>) (built later in TASK-712, which shows what this task provides), [`FCMobilePurchase`](<../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) (built later in TASK-707, which shows what this task provides)
+  - _Screens built here (visual target)_: [`MobileLogin`](<../Design Artifact/mobile/MobileLogin.html#MobileLogin>), [`MobileProfile`](<../Design Artifact/mobile/MobileProfile.html#MobileProfile>)
+  - _Screens touched_: [`MechanicMobileHome`](<../Design Artifact/mobile/MechanicMobileHome.html#MechanicMobileHome>) (built later in TASK-712, which shows what this task provides), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides), [`MechanicMobilePlacement`](<../Design Artifact/mobile/MechanicMobilePlacement.html#MechanicMobilePlacement>) (built later in TASK-712, which shows what this task provides), [`FCMobilePurchase`](<../Design Artifact/mobile/FCMobilePurchase.html#FCMobilePurchase>) (built later in TASK-707, which shows what this task provides)
   - _Read_: `docs/prd/areas/4.20-mob.md` (REQ-MOB-001, REQ-MOB-002, REQ-MOB-009); `PRD.md` for RL-1, BR-01, BR-02, DEC-26, DEC-41, DEC-100, NFR-18 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for MobileLogin, MechanicMobileHome, MechanicMobileStep, MechanicMobilePlacement, FCMobilePurchase, MobileProfile; `docs/prd/ui-action-map.md`: every row of MobileLogin and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-127, TASK-010, TASK-105
   - _Skill_: react-native-expert, ecc:react-native-patterns, ecc:accessibility, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
@@ -1163,7 +1171,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Camera-only photos where marked (NFR-06).
   - _Acceptance_: AC-FUP-001, AC-FUP-007 (here because it phone upload queue)
   - _Rules_: NFR-06
-  - _Screens touched_: [`FileUploadStates`](<../Design Artifact/components/FileUpload.html#FileUploadStates>) (built in TASK-115; extend and regression-check it), [`MechanicMobileUpload`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileUpload>) (built later in TASK-712, which shows what this task provides)
+  - _Screens touched_: [`FileUploadStates`](<../Design Artifact/components/FileUploadStates.html#FileUploadStates>) (built in TASK-115; extend and regression-check it), [`MechanicMobileUpload`](<../Design Artifact/mobile/MechanicMobileUpload.html#MechanicMobileUpload>) (built later in TASK-712, which shows what this task provides)
   - _Data_: `stored_files` (§9.12)
   - _Read_: `docs/prd/areas/8.1-fup.md` (REQ-FUP-003, REQ-FUP-012, REQ-FUP-013, REQ-FUP-014); `docs/prd/data-model.md` §9.12 (stored_files) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-06 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for FileUploadStates, MechanicMobileUpload; `docs/prd/ui-action-map.md`: every row of FileUploadStates and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-704, TASK-114, TASK-115
@@ -1172,8 +1180,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-706** Driver menu: inspection with odometer, breakdown with one-time location, odometer, history, document reminder [REQ-MOB-003, REQ-DOC-012]
   - _Scope_: Odometer from the Driver is the main source in Release 1.
   - _Rules_: DEC-76, DEC-90
-  - _Screens built here (visual target)_: [`DashboardDriver`](<../Design Artifact/mobile/FieldReports.html#DashboardDriver>), [`DriverInspection`](<../Design Artifact/mobile/FieldReports.html#DriverInspection>), [`DriverBreakdown`](<../Design Artifact/mobile/FieldReports.html#DriverBreakdown>), [`DriverOdometer`](<../Design Artifact/mobile/FieldReports.html#DriverOdometer>), [`DriverHistory`](<../Design Artifact/mobile/FieldReports.html#DriverHistory>)
-  - _Screens touched_: [`DashboardDispatcher`](<../Design Artifact/dashboard/Dashboard.html#DashboardDispatcher>) (built in TASK-615; extend and regression-check it)
+  - _Screens built here (visual target)_: [`DashboardDriver`](<../Design Artifact/mobile/DashboardDriver.html#DashboardDriver>), [`DriverInspection`](<../Design Artifact/mobile/DriverInspection.html#DriverInspection>), [`DriverBreakdown`](<../Design Artifact/mobile/DriverBreakdown.html#DriverBreakdown>), [`DriverOdometer`](<../Design Artifact/mobile/DriverOdometer.html#DriverOdometer>), [`DriverHistory`](<../Design Artifact/mobile/DriverHistory.html#DriverHistory>)
+  - _Screens touched_: [`DashboardDispatcher`](<../Design Artifact/dashboard/DashboardDispatcher.html#DashboardDispatcher>) (built in TASK-615; extend and regression-check it)
   - _Data_: `dvir_logs` (§9.5), `breakdown_reports` (§9.5), `odometer_logs` (§9.3), `notifications` (§9.12)
   - _Journey_: FLW-DRV-01 Daily inspection; FLW-DRV-02 Breakdown; FLW-DRV-03 Odometer; FLW-DRV-04 History
   - _Read_: `docs/prd/areas/4.20-mob.md` (REQ-MOB-003); `docs/prd/areas/4.7-doc.md` (REQ-DOC-012); `docs/prd/data-model.md` §9.12, §9.3, §9.5 (dvir_logs, breakdown_reports, odometer_logs, notifications) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-76, DEC-90 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DashboardDriver, DriverInspection, DriverBreakdown, DriverOdometer, DriverHistory, DashboardDispatcher; `docs/prd/ui-action-map.md`: every row of DashboardDriver, DashboardDispatcher and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-DRV-01, FLW-DRV-02, FLW-DRV-03, FLW-DRV-04 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1184,7 +1192,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Same rules as the web screens.
   - _Acceptance_: AC-MOB-004
   - _Rules_: RL-6
-  - _Screens built here (visual target)_: [`DispatcherMobileFleet`](<../Design Artifact/mobile/Fleet.html#DispatcherMobileFleet>), [`DispatcherMobileSchedule`](<../Design Artifact/mobile/Fleet.html#DispatcherMobileSchedule>), [`DispatcherMobileAlerts`](<../Design Artifact/mobile/MobileApp.html#DispatcherMobileAlerts>), [`FCMobileRequests`](<../Design Artifact/mobile/Requests.html#FCMobileRequests>), [`FCMobileCreateSPK`](<../Design Artifact/mobile/Requests.html#FCMobileCreateSPK>), [`FCMobilePurchase`](<../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>)
+  - _Screens built here (visual target)_: [`DispatcherMobileFleet`](<../Design Artifact/mobile/DispatcherMobileFleet.html#DispatcherMobileFleet>), [`DispatcherMobileSchedule`](<../Design Artifact/mobile/DispatcherMobileSchedule.html#DispatcherMobileSchedule>), [`DispatcherMobileAlerts`](<../Design Artifact/mobile/DispatcherMobileAlerts.html#DispatcherMobileAlerts>), [`FCMobileRequests`](<../Design Artifact/mobile/FCMobileRequests.html#FCMobileRequests>), [`FCMobileCreateSPK`](<../Design Artifact/mobile/FCMobileCreateSPK.html#FCMobileCreateSPK>), [`FCMobilePurchase`](<../Design Artifact/mobile/FCMobilePurchase.html#FCMobilePurchase>)
   - _Journey_: FLW-FC-03 Mobile app (R1 step 7); FLW-FC-04 Turn a driver request into an SPK; FLW-FC-05 Buy parts for an SPK
   - _Read_: `docs/prd/areas/4.20-mob.md` (REQ-MOB-006); `PRD.md` for RL-6 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DispatcherMobileFleet, DispatcherMobileSchedule, DispatcherMobileAlerts, FCMobileRequests, FCMobileCreateSPK, FCMobilePurchase; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-FC-03, FLW-FC-04, FLW-FC-05 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-705, TASK-610, TASK-309, TASK-613
@@ -1194,8 +1202,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: The trail is recorded only while In_Progress and online (REQ-MOB-009).
   - _Acceptance_: AC-MOB-001 (here because it needs a submit from the phone), AC-MBL-002, AC-MBL-003
   - _Rules_: RL-3, SM-STEP, NFR-04, DEC-98, DEC-99
-  - _Screens built here (visual target)_: [`SAMobileHome`](<../Design Artifact/mobile/MobileApp.html#SAMobileHome>), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>), [`MobilisasiMobile`](<../Design Artifact/mobile/Mobilisasi.html#MobilisasiMobile>)
-  - _Screens touched_: [`FCMobileRequests`](<../Design Artifact/mobile/Requests.html#FCMobileRequests>) (built in TASK-707; extend and regression-check it), [`FCMobilePurchase`](<../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) (built in TASK-707; extend and regression-check it), [`StepVerify`](<../Design Artifact/steps/StepVerify.html#StepVerify>) (built in TASK-205; extend and regression-check it), [`SPKDocument`](<../Design Artifact/spk/SPKDocument.html#SPKDocument>) (built in TASK-212; extend and regression-check it)
+  - _Screens built here (visual target)_: [`SAMobileHome`](<../Design Artifact/mobile/SAMobileHome.html#SAMobileHome>), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>), [`MobilisasiMobile`](<../Design Artifact/mobile/MobilisasiMobile.html#MobilisasiMobile>)
+  - _Screens touched_: [`FCMobileRequests`](<../Design Artifact/mobile/FCMobileRequests.html#FCMobileRequests>) (built in TASK-707; extend and regression-check it), [`FCMobilePurchase`](<../Design Artifact/mobile/FCMobilePurchase.html#FCMobilePurchase>) (built in TASK-707; extend and regression-check it), [`StepVerify`](<../Design Artifact/steps/StepVerify.html#StepVerify>) (built in TASK-205; extend and regression-check it), [`SPKDocument`](<../Design Artifact/spk/SPKDocument.html#SPKDocument>) (built in TASK-212; extend and regression-check it)
   - _Data_: `spk_assignments` (§9.6), `breakdown_reports` (§9.5), `step_time_events` (§9.6), `mobilisation_location_trail` (§9.6)
   - _Journey_: FLW-SA-07 Field work on the phone; FLW-MEC-09 Mobilisasi to a broken-down vehicle
   - _Read_: `docs/prd/areas/4.20-mob.md` (REQ-MOB-008); `docs/prd/areas/4.5a-mbl.md` (REQ-MBL-003, REQ-MBL-004, REQ-MBL-005); `docs/prd/areas/4.9-spkd.md` (REQ-SPKD-005); `docs/prd/data-model.md` §9.5, §9.6 (spk_assignments, breakdown_reports, step_time_events, mobilisation_location_trail) and §9.13 for the TX named in _Rules_; `PRD.md` for RL-3, SM-STEP, NFR-04, DEC-98, DEC-99 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SAMobileHome, FCMobileRequests, FCMobilePurchase, MechanicMobileStep, StepVerify, SPKDocument, MobilisasiMobile; `docs/prd/ui-action-map.md`: every row of StepVerify, SPKDocument and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-07, FLW-MEC-09 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1206,8 +1214,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Urgency pills with text; rolled-over SPKs first within a level.
   - _Acceptance_: AC-CHK-001, AC-MOB-005
   - _Rules_: BR-01, BR-02, RL-1, DEC-92, DQ-04, DEC-98
-  - _Screens built here (visual target)_: [`MechanicMobileHome`](<../Design Artifact/mobile/MobileApp.html#MechanicMobileHome>), [`MechanicMobilePlacement`](<../Design Artifact/mobile/Placement.html#MechanicMobilePlacement>), [`MechanicMobileCheck`](<../Design Artifact/mobile/PartCheck.html#MechanicMobileCheck>), [`MechanicMobileHistory`](<../Design Artifact/mobile/MobileApp.html#MechanicMobileHistory>), [`MechanicMobileUpload`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileUpload>)
-  - _Screens touched_: [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicAction.html#MechanicMobileStep>) (built in TASK-708; extend and regression-check it), [`FCMobilePurchase`](<../Design Artifact/mobile/PartPurchase.html#FCMobilePurchase>) (built in TASK-707; extend and regression-check it), [`PartCheck`](<../Design Artifact/steps/PartCheck.html#PartCheck>) (built in TASK-403; extend and regression-check it)
+  - _Screens built here (visual target)_: [`MechanicMobileHome`](<../Design Artifact/mobile/MechanicMobileHome.html#MechanicMobileHome>), [`MechanicMobilePlacement`](<../Design Artifact/mobile/MechanicMobilePlacement.html#MechanicMobilePlacement>), [`MechanicMobileCheck`](<../Design Artifact/mobile/MechanicMobileCheck.html#MechanicMobileCheck>), [`MechanicMobileHistory`](<../Design Artifact/mobile/MechanicMobileHistory.html#MechanicMobileHistory>), [`MechanicMobileUpload`](<../Design Artifact/mobile/MechanicMobileUpload.html#MechanicMobileUpload>)
+  - _Screens touched_: [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) (built in TASK-708; extend and regression-check it), [`FCMobilePurchase`](<../Design Artifact/mobile/FCMobilePurchase.html#FCMobilePurchase>) (built in TASK-707; extend and regression-check it), [`PartCheck`](<../Design Artifact/steps/PartCheck.html#PartCheck>) (built in TASK-403; extend and regression-check it)
   - _Data_: `spk_assignments` (§9.6), `spks` (§9.6), `spk_schedule` (§9.11), `spk_check_items` (§9.6), `spk_attachments` (§9.6)
   - _Journey_: FLW-MEC-06 Mobile app (R1 step 7)
   - _Read_: `docs/prd/areas/4.20-mob.md` (REQ-MOB-002, REQ-MOB-010); `docs/prd/areas/4.5-mec.md` (REQ-CHK-002); `docs/prd/areas/4.2-eng.md` (acceptance criteria); `docs/prd/data-model.md` §9.11, §9.6 (spk_assignments, spks, spk_schedule, spk_check_items, spk_attachments) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, BR-02, RL-1, DEC-92, DEC-98 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for MechanicMobileHome, MechanicMobileStep, MechanicMobilePlacement, FCMobilePurchase, PartCheck, MechanicMobileCheck, MechanicMobileHistory, MechanicMobileUpload; `docs/prd/ui-action-map.md`: every row of PartCheck and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-MEC-06 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1218,7 +1226,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Scope_: Drafts exactly one SPK and opens no step.
   - _Acceptance_: AC-MOB-002
   - _Rules_: BR-01, DEC-91, DEC-98
-  - _Screens built here (visual target)_: [`MechanicMobileFieldReport`](<../Design Artifact/mobile/Requests.html#MechanicMobileFieldReport>)
+  - _Screens built here (visual target)_: [`MechanicMobileFieldReport`](<../Design Artifact/mobile/MechanicMobileFieldReport.html#MechanicMobileFieldReport>)
   - _Data_: `spks` (§9.6)
   - _Journey_: FLW-MEC-06 Mobile app (R1 step 7)
   - _Read_: `docs/prd/areas/4.20-mob.md` (REQ-MOB-004); `docs/prd/data-model.md` §9.6 (spks) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, DEC-91, DEC-98 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for MechanicMobileFieldReport; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-MEC-06 and `specs/tdd-user-journeys.md` for the same IDs
@@ -1228,7 +1236,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-709** Push via Expo and FCM for Driver, Field Coordinator, Mechanic, System Admin — BLOCKED Q-03 [REQ-NTF-002]
   - _Scope_: P1 for the other roles.
   - _Rules_: DEC-27, DEC-98
-  - _Screens touched_: [`DispatcherMobileAlerts`](<../Design Artifact/mobile/MobileApp.html#DispatcherMobileAlerts>) (built in TASK-707; extend and regression-check it)
+  - _Screens touched_: [`DispatcherMobileAlerts`](<../Design Artifact/mobile/DispatcherMobileAlerts.html#DispatcherMobileAlerts>) (built in TASK-707; extend and regression-check it)
   - _Data_: `push_devices` (§9.12), `notification_deliveries` (§9.12)
   - _Read_: `docs/prd/areas/4.19-ntf.md` (REQ-NTF-002); `docs/prd/data-model.md` §9.12 (push_devices, notification_deliveries) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-27, DEC-98 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DispatcherMobileAlerts; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-704, TASK-130, TASK-707

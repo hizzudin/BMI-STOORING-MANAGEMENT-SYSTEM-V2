@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="reports" data-roles="GM:|Supervisor:|Planner:|System Admin:|Warehouse Manager:|Accounting:" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Reports</h1><span class="grow"></span></div><section class="variant" id="ExportDialog" data-label="C-26: the current table with its filters and only the columns the role may see; written to export_logs"><div class="bar" style="justify-content:flex-start;margin:0 0 12px"><input class="input" style="width:220px" value="2026-08-01 to 2026-10-31" aria-label="Period"><select class="input" style="width:auto"><option>All vehicle classes</option><option>Tractor head</option><option>Trailer tail</option></select></div><div class="grid g4"><div class="card"><div class="metric"><span class="dot "><i data-i="invoices"></i></span><div><strong>Rp 412 jt</strong><small>Cost this quarter</small></div></div></div><div class="card"><div class="metric"><span class="dot "><i data-i="gauge"></i></span><div><strong>Rp 1.240</strong><small>Cost per km</small></div></div></div><div class="card"><div class="metric"><span class="dot "><i data-i="wrench"></i></span><div><strong>38%</strong><small>Parts share</small></div></div></div><div class="card"><div class="metric"><span class="dot "><i data-i="route"></i></span><div><strong>Rp 9,8 jt</strong><small>Stooring</small></div></div></div></div><div style="height:14px"></div><div class="tbl"><table><thead><tr><th>Vehicle</th><th>Class</th><th class="num">Parts</th><th class="num">Services</th><th class="num">Stooring</th><th class="num">Total</th><th class="num">Cost per km</th></tr></thead><tbody><tr><td><a href="../fleet/VehicleOverview.html" class="b nowrap">B 9012 KX</a></td><td>Tractor head</td><td class="num">Rp 12,4 jt</td><td class="num">Rp 6,1 jt</td><td class="num">Rp 1,2 jt</td><td class="num">Rp 19,7 jt</td><td class="num">Rp 1.310</td></tr><tr><td><a href="../fleet/VehicleOverview.html" class="b nowrap">B 1234 ABC</a></td><td>Tractor head</td><td class="num">Rp 9,8 jt</td><td class="num">Rp 4,2 jt</td><td class="num">Rp 0</td><td class="num">Rp 14,0 jt</td><td class="num">Rp 1.120</td></tr></tbody></table></div></section></div><div class="overlay "><div class="dialog" role="dialog" aria-label="Export"><h3>Export</h3><div class="field"><label>Format</label><select class="input"><option selected>xlsx</option><option>csv</option><option>pdf</option></select></div><p class="small muted">Exports the current table with its filters and only the columns you may see. The export is logged.</p><div class="bar"><a class="btn " href="../reports/Reports.html">Cancel</a><a class="btn pri" href="../reports/Reports.html"><i data-i="download"></i>Export</a></div></div></div>
+</main>
+</body>
+</html>

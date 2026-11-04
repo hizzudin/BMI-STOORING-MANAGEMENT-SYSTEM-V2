@@ -3,14 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Invoice print · BMI Stooring System</title>
+<title>Invoice print (black and white) · BMI Stooring System</title>
 <link rel="stylesheet" href="../_kit/bmi.css">
 <script src="../_kit/kit.js"></script>
 </head>
 <body data-nav="invoices" data-roles="Accounting:manage|Supervisor:manage|System Admin:manage|GM:" data-root="../">
 <main class="stage">
-<div class="screen"><div class="head"><div class="crumb">0118/BMI/30-10-26</div><h1>Invoice print</h1><span class="grow"></span><button class="btn pri" type="button"><i data-i="print"></i>Print</button></div>
-      <section class="variant" id="InvoiceDocument" data-label="Black and white, prices only (never the markup), optional wet signature"><div class="paper"><div style="display:flex;gap:14px;align-items:center"><img src="../_kit/bmi-logo.png" alt="BMI"><div><b style="font-size:16px">INVOICE 0118/BMI/30-10-26</b><br>CV Sentosa · B 4410 QA · 2026-10-30</div></div>
+<div class="screen"><div class="head"><div class="crumb">0118/BMI/30-10-26</div><h1>Invoice print</h1><span class="grow"></span><button class="btn " type="button" onclick="window.print()"><i data-i="print"></i>Print</button><a class="btn " href="InvoiceDetail.html">Back</a></div><section class="variant" id="InvoiceDocument" data-label="Black and white, prices only (never the markup), optional wet signature"><div class="paper"><div style="display:flex;gap:14px;align-items:center"><img src="../_kit/bmi-logo.png" alt="BMI"><div><b style="font-size:16px">INVOICE 0118/BMI/30-10-26</b><br>CV Sentosa · B 4410 QA · 2026-10-30</div></div>
         <table style="margin-top:14px"><thead><tr><th>Description</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody><tr><td>STNK renewal</td><td>1</td><td>Rp 350.000</td><td>Rp 350.000</td></tr></tbody></table>
         <p style="text-align:right">PPN 11% Rp 38.500 · <b>Total Rp 388.500</b></p><table><tbody><tr><td style="height:70px">Received by</td><td>BMI</td></tr></tbody></table></div></section></div>
 </main>

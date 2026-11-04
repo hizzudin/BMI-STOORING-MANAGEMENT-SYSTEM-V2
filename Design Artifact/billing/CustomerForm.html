@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add or edit customer · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="customers" data-roles="Accounting:manage|Supervisor:manage|System Admin:manage|GM:" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Customers</h1><span class="grow"></span><a class="btn pri" href="CustomerForm.html" data-act="manage"><i data-i="plus"></i>Add customer</a></div><section class="variant" id="CustomerForm" data-label="Add or edit customer (side panel)"><div class="tbl"><table><thead><tr><th>Customer</th><th class="num">Vehicles</th><th>Payment terms</th><th class="num">Open invoices</th><th></th></tr></thead><tbody><tr><td>PT Logistik Raya</td><td class="num">62</td><td>30 days</td><td class="num">4</td><td><a class="btn " href="CustomerForm.html" data-act="manage">Edit</a></td></tr><tr><td>CV Sentosa</td><td class="num">18</td><td>14 days</td><td class="num">1</td><td><a class="btn " href="CustomerForm.html" data-act="manage">Edit</a></td></tr></tbody></table></div></section></div><div class="overlay right"><div class="panel" role="dialog" aria-label="Add or edit customer"><h3 style="margin:0 0 12px;font-size:17px">Add or edit customer</h3><div class="field"><label>Name</label><input class="input" value="PT Logistik Raya"></div><div class="field"><label>NPWP</label><input class="input" value=""></div><div class="field"><label>Address</label><textarea class="input" rows="2"></textarea></div><div class="field"><label>Payment terms (days)</label><input class="input" value="30"></div><div class="bar"><a class="btn " href="Customers.html">Cancel</a><a class="btn pri" href="Customers.html" data-act="manage">Save</a></div></div></div>
+</main>
+</body>
+</html>

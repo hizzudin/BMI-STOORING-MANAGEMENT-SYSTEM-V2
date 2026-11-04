@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Part Purchase · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="spk" data-roles="Field Coordinator:start,pause,submit,raise_cr|Warehouse Manager:start,pause,submit,raise_cr|Planner:verify|System Admin:start,pause,submit,raise_cr,verify" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Part Purchase</h1><span class="grow"></span></div><section class="variant" id="NothingBought" data-label="REQ-PUR-007: submit with no lines needs a reason"><div class="head"><div class="crumb">SPK-2611040139 · B 9012 KX · Step 2 of 4</div><h1>Part Purchase</h1> <span class="pill info">In Progress</span><span class="grow"></span><span class="circle-ic r"><i data-i="cart"></i></span></div>
+  <p class="muted" style="margin:6px 0 14px">Executor: Field Coordinator, Warehouse Manager or System Admin · never changes warehouse stock</p><div class="grid g2"><div class="card white"><h3><span class="circle-ic"><i data-i="cart"></i></span>Purchase lines<span class="grow"></span></h3><div class="tbl"><table><thead><tr><th>Part</th><th>Vendor</th><th class="num">Qty</th><th class="num">Price</th><th class="num">Total</th></tr></thead><tbody><tr><td>Air filter</td><td>Toko Sinar Jaya</td><td class="num"><input class="input" value="1" style="width:60px"></td><td class="num"><input class="input" value="285.000" style="width:110px"></td><td class="num">Rp 285.000</td></tr></tbody></table></div><div class="row"><div class="grow b">Grand total</div><b>Rp 285.000</b></div></div><div class="card "><h3><span class="circle-ic"><i data-i="camera"></i></span>Receipt<span class="grow"></span></h3><div class="thumbs"><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span><span class="thumb"><i data-i="camera"></i><span class="st run"></span></span></div><p class="small muted">The verifier checks the lines against this photo.</p></div></div>
+  <div class="bar" style="justify-content:flex-start"><a class="btn ghost" href="NothingBought.html">Submit with no lines and a reason</a></div><div class="bar"><a class="btn ghost" href="../spk/ChangeRequest.html" data-act="raise_cr"><i data-i="edit"></i>Raise change request</a><span class="grow"></span>
+  <a class="btn " data-act="pause" href="PauseStep.html"><i data-i="pause"></i>Pause</a><button class="btn pri" data-act="start" type="button"><i data-i="play"></i>Start</button><button class="btn " data-act="submit" type="button">Save draft</button><button class="btn pri" data-act="submit" type="button">Submit step · Rp 1.240.000</button>
+  <a class="btn dan" data-act="verify" href="../spk/SPKDetailVerify.html">Return with note</a><a class="btn pri" data-act="verify" href="../spk/SPKDetailVerify.html">Verify</a></div></section></div><div class="overlay "><div class="dialog" role="dialog" aria-label="Nothing bought?"><h3>Nothing bought?</h3><div class="field"><label>Reason</label><textarea class="input" rows="2"></textarea><span class="small muted">The step is submitted with no lines.</span></div><div class="bar"><a class="btn " href="PartPurchase.html">Cancel</a><a class="btn pri" href="../spk/SPKDetail.html">Submit step</a></div></div></div>
+</main>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="reports" data-roles="GM:|Supervisor:|Planner:|System Admin:|Warehouse Manager:|Accounting:" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Reports</h1><span class="grow"></span><a class="btn " href="../components/ExportDialog.html"><i data-i="download"></i>Export</a></div><nav class="tabs" aria-label="Tabs"><a href="Reports.html" class="">Cost</a><a href="ReportsTyres.html" class="">Tyres</a><a href="ReportsMaintenance.html" class="">Maintenance</a><a href="ReportsInventory.html" class="on">Inventory</a><a href="ReportsStepTime.html" class="">Step time</a></nav><section class="variant" id="ReportsInventory" data-label="Inventory: dead stock, low stock"><div class="bar" style="justify-content:flex-start;margin:0 0 12px"><input class="input" style="width:220px" value="2026-08-01 to 2026-10-31" aria-label="Period"><select class="input" style="width:auto"><option>All vehicle classes</option><option>Tractor head</option><option>Trailer tail</option></select></div><div class="tbl"><table><thead><tr><th>SKU</th><th>Part</th><th class="num">Stock</th><th class="num">Days since last move</th></tr></thead><tbody><tr><td>BRK-PAD-77</td><td>Brake pads old type</td><td class="num">6</td><td class="num">214</td></tr></tbody></table></div><div style="height:14px"></div><div class="note warn"><i data-i="alert"></i><div>6 parts are below the reorder point.</div></div></section></div>
+</main>
+</body>
+</html>

@@ -49,13 +49,13 @@
   const NAV = [
     ['dashboard', 'Dashboard', 'dashboard/Dashboard.html', ['dashboard.view']],
     ['spk', 'Surat Perintah Kerja', 'spk/SPKList.html', ['spk.view'], 3],
-    ['requests', 'Requests', 'spk/Requests.html', ['request.view'], 2],
-    ['schedule', 'Schedule', 'schedule/Schedule.html', ['schedule.view', 'schedule.manage']],
+    ['requests', 'Requests', 'spk/FCRequests.html', ['request.view'], 2],
+    ['schedule', 'Schedule', 'schedule/MaintenanceSchedule.html', ['schedule.view', 'schedule.manage']],
     ['approvals', 'Approvals', 'approvals/Approvals.html', ['spk.approve', 'count.approve'], 4],
     ['inventory', 'Inventory', 'inventory/Inventory.html', ['inventory.manage', 'tyre.manage']],
     ['vehicles', 'Vehicles', 'fleet/Vehicles.html', ['vehicle.view', 'vehicle.manage']],
     ['documents', 'Documents', 'documents/Documents.html', ['vehicle.view', 'vehicle.manage']],
-    ['invoices', 'Invoices', 'billing/Invoices.html', ['invoice.view', 'invoice.manage']],
+    ['invoices', 'Invoices', 'billing/InvoiceList.html', ['invoice.view', 'invoice.manage']],
     ['customers', 'Customers', 'billing/Customers.html', ['invoice.view', 'invoice.manage']],
     ['reports', 'Reports', 'reports/Reports.html', ['report.view']],
     ['settings', 'Settings', 'settings/Settings.html', ['registry.manage', 'parttype.manage', 'masterdata.manage', 'settings.manage']],
@@ -64,6 +64,11 @@
     ['setup', 'Setup and go live', 'setup/SetupGoLive.html', ['setup.golive']]
   ];
   const ICON = { 'spk': 'spk' };
+  // C-01: the Dashboard item opens the role's own dashboard.
+  const ROLE_DASHBOARD = {
+    'Planner': 'DashboardPlanner', 'Mechanic': 'DashboardMechanic', 'Warehouse Manager': 'DashboardWarehouse',
+    'System Admin': 'DashboardAdmin', 'Field Coordinator': 'DashboardDispatcher', 'Accounting': 'DashboardAccounting'
+  };
   // Default effective capabilities per role (PRD 2.2), enough to draw the menu
   const base = ['dashboard.view', 'spk.view', 'vehicle.view'];
   const CAPS = {
@@ -119,7 +124,7 @@
       body._drawNav = () => {
         const caps = CAPS[role.name] || CAPS['System Admin'];
         rail.querySelector('nav').innerHTML = NAV.filter((n) => n[3].some((c) => caps.includes(c))).map((n) =>
-          `<a href="${root}${n[2]}" class="${n[0] === body.dataset.nav ? 'on' : ''}" data-tip="${n[1]}" aria-label="${n[1]}">${svg(ICON[n[0]] || n[0])}<span>${n[1]}</span>${n[4] ? `<b>${n[4]}</b>` : ''}</a>`).join('');
+          `<a href="${root}${n[0] === 'dashboard' && ROLE_DASHBOARD[role.name] ? `dashboard/${ROLE_DASHBOARD[role.name]}.html` : n[2]}" class="${n[0] === body.dataset.nav ? 'on' : ''}" data-tip="${n[1]}" aria-label="${n[1]}">${svg(ICON[n[0]] || n[0])}<span>${n[1]}</span>${n[4] ? `<b>${n[4]}</b>` : ''}</a>`).join('');
         const me = rail.querySelector('.me');
         me.textContent = initials(role.name);
         me.title = role.name;
@@ -154,11 +159,6 @@
         el.classList.toggle('off', !el.dataset.act.split(' ').some((a) => role.acts.includes(a)));
       });
       document.querySelectorAll('[data-role-only]').forEach((el) => el.classList.toggle('off', !el.dataset.roleOnly.split('|').includes(role.name)));
-      // A state whose only content belongs to other roles is hidden with its label.
-      variants.forEach((v) => {
-        const own = [...v.querySelectorAll('[data-role-only]')];
-        v.classList.toggle('off', own.length > 0 && own.every((el) => el.classList.contains('off')));
-      });
       if (body._drawNav) body._drawNav();
       // Schedule cards drag only for a role whose allowedActions include "move" (REQ-SCH-002).
       const canMove = role.acts.includes('move');
@@ -166,14 +166,24 @@
       document.querySelectorAll('.spkcard').forEach((c) => { c.draggable = canMove; });
     };
 
-    // A tab that points at a state on this page lights up when that state is shown.
-    const syncTabs = () => {
-      const hit = document.querySelector(`.tabs a[href="${location.hash}"]`);
-      if (!hit) return;
-      hit.parentElement.querySelectorAll('a').forEach((a) => a.classList.toggle('on', a === hit));
+    // NAV-2: a tab changes the content of the same page. It shows its panel or filters rows marked data-t.
+    const applyTab = (tab) => {
+      const key = tab.dataset.tab;
+      tab.parentElement.querySelectorAll('a').forEach((a) => a.classList.toggle('on', a === tab));
+      document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== key; });
+      document.querySelectorAll('[data-t]').forEach((r) => { r.hidden = key !== 'all' && !r.dataset.t.split(' ').includes(key); });
     };
-    window.addEventListener('hashchange', syncTabs);
-    syncTabs();
+    document.querySelectorAll('.tabs a[data-tab]').forEach((tab) => {
+      tab.addEventListener('click', (e) => { e.preventDefault(); applyTab(tab); });
+    });
+    const firstTab = document.querySelector('.tabs a[data-tab].on');
+    if (firstTab) applyTab(firstTab);
+
+    // C-07: a row opens its record; links and buttons inside the row keep their own target.
+    document.addEventListener('click', (e) => {
+      const row = e.target.closest && e.target.closest('tr[data-href]');
+      if (row && !e.target.closest('a,button,input,select,textarea')) location.href = row.dataset.href;
+    });
 
     // Drag an SPK card between "Not on the schedule" and the days of the week.
     let dragged = null;

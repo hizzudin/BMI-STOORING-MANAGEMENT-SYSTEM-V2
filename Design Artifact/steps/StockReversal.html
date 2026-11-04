@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reverse issue · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="spk" data-roles="Warehouse Manager:start,pause,submit,raise_cr|Planner:verify|System Admin:start,pause,submit,raise_cr,verify" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">SPK-2611040139 · B 9012 KX · Step 1 of 4</div><h1>Reverse issue</h1> <span class="pill warn">Waits for verification</span><span class="grow"></span></div><section class="variant" id="StockReversal" data-label="Reverse an issue after submit (verified by a Planner or System Admin)"><div class="grid g2"><div class="card white"><h3><span class="circle-ic"><i data-i="swap"></i></span>Lines to reverse<span class="grow"></span></h3><div class="tbl"><table><thead><tr><th>Part</th><th class="num">Qty issued</th><th class="num">Qty back</th></tr></thead><tbody><tr><td>Engine oil 15W-40</td><td class="num">18 L</td><td class="num"><input class="input" value="2" style="width:70px"></td></tr></tbody></table></div><div class="field"><label>Reason</label><textarea class="input" rows="2">Kapasitas mesin 16 L</textarea></div></div>
+      <div class="card "><h3><span class="circle-ic"><i data-i="history"></i></span>Effect<span class="grow"></span></h3><div class="note "><i data-i="history"></i><div>Stock and SPK cost return when the reversal is verified. Old ledger rows are never edited.</div></div></div></div><div class="bar"><a class="btn " href="../spk/SPKDetail.html">Cancel</a><a class="btn pri" data-act="submit" href="../spk/SPKDetail.html">Submit reversal</a></div></section></div>
+</main>
+</body>
+</html>

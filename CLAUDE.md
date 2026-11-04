@@ -19,8 +19,9 @@ in this precedence:
                            flows.md (§6), traceability.md (§12),
                            history.md (retired items; nothing in it is built).
   Design Artifact/       — the VISUAL TARGET of the end product (DEC-96):
-                           61 module artboards, web + mobile/, one screen per
-                           module for every role. Start at index.html.
+                           one page per screen, dialog and panel (DEC-107),
+                           web + mobile/, named after the screen in the
+                           folder of its area. Start at index.html.
   DESIGN.md (root)       — the same design written down as tokens and rules.
                            Where it and an artboard differ, the artboard wins
                            and DESIGN.md is corrected.

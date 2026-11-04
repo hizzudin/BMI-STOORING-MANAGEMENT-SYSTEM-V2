@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit part · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="inventory" data-roles="Warehouse Manager:manage|System Admin:manage" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Inventory / FLT-OIL-01</div><h1>Edit part</h1><span class="grow"></span><a class="btn dan" href="PartDeactivate.html" data-act="manage">Deactivate part</a></div><section class="variant" id="PartEdit" data-label="Edit part: SKU and unit are locked once the part has stock movements"><div class="note "><i data-i="lock"></i><div>SKU and unit are locked once the part has stock movements. Quantity and average cost are never edited here.</div></div><div style="height:12px"></div><div class="card white"><h3><span class="circle-ic"><i data-i="box"></i></span>Part<span class="grow"></span></h3><div class="grid ge"><div class="field"><label>SKU</label><input class="input" value="FLT-OIL-01" readonly></div><div class="field"><label>Name</label><input class="input" value="Oil filter"></div><div class="field"><label>Category</label><select class="input"><option selected>Filter</option><option>Oil</option><option>Brake</option><option>Clutch</option><option>Other</option></select></div><div class="field"><label>Unit</label><select class="input" disabled><option selected>pcs</option><option>L</option><option>set</option></select></div><div class="field"><label>Brand</label><input class="input" value="Sakura"></div><div class="field"><label>Reorder point</label><input class="input" value="5"></div><div class="field"><label>Rack</label><input class="input" value="A-12"></div><div class="field"><label>Part item type (optional)</label><select class="input"><option selected>—</option><option>Oil filter</option><option>Brake pads</option></select></div></div></div><div class="bar"><a class="btn " href="PartDetail.html">Cancel</a><a class="btn pri" href="PartDetail.html" data-act="manage">Save changes</a></div></section></div>
+</main>
+</body>
+</html>

@@ -1,7 +1,7 @@
 # Design — BMI Stooring System v2
 
 > How Release 1 is built. Behaviour, rules and data are decided by the PRD ([PRD.md](../PRD.md), [docs/prd/](../docs/prd/)); the look of every screen by its artboard ([Design Artifact/](../Design%20Artifact/index.html), DEC-96). This file decides only what the PRD leaves to the implementation, and records each choice in §11.
-> Spec version: PRD v2.17. A change to this file that diverges from the PRD needs an ADR in [docs/adr/](../docs/adr/) first (CLAUDE.md divergence protocol).
+> Spec version: PRD v2.18. A change to this file that diverges from the PRD needs an ADR in [docs/adr/](../docs/adr/) first (CLAUDE.md divergence protocol).
 
 ## 0. One entity, one name (PRD §0.7, DEC-106)
 

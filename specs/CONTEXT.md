@@ -10,7 +10,7 @@
 | Phase | 0 (specs and scaffold) |
 | Spec status | TASK-004 merged into `main` on the owner's go-ahead (2026-11-04) |
 | Blockers | OQ-10 keeps TASK-009 open, and TASK-103 depends on TASK-009; OQ-11 keeps TASK-008 open; Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.17 |
+| Spec version | PRD v2.18 |
 | Branching | squash merges on local `main`; nothing pushed to `origin` yet; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0: TASK-001 sampai TASK-007 dan TASK-010 selesai. TASK-008 (CI) lulus semua langkah di mesin lokal, tetapi belum pernah berjalan di GitHub karena belum ada push. TASK-009 (data seam) sudah dibuat dan hijau, kecuali penyimpanan Idempotency-Key: §9 belum punya tempat untuknya, jadi butuh keputusan Anda (OQ-10).
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 11 | 2026-11-04 | Design artifact: one page per screen (DEC-107, v2.18), 180 pages; old module files removed; dialogs and panels of the action map added; tabs work; controls linked; all spec links rewritten. Sample data stays non-binding | Design Artifact/, docs/prd/ui.md, ui-action-map.md, PRD.md, history.md, CLAUDE.md, specs/ |
 | 10 | 2026-11-04 | Phase 0 run. TASK-005, 006, 007, 010 done and squashed to local `main`. TASK-008 local only. TASK-009 without the idempotency store. Expo SDK 58 / RN 0.88 has minSdk 24, so Android 8 (API 26) is supported on paper (NFR-18); no real phone yet. `pnpm-workspace.yaml` has `minimumReleaseAgeExclude` entries for six Expo packages that were newer than pnpm's release-age policy: review them when Expo updates. Skills loaded for TASK-006 to 010 were a subset of each _Skill_ line, listed in the owner's report | apps/*, packages/*, .github/workflows/ci.yml, specs/evidence/TASK-006 to 010 |
 | 1 | 2026-11-03 | Read the PRD and flows; TDD journeys; spec v2.9 and v2.10 editorial fixes; grilling of the build plan (Q1–Q26); spec set written | docs/prd/flows.md, history.md, traceability.md, areas/4.3-reg.md, areas/4.4-stk.md; specs/*; docs/adr/0001, 0002; CLAUDE.md (seed note) |
 | 9 | 2026-11-04 | One entity, one name (DEC-106, v2.17): SPK everywhere, also in IDs, tables, permissions, artboards, files and code; replaces the two-name approach of sessions 7 and 8. check-coverage fails on the former name outside docs/prd/history.md. Committed on the spec branch, reaches main with TASK-004 | whole spec, Design Artifact/*, CLAUDE.md, specs/* |

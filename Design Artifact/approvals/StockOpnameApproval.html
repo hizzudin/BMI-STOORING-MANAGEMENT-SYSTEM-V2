@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock opname review · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="approvals" data-roles="Supervisor:approve,reject|GM:approve,reject|System Admin:approve,reject|Planner:approve,reject" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Approvals / SA-0012</div><h1>Stock opname review</h1><span class="grow"></span><a class="btn " href="ApprovalsWarehouse.html">Back to inbox</a></div><section class="variant" id="StockOpnameApproval" data-label="Stock opname: counted against the ledger"><div class="tbl"><table><thead><tr><th>SKU</th><th>Part</th><th class="num">Stock</th><th class="num">Count</th><th class="num">Var</th></tr></thead><tbody><tr><td>FLT-OIL-01</td><td>Oil filter</td><td class="num">14</td><td class="num">13</td><td class="num"><b style="color:var(--bad)">-1</b></td></tr><tr><td>OIL-1540</td><td>Engine oil</td><td class="num">120</td><td class="num">120</td><td class="num">0</td></tr></tbody></table></div><div class="field"><label>Reason (needed to reject)</label><textarea class="input" rows="2"></textarea></div><div class="bar"><a class="btn dan" href="Approvals.html" data-act="reject">Reject</a><a class="btn pri" href="Approvals.html" data-act="approve">Approve adjustment</a></div></section></div>
+</main>
+</body>
+</html>

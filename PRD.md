@@ -184,7 +184,7 @@ Ten roles exist, each account holds exactly one, and exactly one account holds S
 | ID | Role (`role_t`) | Channel | Purpose |
 | --- | --- | --- | --- |
 | `R-PLN` | Maintenance Planner (`Planner`), called "PM" | Web | Plans maintenance: creates SPKs and builds their steps, maintains SPK presets, plans the schedule, verifies steps, requests completion, sets the normal life of part item types. Agrees approval decisions with the Supervisor or GM; approves in the system only while Planner approval is switched on (`RL-7`) |
-| `R-MEC` | Mechanic ([`Mechanic`](<Design Artifact/steps/MechanicAction.html#Mechanic>)) | Web or tablet; mobile in R1 step 7 (DEC-98) | Does repairs: Mechanic Action, Part Replacement and Part Check steps with the work location, change requests, field findings |
+| `R-MEC` | Mechanic ([`Mechanic`](<Design Artifact/steps/Mechanic.html#Mechanic>)) | Web or tablet; mobile in R1 step 7 (DEC-98) | Does repairs: Mechanic Action, Part Replacement and Part Check steps with the work location, change requests, field findings |
 | `R-WHM` | Warehouse Manager (`Warehouse_Manager`), the only warehouse role | Web | Parts and tyres: Goods Receipts, Stock steps and Part Purchase steps, receive tyres, retread, stock opname, tyre count |
 | `R-SUP` | Supervisor (`Supervisor`) | Web; mobile from P1 | Approver; owns customer invoices together with Accounting |
 | `R-GM` | General Manager (`GM`), acts as director | Web; mobile from P1 | Approver with every right of `R-SUP`, plus wider data (`RL-8`) |
@@ -267,7 +267,7 @@ The matrix of 2.2 says *what kind of action* a role may take. It does not say wh
 
 **From cell to code.** An X cell grants the action code of its row (and the row's view code, if it has one); a V cell grants only the view code; S is off until switched on; L is an X whose `role_permissions.is_locked` is true. A row with a V anywhere therefore has two codes, `<area>.view` and an action code, so "same page, different powers" is two rows in `role_permissions`, not a new column.
 
-**Permission catalogue.** These are the only `role_permissions.permission_code` values. A new code is added here first; the guard, the menu and the Access Manager matrix ([`AMRolesPermissions`](<Design Artifact/access/UsersRoles.html#AMRolesPermissions>)) read the same list.
+**Permission catalogue.** These are the only `role_permissions.permission_code` values. A new code is added here first; the guard, the menu and the Access Manager matrix ([`AMRolesPermissions`](<Design Artifact/access/AMRolesPermissions.html#AMRolesPermissions>)) read the same list.
 
 | Code | Granted by the 2.2 row | Opens or allows |
 | --- | --- | --- |
@@ -770,6 +770,7 @@ Release 1 is built in seven steps; each step ends with its acceptance criteria p
 | DEC-103 | In Release 1 the DashboardAdmin integration rows show status only and open nothing; SettingsIntegrations comes with the P1 and P2 adapters (DQ-05) | 7.11, REQ-DSH-005 |
 | DEC-104 | The authorization entity is named Surat Perintah Kerja, SPK for short, in everything people read: the full name in menus, page titles and headings, SPK in buttons, tables, numbers and running text. The number is SPK-yymmddNNNN: yymmdd is the WIB date of creation and NNNN a four-digit running number that widens when needed, never resets and is never reused. Replaces the assumption ASM-42 | 1.5, 3.2, 7.3, NFR-15, REQ-SPK-001, REQ-SPK-010, REQ-SPKD-001 |
 | DEC-106 | One entity, one name: SPK replaces the former name everywhere, also in requirement IDs, state machine and area codes, tables and columns, permission codes, artboards, files, folders and code, so an agent never meets two names for one thing. Nothing is built yet, so no data or code is migrated. The former IDs are listed in docs/prd/history.md for lookup only. Replaces DEC-105 | 0.2, 0.7, 2.4, 9, 12, NFR-15 |
+| DEC-107 | The design artifact has one page per screen: every screen, dialog, side panel and state of 7.3 sits on its own page named after it, in the folder of its area; a dialog or side panel is drawn over the page it opens from; tabs that are their own screen link to its page, and tabs that filter a list or switch a record work in place (NAV-2). Controls connect as in 7.9, so the artifact can be clicked through like the end product. This replaces the file-per-module arrangement of DEC-94 (one screen for every role still holds: a role changes the controls, not the page). Sample data stays non-binding (7.1) | 7.1, 7.3, 7.9 |
 
 Fully superseded decisions (DEC-25, DEC-38, DEC-40, DEC-49, DEC-52, DEC-71, DEC-105) are in [docs/prd/history.md](docs/prd/history.md).
 

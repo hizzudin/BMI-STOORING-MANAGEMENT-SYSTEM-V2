@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventory · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="inventory" data-roles="Warehouse Manager:manage|System Admin:manage" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Inventory</h1> <span class="seg"><a href="Inventory.html" class="">Parts</a><a href="Tyres.html" class="on">Tyres</a></span><span class="grow"></span><a class="btn " href="ReceiveTyres.html" data-act="manage">Receive tyres</a><a class="btn pri" href="RetreadDispatch.html" data-act="manage">Send to retread</a></div><nav class="tabs" aria-label="Tabs"><a href="Tyres.html" class="">Tyres</a><a href="RetreadList.html" class="on">Retread</a><a href="TyreCount.html" class="">Tyre count</a></nav><section class="variant" id="RetreadList" data-label="Dispatches"><div class="tbl"><table><thead><tr><th>Dispatch</th><th>Vendor</th><th class="num">Tyres</th><th>Status</th><th>Sent</th><th></th></tr></thead><tbody><tr><td>RD-0009</td><td>Vulkanisir Jaya</td><td class="num">6</td><td><span class="pill warn">Partial</span></td><td>2026-10-20</td><td><a class="btn " href="RetreadReceipt.html" data-act="manage">Receive</a> <a class="btn " href="RetreadDispatchDetail.html">View</a></td></tr><tr><td>RD-0008</td><td>Vulkanisir Jaya</td><td class="num">4</td><td><span class="pill ok">Closed</span></td><td>2026-09-30</td><td><a class="btn " href="RetreadDispatchDetail.html">View</a></td></tr></tbody></table></div></section></div>
+</main>
+</body>
+</html>

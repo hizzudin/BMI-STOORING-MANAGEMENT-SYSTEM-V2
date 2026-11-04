@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step: Mechanic Action · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="spk" data-roles="Mechanic:start,pause,submit,raise_cr|Field Coordinator:start,pause,submit,raise_cr|Planner:verify|System Admin:start,pause,submit,raise_cr,verify" data-root="../">
+<main class="stage">
+<div class="screen"><section class="variant" id="Mechanic" data-label="Mechanic Action (internal): services from the catalog, evidence photos"><div class="head"><div class="crumb">SPK-2611040139 · B 9012 KX · Step 3 of 4</div><h1>Mechanic Action</h1> <span class="pill info">In Progress</span><span class="grow"></span><span class="circle-ic r"><i data-i="wrench"></i></span></div>
+  <p class="muted" style="margin:6px 0 14px">Executor: Mechanic or System Admin · the work time runs only between Start and Submit</p><div class="bar" style="justify-content:flex-start;margin:0 0 14px"><span class="seg"><a href="Mechanic.html" class="on">Internal team</a><a href="SwitchTeam.html" class="">External workshop</a></span><button class="btn pri" data-act="start" type="button"><i data-i="play"></i>Start work</button><a class="btn " href="StartEarlier.html">I started earlier</a><span class="grow"></span><a class="btn ghost" href="ReleaseStep.html">Release step</a></div><div class="grid g2"><div class="card white"><h3><span class="circle-ic"><i data-i="wrench"></i></span>Services<span class="grow"></span></h3><div class="tbl"><table><thead><tr><th>Service</th><th>Code</th><th class="num">Price</th></tr></thead><tbody><tr><td>PM 20.000 km service</td><td>SVC-020</td><td class="num">Rp 650.000</td></tr><tr><td>Brake adjustment</td><td>SVC-031</td><td class="num">Rp 120.000</td></tr></tbody></table></div><div class="bar" style="justify-content:flex-start;margin:6px 0 10px"><a class="btn " href="CatalogPicker.html"><i data-i="plus"></i>Add service</a></div><div class="field"><label>Work notes</label><textarea class="input" rows="2">Oli diganti, filter udara baru.</textarea></div></div>
+      <div class="card "><h3><span class="circle-ic"><i data-i="camera"></i></span>Repair photos<span class="grow"></span></h3><div class="thumbs"><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span><span class="thumb"><i data-i="camera"></i><span class="st ok"><i data-i="check"></i></span></span><span class="thumb"><i data-i="camera"></i><span class="st run"></span></span></div><p class="small muted">At least one photo; up to 10.</p></div></div>
+  <div class="bar"><a class="btn ghost" href="../spk/ChangeRequest.html" data-act="raise_cr"><i data-i="edit"></i>Raise change request</a><span class="grow"></span>
+  <a class="btn " data-act="pause" href="PauseStep.html"><i data-i="pause"></i>Pause</a><button class="btn " data-act="submit" type="button">Save draft</button><a class="btn pri" data-act="submit" href="../spk/SPKDetail.html">Submit step</a>
+  <a class="btn dan" data-act="verify" href="../spk/SPKDetailVerify.html">Return with note</a><a class="btn pri" data-act="verify" href="../spk/SPKDetailVerify.html">Verify</a></div></section></div>
+</main>
+</body>
+</html>

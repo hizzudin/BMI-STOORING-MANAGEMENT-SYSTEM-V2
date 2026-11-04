@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receive tyres · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="inventory" data-roles="Warehouse Manager:manage|System Admin:manage" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Inventory / Tyres</div><h1>Receive tyres</h1> <span class="seg"><a href="ReceiveTyres.html" class="on">New tyres</a><a href="RetreadReceipt.html" class="">Retread return</a></span><span class="grow"></span></div><section class="variant" id="ReceiveTyres" data-label="New tyres (Supplier, or Existing in Setup mode): the only door into tyre stock"><div class="grid g2" style="margin-top:14px"><div><div class="card white"><h3><span class="circle-ic"><i data-i="doc"></i></span>Receipt<span class="grow"></span></h3><div class="grid ge"><div class="field"><label>Source</label><select class="input"><option selected>Supplier</option><option>Existing</option></select></div><div class="field"><label>Vendor</label><input class="input" value="PT Ban Nusantara"></div><div class="field"><label>Date</label><input class="input" value="2026-11-03"></div><div class="field"><label>Invoice</label><input class="input" value="INV-3341"></div></div></div><div style="height:14px"></div><div class="card white"><h3><span class="circle-ic"><i data-i="tyre"></i></span>Tyres<span class="grow"></span></h3><div class="tbl"><table><thead><tr><th>Serial</th><th>Brand</th><th>Size</th><th>Type</th><th class="num">Price</th></tr></thead><tbody><tr><td><input class="input" value="BS2211-950"></td><td>Bridgestone</td><td>11R22.5</td><td>Tubeless</td><td class="num">Rp 4.100.000</td></tr><tr><td><input class="input" value="BS2211-951"></td><td>Bridgestone</td><td>11R22.5</td><td>Tubeless</td><td class="num">Rp 4.100.000</td></tr></tbody></table></div><div class="bar" style="justify-content:flex-start"><button class="btn " type="button"><i data-i="plus"></i>Add tyre</button><label class="small"><input type="checkbox" checked> Copy brand and size to new rows</label></div></div></div><div><div class="card white"><h3><span class="circle-ic"><i data-i="reports"></i></span>Summary<span class="grow"></span></h3><div class="row"><div class="grow">Tyres</div><b>2</b></div><div class="row"><div class="grow">Total</div><b>Rp 8.200.000</b></div></div><div style="height:14px"></div><div class="note "><i data-i="tyre"></i><div>Confirming puts each tyre In Stock with a generated code.</div></div></div></div><div class="bar"><a class="btn " href="Tyres.html">Cancel</a><button class="btn " type="button">Save draft</button><a class="btn pri" href="Tyres.html" data-act="manage">Confirm receipt</a></div></section></div>
+</main>
+</body>
+</html>

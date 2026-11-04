@@ -6,25 +6,20 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | **TASK-005** (local services), not started: it waits for the owner to say the source files are ready |
+| Active task | **TASK-009** and **TASK-008** are built but open: see the open questions OQ-10 and OQ-11. Next new task after them: TASK-101 |
 | Phase | 0 (specs and scaffold) |
 | Spec status | TASK-004 merged into `main` on the owner's go-ahead (2026-11-04) |
-| Blockers | Code work waits for the owner's go-ahead; Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
+| Blockers | OQ-10 keeps TASK-009 open, and TASK-103 depends on TASK-009; OQ-11 keeps TASK-008 open; Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
 | Spec version | PRD v2.17 |
 | Branching | squash merges on local `main`; nothing pushed to `origin` yet; the next task branches from `main` |
 
-**Ringkasan untuk product owner:** Spec v2.9, v2.10 dan v2.11 sudah di-commit ke `main`. v2.11 berisi jawaban Anda untuk OQ-1 sampai OQ-4:
-- DEC-97: layar draft SPK yang sama untuk Mechanic dan Field Coordinator.
-- DEC-98: menu Mechanic di HP masuk Rilis 1.
-- DEC-99: Part Check dan Mobilisasi masuk Rilis 1 step 4.
-- TX-16 diperbaiki.
-
-File spec build di branch TASK-004 sudah disesuaikan dan masih menunggu review Anda. Pekerjaan kode (TASK-005 dan seterusnya) baru dimulai setelah Anda menyatakan file sumber selesai disiapkan. OQ-6 juga sudah dijawab: MobileProfile menjadi P0 (DEC-100, v2.12). Sesi 3: tasks.md sekarang dibangkitkan dari PRD (specs/tools), dan pengecek cakupan memastikan setiap REQ, AC, layar, tabel, kontrol dan keputusan masuk ke task. OQ-7 sampai OQ-9 sudah dijawab (DEC-101 sampai DEC-103, v2.14). Yang masih terbuka: Q-03 dan OQ-5.
+**Ringkasan untuk product owner:** Phase 0: TASK-001 sampai TASK-007 dan TASK-010 selesai. TASK-008 (CI) lulus semua langkah di mesin lokal, tetapi belum pernah berjalan di GitHub karena belum ada push. TASK-009 (data seam) sudah dibuat dan hijau, kecuali penyimpanan Idempotency-Key: §9 belum punya tempat untuknya, jadi butuh keputusan Anda (OQ-10).
 
 ## Session log
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 10 | 2026-11-04 | Phase 0 run. TASK-005, 006, 007, 010 done and squashed to local `main`. TASK-008 local only. TASK-009 without the idempotency store. Expo SDK 58 / RN 0.88 has minSdk 24, so Android 8 (API 26) is supported on paper (NFR-18); no real phone yet. `pnpm-workspace.yaml` has `minimumReleaseAgeExclude` entries for six Expo packages that were newer than pnpm's release-age policy: review them when Expo updates. Skills loaded for TASK-006 to 010 were a subset of each _Skill_ line, listed in the owner's report | apps/*, packages/*, .github/workflows/ci.yml, specs/evidence/TASK-006 to 010 |
 | 1 | 2026-11-03 | Read the PRD and flows; TDD journeys; spec v2.9 and v2.10 editorial fixes; grilling of the build plan (Q1–Q26); spec set written | docs/prd/flows.md, history.md, traceability.md, areas/4.3-reg.md, areas/4.4-stk.md; specs/*; docs/adr/0001, 0002; CLAUDE.md (seed note) |
 | 9 | 2026-11-04 | One entity, one name (DEC-106, v2.17): SPK everywhere, also in IDs, tables, permissions, artboards, files and code; replaces the two-name approach of sessions 7 and 8. check-coverage fails on the former name outside docs/prd/history.md. Committed on the spec branch, reaches main with TASK-004 | whole spec, Design Artifact/*, CLAUDE.md, specs/* |
 | 7 | 2026-11-04 | Entity named Surat Perintah Kerja (SPK), number SPK-yymmddNNNN, running part never resets, four digits (DEC-104, v2.15). Schedule cards and phone rows fixed for the longer number; launch.json now uses specs/tools/serve-artifact.mjs because npx serve hung | PRD.md, DESIGN.md, PRODUCT.md, README.md, docs/prd/*, Design Artifact/*, specs/* |
@@ -60,6 +55,8 @@ The design choices are D-01 to D-14 in design.md §11. Process and product decis
 | ID | Question | Blocks | Proposed answer |
 | --- | --- | --- | --- |
 | Q-03 | Who owns the Google Cloud, Cloudflare, Firebase and Expo (EAS) accounts, and which domain do web and API use? (PRD §11.3) | TASK-127 B, 128, 709 to 711; R1 step 1 close | — (product owner) |
+| OQ-10 | Where does the `Idempotency-Key` store live (NFR-01, design.md §3.1)? §9 has no table for it | TASK-009, so TASK-103 and all that follow | A table `idempotency_keys` in §9.12, written in the same transaction as the action, with a new DEC |
+| OQ-11 | May `main` be pushed to GitHub (public repository), so the workflow can run and branch protection can be set? | TASK-008 | Yes, after OQ-10 |
 | OQ-5 | Is an internal developer available to review the ENG/REG design note and critical merges (§8.4)? | TASK-202, 203 | Until one joins, ADR-0002 applies |
 
 ## Divergences

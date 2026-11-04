@@ -62,6 +62,8 @@ jobs:
         run: pnpm lint
       - name: Typecheck
         run: pnpm typecheck
+      - name: Generated client is up to date
+        run: pnpm check:client
       - name: Layer rules
         run: pnpm check:layers
       - name: Unit and integration tests with coverage gates

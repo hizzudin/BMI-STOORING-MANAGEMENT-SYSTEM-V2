@@ -10,3 +10,6 @@ pnpm-lock.yaml
 .turbo/
 dist/
 coverage/
+packages/api-client/openapi.json
+*.gen.ts
+next-env.d.ts

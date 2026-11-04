@@ -13,7 +13,8 @@
     "test": "vitest run --project unit --passWithNoTests",
     "test:int": "vitest run --project int",
     "test:coverage": "vitest run --coverage",
-    "db:migrate": "node dist/infra/db/migrate-cli.js"
+    "db:migrate": "node dist/infra/db/migrate-cli.js",
+    "openapi:emit": "node dist/http/openapi/emit.js"
   },
   "dependencies": {
     "@bmi/shared": "workspace:*",
@@ -25,7 +26,8 @@
     "ioredis": "^6.0.0",
     "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@bmi/config": "workspace:*",

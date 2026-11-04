@@ -7,12 +7,13 @@
     "build": "next build",
     "start": "next start -p 3000",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint app e2e",
+    "lint": "eslint app lib e2e",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@bmi/api-client": "workspace:*",
     "@bmi/shared": "workspace:*",
     "next": "^16.4.4",
     "react": "^19.3.1",

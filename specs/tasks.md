@@ -118,13 +118,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-007
   - _Skill_: ecc:hexagonal-architecture, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:redis-patterns
   - _Verify_: PROGRESS: migration runner, drift test, UnitOfWork, optimistic lock, TX-18 check and queue adapter are built and green (specs/evidence/TASK-009.tdd.md); stays open because the idempotency store needs a place in §9, an owner decision; `int "UnitOfWork|idempotency|optimistic|TX-18"`; drift test fails on a hand-edited Drizzle column
-- [ ] **TASK-010** OpenAPI pipeline: Zod DTOs → OpenAPI → @bmi/api-client with drift check
+- [x] **TASK-010** OpenAPI pipeline: Zod DTOs → OpenAPI → @bmi/api-client with drift check
   - _Scope_: PRD §8.2 "API contract first".
   - _Rules_: DEC-66
   - _Read_: `PRD.md` for DEC-66 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-006
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling
-  - _Verify_: `pnpm gen:client` compiles in web and mobile; CI fails on a stale client
+  - _Verify_: pnpm gen:client ok; web and mobile compile against the client; pnpm check:client exits 1 on a stale client; `pnpm gen:client` compiles in web and mobile; CI fails on a stale client
 
 ---
 

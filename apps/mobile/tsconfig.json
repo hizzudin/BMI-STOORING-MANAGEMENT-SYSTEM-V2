@@ -8,5 +8,5 @@
     "exactOptionalPropertyTypes": false,
     "lib": ["ES2023", "DOM"]
   },
-  "include": ["app", "expo-env.d.ts", ".expo/types/**/*.ts"]
+  "include": ["app", "expo-env.d.ts", ".expo/types/**/*.ts", "src"]
 }

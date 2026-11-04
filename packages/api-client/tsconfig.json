@@ -1,5 +1,9 @@
 {
   "extends": "@bmi/config/tsconfig.lib.json",
-  "compilerOptions": { "outDir": "dist", "rootDir": "src" },
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": ["ES2023", "DOM"]
+  },
   "include": ["src"]
 }

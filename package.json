@@ -17,7 +17,9 @@
     "e2e": "turbo run e2e",
     "check:layers": "depcruise apps packages",
     "check:secrets": "secretlint --secretlintignore .secretlintignore \"apps/**/*\" \"packages/**/*\" \"docs/**/*\" \"specs/**/*\" \".github/**/*\" \"*.json\" \"*.yaml\" \"*.md\" \".env.example\"",
-    "check:coverage": "node specs/tools/check-coverage.mjs --tests"
+    "check:coverage": "node specs/tools/check-coverage.mjs --tests",
+    "gen:client": "turbo run build --filter=@bmi/api && pnpm --filter @bmi/api openapi:emit && pnpm --filter @bmi/api-client generate",
+    "check:client": "pnpm gen:client && git diff --exit-code -- packages/api-client/openapi.json packages/api-client/src/schema.gen.ts"
   },
   "devDependencies": {
     "@bmi/config": "workspace:*",

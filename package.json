@@ -14,12 +14,18 @@
     "test": "turbo run test",
     "test:int": "turbo run test:int",
     "test:coverage": "turbo run test:coverage",
-    "e2e": "turbo run e2e"
+    "e2e": "turbo run e2e",
+    "check:layers": "depcruise apps packages",
+    "check:secrets": "secretlint --secretlintignore .secretlintignore \"apps/**/*\" \"packages/**/*\" \"docs/**/*\" \"specs/**/*\" \".github/**/*\" \"*.json\" \"*.yaml\" \"*.md\" \".env.example\"",
+    "check:coverage": "node specs/tools/check-coverage.mjs --tests"
   },
   "devDependencies": {
     "@bmi/config": "workspace:*",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.1.0",
+    "dependency-cruiser": "^18.7.2",
     "eslint": "^10.14.0",
     "prettier": "^3.9.10",
+    "secretlint": "^13.1.0",
     "turbo": "^2.11.10",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.72.1"

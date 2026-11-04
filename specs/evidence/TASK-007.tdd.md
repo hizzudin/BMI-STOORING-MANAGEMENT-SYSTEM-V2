@@ -27,6 +27,6 @@ Foundation task (D-10): no AC or flow. Rules: NFR-01, NFR-14; design D-02, D-09.
 
 ## Known gaps
 
-- `apps/mobile` and the packages without tests have no test script yet. A mobile runner is chosen with the first mobile code (TASK-1xx spike): Expo's runner is not Vitest.
+- `apps/mobile` and the packages without tests have no test script yet. A mobile runner is chosen with the first mobile code (TASK-127 spike): Expo's runner is not Vitest.
 - The `src/engine/**` 90 % gate is configured, but nothing has reached it: the folder is empty until the engine task.
 - `global-setup.ts` applies migration files in name order; TASK-009 replaces this with the real runner.

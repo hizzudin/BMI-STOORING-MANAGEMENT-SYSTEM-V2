@@ -46,7 +46,7 @@ describe('NFR-01 the harness exercises real transactions', () => {
 
   it('NFR-14 the database session runs in UTC', async () => {
     const { rows } = await testPool().query<{ TimeZone: string }>('SHOW timezone');
-    expect(rows[0]?.TimeZone).toBe('UTC');
+    expect(rows[0]?.TimeZone).toMatch(/^(Etc\/)?UTC$/);
   });
 });
 

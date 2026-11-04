@@ -30,3 +30,12 @@ Foundation task (D-10): no AC or flow. Rules: NFR-01, NFR-14; design D-02, D-09.
 - `apps/mobile` and the packages without tests have no test script yet. A mobile runner is chosen with the first mobile code (TASK-127 spike): Expo's runner is not Vitest.
 - The `src/engine/**` 90 % gate is configured, but nothing has reached it: the folder is empty until the engine task.
 - `global-setup.ts` applies migration files in name order; TASK-009 replaces this with the real runner.
+
+## Review fix: the 90 % gates (D-09)
+
+The first check proved only the 80 % gate of the API. Planted untested files, removed afterwards:
+
+- `packages/shared/src/gate-probe.ts`: exit 1, `Coverage for lines (37.5%) does not meet global threshold (90%)`.
+- `apps/api/src/engine/registry/gate-probe.ts`: exit 1 with all 57 tests passing, `Coverage for lines (0%) does not meet "src/engine/**" threshold (90%)`.
+
+The registry service lives in `engine/registry/`, so the `engine/` gate covers it (design.md §10). `@bmi/chassis-map` now has the 80 % gate too, ahead of its first code. `apps/mobile` still has no test runner: TASK-127 chooses it.

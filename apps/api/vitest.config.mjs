@@ -13,6 +13,7 @@ export default defineConfig({
         'src/infra/db/migrate-cli.ts',
         'src/http/openapi/emit.ts',
       ],
+      // D-09: the critical tier of PRD 8.4; the registry service lives in src/engine/registry/.
       thresholds: { ...GLOBAL_THRESHOLD, 'src/engine/**': CRITICAL_THRESHOLD },
     }),
     projects: [

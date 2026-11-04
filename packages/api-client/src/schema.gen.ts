@@ -47,7 +47,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description The API is running */
+            /** @description Tells whether the API is running */
             200: {
                 headers: {
                     [name: string]: unknown;

@@ -4,7 +4,7 @@ import type { AnyPgColumn, PgTable } from 'drizzle-orm/pg-core';
 import { ConcurrentUpdateError } from '../../ports/errors.js';
 import type { DbTransaction } from './unit-of-work.js';
 
-type VersionedTable = PgTable & { id: AnyPgColumn; version: AnyPgColumn };
+type VersionedTable = PgTable & { id: AnyPgColumn; version: AnyPgColumn; updatedAt: AnyPgColumn };
 
 /** Every update of an `-- OL` table of §9 goes through here (NFR-03). */
 export async function updateWithVersion<Table extends VersionedTable>(
@@ -14,7 +14,7 @@ export async function updateWithVersion<Table extends VersionedTable>(
   expectedVersion: number,
   values: Partial<Table['$inferInsert']>,
 ): Promise<void> {
-  const changes = { ...values, version: sql`${table.version} + 1` };
+  const changes = { ...values, version: sql`${table.version} + 1`, updatedAt: sql`now()` };
   const updated = await db
     .update(table as PgTable)
     .set(changes as never)

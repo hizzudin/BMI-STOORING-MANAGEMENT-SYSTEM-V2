@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 14 | 2026-11-04 | Phase 0 review, four fixes: OpenAPI generated from `@ApiContract` on the controllers with a run-time response check (§8.2); full layer table of design.md §3 in dependency-cruiser; `updated_at` stamped by `updateWithVersion`; 90 % gates proven, registry placed in `engine/registry/`. Smaller review points stay open: Approvals preview and Vehicles master-detail against 7.4, `SettingsIntegrations` row in 7.3, the 30-day [A] in 11.2, no independent review yet | apps/api/, packages/chassis-map/, .dependency-cruiser.cjs, specs/design.md, specs/evidence/ |
 | 13 | 2026-11-04 | Owner approved the first push: `main` pushed, CI run 41806304702 green, TASK-008 closed; phase 0 done | specs/ |
 | 12 | 2026-11-04 | Owner chose a new table for the idempotency store: DEC-108, TX-22, v2.19. TASK-009 closed: 50 integration tests. Leftover former names hidden behind escaped underscores in the spec replaced (table names, `source` value 'SPK', heading 9.6); the checker now sees them | docs/prd/data-model.md, PRD.md, apps/api/, specs/ |
 | 11 | 2026-11-04 | Design artifact: one page per screen (DEC-107, v2.18), 180 pages; old module files removed; dialogs and panels of the action map added; tabs work; controls linked; all spec links rewritten. Sample data stays non-binding | Design Artifact/, docs/prd/ui.md, ui-action-map.md, PRD.md, history.md, CLAUDE.md, specs/ |

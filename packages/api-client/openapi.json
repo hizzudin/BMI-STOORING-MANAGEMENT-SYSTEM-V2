@@ -11,7 +11,7 @@
         "summary": "Tells whether the API is running",
         "responses": {
           "200": {
-            "description": "The API is running",
+            "description": "Tells whether the API is running",
             "content": {
               "application/json": {
                 "schema": {

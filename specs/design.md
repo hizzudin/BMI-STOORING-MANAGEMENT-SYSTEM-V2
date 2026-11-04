@@ -120,7 +120,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 
 ## 9. Clients
 
-- API contract first (§8.2): controllers carry Zod-derived OpenAPI; `pnpm gen:client` writes `@bmi/api-client` with openapi-typescript + openapi-fetch (D-04). CI fails when the committed client differs from a fresh generation.
+- API contract first (§8.2): each route carries `@ApiContract` with its Zod schemas from `@bmi/shared`; the OpenAPI document is generated from the controllers, a route without a contract stops it, and an interceptor checks every response at run time; `pnpm gen:client` writes `@bmi/api-client` with openapi-typescript + openapi-fetch (D-04). CI fails when the committed client differs from a fresh generation.
 - Web: Next.js App Router, TanStack Query over the generated client, the shell (floating rail, main sheet, pill tabs) and the kit re-created from DESIGN.md and the artboards. Menus from `GET /me`; buttons from `allowedActions`. Every screen is compared with its artboard (`ecc:browser-qa`) before its task closes.
 - Mobile: Expo on an SDK that still supports Android 8 (NFR-18), expo-router, the same client; SQLite drafts and a photo queue offline (REQ-MOB-009); the location trail only while a Mobilisasi step is In_Progress and online.
 - Chassis map: `@bmi/chassis-map` turns a layout into positions and draws them; image snapshot tests for every launch layout and the generated set (1–6 axles, single or dual, 0–2 spares, DEC-73).
@@ -133,7 +133,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 | Integration DB isolation | migrations applied once to `bmi_template`; each Vitest worker gets `test_w<N>` created from it; tables truncated between test files; no per-test rollback (D-02) |
 | Storage locally | filesystem adapter (D-03) |
 | CI | GitHub Actions on every PR: install, lint, typecheck, unit, integration (Postgres and Redis service containers), Playwright, dependency-cruiser, client drift, migration drift, coverage gates (D-06) |
-| Coverage | 80 % global; 90 % for `@bmi/shared`, `engine/` and the registry (D-09) |
+| Coverage | 80 % global; 90 % for `@bmi/shared` and `engine/`, which holds the module registry service in `engine/registry/` (D-09) |
 | Branches and merges | `type/phaseN-taskNNN-slug`; RED and GREEN checkpoint commits on the branch; squash merge to `main` with the RED/GREEN summary in the PR body; evidence in `specs/evidence/TASK-nnn.tdd.md` (D-08) |
 | Environments | development (local), staging, production; staging and production deploys wait for Q-03 |
 | Staging seed | canvas example values re-typed as a staging-only seed script; never imported from artboards, never in production (ADR-0001) |

@@ -28,3 +28,17 @@ All planted files were removed and `specs/tasks.md` restored.
 
 - The three deliberate failures ran on this machine with the same commands the workflow runs, not on GitHub.
 - GitHub warns that `actions/checkout@v4`, `actions/setup-node@v4` and `pnpm/action-setup@v4` target Node 20, which is deprecated; they run forced on Node 24.
+
+## Review fix: the rest of the layer table (design.md §3)
+
+The first rule set covered only part of the table. Planted violations, removed afterwards:
+
+| Planted fault | Rule that failed it |
+| --- | --- |
+| A module imports another module | `module-never-imports-another-module` |
+| `http/` imports `infra/` | `http-never-imports-infra` |
+| `core/` imports `http/` | `business-logic-never-imports-http-or-storage-sdk` |
+| `core/` imports a type from `express` | `business-logic-never-imports-http-or-storage-sdk` |
+| `core/` imports a type from `pg` | `business-logic-never-imports-a-driver` |
+
+Type-only imports count: the rules match `@types/` too. These ran on this machine with the command the workflow runs. `@nestjs/common` as a whole stays allowed in `core/` for `@Injectable`, so an HTTP exception from it is not caught by this rule. The S3 SDK has no package installed yet, so its path was not exercised.

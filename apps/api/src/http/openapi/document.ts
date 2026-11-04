@@ -1,51 +1,124 @@
-import { HealthResponseSchema } from '@bmi/shared';
+import 'reflect-metadata';
+import { HttpStatus, RequestMethod, type Type } from '@nestjs/common';
+import {
+  HTTP_CODE_METADATA,
+  METHOD_METADATA,
+  MODULE_METADATA,
+  PATH_METADATA,
+} from '@nestjs/common/constants.js';
 import { z } from 'zod';
+import { contractOf, type NamedSchema } from '../contract.js';
 
-interface OpenApiDocument {
+type Operation = Record<string, unknown> & { responses: Record<string, unknown> };
+
+export interface OpenApiDocument {
   openapi: '3.1.0';
   info: { title: string; version: string };
-  paths: Record<string, Record<string, unknown>>;
+  paths: Record<string, Record<string, Operation>>;
   components: { schemas: Record<string, unknown> };
 }
 
-const schemas = z.registry<{ id: string }>();
-schemas.add(HealthResponseSchema, { id: 'HealthResponse' });
-
-function jsonResponse(description: string, schemaId: string): unknown {
-  return {
-    description,
-    content: { 'application/json': { schema: { $ref: `#/components/schemas/${schemaId}` } } },
-  };
+function controllersOf(root: object, seen = new Set<object>()): Type[] {
+  if (seen.has(root)) return [];
+  seen.add(root);
+  const controllers = (Reflect.getMetadata(MODULE_METADATA.CONTROLLERS, root) ?? []) as Type[];
+  const imports = (Reflect.getMetadata(MODULE_METADATA.IMPORTS, root) ?? []) as (
+    object | { module: object }
+  )[];
+  return [
+    ...controllers,
+    ...imports.flatMap((item) => controllersOf('module' in item ? item.module : item, seen)),
+  ];
 }
 
-// One entry per route, from the Zod schemas of @bmi/shared. openapi.test.ts fails on a missing one.
-const paths: OpenApiDocument['paths'] = {
-  '/health': {
-    get: {
-      operationId: 'getHealth',
-      summary: 'Tells whether the API is running',
-      responses: { 200: jsonResponse('The API is running', 'HealthResponse') },
-    },
-  },
-};
+function joinPath(controllerPath: string, methodPath: string): string {
+  const joined = `/${controllerPath}/${methodPath}`.replace(/\/+/g, '/');
+  return (joined.length > 1 ? joined.replace(/\/$/, '') : joined).replace(/:(\w+)/g, '{$1}');
+}
 
-function componentSchemas(): Record<string, unknown> {
-  const { schemas: generated } = z.toJSONSchema(schemas, {
-    uri: (id) => `#/components/schemas/${id}`,
-  });
+function ref({ name }: NamedSchema): { $ref: string } {
+  return { $ref: `#/components/schemas/${name}` };
+}
+
+function componentSchemas(named: Map<string, z.ZodType>): Record<string, unknown> {
+  const registry = z.registry<{ id: string }>();
+  for (const [id, schema] of named) registry.add(schema, { id });
+  const { schemas } = z.toJSONSchema(registry, { uri: (id) => `#/components/schemas/${id}` });
   return Object.fromEntries(
-    Object.entries(generated).map(([id, schema]) => {
+    Object.entries(schemas).map(([id, schema]) => {
       const { $id, $schema, ...component } = schema;
       return [id, component];
     }),
   );
 }
 
-export function buildOpenApiDocument(): OpenApiDocument {
+/** PRD §8.2: generated from the controllers of the module tree; a route without a contract stops it. */
+export function buildOpenApiDocument(rootModule: object): OpenApiDocument {
+  const paths: OpenApiDocument['paths'] = {};
+  const named = new Map<string, z.ZodType>();
+  const register = (item: NamedSchema): void => {
+    if (named.has(item.name) && named.get(item.name) !== item.schema) {
+      throw new Error(`Two schemas are named ${item.name}`);
+    }
+    named.set(item.name, item.schema);
+  };
+
+  for (const controller of controllersOf(rootModule)) {
+    const base = Reflect.getMetadata(PATH_METADATA, controller) as string;
+    const prototype = controller.prototype as Record<string, object>;
+    for (const key of Object.getOwnPropertyNames(prototype)) {
+      const handler = prototype[key];
+      if (key === 'constructor' || !handler) continue;
+      const methodPath = Reflect.getMetadata(PATH_METADATA, handler) as string | undefined;
+      if (methodPath === undefined) continue;
+
+      const requestMethod = Reflect.getMetadata(METHOD_METADATA, handler) as RequestMethod;
+      const method = RequestMethod[requestMethod].toLowerCase();
+      const path = joinPath(base, methodPath);
+      const contract = contractOf(handler);
+      if (!contract) throw new Error(`${method.toUpperCase()} ${path} has no @ApiContract`);
+
+      register(contract.response);
+      if (contract.body) register(contract.body);
+      const status =
+        (Reflect.getMetadata(HTTP_CODE_METADATA, handler) as number | undefined) ??
+        (requestMethod === RequestMethod.POST ? HttpStatus.CREATED : HttpStatus.OK);
+      const parameters = [...path.matchAll(/\{(\w+)\}/g)].map(([, name]) => ({
+        name,
+        in: 'path',
+        required: true,
+        schema: { type: 'string' },
+      }));
+
+      paths[path] = {
+        ...paths[path],
+        [method]: {
+          operationId: contract.operationId,
+          summary: contract.summary,
+          ...(parameters.length ? { parameters } : {}),
+          ...(contract.body
+            ? {
+                requestBody: {
+                  required: true,
+                  content: { 'application/json': { schema: ref(contract.body) } },
+                },
+              }
+            : {}),
+          responses: {
+            [status]: {
+              description: contract.summary,
+              content: { 'application/json': { schema: ref(contract.response) } },
+            },
+          },
+        },
+      };
+    }
+  }
+
   return {
     openapi: '3.1.0',
     info: { title: 'BMI Stooring System API', version: '0.0.0' },
     paths,
-    components: { schemas: componentSchemas() },
+    components: { schemas: componentSchemas(named) },
   };
 }

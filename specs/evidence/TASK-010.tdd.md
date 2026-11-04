@@ -30,3 +30,19 @@ Full local chain before the last type fix: coverage, secrets, format, lint, laye
 - `z.toJSONSchema` of Zod 4 builds the schemas. `@asteasolutions/zod-to-openapi` was tried and dropped: it patches schema methods, and Zod 4 copies methods when a schema is created, so schemas of `@bmi/shared` could not use it.
 - The route list in `document.ts` is written by hand; the test above fails when it and the controllers differ.
 - TanStack Query (D-04) arrives with the first screen that fetches.
+
+## Review fix: the document is generated from the code (PRD §8.2)
+
+The first version kept a hand-written route list in `document.ts`, which did not meet §8.2. The review of phase 0 found this; the task was reopened and is closed again here.
+
+RED (commit 8445e3b on the branch): `Cannot find module '../../../src/http/contract.js'`.
+
+| What is guaranteed now | Proof | Result |
+| --- | --- | --- |
+| Paths, methods, path parameters, body and status come from the controllers and `@ApiContract` | `http/openapi.test.ts` | pass |
+| A route without a contract, or two schemas under one name, stop the build of the document | same | pass |
+| A handler that returns the wrong type does not compile | planted controller: `tsc` error TS1241 | fails as it should |
+| A wrong shape that gets past the compiler answers 500; a field outside the contract never leaves the server | `http/openapi.test.ts` | pass |
+| An invalid body answers 400 and names the field | same | pass |
+
+`ValidBody` replaces `ZodValidationPipe`, so the schema of a body is written once. The generated client changed only in the description of `/health`.

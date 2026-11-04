@@ -54,3 +54,7 @@ GREEN:
 Open by design: the foreign key to `users` arrives with TASK-103; the daily job that calls `purgeIdempotencyKeys` arrives with TX-16; no real endpoint uses `runIdempotent` yet. 30 days is an assumption marked [A].
 
 Also fixed: the integration test timeout went from 60 s to 180 s because `CREATE DATABASE` once took 66 s on this machine.
+
+## Review fix: updated_at (§9.0)
+
+`updateWithVersion` did not stamp `updated_at`, and the probe table had no such column, so no test saw it. RED (commit 8445e3b): the new test failed on a null `updated_at`. GREEN: the column is set on a save and stays untouched on a refused save. The helper's type now requires the column.

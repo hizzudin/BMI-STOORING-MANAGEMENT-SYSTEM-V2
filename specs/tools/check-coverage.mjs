@@ -159,7 +159,7 @@ for (const block of tasks.split(/\n(?=- \[[ x]\] \*\*TASK-)/).slice(1)) {
 // the plan and the code alike. A retired-name sentence is allowed only in PRD 0.7 and the CLAUDE.md block.
 const RETIRED = /\bWOs?\b|\bWOD\b|\bWork Orders?\b|\bwork orders?\b|\bwork[_-]orders?|\bWorkOrder|\bwo_\w|_wo_|_wo\b|\bwo\.[a-z*]|\bwo\b|\bwocard|[a-z_]WO\b|\bWO[A-Z][a-z]|\b(REQ|AC)-WOD?-|\bSM-WO\b/;
 // Build output is not source: minified bundles hold arbitrary short identifiers.
-const GENERATED_DIR = /(^|[\/])(node_modules|dist|.next|.expo|.turbo|coverage|test-results|playwright-report)([\/]|$)/;
+const GENERATED_DIR = /(^|[\\/])(node_modules|dist|\.next|\.expo|\.turbo|coverage|test-results|playwright-report)([\\/]|$)/;
 const namedFiles = (dir, pattern) => {
   try {
     return readdirSync(join(root, dir), { recursive: true })

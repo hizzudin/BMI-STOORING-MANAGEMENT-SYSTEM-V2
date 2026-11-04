@@ -249,7 +249,7 @@ CREATE TABLE vehicle_part_items (             -- baseline and current state of e
   last_replaced_odometer INT NOT NULL CHECK (last_replaced_odometer >= 0),
   life_km INT, life_days INT,                 -- copied from the type, editable per vehicle
   next_due_km INT, next_due_date DATE,
-  source VARCHAR(10) NOT NULL DEFAULT 'Baseline' CHECK (source IN ('Baseline','Work_Order')),
+  source VARCHAR(10) NOT NULL DEFAULT 'Baseline' CHECK (source IN ('Baseline','SPK')),
   last_spk_id BIGINT REFERENCES spks(id),   -- set once an SPK touched it; Correct baseline is then refused
   UNIQUE (vehicle_id, part_item_type_id),
   CHECK (source = 'Baseline' OR last_spk_id IS NOT NULL)
@@ -320,7 +320,7 @@ CREATE TABLE breakdown_reports (
 );
 ```
 
-## 9.6 Work orders, steps and approvals
+## 9.6 SPKs, steps and approvals
 
 ```sql
 CREATE TABLE assignment_modules (             -- module registry (REQ-REG-002)
@@ -954,6 +954,14 @@ CREATE TABLE stored_files (                   -- every uploaded file (8.1); file
   attached_at TIMESTAMP,                      -- set when a record references it; then never changed or deleted
   CHECK (status <> 'Ready' OR sha256 IS NOT NULL)
 );
+CREATE TABLE idempotency_keys (             -- NFR-01, TX-22: one row per mutating request, written in the transaction of the action
+  user_id BIGINT NOT NULL REFERENCES users(id),
+  idem_key VARCHAR(100) NOT NULL,             -- the Idempotency-Key header
+  request_hash CHAR(64) NOT NULL,             -- sha256 of method, path and body; the same key with another request is refused
+  response_status SMALLINT,                   -- set before the transaction commits
+  response_body JSONB,
+  UNIQUE (user_id, idem_key)
+);
 CREATE TABLE notifications (                  -- the only notifications table; in-app from release 1
   user_id BIGINT NOT NULL REFERENCES users(id),
   kind VARCHAR(20) NOT NULL CHECK (kind IN ('Approval','Step','Alert','Schedule','Change_Request')),
@@ -1039,12 +1047,13 @@ CREATE TABLE ai_query_logs (                  -- P1, AO
 | TX-13 | Completion request and approval | `completion_requested_at` is set only if every step is Verified or Skipped. Approval sets Completed, writes the completion approval, recalculates the vehicle status, resets linked `vehicle_part_items` \[A\], and releases still-Issued tyres to In\_Stock (event Released). |
 | TX-14 | Cancel | Reverse posted goods issues (TX-05 without verification \[A\]), release Issued tyres, set Cancelled with reason, remove the card from the open schedule lists, write `audit_logs`. |
 | TX-15 | Document first entry and renewal | First entry inserts `vehicle_documents` and `audit_logs` with no SPK and no `document_renewals` row. Correct entry writes `document_corrections`, refused once a `document_renewals` row exists. A verified Document step writes `document_renewals` (with `spk_id`), updates `vehicle_documents`, recalculates status and vehicle status, and adds the cost to `spks.document_cost`. A required type with no row counts as Missing and blocks trips. |
-| TX-16 | Daily job (NFR-12) | Document statuses and one Document SPK per Warning document; PM, part item and tyre alerts (one pending per subject); schedule Missed marks, the roll-forward of each Missed card to the next day with `spk_schedule.is_rolled_over` and a Moved row in `spk_schedule_log` (REQ-SCH-003), late alerts (REQ-SCH-007) and Today alerts; `spks.off_days` +1 once per WIB day for each SPK whose vehicle is OFF, guarded by `off_last_counted_date` (DEC-92); vehicle status recalculation. Each part is idempotent (NFR-12). |
+| TX-16 | Daily job (NFR-12) | Document statuses and one Document SPK per Warning document; PM, part item and tyre alerts (one pending per subject); schedule Missed marks, the roll-forward of each Missed card to the next day with `spk_schedule.is_rolled_over` and a Moved row in `spk_schedule_log` (REQ-SCH-003), late alerts (REQ-SCH-007) and Today alerts; `spks.off_days` +1 once per WIB day for each SPK whose vehicle is OFF, guarded by `off_last_counted_date` (DEC-92); vehicle status recalculation. Each part is idempotent (NFR-12). Removes idempotency keys older than 30 days (TX-22). |
 | TX-17 | Shared map data | The Vehicles tab and the Part Replacement step both read `part_positions` of the vehicle's layout and the Active `part_placements`; there is no second copy of a layout. |
 | TX-18 | Soft delete | Unique indexes on soft-deleted tables ignore rows where `deleted_at` is set. |
 | TX-19 | Bill a completed SPK | Inside TX-13: find the Draft invoice of the vehicle for the completion date or create it (customer from vehicles.customer\_id); insert an invoice\_wos row and one invoice\_lines row per part, tyre and service line of the SPK (parts and tyres at cost × (1 + invoice\_part\_markup\_pct), services at their price), never merged; recompute subtotal, tax and total. No customer: insert the invoice\_wos row with invoice\_id NULL (Not billable) and no lines until a customer is set. Write audit\_logs. |
 | TX-20 | Planner approval switch | Set app\_settings.planner\_approval\_until (or null to switch off), write audit\_logs with the reason, notify Supervisors and GMs. Every approval by a Planner checks the switch and BR-03 at decision time. |
-| TX-21 | Part Purchase step submit | Write work\_order\_purchases and its lines with the calculated total, create a tyres row (status Issued, issued\_spk\_id) for each Tyre line, attach the receipt photos, add the total to work\_orders.parts\_cost; never touch parts\_catalog, goods\_issues or stock\_cards (DEC-60). |
+| TX-21 | Part Purchase step submit | Write spk\_purchases and its lines with the calculated total, create a tyres row (status Issued, issued\_spk\_id) for each Tyre line, attach the receipt photos, add the total to spks.parts\_cost; never touch parts\_catalog, goods\_issues or stock\_cards (DEC-60). |
+| TX-22 | Idempotent request (NFR-01) | Inside the transaction of the action: insert the `idempotency_keys` row first. A concurrent request with the same key waits for the first to finish. A row that already exists returns its stored response and the action does not run; the same key with another request hash is refused. The response is stored before the commit. A rollback removes the row with the action, so a retry runs again. Rows older than 30 days [A] are removed by the daily job (DEC-108). |
 
 ## 9.14 Customers and invoices
 

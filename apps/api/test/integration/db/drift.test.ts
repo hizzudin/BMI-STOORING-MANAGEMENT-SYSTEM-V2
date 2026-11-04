@@ -1,10 +1,12 @@
-import { bigint, pgTable, text, varchar } from 'drizzle-orm/pg-core';
+import { bigint, getTableConfig, pgTable, text, varchar } from 'drizzle-orm/pg-core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { findSchemaDrift } from '../../../src/infra/db/drift.js';
 import { allTables } from '../../../src/infra/db/schema/index.js';
 import { testPool } from '../harness/database.js';
 
 const TEST_ONLY_TABLES = ['harness_probe', 'drift_probe'];
+// Tables the probe definitions below do not describe.
+const PROBE_IGNORED = ['harness_probe', ...allTables.map((table) => getTableConfig(table).name)];
 
 const driftProbe = pgTable('drift_probe', {
   id: bigint('id', { mode: 'number' }).primaryKey(),
@@ -28,7 +30,7 @@ describe('D-12 Drizzle definitions match the migrated database', () => {
   });
 
   it('D-12 drift: a matching definition reports nothing', async () => {
-    expect(await findSchemaDrift(testPool(), [driftProbe], ['harness_probe'])).toEqual([]);
+    expect(await findSchemaDrift(testPool(), [driftProbe], PROBE_IGNORED)).toEqual([]);
   });
 
   it('D-12 drift: a hand-edited column type is reported', async () => {
@@ -37,7 +39,7 @@ describe('D-12 Drizzle definitions match the migrated database', () => {
       code: varchar('code', { length: 20 }).notNull(),
       note: text('note'),
     });
-    expect(await findSchemaDrift(testPool(), [edited], ['harness_probe'])).toEqual([
+    expect(await findSchemaDrift(testPool(), [edited], PROBE_IGNORED)).toEqual([
       'drift_probe.code: Drizzle has character varying(20), the database has character varying(10)',
     ]);
   });
@@ -48,7 +50,7 @@ describe('D-12 Drizzle definitions match the migrated database', () => {
       code: varchar('code', { length: 10 }).notNull(),
       note: text('note').notNull(),
     });
-    expect(await findSchemaDrift(testPool(), [edited], ['harness_probe'])).toEqual([
+    expect(await findSchemaDrift(testPool(), [edited], PROBE_IGNORED)).toEqual([
       'drift_probe.note: Drizzle says NOT NULL, the database allows NULL',
     ]);
   });
@@ -59,7 +61,7 @@ describe('D-12 Drizzle definitions match the migrated database', () => {
       code: varchar('code', { length: 10 }).notNull(),
       extra: text('extra'),
     });
-    expect(await findSchemaDrift(testPool(), [edited], ['harness_probe'])).toEqual([
+    expect(await findSchemaDrift(testPool(), [edited], PROBE_IGNORED)).toEqual([
       'drift_probe.extra: only in Drizzle',
       'drift_probe.note: only in the database',
     ]);
@@ -67,7 +69,7 @@ describe('D-12 Drizzle definitions match the migrated database', () => {
 
   it('D-12 drift: a table without a definition and a definition without a table are reported', async () => {
     const ghost = pgTable('ghost_probe', { id: bigint('id', { mode: 'number' }).primaryKey() });
-    expect(await findSchemaDrift(testPool(), [ghost], ['harness_probe'])).toEqual([
+    expect(await findSchemaDrift(testPool(), [ghost], PROBE_IGNORED)).toEqual([
       'ghost_probe: only in Drizzle',
       'drift_probe: only in the database',
     ]);

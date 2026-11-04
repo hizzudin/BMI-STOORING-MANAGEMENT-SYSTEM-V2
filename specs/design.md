@@ -1,7 +1,7 @@
 # Design — BMI Stooring System v2
 
 > How Release 1 is built. Behaviour, rules and data are decided by the PRD ([PRD.md](../PRD.md), [docs/prd/](../docs/prd/)); the look of every screen by its artboard ([Design Artifact/](../Design%20Artifact/index.html), DEC-96). This file decides only what the PRD leaves to the implementation, and records each choice in §11.
-> Spec version: PRD v2.18. A change to this file that diverges from the PRD needs an ADR in [docs/adr/](../docs/adr/) first (CLAUDE.md divergence protocol).
+> Spec version: PRD v2.19. A change to this file that diverges from the PRD needs an ADR in [docs/adr/](../docs/adr/) first (CLAUDE.md divergence protocol).
 
 ## 0. One entity, one name (PRD §0.7, DEC-106)
 
@@ -77,7 +77,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 ### 3.1 Gateways and UnitOfWork (D-07)
 
 - One port per aggregate: `UserGateway`, `RolePermissionGateway`, `VehicleGateway`, `DocumentGateway`, `SpkGateway` (SPK, approvals, steps), `StockLedgerGateway`, `PurchaseGateway`, `TyreGateway`, `PlacementGateway`, `PartItemGateway`, `AlertGateway`, `ScheduleGateway`, `NotificationOutboxGateway`, `InvoiceGateway`, `FileGateway`, `AuditGateway`, `SettingsGateway`.
-- `UnitOfWork.run(async (tx) => …)` hands every gateway the same transaction; each TX-* of §9.13 is exactly one `run`. Retries are idempotent through an `Idempotency-Key` on every mutating request (NFR-01), stored with its response.
+- `UnitOfWork.run(async (tx) => …)` hands every gateway the same transaction; each TX-* of §9.13 is exactly one `run`. Retries are idempotent through an `Idempotency-Key` on every mutating request (NFR-01), stored with its response in `idempotency_keys` inside the same `run` (TX-22, DEC-108).
 - Row locks (`SELECT … FOR UPDATE`) for TX-03, TX-05 and TX-21 live inside gateway methods (`lockSkus(ids)`), never in a service.
 - Optimistic lock (NFR-03): every update of an `-- OL` table carries `WHERE version = $n`; a miss raises `ConcurrentUpdateError` → HTTP 409 with a clear message.
 - Migrations: `infra/db/migrate.ts` applies numbered files, each in one transaction, and refuses an applied file that was edited. Its ledger `meta.schema_migrations` lives in schema `meta`, outside the §9 tables in `public`.

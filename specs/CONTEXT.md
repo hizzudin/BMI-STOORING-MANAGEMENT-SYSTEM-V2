@@ -6,19 +6,20 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | **TASK-009** and **TASK-008** are built but open: see the open questions OQ-10 and OQ-11. Next new task after them: TASK-101 |
+| Active task | **TASK-008** is built but open (OQ-11). Next new task: TASK-101 |
 | Phase | 0 (specs and scaffold) |
 | Spec status | TASK-004 merged into `main` on the owner's go-ahead (2026-11-04) |
-| Blockers | OQ-10 keeps TASK-009 open, and TASK-103 depends on TASK-009; OQ-11 keeps TASK-008 open; Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.18 |
+| Blockers | OQ-11 keeps TASK-008 open; Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
+| Spec version | PRD v2.19 |
 | Branching | squash merges on local `main`; nothing pushed to `origin` yet; the next task branches from `main` |
 
-**Ringkasan untuk product owner:** Phase 0: TASK-001 sampai TASK-007 dan TASK-010 selesai. TASK-008 (CI) lulus semua langkah di mesin lokal, tetapi belum pernah berjalan di GitHub karena belum ada push. TASK-009 (data seam) sudah dibuat dan hijau, kecuali penyimpanan Idempotency-Key: §9 belum punya tempat untuknya, jadi butuh keputusan Anda (OQ-10).
+**Ringkasan untuk product owner:** Phase 0: semua task selesai kecuali TASK-008 (CI), yang lulus di mesin lokal tetapi belum pernah berjalan di GitHub karena belum ada push (OQ-11). Penyimpanan Idempotency-Key memakai tabel baru `idempotency_keys` di §9 (DEC-108); masa simpan 30 hari adalah asumsi [A].
 
 ## Session log
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 12 | 2026-11-04 | Owner chose a new table for the idempotency store: DEC-108, TX-22, v2.19. TASK-009 closed: 50 integration tests. Leftover former names hidden behind escaped underscores in the spec replaced (table names, `source` value 'SPK', heading 9.6); the checker now sees them | docs/prd/data-model.md, PRD.md, apps/api/, specs/ |
 | 11 | 2026-11-04 | Design artifact: one page per screen (DEC-107, v2.18), 180 pages; old module files removed; dialogs and panels of the action map added; tabs work; controls linked; all spec links rewritten. Sample data stays non-binding | Design Artifact/, docs/prd/ui.md, ui-action-map.md, PRD.md, history.md, CLAUDE.md, specs/ |
 | 10 | 2026-11-04 | Phase 0 run. TASK-005, 006, 007, 010 done and squashed to local `main`. TASK-008 local only. TASK-009 without the idempotency store. Expo SDK 58 / RN 0.88 has minSdk 24, so Android 8 (API 26) is supported on paper (NFR-18); no real phone yet. `pnpm-workspace.yaml` has `minimumReleaseAgeExclude` entries for six Expo packages that were newer than pnpm's release-age policy: review them when Expo updates. Skills loaded for TASK-006 to 010 were a subset of each _Skill_ line, listed in the owner's report | apps/*, packages/*, .github/workflows/ci.yml, specs/evidence/TASK-006 to 010 |
 | 1 | 2026-11-03 | Read the PRD and flows; TDD journeys; spec v2.9 and v2.10 editorial fixes; grilling of the build plan (Q1–Q26); spec set written | docs/prd/flows.md, history.md, traceability.md, areas/4.3-reg.md, areas/4.4-stk.md; specs/*; docs/adr/0001, 0002; CLAUDE.md (seed note) |
@@ -49,6 +50,7 @@ The design choices are D-01 to D-14 in design.md §11. Process and product decis
 - OQ-7 → DEC-101: a Rejected SPK can be cancelled by its creator (T6); DQ-06 corrected.
 - OQ-8 → DEC-102: the password reset email is the only email in Release 1, through an email adapter; the provider account joins Q-03.
 - OQ-9 → DEC-103: DashboardAdmin integration rows are status only in Release 1.
+- OQ-10 → DEC-108: the idempotency store is a table in §9 (`idempotency_keys`, TX-22), written in the transaction of the action; 30 days of retention is [A].
 - OQ-4 → TX-16 now names the roll-forward, late alerts and the OFF-day count (editorial, v2.11).
 
 ## Open questions
@@ -56,7 +58,6 @@ The design choices are D-01 to D-14 in design.md §11. Process and product decis
 | ID | Question | Blocks | Proposed answer |
 | --- | --- | --- | --- |
 | Q-03 | Who owns the Google Cloud, Cloudflare, Firebase and Expo (EAS) accounts, and which domain do web and API use? (PRD §11.3) | TASK-127 B, 128, 709 to 711; R1 step 1 close | — (product owner) |
-| OQ-10 | Where does the `Idempotency-Key` store live (NFR-01, design.md §3.1)? §9 has no table for it | TASK-009, so TASK-103 and all that follow | A table `idempotency_keys` in §9.12, written in the same transaction as the action, with a new DEC |
 | OQ-11 | May `main` be pushed to GitHub (public repository), so the workflow can run and branch protection can be set? | TASK-008 | Yes, after OQ-10 |
 | OQ-5 | Is an internal developer available to review the ENG/REG design note and critical merges (§8.4)? | TASK-202, 203 | Until one joins, ADR-0002 applies |
 

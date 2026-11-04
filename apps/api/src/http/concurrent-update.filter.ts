@@ -1,10 +1,11 @@
 import { Catch, HttpStatus, type ArgumentsHost, type ExceptionFilter } from '@nestjs/common';
 import type { Response } from 'express';
 import { ConcurrentUpdateError } from '../ports/errors.js';
+import { IdempotencyKeyReusedError } from '../ports/idempotency.js';
 
-@Catch(ConcurrentUpdateError)
-export class ConcurrentUpdateFilter implements ExceptionFilter<ConcurrentUpdateError> {
-  catch(error: ConcurrentUpdateError, host: ArgumentsHost): void {
+@Catch(ConcurrentUpdateError, IdempotencyKeyReusedError)
+export class ConcurrentUpdateFilter implements ExceptionFilter<Error> {
+  catch(error: Error, host: ArgumentsHost): void {
     host
       .switchToHttp()
       .getResponse<Response>()

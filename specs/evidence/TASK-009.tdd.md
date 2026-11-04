@@ -1,6 +1,6 @@
 # TASK-009 Data seam
 
-Status: **open**. Everything is built and green except the store behind the `Idempotency-Key` (NFR-01): §9 has no table for it, and adding one changes the data model, which needs the product owner (CLAUDE.md). Nothing was invented in its place.
+Status: **done** after the owner decision below. Until then the store behind the `Idempotency-Key` (NFR-01) had no table in §9, and nothing was invented in its place.
 
 ## RED (commit ac4a407)
 
@@ -29,3 +29,28 @@ Whole suite: 35 tests. `test:coverage` for `@bmi/api`: lines 98.92 %, branches 9
 - `meta.schema_migrations` is the runner's ledger, in its own schema outside `public`. It is tooling, not §9 data; recorded in design.md.
 - §9 tables arrive with TASK-103 on, so the real-schema drift and convention tests pass on an empty schema today. Their detection is proven by the probe tables.
 - BR-10 append-only triggers and the other §9 guards are per table, so they arrive with their migrations.
+
+## Idempotency store (owner decision, DEC-108, PRD v2.19)
+
+The product owner chose a new table in §9. Spec first: `idempotency_keys` in §9.12, TX-22, TX-16 and DEC-108.
+
+RED (commit b866867): `Cannot find module '../../../src/core/idempotency/run-idempotent.js'`.
+
+GREEN:
+
+| What is guaranteed | Test | Result |
+| --- | --- | --- |
+| A retry returns the stored response; the action runs once (TX-22) | `db/idempotency.test.ts` | pass |
+| A failed action leaves no key; the retry runs | same | pass |
+| The same key with another request is refused | same | pass |
+| Two requests at once run the action once and answer the same | same | pass |
+| The same key from another user is another request | same | pass |
+| Keys older than 30 days are removed, others stay (DEC-108) | same | pass |
+| A missing or oversized key answers 400; a reused key answers 409 | same | pass |
+| Migration and Drizzle definition match | `db/drift.test.ts` | pass |
+
+`int "UnitOfWork|idempotency|optimistic|TX-18"`: 20 pass. Whole suite: 50 tests. `@bmi/api` coverage: lines 99,27 %, branches 90,24 %. **This line of `_Verify_` is now satisfied.** The status at the top of this file is history.
+
+Open by design: the foreign key to `users` arrives with TASK-103; the daily job that calls `purgeIdempotencyKeys` arrives with TX-16; no real endpoint uses `runIdempotent` yet. 30 days is an assumption marked [A].
+
+Also fixed: the integration test timeout went from 60 s to 180 s because `CREATE DATABASE` once took 66 s on this machine.

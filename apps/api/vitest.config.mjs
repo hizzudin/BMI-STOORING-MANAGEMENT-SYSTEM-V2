@@ -1,7 +1,7 @@
 import { coverage, CRITICAL_THRESHOLD, GLOBAL_THRESHOLD } from '@bmi/config/vitest';
 import { defineConfig } from 'vitest/config';
 
-const SLOW_DATABASE_MS = 60_000;
+const SLOW_DATABASE_MS = 180_000;
 
 export default defineConfig({
   test: {

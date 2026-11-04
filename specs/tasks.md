@@ -117,13 +117,14 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-007
   - _Skill_: ecc:deployment-patterns, ecc:docker-patterns, ecc:delivery-gate, ecc:canary-watch, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: PROGRESS: all steps pass locally and the three deliberate failures fail (specs/evidence/TASK-008.tdd.md); stays open until the workflow runs green on GitHub, which needs a push; workflow green; a deliberate engine → module import fails; a removed REQ in tasks.md fails the coverage step
-- [ ] **TASK-009** Data seam: SQL migration runner, Drizzle drift test, UnitOfWork, idempotency keys, optimistic lock, queue adapter
+- [x] **TASK-009** Data seam: SQL migration runner, Drizzle drift test, UnitOfWork, idempotency keys, optimistic lock, queue adapter
   - _Scope_: Design D-07, D-12. Migrations follow the TX-01 creation order; soft delete and `version` conventions of §9.0.
-  - _Rules_: NFR-01, NFR-03, NFR-07, TX-01, TX-18, BR-10
-  - _Read_: `PRD.md` for NFR-01, NFR-03, NFR-07, BR-10 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Rules_: NFR-01, NFR-03, NFR-07, TX-01, TX-18, TX-22, BR-10, DEC-108
+  - _Data_: `idempotency_keys` (§9.12)
+  - _Read_: `docs/prd/data-model.md` §9.12 (idempotency_keys) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-01, NFR-03, NFR-07, BR-10, DEC-108 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-007
   - _Skill_: ecc:hexagonal-architecture, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:redis-patterns
-  - _Verify_: PROGRESS: migration runner, drift test, UnitOfWork, optimistic lock, TX-18 check and queue adapter are built and green (specs/evidence/TASK-009.tdd.md); stays open because the idempotency store needs a place in §9, an owner decision; `int "UnitOfWork|idempotency|optimistic|TX-18"`; drift test fails on a hand-edited Drizzle column
+  - _Verify_: int filter 20 pass incl. idempotency; drift test fails on a hand-edited Drizzle column; 50 integration tests; `int "UnitOfWork|idempotency|optimistic|TX-18"`; drift test fails on a hand-edited Drizzle column
 - [x] **TASK-010** OpenAPI pipeline: Zod DTOs → OpenAPI → @bmi/api-client with drift check
   - _Scope_: PRD §8.2 "API contract first".
   - _Rules_: DEC-66
@@ -153,7 +154,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `unit @bmi/shared "SM-"`; coverage ≥ 90 %
 - [ ] **TASK-103** Migrations: identity, access, audit, settings and platform tables
-  - _Scope_: §9.2 and the platform tables of §9.12 used in step 1; append-only and one-System-Admin guards as in §9.
+  - _Scope_: §9.2 and the platform tables of §9.12 used in step 1; append-only and one-System-Admin guards as in §9; adds the foreign key idempotency_keys.user_id, whose table TASK-009 created before users existed.
   - _Rules_: BR-10, BR-14, NFR-02
   - _Data_: `users` (§9.2), `user_roles` (§9.2), `role_permissions` (§9.2), `audit_logs` (§9.2), `app_settings` (§9.12), `stored_files` (§9.12), `user_table_preferences` (§9.12)
   - _Read_: `docs/prd/data-model.md` §9.12, §9.2 (users, user_roles, role_permissions, audit_logs, app_settings, stored_files, user_table_preferences) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-10, BR-14, NFR-02 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)

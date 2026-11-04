@@ -110,6 +110,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.19 (2026-11-04) adds DEC-108: the table `idempotency_keys` (9.12) and TX-22 give NFR-01 its store; the daily job (TX-16) removes rows older than 30 days [A]. Product owner decision.
+
 v2.18 (2026-11-04) adds DEC-107: the design artifact moves from 61 module files, which held several screens each, to one page per screen. The dialogs, panels and states that the action map named without an artboard get their pages and join the inventory (7.3). Tab names follow REQ-SPK-010 and 7.4 (SPK list, Inventory, Invoices, Reports). All artboard links in the spec point at the new pages. No requirement, table or rule changes.
 
 v2.17 (2026-11-04) adds DEC-106: one entity, one name. The former name is replaced everywhere, also in IDs, tables, permission codes, artboards, files and code; 0.7 is rewritten; DEC-105 is superseded. Entries below this one and the retired items keep the old words as written at the time; this table translates them.

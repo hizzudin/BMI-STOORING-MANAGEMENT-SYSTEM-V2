@@ -151,7 +151,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 
 **Goal:** Setup mode and Go live, sign-in, roles incl. Accounting, vendors, the Access Manager area and the Planner switch, audit log, file storage and compression, vehicles, classes and chassis layouts, the document master, and the SPK core with approvals, stamps and the scope lock (PRD §10 R1 step 1). Ends with UAT on staging (DEC-77).
 
-- [ ] **TASK-101** Shared enums (§9.1), decimal money and rounding, WIB time, Indonesian number format, numbering formats
+- [x] **TASK-101** Shared enums (§9.1), decimal money and rounding, WIB time, Indonesian number format, numbering formats
   - _Scope_: packages/shared: every enum of §9.1 once; numbers as 48.210 km, Rp 1.240.000, 2,4 mm; half-up rounding; numbering formats in one configuration: CODE-yymmddNNNN for every code, invoices as DEC-46.
   - _Rules_: NFR-09, NFR-14, NFR-15, NFR-16, DEC-30, DEC-46, DEC-110
   - _Read_: `PRD.md` for NFR-09, NFR-14, NFR-15, NFR-16, DEC-30, DEC-46, DEC-110 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)

@@ -6,9 +6,9 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | Spec v2.21 (TASK-021) is merged. Next task: **TASK-101** |
-| Phase | 0 (specs and scaffold) |
-| Spec status | TASK-021 merged into `main` and pushed on the owner's go-ahead (2026-11-05) |
+| Active task | TASK-101 is merged. Next task: **TASK-102** |
+| Phase | 1 (R1 step 1) |
+| Spec status | TASK-021 and TASK-101 merged into `main` and pushed on the owner's go-ahead (2026-11-05) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
 | Spec version | PRD v2.21 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 17 | 2026-11-05 | TASK-101: enums of 9.1 with a drift test against the data model, decimal money with big.js, Indonesian number format, WIB date and time, one numbering configuration. 71 tests, 100 percent coverage of `@bmi/shared` | packages/shared/, specs/ |
 | 16 | 2026-11-05 | Owner: every running code follows CODE-yymmddNNNN (DEC-110, v2.21), also tyre codes; customer invoices keep NNNN/BMI/dd-mm-yy (DEC-46). Sample numbers updated in the spec and artboards. No code used these formats yet | PRD.md, docs/prd/, Design Artifact/, specs/ |
 | 15 | 2026-11-05 | Owner replaced the field draft SPK with the Report Breakdown (DEC-109, v2.20). New area BRK, SM-BRK, TX-23, TX-24, numbering RB-yymmddNNNN, `breakdown_report_photos`. Drafts come only from alerts, a verified Part Check and an Urgent breakdown report (with one Mobilisasi step). Blocking pop-up for Planners on an Urgent report from a Driver. An inspection Fail, now also by a Mechanic, raises a report. "Report reference: RB-yymmddNNNN" shows in the description of an SPK made from a report. Report number RB-yymmddNNNN like the SPK number (owner). Eight screens renamed or merged, two new. Defaults the owner approved: Urgent inspection Fail has no pop-up, Mechanic inspection uses the same checklist and is not daily, a report is rejected with a reason, Mechanic and Field Coordinator report on web and phone. Added by the agent, to be reviewed: at least one photo is required, pop-up within 30 seconds [A], draft opens in a new tab | PRD.md, docs/prd/, Design Artifact/, specs/ |
 | 14 | 2026-11-04 | Phase 0 review, four fixes: OpenAPI generated from `@ApiContract` on the controllers with a run-time response check (§8.2); full layer table of design.md §3 in dependency-cruiser; `updated_at` stamped by `updateWithVersion`; 90 % gates proven, registry placed in `engine/registry/`. Smaller review points stay open: Approvals preview and Vehicles master-detail against 7.4, `SettingsIntegrations` row in 7.3, the 30-day [A] in 11.2, no independent review yet | apps/api/, packages/chassis-map/, .dependency-cruiser.cjs, specs/design.md, specs/evidence/ |
@@ -61,6 +62,7 @@ The design choices are D-01 to D-14 in design.md §11. Process and product decis
 
 | ID | Question | Blocks | Proposed answer |
 | --- | --- | --- | --- |
+| OQ-6 | NFR-15 says number formats change after the build without code changes, but the PRD has no setting or screen for them. Where does the owner change them? | Nothing yet; TASK-120 reads the formats | Keep them in `NUMBERING_CONFIG` until the owner asks; a change then needs a deploy, not a code rewrite of the callers |
 | Q-03 | Who owns the Google Cloud, Cloudflare, Firebase and Expo (EAS) accounts, and which domain do web and API use? (PRD §11.3) | TASK-127 B, 128, 709 to 711; R1 step 1 close | — (product owner) |
 | OQ-5 | Is an internal developer available to review the ENG/REG design note and critical merges (§8.4)? | TASK-202, 203 | Until one joins, ADR-0002 applies |
 

@@ -664,7 +664,7 @@ CREATE TABLE vendors (                        -- SD, REQ-INV-014; every vendor_n
   is_active BOOLEAN NOT NULL DEFAULT true
 );
 CREATE TABLE goods_receipts (                 -- SD; posted without approval (BR-12)
-  gr_number VARCHAR(30) NOT NULL UNIQUE,      -- generated
+  gr_number VARCHAR(30) NOT NULL UNIQUE,      -- GR-yymmddNNNN (NFR-15, DEC-110)
   po_number VARCHAR(40),
   supplier_name VARCHAR(150) NOT NULL,          -- replaced by vendor_id (REQ-INV-014) in the build
   source_spk_id BIGINT REFERENCES spks(id),   -- set for a receipt of parts bought for a cancelled SPK (REQ-SPK-008)
@@ -685,7 +685,7 @@ CREATE TABLE goods_receipt_items (
   rack_location VARCHAR(30)
 );
 CREATE TABLE gr_corrections (                 -- fixes a posted receipt line; no approval
-  correction_number VARCHAR(30) NOT NULL UNIQUE,
+  correction_number VARCHAR(30) NOT NULL UNIQUE,   -- GRC-yymmddNNNN
   goods_receipt_id BIGINT NOT NULL REFERENCES goods_receipts(id),
   sku VARCHAR(40) NOT NULL REFERENCES parts_catalog(sku),
   qty_change INT NOT NULL DEFAULT 0,
@@ -695,7 +695,7 @@ CREATE TABLE gr_corrections (                 -- fixes a posted receipt line; no
   posted_at TIMESTAMP NOT NULL DEFAULT now()
 );
 CREATE TABLE goods_issues (                   -- Warehouse source only
-  gi_number VARCHAR(30) NOT NULL UNIQUE,
+  gi_number VARCHAR(30) NOT NULL UNIQUE,      -- GI-yymmddNNNN
   spk_id BIGINT NOT NULL REFERENCES spks(id),          -- guard (BR-01)
   assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),               -- guard: equals the SPK vehicle (BR-02)
@@ -714,7 +714,7 @@ CREATE TABLE goods_issue_items (
 );
 CREATE TABLE stock_adjustments (              -- stock opname document, or the opening balance
   kind VARCHAR(8) NOT NULL DEFAULT 'Opname' CHECK (kind IN ('Opname','Opening')),   -- Opening: REQ-INV-013, Setup mode only, saved without approval
-  sa_number VARCHAR(30) NOT NULL UNIQUE,
+  sa_number VARCHAR(30) NOT NULL UNIQUE,      -- SA-yymmddNNNN
   adjustment_date DATE NOT NULL,
   rack_filter VARCHAR(30),
   status VARCHAR(16) NOT NULL DEFAULT 'Draft' CHECK (status IN ('Draft','Pending_Approval','Approved')),
@@ -759,9 +759,9 @@ CREATE TABLE tyre_statuses (                  -- master data (REQ-TYR-003)
   is_active BOOLEAN NOT NULL DEFAULT true,
   sort_order INT NOT NULL DEFAULT 0
 );
-CREATE SEQUENCE tyre_code_seq;                -- source of TY-0001, never reused
+CREATE SEQUENCE tyre_code_seq;                -- running part of TY-yymmddNNNN, never reset, never reused (DEC-110)
 CREATE TABLE retread_orders (                 -- retread dispatch
-  rd_number VARCHAR(30) NOT NULL UNIQUE,
+  rd_number VARCHAR(30) NOT NULL UNIQUE,      -- RD-yymmddNNNN
   vendor_name VARCHAR(150) NOT NULL,
   delivery_note_number VARCHAR(60),
   dispatch_date DATE NOT NULL,
@@ -770,7 +770,7 @@ CREATE TABLE retread_orders (                 -- retread dispatch
   created_by BIGINT NOT NULL REFERENCES users(id)
 );
 CREATE TABLE tyre_receipts (                  -- SD; Receive tyres, no approval
-  receipt_number VARCHAR(30) NOT NULL UNIQUE, -- TR-0001
+  receipt_number VARCHAR(30) NOT NULL UNIQUE, -- TR-yymmddNNNN
   receipt_type VARCHAR(15) NOT NULL CHECK (receipt_type IN ('New','Retread_Return')),
   source VARCHAR(20) CHECK (source IN ('Supplier','Existing')),   -- New only
   supplier_name VARCHAR(150),
@@ -784,7 +784,7 @@ CREATE TABLE tyre_receipts (                  -- SD; Receive tyres, no approval
   CHECK (source IS DISTINCT FROM 'Supplier' OR invoice_number IS NOT NULL)
 );
 CREATE TABLE tyres (                          -- SD; individual assets, never in parts_catalog
-  tyre_code VARCHAR(20) NOT NULL UNIQUE,      -- generated from tyre_code_seq
+  tyre_code VARCHAR(30) NOT NULL UNIQUE,      -- TY-yymmddNNNN: WIB date the tyre record is created + tyre_code_seq; kept for life
   serial_number VARCHAR(40) NOT NULL,         -- printed on the tyre
   brand VARCHAR(50) NOT NULL,
   model VARCHAR(50),
@@ -845,7 +845,7 @@ CREATE TABLE retread_attachments (
   uploaded_by BIGINT NOT NULL REFERENCES users(id)
 );
 CREATE TABLE tyre_counts (
-  count_number VARCHAR(30) NOT NULL UNIQUE,
+  count_number VARCHAR(30) NOT NULL UNIQUE,   -- TC-yymmddNNNN
   count_date DATE NOT NULL,
   rack_filter VARCHAR(30),
   status VARCHAR(16) NOT NULL DEFAULT 'Draft' CHECK (status IN ('Draft','Pending_Approval','Approved')),

@@ -6,11 +6,11 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | Spec v2.20 (TASK-020) is merged. Next task: **TASK-101** |
+| Active task | Spec v2.21 (TASK-021) is merged. Next task: **TASK-101** |
 | Phase | 0 (specs and scaffold) |
-| Spec status | TASK-020 merged into `main` and pushed on the owner's go-ahead (2026-11-05) |
+| Spec status | TASK-021 merged into `main` and pushed on the owner's go-ahead (2026-11-05) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.20 |
+| Spec version | PRD v2.21 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0 selesai dan `main` sudah di GitHub; CI hijau. Tersisa untuk Anda: mengaktifkan branch protection di `main`. Berikutnya TASK-101. Masa simpan Idempotency-Key 30 hari masih asumsi [A].
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 16 | 2026-11-05 | Owner: every running code follows CODE-yymmddNNNN (DEC-110, v2.21), also tyre codes; customer invoices keep NNNN/BMI/dd-mm-yy (DEC-46). Sample numbers updated in the spec and artboards. No code used these formats yet | PRD.md, docs/prd/, Design Artifact/, specs/ |
 | 15 | 2026-11-05 | Owner replaced the field draft SPK with the Report Breakdown (DEC-109, v2.20). New area BRK, SM-BRK, TX-23, TX-24, numbering RB-yymmddNNNN, `breakdown_report_photos`. Drafts come only from alerts, a verified Part Check and an Urgent breakdown report (with one Mobilisasi step). Blocking pop-up for Planners on an Urgent report from a Driver. An inspection Fail, now also by a Mechanic, raises a report. "Report reference: RB-yymmddNNNN" shows in the description of an SPK made from a report. Report number RB-yymmddNNNN like the SPK number (owner). Eight screens renamed or merged, two new. Defaults the owner approved: Urgent inspection Fail has no pop-up, Mechanic inspection uses the same checklist and is not daily, a report is rejected with a reason, Mechanic and Field Coordinator report on web and phone. Added by the agent, to be reviewed: at least one photo is required, pop-up within 30 seconds [A], draft opens in a new tab | PRD.md, docs/prd/, Design Artifact/, specs/ |
 | 14 | 2026-11-04 | Phase 0 review, four fixes: OpenAPI generated from `@ApiContract` on the controllers with a run-time response check (§8.2); full layer table of design.md §3 in dependency-cruiser; `updated_at` stamped by `updateWithVersion`; 90 % gates proven, registry placed in `engine/registry/`. Smaller review points stay open: Approvals preview and Vehicles master-detail against 7.4, `SettingsIntegrations` row in 7.3, the 30-day [A] in 11.2, no independent review yet | apps/api/, packages/chassis-map/, .dependency-cruiser.cjs, specs/design.md, specs/evidence/ |
 | 13 | 2026-11-04 | Owner approved the first push: `main` pushed, CI run 41806304702 green, TASK-008 closed; phase 0 done | specs/ |

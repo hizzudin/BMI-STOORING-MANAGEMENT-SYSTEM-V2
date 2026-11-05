@@ -90,6 +90,12 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `PRD.md` for DEC-109 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
   - _Verify_: `node specs/tools/check-coverage.mjs`: Coverage OK
+- [x] **TASK-021** Every running code follows CODE-yymmddNNNN; invoices keep their format (PRD v2.21)
+  - _Scope_: NFR-15, the data model comments, and the sample numbers in the spec and artboards.
+  - _Rules_: DEC-110
+  - _Read_: `PRD.md` for DEC-110 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
+  - _Verify_: `node specs/tools/check-coverage.mjs`: Coverage OK
 - [x] **TASK-004** Build specs: requirements, design, generated tasks, decision index, CONTEXT, ADRs, coverage tool
   - _Scope_: specs/ mirrors the PRD; specs/tools/check-coverage.mjs proves it.
   - _Read_: `PRD.md` sections named in _Scope_; `specs/design.md`
@@ -146,9 +152,9 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 **Goal:** Setup mode and Go live, sign-in, roles incl. Accounting, vendors, the Access Manager area and the Planner switch, audit log, file storage and compression, vehicles, classes and chassis layouts, the document master, and the SPK core with approvals, stamps and the scope lock (PRD §10 R1 step 1). Ends with UAT on staging (DEC-77).
 
 - [ ] **TASK-101** Shared enums (§9.1), decimal money and rounding, WIB time, Indonesian number format, numbering formats
-  - _Scope_: packages/shared: every enum of §9.1 once; numbers as 48.210 km, Rp 1.240.000, 2,4 mm; half-up rounding; numbering formats in one configuration.
-  - _Rules_: NFR-09, NFR-14, NFR-15, NFR-16, DEC-30, DEC-46
-  - _Read_: `PRD.md` for NFR-09, NFR-14, NFR-15, NFR-16, DEC-30, DEC-46 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Scope_: packages/shared: every enum of §9.1 once; numbers as 48.210 km, Rp 1.240.000, 2,4 mm; half-up rounding; numbering formats in one configuration: CODE-yymmddNNNN for every code, invoices as DEC-46.
+  - _Rules_: NFR-09, NFR-14, NFR-15, NFR-16, DEC-30, DEC-46, DEC-110
+  - _Read_: `PRD.md` for NFR-09, NFR-14, NFR-15, NFR-16, DEC-30, DEC-46, DEC-110 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-006
   - _Skill_: test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `unit @bmi/shared "NFR-09|NFR-14|NFR-15|NFR-16"`

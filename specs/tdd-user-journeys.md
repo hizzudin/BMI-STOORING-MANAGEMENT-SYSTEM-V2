@@ -310,7 +310,7 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | a part not on the SPK list is not selectable | I | AC-STK-003, BR-02 |
 | 8 needed, 5 in stock → submit refused, stock stays 5, no Goods Issue | I | AC-STK-001 |
 | issue 5 L and confirm a 3 L shortfall → one GI of 5 L and a Part Purchase step after it | I | AC-STK-006 |
-| TY-0110 chosen → Issued with `issued_spk_id` = this SPK | I | AC-STK-004 |
+| TY-2611030110 chosen → Issued with `issued_spk_id` = this SPK | I | AC-STK-004 |
 | issue, stock card and SPK line commit or roll back together; a retry is idempotent | I | NFR-01, TX-* |
 | two concurrent issues of one SKU never take stock below 0 | I | §8.3 lock per SKU, BR-06 |
 | a goods issue for another vehicle is refused | I | BR-02 trigger |

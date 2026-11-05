@@ -1,6 +1,6 @@
 # Requirements index — BMI Stooring System v2
 
-> Spec version: PRD v2.20 (2026-11-05). The entity is SPK everywhere, in text, IDs and code (PRD §0.7, DEC-106).
+> Spec version: PRD v2.21 (2026-11-05). The entity is SPK everywhere, in text, IDs and code (PRD §0.7, DEC-106).
 > The text of every ID lives in [PRD.md](../PRD.md) and [docs/prd/](../docs/prd/); where they disagree with this file, the PRD wins.
 > Build order: data model (§9) and rules (§5) first, then requirements by release step (§10), then screens (§7).
 

@@ -18,10 +18,10 @@ Ten roles of one logistics company (BMI) using BMI Stooring System, about 15 use
 
 - **Planner:** designs SPK types and their steps, plans and checks Surat Perintah Kerja (SPK), verifies steps.
 - **System Admin:** sets up master data before go-live, runs any field task, verifies steps.
-- **Mechanic:** executes Mechanic Action and Part Replacement steps; can draft SPKs.
+- **Mechanic:** executes Mechanic Action and Part Replacement steps; inspects vehicles and sends Report Breakdowns.
 - **Warehouse Manager:** issues parts from stock, receives goods, counts stock and tyres.
-- **Field Coordinator (Korlap):** turns driver requests into draft SPKs, buys parts outside and records the receipt, follows fleet availability; works mostly from a phone.
-- **Driver:** daily inspection with odometer, breakdown reports; phone only.
+- **Field Coordinator (Korlap):** sends Report Breakdowns, buys parts outside and records the receipt, follows fleet availability; works mostly from a phone.
+- **Driver:** daily inspection with odometer, Report Breakdowns; phone only.
 - **Supervisor and GM:** approve SPKs and warehouse documents.
 - **Accounting:** issues invoices to customers.
 - **Access Manager:** manages accounts, roles and capabilities.

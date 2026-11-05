@@ -60,13 +60,13 @@ Reading flows.md against PRD.md and the area files showed flow steps and ACs tha
 | F-2 | FLW-WHM-01: Part Purchase with free-text lines | Lines are the SPK's listed parts; only quantity and price are typed (DEC-62/63) |
 | F-3 | FLW-SA-07: stooring area picked on Mechanic Action | Stooring is produced by the Mobilisasi step (DEC-90) |
 | F-4 | Step flows edit right after Open | Start first; Part Replacement has no Start (DEC-87/95) |
-| F-5 | A breakdown "drafts an SPK" | The draft is pre-seeded with one Mobilisasi step and a finding note (REQ-SPK-003, DEC-91) |
+| F-5 | An Urgent report "drafts an SPK" | The draft holds one Mobilisasi step and a finding note; any other report drafts nothing (REQ-BRK-002, REQ-BRK-003, DEC-109) |
 | F-6 | AC-STK-002 verified retired REQ-STK-005 | Retired to history.md; AC-STK-006 now verifies REQ-STK-004 and REQ-PUR-008 |
 | F-7 | AC-REG-002 named a "SPK type" | Reworded for SPKs and presets (DEC-85) |
 | F-8 | Traceability AC ranges incomplete | Completed; Part Check row added |
 | F-9 | No flow for step time, Part Check, Mobilisasi, OFF | FLW-MEC-07, FLW-MEC-08, FLW-PLN-10, FLW-MEC-09, FLW-APR-09 added |
 
-Answered in spec v2.11: the Mechanic sends a draft on the same screen as the Field Coordinator (DEC-97, FLW-MEC-10); the Mechanic mobile menu, with Part Check and Mobilisasi on the phone, is in Release 1 (DEC-98, DEC-99).
+Answered in spec v2.11: the Mechanic and the Field Coordinator send a report on one screen (DEC-109, FLW-MEC-10); the Mechanic mobile menu, with Part Check and Mobilisasi on the phone, is in Release 1 (DEC-98, DEC-99).
 
 ---
 
@@ -254,12 +254,13 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | submit → SPK Pending_Amendment, step paused by the system, later steps Locked | I+E | AC-CR-001, T8 |
 
 ### FLW-MEC-06 Mobile app (R1 step 7, DEC-98)
-> As a Mechanic, I want my day's steps and my field reports on the phone, so that I can work at the vehicle.
+> As a Mechanic, I want my day's steps, inspections and Report Breakdowns on the phone, so that I can work at the vehicle.
 
 | Test | Layer | Ref |
 | --- | --- | --- |
 | My steps shows only SPKs scheduled today and assigned to me, Urgent above High, rolled-over first within a level | I | AC-MOB-005, REQ-MOB-010 |
-| a field finding drafts exactly one SPK with a `finding_note` and opens no step; an empty note is refused | I | AC-MOB-002, REQ-MOB-004 |
+| a Normal report on the phone keeps a report, drafts no SPK and opens no step; an empty note is refused | I | AC-BRK-001, AC-BRK-002 |
+| a Mechanic's inspection Fail raises one report and no SPK (FLW-MEC-11) | I+E | AC-BRK-008, AC-BRK-009 |
 | Mechanic Action, Part Replacement, Part Check and Mobilisasi on the phone apply the web rules | I | REQ-MOB-002 |
 | a phone submit gives the same stamps and photos in the SPK document | I | AC-MOB-001 |
 | a Mechanic sees only the Mechanic menu | E (mobile) | REQ-MOB-001 |
@@ -477,8 +478,8 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | Test | Layer | Ref |
 | --- | --- | --- |
 | an inspection Fail without a photo is refused | I | AC-PM-002 |
-| an inspection Fail drafts an SPK with `finding_note` from its notes | I | REQ-PM-004, DEC-91 |
-| a breakdown drafts a Driver_Breakdown SPK pre-seeded with one Mobilisasi step at the location | I | REQ-SPK-003 |
+| an inspection Fail raises a Report Breakdown and drafts no SPK | I | REQ-PM-004, REQ-BRK-009 |
+| an Urgent report for a driver drafts an SPK with one Mobilisasi step and shows the pop-up; a Normal report does neither | I | REQ-BRK-003, REQ-BRK-004 |
 
 ### FLW-SA-05 Master data
 | Test | Layer | Ref |
@@ -496,7 +497,7 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 ### FLW-SA-07 Field work on the phone (R1 step 7)
 | Test | Layer | Ref |
 | --- | --- | --- |
-| SAMobileHome lists requests, purchases and open steps | E (mobile) | REQ-MOB-008 |
+| SAMobileHome lists reports, purchases and open steps | E (mobile) | REQ-MOB-008 |
 | a Mobilisasi step on the phone follows FLW-MEC-09; a Mechanic Action step has no stooring area | I | AC-MBL-002, AC-MEC-005 |
 | a phone submit gives the same stamps and photos in the SPK document | I | AC-MOB-001 |
 
@@ -545,8 +546,8 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | Test | Layer | Ref |
 | --- | --- | --- |
 | a Driver sees only the Driver menu | E (mobile) | AC-MOB-003 |
-| an inspection Fail needs a photo and description and drafts an SPK | I | AC-PM-002, REQ-PM-004 |
-| a breakdown captures the location once and drafts an SPK with one Mobilisasi step | I | REQ-MOB-003, REQ-SPK-003 |
+| an inspection Fail needs a photo, a description and an urgency, and raises a report without a draft | I | AC-PM-002, REQ-BRK-009 |
+| a report captures the location once; only Urgent drafts an SPK with one Mobilisasi step and shows the pop-up | I+E | AC-BRK-003, AC-BRK-004, REQ-MOB-003 |
 | a reading lower than the last is refused; above 1.500 km/day warns | I | BR-09 |
 | a Blocked vehicle shows a do-not-operate reminder | E | REQ-DOC-012 |
 
@@ -556,8 +557,9 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | the dashboard shows Active, Repair and Blocked counts with reasons | E | REQ-DSH-006 |
 | the placement map has no edit controls for the FC | E | AC-PLC-005 |
 | the schedule is read only; a drag is refused | I | AC-SCH-004 |
-| a draft from a driver request → Send to Planner: stays Draft, Sent for review, FC is creator; Submit and Approve absent | I+E | AC-MOB-004, REQ-SPK-016, RL-6 |
-| send for review without a `finding_note` is refused | I | DEC-91 |
+| the FC sends a report; the list is read only: Create SPK, Reject, Submit and Approve are absent | I+E | AC-BRK-005, RL-6 |
+| an Urgent report from the FC drafts an SPK without the pop-up | I | AC-BRK-003 |
+| a report without a note or a photo is refused | I | AC-BRK-002 |
 | Part Purchase: 3 L × 82.000 and 2 × 45.000 → 246.000, 90.000, total 336.000 | U+E | AC-PUR-001 |
 | price changed to 85.000 → 255.000 and 345.000 at once, without saving | U+E | AC-PUR-002 |
 | 5 L bought for a 3 L shortfall is accepted; no way to add an unlisted part | I | AC-PUR-006 |
@@ -575,14 +577,26 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | a vehicle without a customer → Not billable; customer set → Draft | I | AC-BIL-004 |
 | Supervisor `allowedActions` hold mark_paid and void; the GM's are empty and the API refuses a GM mark_paid | I | AC-IAM-010 |
 
-### FLW-MEC-10 Send a field finding for review on the web (DEC-97)
+### FLW-MEC-10 Send a Report Breakdown on the web (DEC-109)
 | Test | Layer | Ref |
 | --- | --- | --- |
-| a Mechanic opens FCCreateSPK, fills the finding and Sends to Planner: Draft, Sent for review, source Manual_Mechanic, Mechanic as creator | E+I | REQ-SPK-016, DEC-97 |
-| Planners and the System Admin are notified; Submit and Approve are absent for the Mechanic | I | REQ-SPK-016, RL-6 |
-| `finding_note` is mandatory for `Manual_Mechanic` | I | DEC-91 |
+| a Mechanic opens ReportBreakdownForm, picks the vehicle, writes the note, adds a photo and an urgency, and sends: one New report, no SPK | E+I | AC-BRK-001 |
+| Planners, the FC and the System Admin are notified; the Mechanic has no Create SPK, Submit or Approve | I | REQ-BRK-002, RL-6 |
 
----
+### FLW-PLN-11 Create an SPK from a Report Breakdown (DEC-109)
+| Test | Layer | Ref |
+| --- | --- | --- |
+| the pop-up shows on any page, ignores Escape and a click outside, and Create SPK closes it for every Planner and opens the draft in a new tab | E | AC-BRK-004 |
+| Create SPK on a New report fills vehicle, source and priority; leaving without saving makes no SPK and uses no number | I+E | AC-BRK-006 |
+| the description shows "Report reference: RB-yymmddNNNN" on Create SPK, the detail, the approval review and the document, and editing the description cannot remove it | I+E | REQ-BRK-006, DEC-91 |
+| a Mobilisasi step added by hand has its destination filled from the report; a blank destination refuses Submit | I | REQ-MBL-002, REQ-SPK-004 |
+| Reject needs a reason, cancels a linked Draft, notifies the reporter; cancelling the SPK otherwise returns the report to New with no pop-up | I | AC-BRK-007, SM-BRK |
+
+### FLW-MEC-11 Inspect a vehicle on the phone (DEC-109)
+| Test | Layer | Ref |
+| --- | --- | --- |
+| the Mechanic picks the vehicle; the reading is saved with source Mechanic | I+E | AC-BRK-009 |
+| a Fail raises one Inspection_Fail report at any urgency, with no SPK and no pop-up | I | AC-BRK-008 |
 
 ## 9. File upload (8.1, applies to every flow with a photo or PDF)
 
@@ -638,6 +652,6 @@ Plus one test per record type: `allowedActions` equals what the server accepts (
 | R1 step 3 | FLW-WHM-01 to 05, FLW-FC-05 |
 | R1 step 4 | FLW-MEC-01, 02, 08, FLW-PLN-10, FLW-MEC-09 (server side) |
 | R1 step 5 | FLW-MEC-03, FLW-WHM-06 to 10, FLW-APR-08, baseline parts of FLW-SA-01 and 03 |
-| R1 step 6 | FLW-SA-02, 04, 05, FLW-PLN-02, 04, 06, FLW-MEC-04, 05, FLW-APR-02, 04, 06, 09, FLW-FC-01, 02, 04, FLW-MEC-10, the full master journey |
-| R1 step 7 | FLW-ACC-01 to 03, FLW-DRV-01 to 04, FLW-FC-03, FLW-SA-07, FLW-SA-10, FLW-MEC-06, FLW-MEC-09 (phone) |
+| R1 step 6 | FLW-SA-02, 04, 05, FLW-PLN-02, 04, 06, FLW-MEC-04, 05, FLW-APR-02, 04, 06, 09, FLW-FC-01, 02, 04, FLW-MEC-10, FLW-PLN-11, the full master journey |
+| R1 step 7 | FLW-ACC-01 to 03, FLW-DRV-01 to 04, FLW-FC-03, FLW-SA-07, FLW-SA-10, FLW-MEC-06, FLW-MEC-09 (phone), FLW-MEC-11 |
 | Release 2 | FLW-APR-07, Reports |

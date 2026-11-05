@@ -1,6 +1,6 @@
 # Requirements index — BMI Stooring System v2
 
-> Spec version: PRD v2.17 (2026-11-04). The entity is SPK everywhere, in text, IDs and code (PRD §0.7, DEC-106).
+> Spec version: PRD v2.20 (2026-11-05). The entity is SPK everywhere, in text, IDs and code (PRD §0.7, DEC-106).
 > The text of every ID lives in [PRD.md](../PRD.md) and [docs/prd/](../docs/prd/); where they disagree with this file, the PRD wins.
 > Build order: data model (§9) and rules (§5) first, then requirements by release step (§10), then screens (§7).
 
@@ -77,8 +77,8 @@ Part Check and Mobilisasi are placed here by DEC-99 (server and web); their phon
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | DOC documents and renewal | REQ-DOC-003 to 012 | — | AC-DOC-001 to 006 | BR-08, SM-DOC, TX-15, TX-16 | 9.4 | FLW-SA-02, FLW-DRV-04 | TASK-601 to TASK-603 |
 | VEH status, odometer, history, driver | REQ-VEH-005 to 008, 010; REQ-SPK-009 | — | AC-VEH-001, 002, 004 | BR-08, BR-09, SM-VEH (incl. OFF, DEC-92) | 9.3 | FLW-SA-03, FLW-SA-10 | TASK-604 to TASK-606 |
-| PM alerts, inspections, breakdowns | REQ-PM-001 to 010; REQ-SPK-003, 012 | — | AC-PM-001 to 005 | TX-16, DEC-70, DEC-86, DEC-91 | 9.5 | FLW-PLN-02, FLW-SA-04 | TASK-607 to TASK-609 |
-| Requests list | REQ-SPK-014, 016 | — | AC-MOB-004 (web part) | RL-6, DEC-64, DEC-91, DEC-97 | 9.6 | FLW-FC-04, FLW-MEC-10 | TASK-610 |
+| PM alerts and inspections | REQ-PM-001 to 004, 006 to 010; REQ-SPK-003, 012 | — | AC-PM-001 to 005 | TX-16, DEC-70, DEC-86 | 9.5 | FLW-PLN-02, FLW-SA-04 | TASK-607 to TASK-609 |
+| Report Breakdown | REQ-BRK-001 to 009; REQ-SPK-003 | — | AC-BRK-001 to 009 | RL-6, SM-BRK, TX-23, TX-24, DEC-91, DEC-109 | 9.5, 9.6 | FLW-PLN-11, FLW-FC-04, FLW-MEC-10, FLW-MEC-11, FLW-SA-04 | TASK-609, TASK-610, TASK-706, TASK-713 |
 | CR change request and amendment | REQ-CR-001 to 008 | — | AC-CR-001 to 005 | SM-CR, SM-SPK T8 to T10, TX-12, DEC-72 | 9.6 (spk_change_requests) | FLW-MEC-05, FLW-PLN-06, FLW-APR-02 | TASK-611 |
 | SCH schedule | REQ-SCH-001 to 007 | — | AC-SCH-001 to 005 | BR-13, SM-SCH, DEC-92 | 9.11 | FLW-PLN-04, FLW-FC-02, FLW-APR-09 | TASK-612, TASK-613 |
 | NTF notifications (in-app) | REQ-NTF-001, 005 | REQ-NTF-002 for other roles, 003 (P1); 004 (P2) | AC-SCH-001 | §8.3 outbox | 9.12 | FLW-FC-02 | TASK-130 |
@@ -90,7 +90,7 @@ Part Check and Mobilisasi are placed here by DEC-99 (server and web); their phon
 | Area | P0 requirements | Deferred | Acceptance criteria | Rules and machines | Data (§9) | Flows | Tasks |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | BIL customers and invoices | REQ-BIL-001 to 010, 012; REQ-DSH-009 | REQ-BIL-011 (P2) | AC-BIL-001 to 005 | BR-15, BR-16, SM-INV, TX-19, NFR-16, DEC-42 to 50, DEC-92 | 9.14 | FLW-ACC-01 to 03, FLW-APR-09 | TASK-701 to TASK-703 |
-| MOB mobile app (high) | REQ-MOB-001 to 004, 006, 008 to 010; REQ-SPKD-005 | REQ-MOB-005, 007 (P1, Supervisor/GM) | AC-MOB-001 to 005 | BR-01, BR-02, RL-6, NFR-18, DEC-98 | as web | FLW-DRV-01 to 04, FLW-FC-03, FLW-SA-07, FLW-MEC-06 | TASK-704 to TASK-708, TASK-712, TASK-713 |
+| MOB mobile app (high) | REQ-MOB-001 to 003, 006, 008 to 010; REQ-SPKD-005 | REQ-MOB-005, 007 (P1, Supervisor/GM) | AC-MOB-001, 003, 005 | BR-01, BR-02, RL-6, NFR-18, DEC-98 | as web | FLW-DRV-01 to 04, FLW-FC-03, FLW-SA-07, FLW-MEC-06 | TASK-704 to TASK-708, TASK-712, TASK-713 |
 | FUP on the phone | REQ-FUP-013 (phone), REQ-FUP-012, 014 | REQ-FUP-011, 015 (P1) | AC-FUP-007 | NFR-06 | 9.12 | FLW-DRV-01 | TASK-705 |
 | MBL and CHK on the phone | REQ-MBL-003 to 005 (phone), REQ-CHK-002 (phone) | — | AC-MBL-002, 003 (phone) | RSK-09, DEC-98, DEC-99 | 9.6 | FLW-MEC-09, FLW-MEC-06, FLW-SA-07 | TASK-708, TASK-712 |
 | NTF push for Driver, FC, Mechanic, System Admin | REQ-NTF-002 (those roles) | other roles (P1) | — | DEC-27, DEC-41, DEC-98 | 9.12 (push_devices) | FLW-FC-03 | TASK-709 |

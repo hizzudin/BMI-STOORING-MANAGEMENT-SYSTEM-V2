@@ -20,12 +20,14 @@ This is the final schema in PostgreSQL syntax, the database of 8.2; any relation
 CREATE TYPE role_t            AS ENUM ('Planner','Mechanic','Warehouse_Manager','Supervisor','GM','System_Admin','Access_Manager','Driver','Field_Coordinator','Accounting');
 CREATE TYPE vehicle_status_t  AS ENUM ('Active','Repair','Blocked','OFF','Inactive');   -- OFF: a scheduled SPK ran past its planned day while in Repair (SM-VEH, DEC-92)
 CREATE TYPE doc_status_t      AS ENUM ('Valid','Warning','Expired','Missing');
-CREATE TYPE odo_source_t      AS ENUM ('Admin','Driver','GPS');
+CREATE TYPE odo_source_t      AS ENUM ('Admin','Driver','Mechanic','GPS');   -- Mechanic: the inspection of REQ-BRK-008
 CREATE TYPE trigger_t         AS ENUM ('Mileage','Time');
 CREATE TYPE alert_type_t      AS ENUM ('PM','Part_Item','Tyre','Document');
 CREATE TYPE alert_status_t    AS ENUM ('Pending','Converted_To_SPK','Dismissed');
 CREATE TYPE spk_status_t       AS ENUM ('Draft','Pending_Approval','Rejected','Active','In_Progress','Pending_Verification','Pending_Amendment','Completed','Cancelled');
-CREATE TYPE spk_source_t       AS ENUM ('System_PM','Tyre_Alert','Document_Alert','Driver_DVIR','Driver_Breakdown','Part_Check','Manual_Planner','Manual_Mechanic','Manual_Field_Coordinator','Manual_Admin');
+CREATE TYPE spk_source_t       AS ENUM ('System_PM','Tyre_Alert','Document_Alert','Breakdown_Report','Part_Check','Manual_Planner','Manual_Admin');
+CREATE TYPE report_kind_t      AS ENUM ('Breakdown','Inspection_Fail');   -- REQ-BRK-001, REQ-BRK-009
+CREATE TYPE report_status_t    AS ENUM ('New','Converted','Rejected');    -- SM-BRK
 CREATE TYPE spk_category_t     AS ENUM ('PM','Corrective','Tyre','Document','Other');   -- DEC-85
 CREATE TYPE asg_status_t      AS ENUM ('Locked','Open','In_Progress','Submitted','Verified','Skipped');
 CREATE TYPE approval_stage_t  AS ENUM ('Creation','Completion','Amendment');
@@ -284,39 +286,61 @@ CREATE UNIQUE INDEX uq_open_pm_alert   ON maintenance_alerts (vehicle_id, packag
 CREATE UNIQUE INDEX uq_open_part_alert ON maintenance_alerts (part_item_id) WHERE status = 'Pending' AND part_item_id IS NOT NULL;
 CREATE UNIQUE INDEX uq_open_tyre_alert ON maintenance_alerts (tyre_id) WHERE status = 'Pending' AND tyre_id IS NOT NULL;
 CREATE TABLE alert_rules (                    -- SD, one row per alert kind; Settings: Alert rules (DEC-86)
-  rule_kind VARCHAR(20) NOT NULL UNIQUE CHECK (rule_kind IN ('PM','Document','Tyre','Part_Item','Inspection_Fail','Breakdown','Field_Report')),
+  rule_kind VARCHAR(20) NOT NULL UNIQUE CHECK (rule_kind IN ('PM','Document','Tyre','Part_Item')),
   drafts_spk BOOLEAN NOT NULL DEFAULT true,    -- false = Show the alert only
   draft_at VARCHAR(12) CHECK (draft_at IN ('Due_Soon','Due','Warning','Expiry','Act_Now')),
-  preset_id BIGINT REFERENCES spk_presets(id), -- Tyre, Part_Item and reported problems; NULL = no preset, the Planner adds steps; PM uses pm_packages.preset_id, Document uses document_types.preset_id
+  preset_id BIGINT REFERENCES spk_presets(id), -- Tyre and Part_Item; NULL = no preset, the Planner adds steps; PM uses pm_packages.preset_id, Document uses document_types.preset_id
   priority VARCHAR(6) NOT NULL DEFAULT 'Normal' CHECK (priority IN ('Normal','High','Urgent')),
   notify_roles role_t[] NOT NULL DEFAULT '{Planner}',
-  trigger_config JSONB NOT NULL DEFAULT '{}', -- PM: due_soon_km, due_soon_days; Tyre: act_now_mm = 3, due_soon_mm = 4, pressure_pct = 10; Part_Item: due_soon_pct = 10, check_time; Inspection_Fail: Any or Critical
-  updated_by BIGINT NOT NULL REFERENCES users(id),
-  CHECK (drafts_spk OR rule_kind IN ('PM','Document','Tyre','Part_Item'))   -- reported problems always draft
+  trigger_config JSONB NOT NULL DEFAULT '{}', -- PM: due_soon_km, due_soon_days; Tyre: act_now_mm = 3, due_soon_mm = 4, pressure_pct = 10; Part_Item: due_soon_pct = 10, check_time
+  updated_by BIGINT NOT NULL REFERENCES users(id)
 );
-CREATE TABLE dvir_logs (                      -- daily inspection
+CREATE TABLE dvir_logs (                      -- inspection by a Driver (daily) or a Mechanic (REQ-BRK-008)
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),
-  driver_id BIGINT NOT NULL REFERENCES drivers(id),
+  driver_id BIGINT REFERENCES drivers(id),   -- NULL for a Mechanic's inspection
+  inspector_role role_t NOT NULL CHECK (inspector_role IN ('Driver','Mechanic','System_Admin')),
   log_date TIMESTAMP NOT NULL,
-  odometer_log_id BIGINT REFERENCES odometer_logs(id),   -- the reading this inspection saved (source Driver, DEC-76); NULL for a Towed unit
+  odometer_log_id BIGINT REFERENCES odometer_logs(id),   -- the reading this inspection saved (source Driver, DEC-76, or Mechanic); NULL for a Towed unit
   inspection_status VARCHAR(4) NOT NULL CHECK (inspection_status IN ('Pass','Fail')),
   checklist JSONB NOT NULL,                  -- brakes, lights, tyres, engine oil, body damage: Pass or Fail each
   notes TEXT,
   photo_url VARCHAR(500),
   entered_by BIGINT NOT NULL REFERENCES users(id),   -- the driver in the app, or the System Admin entering for a driver
   entered_for_driver BOOLEAN NOT NULL DEFAULT false, -- shown as Entered by System Admin
-  CHECK (inspection_status = 'Pass' OR (photo_url IS NOT NULL AND notes IS NOT NULL))
+  CHECK (inspection_status = 'Pass' OR (photo_url IS NOT NULL AND notes IS NOT NULL)),
+  CHECK (driver_id IS NOT NULL OR inspector_role = 'Mechanic')
 );
-CREATE TABLE breakdown_reports (
+CREATE SEQUENCE report_number_seq;            -- running part of RB-yymmddNNNN, never reset, never reused (NFR-15, DEC-109)
+CREATE TABLE breakdown_reports (              -- Report Breakdown (REQ-BRK-001); not an SPK
+  report_number VARCHAR(30) NOT NULL UNIQUE,   -- RB-yymmddNNNN: WIB creation date + report_number_seq, at least 4 digits
+  report_kind report_kind_t NOT NULL DEFAULT 'Breakdown',
+  status report_status_t NOT NULL DEFAULT 'New',  -- SM-BRK
+  urgency VARCHAR(10) NOT NULL DEFAULT 'Normal' CHECK (urgency IN ('Low','Normal','High','Urgent')),   -- as the reporter chose it; the SPK keeps its own priority
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),
-  driver_id BIGINT NOT NULL REFERENCES drivers(id),
+  driver_id BIGINT REFERENCES drivers(id),    -- set for a Driver's report and one entered for a driver
+  dvir_log_id BIGINT UNIQUE REFERENCES dvir_logs(id),   -- the inspection that raised it (kind Inspection_Fail)
+  reporter_role role_t NOT NULL CHECK (reporter_role IN ('Driver','Mechanic','Field_Coordinator','System_Admin')),
+  entered_for_driver BOOLEAN NOT NULL DEFAULT false,
   reported_at TIMESTAMP NOT NULL DEFAULT now(),
   location TEXT,
-  location_lat NUMERIC(9,6), location_lng NUMERIC(9,6),   -- driver's device location captured once at report (REQ-MOB-003); seeds the Mobilisasi destination (REQ-MBL-002)
+  location_lat NUMERIC(9,6), location_lng NUMERIC(9,6),   -- the device location captured once at report (REQ-BRK-001); seeds the Mobilisasi destination (REQ-MBL-002)
   location_captured_at TIMESTAMP,
-  description TEXT NOT NULL,
-  photo_url VARCHAR(500),
-  entered_by BIGINT NOT NULL REFERENCES users(id)
+  location_capture location_capture_t NOT NULL,
+  description TEXT NOT NULL CHECK (btrim(description) <> ''),   -- the finding note
+  entered_by BIGINT NOT NULL REFERENCES users(id),
+  urgent_ack_by BIGINT REFERENCES users(id),  -- the Planner who pressed Create SPK on the pop-up (REQ-BRK-004)
+  urgent_ack_at TIMESTAMP,
+  rejected_by BIGINT REFERENCES users(id),
+  rejected_at TIMESTAMP,
+  rejected_reason TEXT,
+  CHECK (status <> 'Rejected' OR rejected_reason IS NOT NULL),
+  CHECK (report_kind = 'Breakdown' OR dvir_log_id IS NOT NULL)
+);
+CREATE TABLE breakdown_report_photos (        -- at least one per report (REQ-BRK-001)
+  report_id BIGINT NOT NULL REFERENCES breakdown_reports(id),
+  file_url VARCHAR(500) NOT NULL,
+  file_name VARCHAR(255), mime_type VARCHAR(100), size_bytes INT,
+  uploaded_by BIGINT NOT NULL REFERENCES users(id)
 );
 ```
 
@@ -367,15 +391,13 @@ CREATE TABLE spks (                    -- SD, OL
   preset_id BIGINT REFERENCES spk_presets(id), -- where the steps started from; NULL = built from blank; never followed later
   request_source spk_source_t NOT NULL,
   alert_id BIGINT REFERENCES maintenance_alerts(id),
-  dvir_log_id BIGINT REFERENCES dvir_logs(id),
   breakdown_report_id BIGINT REFERENCES breakdown_reports(id),
   vehicle_document_id BIGINT REFERENCES vehicle_documents(id),   -- Document SPK
   source_assignment_id BIGINT,                -- the verified Part Check step this draft came from (REQ-CHK-003); FK added after spk_assignments
   priority VARCHAR(10) NOT NULL DEFAULT 'Normal',
   description TEXT NOT NULL,
-  finding_note TEXT,                          -- the originator's field-finding / breakdown narrative (Driver, Field Coordinator or Mechanic); set once at draft / send-for-review and never overwritten when the Planner edits description (DEC-91). Copied from breakdown_reports.description for Driver_Breakdown and from dvir_logs.notes for Driver_DVIR; typed by the FC or Mechanic and mandatory for Manual_Field_Coordinator and Manual_Mechanic (CHECK below)
+  finding_note TEXT,                          -- the field-finding note copied once from breakdown_reports.description when the SPK is created from a report; never overwritten when the Planner edits description (DEC-91)
   status spk_status_t NOT NULL DEFAULT 'Draft',
-  sent_for_review_at TIMESTAMP,                -- a Mechanic or Field Coordinator sent the draft to the Planner (REQ-SPK-016)
   status_before_amendment spk_status_t,
   amendment_no INT NOT NULL DEFAULT 0,
   created_by BIGINT NOT NULL REFERENCES users(id),
@@ -396,11 +418,10 @@ CREATE TABLE spks (                    -- SD, OL
   off_last_counted_date DATE,                       -- the last WIB day already counted into off_days; the idempotent daily job (00:30 WIB, NFR-14) increments off_days once per day only when off_last_counted_date < today, so a re-run never double-counts; cleared of effect once the SPK is Completed or Cancelled (counting stops)
   version INT NOT NULL DEFAULT 1,
   CHECK (status <> 'Cancelled' OR cancel_reason IS NOT NULL),
-  CHECK (request_source NOT IN ('Manual_Field_Coordinator','Manual_Mechanic') OR finding_note IS NOT NULL)   -- a Field Coordinator or Mechanic draft must carry a field-finding note (DEC-91, REQ-SPK-016)
+  CHECK (request_source <> 'Breakdown_Report' OR (breakdown_report_id IS NOT NULL AND finding_note IS NOT NULL))   -- an SPK from a report carries its note (DEC-91, REQ-BRK-006)
 );
 -- one live SPK per source; the source finds its SPK through these keys (DEC-80)
 CREATE UNIQUE INDEX uq_spk_alert     ON spks (alert_id)            WHERE alert_id IS NOT NULL AND status <> 'Cancelled';
-CREATE UNIQUE INDEX uq_spk_dvir      ON spks (dvir_log_id)         WHERE dvir_log_id IS NOT NULL AND status <> 'Cancelled';
 CREATE UNIQUE INDEX uq_spk_breakdown ON spks (breakdown_report_id) WHERE breakdown_report_id IS NOT NULL AND status <> 'Cancelled';
 -- approver <> creator is a service-layer rule (BR-03) because the System Admin may self-approve
 CREATE UNIQUE INDEX uq_open_document_spk ON spks (vehicle_document_id)
@@ -416,7 +437,7 @@ CREATE TABLE spk_assignments (         -- the SPK's steps, one row per step; edi
   verifier_role role_t NOT NULL,
   status asg_status_t NOT NULL DEFAULT 'Locked',
   team team_t,                                -- Mechanic_Action and Part_Check
-  location_lat NUMERIC(9,6), location_lng NUMERIC(9,6),   -- Mobilisasi step: destination (from breakdown_reports) and arrival point at submit; the in-progress trail is in mobilisation_location_trail (REQ-MBL-005). No longer set by Mechanic Action (REQ-MEC-008 retired)
+  location_lat NUMERIC(9,6), location_lng NUMERIC(9,6),   -- Mobilisasi step: destination (from breakdown_reports, or filled by the Planner, REQ-MBL-002) and arrival point at submit; the in-progress trail is in mobilisation_location_trail (REQ-MBL-005). No longer set by Mechanic Action (REQ-MEC-008 retired)
   location_accuracy_m INT,
   location_captured_at TIMESTAMP,
   location_capture location_capture_t,
@@ -526,12 +547,6 @@ CREATE TABLE spk_attachments (
   file_url VARCHAR(500) NOT NULL,
   file_name VARCHAR(255), mime_type VARCHAR(100), size_bytes INT,
   uploaded_by BIGINT NOT NULL REFERENCES users(id)
-);
-CREATE TABLE spk_part_requests (       -- parts named in a draft by a Field Coordinator or Mechanic (REQ-SPK-016)
-  spk_id BIGINT NOT NULL REFERENCES spks(id),
-  part_id BIGINT NOT NULL REFERENCES parts_catalog(id),
-  requested_by BIGINT NOT NULL REFERENCES users(id),
-  note TEXT
 );
 CREATE TABLE document_renewals (              -- written by the Document step
   vehicle_document_id BIGINT NOT NULL REFERENCES vehicle_documents(id),
@@ -1054,6 +1069,8 @@ CREATE TABLE ai_query_logs (                  -- P1, AO
 | TX-20 | Planner approval switch | Set app\_settings.planner\_approval\_until (or null to switch off), write audit\_logs with the reason, notify Supervisors and GMs. Every approval by a Planner checks the switch and BR-03 at decision time. |
 | TX-21 | Part Purchase step submit | Write spk\_purchases and its lines with the calculated total, create a tyres row (status Issued, issued\_spk\_id) for each Tyre line, attach the receipt photos, add the total to spks.parts\_cost; never touch parts\_catalog, goods\_issues or stock\_cards (DEC-60). |
 | TX-22 | Idempotent request (NFR-01) | Inside the transaction of the action: insert the `idempotency_keys` row first. A concurrent request with the same key waits for the first to finish. A row that already exists returns its stored response and the action does not run; the same key with another request hash is refused. The response is stored before the commit. A rollback removes the row with the action, so a retry runs again. Rows older than 30 days [A] are removed by the daily job (DEC-108). |
+| TX-23 | Send a Report Breakdown | Take the number from `report_number_seq`; insert `breakdown_reports` and its photos; for an Urgent report of kind Breakdown also insert the Draft SPK (number from `spk_number_seq`, source `Breakdown_Report`, priority Urgent, `finding_note`) and its one Mobilisasi `spk_assignments` row with the captured location, and set the report Converted; write `audit_logs` and the notifications. An inspection Fail inserts `dvir_logs` and its report in the same transaction. |
+| TX-24 | Reject a Report Breakdown | Lock the report; refuse when its SPK has left Draft; with a linked Draft, Cancel it (T6) with the same reason; set the report Rejected with `rejected_by`, `rejected_at`, `rejected_reason`; write `audit_logs`; notify the reporter. Cancelling an SPK in any other way (T6, TX-14) sets its report back to New. |
 
 ## 9.14 Customers and invoices
 

@@ -49,7 +49,7 @@
   const NAV = [
     ['dashboard', 'Dashboard', 'dashboard/Dashboard.html', ['dashboard.view']],
     ['spk', 'Surat Perintah Kerja', 'spk/SPKList.html', ['spk.view'], 3],
-    ['requests', 'Requests', 'spk/FCRequests.html', ['request.view'], 2],
+    ['breakdown', 'Report Breakdown', 'spk/BreakdownReports.html', ['breakdown.view'], 2],
     ['schedule', 'Schedule', 'schedule/MaintenanceSchedule.html', ['schedule.view', 'schedule.manage']],
     ['approvals', 'Approvals', 'approvals/Approvals.html', ['spk.approve', 'count.approve'], 4],
     ['inventory', 'Inventory', 'inventory/Inventory.html', ['inventory.manage', 'tyre.manage']],
@@ -63,7 +63,7 @@
     ['audit', 'Audit log', 'access/AuditLog.html', ['audit.view']],
     ['setup', 'Setup and go live', 'setup/SetupGoLive.html', ['setup.golive']]
   ];
-  const ICON = { 'spk': 'spk' };
+  const ICON = { 'spk': 'spk', 'breakdown': 'requests' };
   // C-01: the Dashboard item opens the role's own dashboard.
   const ROLE_DASHBOARD = {
     'Planner': 'DashboardPlanner', 'Mechanic': 'DashboardMechanic', 'Warehouse Manager': 'DashboardWarehouse',
@@ -72,16 +72,16 @@
   // Default effective capabilities per role (PRD 2.2), enough to draw the menu
   const base = ['dashboard.view', 'spk.view', 'vehicle.view'];
   const CAPS = {
-    'Planner': [...base, 'request.view', 'schedule.manage', 'registry.manage', 'parttype.manage'],
+    'Planner': [...base, 'breakdown.view', 'schedule.manage', 'registry.manage', 'parttype.manage'],
     'Mechanic': [...base, 'schedule.view'],
     'Warehouse Manager': [...base, 'inventory.manage', 'tyre.manage', 'schedule.view'],
     'Supervisor': [...base, 'spk.approve', 'count.approve', 'schedule.view', 'invoice.manage', 'report.view'],
     'GM': [...base, 'spk.approve', 'count.approve', 'schedule.view', 'invoice.view', 'report.view', 'audit.view'],
-    'System Admin': [...base, 'request.view', 'schedule.manage', 'spk.approve', 'count.approve', 'inventory.manage', 'tyre.manage', 'invoice.manage', 'report.view', 'registry.manage', 'masterdata.manage', 'settings.manage', 'audit.view', 'setup.golive'],
+    'System Admin': [...base, 'breakdown.view', 'schedule.manage', 'spk.approve', 'count.approve', 'inventory.manage', 'tyre.manage', 'invoice.manage', 'report.view', 'registry.manage', 'masterdata.manage', 'settings.manage', 'audit.view', 'setup.golive'],
     'Access Manager': ['accounts.manage', 'audit.view'],
-    'Field Coordinator': [...base, 'request.view', 'schedule.view'],
+    'Field Coordinator': [...base, 'breakdown.view', 'schedule.view'],
     'Accounting': ['dashboard.view', 'vehicle.view', 'invoice.manage', 'report.view'],
-    'Driver': ['dashboard.view', 'field.report']
+    'Driver': ['dashboard.view', 'driver.menu', 'breakdown.send', 'inspection.perform']
   };
   const initials = (r) => r.split(' ').map((w) => w[0]).join('').slice(0, 2);
   const store = {

@@ -15,6 +15,15 @@
 | AC-BIL-003 | REQ-BIL-006 | `docs/prd/areas/4.23-bil.md` | TASK-703 | FLW-ACC-01 | `AC-BIL-003 ` |
 | AC-BIL-004 | REQ-BIL-009 | `docs/prd/areas/4.23-bil.md` | TASK-702 | FLW-ACC-01 | `AC-BIL-004 ` |
 | AC-BIL-005 | REQ-BIL-003 | `docs/prd/areas/4.23-bil.md` | TASK-702 | FLW-ACC-01 | `AC-BIL-005 ` |
+| AC-BRK-001 | REQ-BRK-002 | `docs/prd/areas/4.11a-brk.md` | TASK-609 | FLW-MEC-06, FLW-MEC-10 | `AC-BRK-001 ` |
+| AC-BRK-002 | REQ-BRK-001 | `docs/prd/areas/4.11a-brk.md` | TASK-609 | FLW-MEC-06, FLW-FC-01 | `AC-BRK-002 ` |
+| AC-BRK-003 | REQ-BRK-003 | `docs/prd/areas/4.11a-brk.md` | TASK-609 | FLW-DRV-01, FLW-FC-01 | `AC-BRK-003 ` |
+| AC-BRK-004 | REQ-BRK-004 | `docs/prd/areas/4.11a-brk.md` | TASK-610 | FLW-DRV-01, FLW-PLN-11 | `AC-BRK-004 ` |
+| AC-BRK-005 | REQ-BRK-005 | `docs/prd/areas/4.11a-brk.md` | TASK-610 | FLW-FC-01 | `AC-BRK-005 ` |
+| AC-BRK-006 | REQ-BRK-006 | `docs/prd/areas/4.11a-brk.md` | TASK-610 | FLW-PLN-11 | `AC-BRK-006 ` |
+| AC-BRK-007 | REQ-BRK-007 | `docs/prd/areas/4.11a-brk.md` | TASK-610 | FLW-PLN-11 | `AC-BRK-007 ` |
+| AC-BRK-008 | REQ-BRK-009 | `docs/prd/areas/4.11a-brk.md` | TASK-609 | FLW-MEC-06, FLW-MEC-11 | `AC-BRK-008 ` |
+| AC-BRK-009 | REQ-BRK-008 | `docs/prd/areas/4.11a-brk.md` | TASK-713 | FLW-MEC-06, FLW-MEC-11 | `AC-BRK-009 ` |
 | AC-BSL-001 | REQ-BSL-004 | `docs/prd/areas/4.12-bsl.md` | TASK-511 | FLW-SA-03 | `AC-BSL-001 ` |
 | AC-BSL-002 | REQ-BSL-002 | `docs/prd/areas/4.12-bsl.md` | TASK-511 | FLW-SA-01 | `AC-BSL-002 ` |
 | AC-BSL-003 | REQ-BSL-004 | `docs/prd/areas/4.12-bsl.md` | TASK-511 | FLW-SA-03 | `AC-BSL-003 ` |
@@ -45,15 +54,15 @@
 | AC-ENG-008 | REQ-ENG-013 | `docs/prd/areas/4.2-eng.md` | TASK-204 | FLW-MEC-07 | `AC-ENG-008 ` |
 | AC-ENG-009 | REQ-ENG-014 | `docs/prd/areas/4.2-eng.md` | TASK-204 | FLW-MEC-07 | `AC-ENG-009 ` |
 | AC-ENG-010 | REQ-ENG-017 | `docs/prd/areas/4.2-eng.md` | TASK-204 | FLW-MEC-03, FLW-MEC-07 | `AC-ENG-010 ` |
-| AC-FUP-001 | REQ-FUP-003 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-10 | `AC-FUP-001 ` |
-| AC-FUP-002 | REQ-FUP-002 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-10 | `AC-FUP-002 ` |
-| AC-FUP-003 | REQ-FUP-005 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-10 | `AC-FUP-003 ` |
-| AC-FUP-004 | REQ-FUP-006 | `docs/prd/areas/8.1-fup.md` | TASK-115 | FLW-MEC-10 | `AC-FUP-004 ` |
-| AC-FUP-005 | REQ-FUP-002 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-10 | `AC-FUP-005 ` |
-| AC-FUP-006 | REQ-FUP-009 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-10 | `AC-FUP-006 ` |
-| AC-FUP-007 | REQ-FUP-013 | `docs/prd/areas/8.1-fup.md` | TASK-705 | FLW-MEC-10 | `AC-FUP-007 ` |
-| AC-FUP-008 | REQ-FUP-002 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-10 | `AC-FUP-008 ` |
-| AC-FUP-009 | REQ-FUP-007 | `docs/prd/areas/8.1-fup.md` | TASK-115 | FLW-MEC-10 | `AC-FUP-009 ` |
+| AC-FUP-001 | REQ-FUP-003 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-11 | `AC-FUP-001 ` |
+| AC-FUP-002 | REQ-FUP-002 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-11 | `AC-FUP-002 ` |
+| AC-FUP-003 | REQ-FUP-005 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-11 | `AC-FUP-003 ` |
+| AC-FUP-004 | REQ-FUP-006 | `docs/prd/areas/8.1-fup.md` | TASK-115 | FLW-MEC-11 | `AC-FUP-004 ` |
+| AC-FUP-005 | REQ-FUP-002 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-11 | `AC-FUP-005 ` |
+| AC-FUP-006 | REQ-FUP-009 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-11 | `AC-FUP-006 ` |
+| AC-FUP-007 | REQ-FUP-013 | `docs/prd/areas/8.1-fup.md` | TASK-705 | FLW-MEC-11 | `AC-FUP-007 ` |
+| AC-FUP-008 | REQ-FUP-002 | `docs/prd/areas/8.1-fup.md` | TASK-114 | FLW-MEC-11 | `AC-FUP-008 ` |
+| AC-FUP-009 | REQ-FUP-007 | `docs/prd/areas/8.1-fup.md` | TASK-115 | FLW-MEC-11 | `AC-FUP-009 ` |
 | AC-IAM-001 | REQ-IAM-004 | `docs/prd/areas/4.18-iam.md` | TASK-107 | FLW-AM-01 | `AC-IAM-001 ` |
 | AC-IAM-002 | REQ-IAM-004 | `docs/prd/areas/4.18-iam.md` | TASK-107 | FLW-AM-01 | `AC-IAM-002 ` |
 | AC-IAM-003 | REQ-IAM-003 | `docs/prd/areas/4.18-iam.md` | TASK-107 | FLW-SA-06 | `AC-IAM-003 ` |
@@ -80,9 +89,7 @@
 | AC-MEC-004 | REQ-MEC-008 | `docs/prd/areas/4.5-mec.md` | TASK-402 | FLW-MEC-01 | `AC-MEC-004 ` |
 | AC-MEC-005 | REQ-MEC-009 | `docs/prd/areas/4.5-mec.md` | TASK-402 | FLW-MEC-01, FLW-SA-07 | `AC-MEC-005 ` |
 | AC-MOB-001 | REQ-SPKD-005 | `docs/prd/areas/4.20-mob.md` | TASK-708 | FLW-MEC-06, FLW-SA-07 | `AC-MOB-001 ` |
-| AC-MOB-002 | REQ-MOB-004 | `docs/prd/areas/4.20-mob.md` | TASK-713 | FLW-MEC-06 | `AC-MOB-002 ` |
 | AC-MOB-003 | REQ-MOB-001 | `docs/prd/areas/4.20-mob.md` | TASK-704 | FLW-DRV-01 | `AC-MOB-003 ` |
-| AC-MOB-004 | REQ-MOB-006 | `docs/prd/areas/4.20-mob.md` | TASK-707 | FLW-FC-01 | `AC-MOB-004 ` |
 | AC-MOB-005 | REQ-MOB-010 | `docs/prd/areas/4.20-mob.md` | TASK-712 | FLW-MEC-06 | `AC-MOB-005 ` |
 | AC-PLC-001 | REQ-PLC-003 | `docs/prd/areas/4.6-plc.md` | TASK-508 | FLW-MEC-03 | `AC-PLC-001 ` |
 | AC-PLC-002 | REQ-PLC-006 | `docs/prd/areas/4.6-plc.md` | TASK-508 | FLW-MEC-03 | `AC-PLC-002 ` |

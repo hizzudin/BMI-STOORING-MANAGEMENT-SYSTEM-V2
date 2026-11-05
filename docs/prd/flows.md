@@ -83,11 +83,11 @@ Each flow lists the screens of the design canvas in the order the user meets the
 1. Inside the open step → "Raise change request" → [`ChangeRequest`](<../../Design Artifact/spk/ChangeRequest.html#ChangeRequest>): what changes, requested change, reason.
 2. Submit request → the SPK is Pending\_Amendment and later steps stay Locked until the Approver decides (FLW-PLN-06, FLW-APR-02).
 
-**FLW-MEC-06 Mobile app (R1 step 7)** (REQ-MOB-002, REQ-MOB-004, REQ-MOB-010, DEC-98).
+**FLW-MEC-06 Mobile app (R1 step 7)** (REQ-MOB-002, REQ-BRK-001, REQ-MOB-010, DEC-98).
 
 1. [`MobileLogin`](<../../Design Artifact/mobile/MobileLogin.html#MobileLogin>) → Mechanic menu → [`MechanicMobileHome`](<../../Design Artifact/mobile/MechanicMobileHome.html#MechanicMobileHome>) (the SPKs scheduled for today and assigned to the mechanic, Urgent first, rolled-over first within a level).
 2. Open a step → [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) (Mechanic Action), [`MechanicMobilePlacement`](<../../Design Artifact/mobile/MechanicMobilePlacement.html#MechanicMobilePlacement>) (Part Replacement), [`MechanicMobileCheck`](<../../Design Artifact/mobile/MechanicMobileCheck.html#MechanicMobileCheck>) (Part Check) or [`MobilisasiMobile`](<../../Design Artifact/mobile/MobilisasiMobile.html#MobilisasiMobile>) (Mobilisasi), same rules as FLW-MEC-01 to FLW-MEC-03, FLW-MEC-08 and FLW-MEC-09 → Submit.
-3. Report → [`MechanicMobileFieldReport`](<../../Design Artifact/mobile/MechanicMobileFieldReport.html#MechanicMobileFieldReport>): vehicle, location, description, suggested category, urgency, photos → Send. It drafts an SPK for the Planner (FLW-PLN-02); no work starts from the report.
+3. Report → [MobileReportBreakdown](<../../Design Artifact/mobile/MobileReportBreakdown.html#MobileReportBreakdown>): pick the vehicle, write the finding note, add photos, choose the urgency → Send; the location is captured by the phone. No work starts from the report (FLW-PLN-11). Inspection → FLW-MEC-11.
 
 ## 6.3 Warehouse Manager (web)
 
@@ -206,11 +206,11 @@ Each flow lists the screens of the design canvas in the order the user meets the
 4. Chassis and parts tab → "Correct baseline" → [`BaselineCorrect`](<../../Design Artifact/fleet/BaselineCorrect.html#BaselineCorrect>) while no SPK has touched the part.
 5. Sold or out of service → [`VehicleDeactivate`](<../../Design Artifact/fleet/VehicleDeactivate.html#VehicleDeactivate>) (no open SPK).
 
-**FLW-SA-04 Enter driver data in release 1** (REQ-PM-004, REQ-PM-005).
+**FLW-SA-04 Enter driver data in release 1** (REQ-PM-004, REQ-BRK-001, REQ-BRK-009).
 
 1. Vehicles → Inspections tab → [`VehicleInspections`](<../../Design Artifact/fleet/VehicleInspections.html#VehicleInspections>).
-2. "+ Record inspection" → [`AdminInspectionForm`](<../../Design Artifact/fleet/AdminInspectionForm.html#AdminInspectionForm>) for the named driver; a Fail needs photo and description and drafts an SPK (FLW-PLN-02).
-3. "Report breakdown" → [`AdminBreakdownForm`](<../../Design Artifact/fleet/AdminBreakdownForm.html#AdminBreakdownForm>): location, description, photo; it drafts an SPK with source Driver\_Breakdown, pre-seeded with exactly one Mobilisasi step whose destination is the reported location, and the description copied as its field-finding note (REQ-SPK-003, DEC-90, DEC-91).
+2. "+ Record inspection" → [AdminInspectionForm](<../../Design Artifact/fleet/AdminInspectionForm.html#AdminInspectionForm>) for the named driver; a Fail needs photo, description and urgency and raises a Report Breakdown, never a draft (REQ-BRK-009).
+3. "Report breakdown" → [AdminBreakdownForm](<../../Design Artifact/fleet/AdminBreakdownForm.html#AdminBreakdownForm>) for the named driver: location, note, photos, urgency. It keeps a report for the Planner (FLW-PLN-11). An Urgent one also drafts an SPK with one Mobilisasi step at the location and shows the Planners the pop-up (REQ-BRK-003, REQ-BRK-004).
 
 **FLW-SA-05 Master data** (REQ-REG-001, REQ-MEC-005, REQ-PLC-013, REQ-DOC-002, REQ-BSL-007, REQ-PM-006, REQ-TYR-003).
 
@@ -249,17 +249,19 @@ Each flow lists the screens of the design canvas in the order the user meets the
 
 ## 6.7 Driver (mobile, R1 step 7)
 
-Until the mobile app ships in R1 step 7, the System Admin enters inspections and breakdowns for the driver (FLW-SA-04). Each inspection Fail and each breakdown drafts an SPK that appears in the Requests list of the Field Coordinator, System Admin and Planner (FLW-FC-04).
+Until the mobile app ships in R1 step 7, the System Admin enters inspections and Report Breakdowns for the driver (FLW-SA-04). Every report appears in the Report Breakdown list of the Planner, System Admin and Field Coordinator (FLW-PLN-11).
 
 **FLW-DRV-01 Daily inspection** (REQ-MOB-003, REQ-PM-004).
 
 1. [`MobileLogin`](<../../Design Artifact/mobile/MobileLogin.html#MobileLogin>) → Driver menu → [`DashboardDriver`](<../../Design Artifact/mobile/DashboardDriver.html#DashboardDriver>): my vehicle, its status and document reminders.
-2. Inspection → [`DriverInspection`](<../../Design Artifact/mobile/DriverInspection.html#DriverInspection>): Pass or Fail per item, odometer; a Fail needs a photo and a description → Submit.
-3. A Fail drafts an SPK for the Planner (FLW-PLN-02).
+2. Inspection → [MobileInspection](<../../Design Artifact/mobile/MobileInspection.html#MobileInspection>): Pass or Fail per item, odometer; a Fail needs a photo, a description and an urgency → Submit.
+3. A Fail raises a Report Breakdown for the Planner (FLW-PLN-11); it never drafts an SPK and never shows the pop-up (REQ-BRK-009).
 
-**FLW-DRV-02 Breakdown** (REQ-MOB-003, REQ-PM-005).
+**FLW-DRV-02 Report Breakdown** (REQ-MOB-003, REQ-BRK-001 to REQ-BRK-004).
 
-1. [`DashboardDriver`](<../../Design Artifact/mobile/DashboardDriver.html#DashboardDriver>) → "Report breakdown" → [`DriverBreakdown`](<../../Design Artifact/mobile/DriverBreakdown.html#DriverBreakdown>): location (captured once from the phone), description, photo → Send. It drafts an SPK with source Driver\_Breakdown, pre-seeded with exactly one Mobilisasi step to the captured location, and the description copied as its field-finding note (REQ-SPK-003, REQ-MOB-003, DEC-90, DEC-91).
+1. [DashboardDriver](<../../Design Artifact/mobile/DashboardDriver.html#DashboardDriver>) → "Report breakdown" → [MobileReportBreakdown](<../../Design Artifact/mobile/MobileReportBreakdown.html#MobileReportBreakdown>): the vehicle is already filled and the location is captured by the phone; write the finding note, add photos, choose the urgency → Send.
+2. Normal, Low or High: the report waits for the Planner (FLW-PLN-11). Urgent: the system also drafts an SPK with exactly one Mobilisasi step at the captured location, and every Planner gets the blocking pop-up (REQ-BRK-003, REQ-BRK-004, DEC-90, DEC-91).
+3. History shows the status of the report and any rejection reason.
 
 **FLW-DRV-03 Odometer** (REQ-MOB-003, REQ-VEH-005).
 
@@ -288,11 +290,11 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 2. Schedule → [`DispatcherMobileSchedule`](<../../Design Artifact/mobile/DispatcherMobileSchedule.html#DispatcherMobileSchedule>) (week list per day, read only).
 3. Alerts → [`DispatcherMobileAlerts`](<../../Design Artifact/mobile/DispatcherMobileAlerts.html#DispatcherMobileAlerts>); each alert also arrives as a push notification.
 
-**FLW-FC-04 Turn a driver request into an SPK** (REQ-SPK-014, REQ-SPK-001, RL-6).
+**FLW-FC-04 Send a Report Breakdown and follow it** (REQ-BRK-001, REQ-BRK-005, RL-6).
 
-1. [`DashboardDispatcher`](<../../Design Artifact/dashboard/DashboardDispatcher.html#DashboardDispatcher>) → Requests → [`FCRequests`](<../../Design Artifact/spk/FCRequests.html#FCRequests>): Draft SPKs from inspections, breakdowns and field findings, with the report photos.
-2. Open one → [`FCCreateSPK`](<../../Design Artifact/spk/FCCreateSPK.html#FCCreateSPK>): vehicle and source prefilled; choose a suggested category, write the description, list the parts needed → Send to Planner, who adds the steps. Or "+ Create SPK" for a new request the driver phoned in (source Manual\_Field\_Coordinator).
-3. The Planner checks it, may change it, and submits it; it then waits for a Supervisor or GM (FLW-APR-01). The Field Coordinator cannot submit or approve it. On the phone: [`FCMobileRequests`](<../../Design Artifact/mobile/FCMobileRequests.html#FCMobileRequests>) → [`FCMobileCreateSPK`](<../../Design Artifact/mobile/FCMobileCreateSPK.html#FCMobileCreateSPK>).
+1. [DashboardDispatcher](<../../Design Artifact/dashboard/DashboardDispatcher.html#DashboardDispatcher>) → "Report breakdown" → [ReportBreakdownForm](<../../Design Artifact/spk/ReportBreakdownForm.html#ReportBreakdownForm>), or [MobileReportBreakdown](<../../Design Artifact/mobile/MobileReportBreakdown.html#MobileReportBreakdown>) on the phone: pick the vehicle, write the finding note, add photos, choose the urgency → Send.
+2. An Urgent report also drafts an SPK with one Mobilisasi step for the Planner, without the pop-up (REQ-BRK-003).
+3. Report Breakdown → [BreakdownReports](<../../Design Artifact/spk/BreakdownReports.html#BreakdownReports>), or [MobileReports](<../../Design Artifact/mobile/MobileReports.html#MobileReports>) on the phone: every report and its status, read only. The Field Coordinator cannot create an SPK, submit it or approve it.
 
 **FLW-FC-05 Buy parts for an SPK** (REQ-PUR-001 to 008).
 
@@ -304,8 +306,8 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 
 **FLW-SA-07 Field work on the phone** (REQ-MOB-008, REQ-MBL-005).
 
-1. [`MobileLogin`](<../../Design Artifact/mobile/MobileLogin.html#MobileLogin>) → System Admin field menu → [`SAMobileHome`](<../../Design Artifact/mobile/SAMobileHome.html#SAMobileHome>): requests, purchases and open steps.
-2. Requests and Purchases work as FLW-FC-04 and FLW-FC-05.
+1. [`MobileLogin`](<../../Design Artifact/mobile/MobileLogin.html#MobileLogin>) → System Admin field menu → [`SAMobileHome`](<../../Design Artifact/mobile/SAMobileHome.html#SAMobileHome>): reports, purchases and open steps.
+2. Report Breakdown and Purchases work as FLW-FC-04 and FLW-FC-05.
 3. Steps → [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) → Start. A Mobilisasi step shows the route to the driver's captured location, records the location trail while In\_Progress and submits on arrival or with Finish stooring; its stooring area and fee come from the destination (REQ-MBL-002 to 006). A Mechanic Action step takes services and photos and has no stooring area (DEC-90) → Submit. Either is marked Self-verified if the System Admin later verifies it.
 
 ## 6.8b Accounting (web)
@@ -365,10 +367,10 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 
 ## 6.8e Step time, troubleshooting, mobilisation and OFF units
 
-**FLW-MEC-10 Send a field finding for review on the web** (REQ-SPK-016, DEC-91, DEC-97).
+**FLW-MEC-10 Send a Report Breakdown on the web** (REQ-BRK-001, DEC-109).
 
-1. Surat Perintah Kerja → "+ Create SPK" → [`FCCreateSPK`](<../../Design Artifact/spk/FCCreateSPK.html#FCCreateSPK>), the same request screen the Field Coordinator uses (DEC-97): vehicle, suggested category, description, the field-finding note (required), the parts needed and photos; no steps.
-2. Send to Planner: the SPK stays Draft, marked Sent for review, with source Manual\_Mechanic and the Mechanic as creator; the Planners and the System Admin are notified, and the Planner continues as in FLW-FC-04 step 3. The Mechanic cannot submit or approve it.
+1. [DashboardMechanic](<../../Design Artifact/dashboard/DashboardMechanic.html#DashboardMechanic>) → "Report breakdown" → [ReportBreakdownForm](<../../Design Artifact/spk/ReportBreakdownForm.html#ReportBreakdownForm>), the same report screen the Field Coordinator uses: pick the vehicle, write the finding note, add photos, choose the urgency → Send.
+2. The report waits for the Planner (FLW-PLN-11); an Urgent one also drafts an SPK with one Mobilisasi step, without the pop-up. The Mechanic cannot create, submit or approve an SPK.
 
 **FLW-MEC-07 Start, pause and resume a step** (REQ-ENG-012 to REQ-ENG-016, DEC-87).
 
@@ -391,9 +393,21 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 3. Activate: submit for approval; the SPK becomes Active only after an Approver approves it (FLW-APR-01), and the activating user counts as its creator for BR-03. Or Discard draft with a reason; the draft keeps its link to the check and is never made again for that step.
 4. The check SPK completes and is billed on its own; [`SPKDocumentCheck`](<../../Design Artifact/spk/SPKDocumentCheck.html#SPKDocumentCheck>) prints the Part Check section with the follow-up SPK number for reference.
 
-**FLW-MEC-09 Mobilisasi to a broken-down vehicle** (REQ-MBL-001 to REQ-MBL-006, REQ-SPK-003, DEC-90).
+**FLW-PLN-11 Create an SPK from a Report Breakdown** (REQ-BRK-004 to REQ-BRK-007, REQ-SPK-017, DEC-91, DEC-109).
 
-1. A breakdown (FLW-DRV-02, FLW-SA-04) drafts an SPK pre-seeded with one Mobilisasi step to the driver's captured location; the Planner adds the other steps in [`CreateSPK`](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>), where Mobilisasi is also in the module palette, and submits it (FLW-PLN-01, FLW-APR-01).
+1. Urgent from a Driver: [UrgentReportPopup](<../../Design Artifact/shell/UrgentReportPopup.html#UrgentReportPopup>) covers any web page and closes only with Create SPK. The first Planner to press it closes it for all Planners, and the draft opens in [CreateSPKFromReport](<../../Design Artifact/spk/CreateSPKFromReport.html#CreateSPKFromReport>) in a new tab. Any other report: Report Breakdown → [BreakdownReports](<../../Design Artifact/spk/BreakdownReports.html#BreakdownReports>) (Urgent and High first) → open one → Create SPK.
+2. [CreateSPKFromReport](<../../Design Artifact/spk/CreateSPKFromReport.html#CreateSPKFromReport>): the vehicle, source and priority are filled; the note, photos and location show read only; the description shows "Report reference: RB-yymmddNNNN" as the source of the SPK. Compose the steps as in FLW-PLN-01; Mobilisasi is in the palette with its destination filled.
+3. Save draft, or Submit for approval; the report becomes Converted when the SPK is first saved. The Approver sees the reference and the report photos (FLW-APR-01), and the completion cycle begins.
+4. Or Reject → [RejectReport](<../../Design Artifact/spk/RejectReport.html#RejectReport>): a reason is required, the reporter is notified, a linked Draft SPK is Cancelled and its number is not reused; the report stays in the vehicle history.
+
+**FLW-MEC-11 Inspect a vehicle on the phone** (REQ-BRK-008, REQ-BRK-009).
+
+1. Mechanic menu → Inspection → [MobileInspection](<../../Design Artifact/mobile/MobileInspection.html#MobileInspection>): pick the vehicle, Pass or Fail per item, odometer of a Powered vehicle (saved with source Mechanic). A Fail needs a photo, a description and an urgency → Submit.
+2. A Fail raises a Report Breakdown for the Planner (FLW-PLN-11); it never drafts an SPK and never shows the pop-up.
+
+**FLW-MEC-09 Mobilisasi to a broken-down vehicle** (REQ-MBL-001 to REQ-MBL-006, REQ-BRK-003, DEC-90, DEC-109).
+
+1. An Urgent report (FLW-DRV-02, FLW-SA-04, FLW-FC-04, FLW-MEC-10) drafts an SPK with one Mobilisasi step at the captured location. For any other report the Planner adds Mobilisasi from the module palette of [CreateSPKFromReport](<../../Design Artifact/spk/CreateSPKFromReport.html#CreateSPKFromReport>), and its destination is filled from the report and can be changed. The Planner adds the other steps and submits it (FLW-PLN-11, FLW-APR-01).
 2. When the step opens, the executor opens it on the phone ([`MobilisasiMobile`](<../../Design Artifact/mobile/MobilisasiMobile.html#MobilisasiMobile>), or [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) from the System Admin field menu, FLW-SA-07) and presses Start: the map shows the route to the destination, and the location trail is recorded while the step is In\_Progress and online.
 3. Reaching the destination submits the step by itself; Finish stooring submits it before arrival. Recording stops at submit.
 4. The stooring fee of the destination's area is charged as a snapshot: once per SPK per area per day, Rp 0 for the workshop. The Planner or System Admin sees the trail and the stooring duration in [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) and the SPK detail; every view is written to the access log. The trail never appears on the SPK document or the invoice.

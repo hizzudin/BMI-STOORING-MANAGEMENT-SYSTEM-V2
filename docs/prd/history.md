@@ -13,6 +13,9 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 | DEC-52 | Superseded by DEC-90: the stooring area and location no longer sit on the Mechanic Action step. The Mobilisasi module carries the stooring area (from the breakdown destination) and records the mechanic's location trail for the Planner and System Admin to check | REQ-MEC-007 (retired), REQ-MEC-008 (retired), REQ-MBL-005 |
 | DEC-71 | Superseded by DEC-90: the 15-second one-time position capture at Mechanic Action submit is removed with the capture itself; location now comes from the breakdown report and the Mobilisasi location trail | REQ-MEC-008 (retired), REQ-MBL-005 |
 | DEC-105 | Superseded by DEC-106 (one entity, one name). SPK and WO are one entity, not two: the rename of DEC-104 changes only the name people read. An agent never adds a second table, ID family, state machine, module, permission code, screen or number series for SPK, and never maps or migrates between the two names. An SPK is one row of work_orders (0.7) | 0.7 |
+| DEC-24 | Superseded by DEC-109: a breakdown report drafts an SPK only when it is Urgent. | REQ-BRK-003 |
+| DEC-34 | Superseded by DEC-64, then DEC-109: the Field Coordinator (Korlap) created and submitted draft SPKs; there is no separate field admin role, the System Admin covers that work | RL-6 |
+| DEC-97 | Superseded by DEC-109: the draft SPK request screen was shared by the Mechanic and the Field Coordinator. Both now share the Report Breakdown form | REQ-BRK-001, FLW-MEC-10 |
 
 ## Retired requirements
 
@@ -21,16 +24,22 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 | REQ-STK-005 | P0 | Retired (DEC-60): parts bought outside are recorded in the Part Purchase step (REQ-PUR-002 to 006). | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>), [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) | `work_order_parts`, `wo_attachments` | BR-06 |
 | REQ-STK-007 | P0 | Retired (DEC-60): a tyre bought outside is recorded in the Part Purchase step (REQ-PUR-005). | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>), [`PartPurchase`](<../../Design Artifact/steps/PartPurchase.html#PartPurchase>) | `tyres`, `tyre_attachments` |  |
 | REQ-STK-010 | P0 | Retired (DEC-60): the Stock step is executed by the Warehouse Manager or the System Admin and cuts stock only; buying is the Part Purchase step (REQ-PUR-001). | [`Stock`](<../../Design Artifact/steps/Stock.html#Stock>), [`FCMobilePurchase`](<../../Design Artifact/mobile/FCMobilePurchase.html#FCMobilePurchase>) | `work_order_parts.done_by`, `done_at`, `work_order_assignments.executor_roles` | BR-03 |
-| REQ-STK-012 | P0 | Retired (DEC-60): there is no Cut stock or Purchase mode per line; the steps built in Create WO decide which steps exist, and the required part list holds only warehouse parts. | [CreateWO](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>), [FCCreateWO](<../../Design Artifact/spk/FCCreateSPK.html#FCCreateSPK>), [Stock](<../../Design Artifact/steps/Stock.html#Stock>) | work\_order\_parts.- | BR-02 |
+| REQ-STK-012 | P0 | Retired (DEC-60): there is no Cut stock or Purchase mode per line; the steps built in Create WO decide which steps exist, and the required part list holds only warehouse parts. | [CreateWO](<../../Design Artifact/spk/CreateSPK.html#CreateSPK>), [FCCreateWO](<../../Design Artifact/spk/ReportBreakdownForm.html#ReportBreakdownForm>), [Stock](<../../Design Artifact/steps/Stock.html#Stock>) | work\_order\_parts.- | BR-02 |
 | REQ-MEC-007 | P0 | Retired: the stooring area is no longer picked on a Mechanic Action step. The stooring (mobilisation) fee is produced by the Mobilisasi module (`REQ-MBL-*`), which carries the stooring area; a Mechanic Action step neither asks a location nor charges stooring. | [`Mechanic`](<../../Design Artifact/steps/Mechanic.html#Mechanic>), [`MechanicExternal`](<../../Design Artifact/steps/MechanicExternal.html#MechanicExternal>) |  | REQ-MBL-002 |
 | REQ-MEC-008 | P0 | Retired: a Mechanic Action step no longer captures the device position at submit. The work location for a field job is captured once from the Driver's breakdown report (`REQ-MOB-003`) and verified through the Mobilisasi step's location trail (`REQ-MBL-005`). | [`MechanicMobileStep`](<../../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>), [`StepVerify`](<../../Design Artifact/steps/StepVerify.html#StepVerify>) |  | REQ-MBL-005 |
 | REQ-MEC-009 | P0 | Retired: a Mechanic Action step no longer charges the stooring (mobilisation) fee. The stooring fee is now produced by the Mobilisasi module (`REQ-MBL-006`); the WO stooring cost and its WO-document and WO-cost lines are unchanged in meaning, only their source step changes. | [WorkOrder](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>), [WODocument](<../../Design Artifact/spk/SPKDocument.html#SPKDocument>) | work\_orders.stooring\_cost | REQ-MBL-006, BR-07 |
+| REQ-SPK-014 | P0 | Retired (DEC-109): the Requests list of draft SPKs is replaced by the Report Breakdown list (`REQ-BRK-005`). |  |  |  |
+| REQ-SPK-016 | P0 | Retired (DEC-109): a Mechanic or Field Coordinator no longer sends a Draft SPK for review; they send a Report Breakdown (`REQ-BRK-001`). The parts-needed list and `spk_part_requests` are removed. |  |  |  |
+| REQ-PM-005 | P0 | Retired (DEC-109): breakdown for a driver is now `REQ-BRK-001`. |  |  |  |
+| REQ-MOB-004 | P0 | Retired (DEC-109): the Mechanic field finding is now a Report Breakdown (`REQ-BRK-001`). |  |  |  |
 
 ## Retired acceptance criteria
 
 | ID | Verified | Acceptance criterion | Why retired |
 | --- | --- | --- | --- |
 | AC-STK-002 | REQ-STK-005 (retired) | IF an external line has no invoice image, THEN it SHALL be refused; WHEN it has one, it SHALL save and warehouse stock SHALL be unchanged. | DEC-60: the Stock step only cuts warehouse stock; parts bought outside, with their receipt photo, are the Part Purchase step (REQ-PUR-002 to 006, AC-PUR-003) |
+| AC-MOB-002 | REQ-MOB-004 (retired) | WHEN a field finding is sent, exactly one Draft SPK SHALL exist and no step SHALL open. | DEC-109: replaced by AC-BRK-001 |
+| AC-MOB-004 | REQ-MOB-006 | WHEN a Field Coordinator sends a draft SPK from a driver breakdown on the phone, the SPK SHALL stay Draft, marked Sent for review. | DEC-109: replaced by AC-BRK-005 |
 
 ## Retired transactions
 
@@ -109,6 +118,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 
 ## Change history
+
+v2.20 (2026-11-05) adds DEC-109, product owner decision: the field sends a Report Breakdown, which is not an SPK. Draft SPKs come automatically only from system alerts, a verified Part Check and an Urgent breakdown report (with one Mobilisasi step); the Planner drafts every other SPK with the report as its reference, shown as "Report reference: RB-yymmddNNNN" in the description. An Urgent breakdown report from a Driver, or entered for one, shows every Planner a blocking pop-up until one presses Create SPK. An inspection Fail, now also by a Mechanic, raises a report. New: area BRK, SM-BRK, TX-23, TX-24, `breakdown_report_photos`, numbering RB-yymmddNNNN. Removed: REQ-SPK-014, REQ-SPK-016, REQ-PM-005, REQ-MOB-004, `spk_part_requests`, `sent_for_review_at`, `spks.dvir_log_id`, the sources Driver\_DVIR, Driver\_Breakdown, Manual\_Mechanic and Manual\_Field\_Coordinator, and the Inspection fail, Breakdown and Field report alert rules. Screens: FCRequests is BreakdownReports, FCCreateSPK is ReportBreakdownForm, FCDraftCancel is RejectReport, FCMobileRequests is MobileReports, DriverBreakdown is MobileReportBreakdown (also replacing MechanicMobileFieldReport and FCMobileCreateSPK), DriverInspection is MobileInspection; new CreateSPKFromReport and UrgentReportPopup. Assumption [A]: the pop-up arrives within 30 seconds.
 
 v2.19 (2026-11-04) adds DEC-108: the table `idempotency_keys` (9.12) and TX-22 give NFR-01 its store; the daily job (TX-16) removes rows older than 30 days [A]. Product owner decision.
 

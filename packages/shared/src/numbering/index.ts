@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { formatDateWib } from '../time/wib.js';
 
 export const DOCUMENT_KINDS = [
@@ -21,7 +22,25 @@ export type DocumentKind = (typeof DOCUMENT_KINDS)[number];
 export type NumberingConfig = Readonly<Record<DocumentKind, string>>;
 
 const RUNNING_NUMBER_TOKEN = '{NNNN}';
+const DATE_TOKENS = ['{yymmdd}', '{dd-mm-yy}'];
 const MIN_RUNNING_DIGITS = 4;
+
+/** True when a format has exactly one running number and no unknown token or stray brace. */
+function isValidFormat(format: string): boolean {
+  const tokens = format.match(/\{[^{}]*\}/g) ?? [];
+  const literalText = tokens.reduce((rest, token) => rest.replace(token, ''), format);
+  const runningNumbers = tokens.filter((token) => token === RUNNING_NUMBER_TOKEN).length;
+  const everyTokenKnown = tokens.every(
+    (token) => token === RUNNING_NUMBER_TOKEN || DATE_TOKENS.includes(token),
+  );
+  return runningNumbers === 1 && everyTokenKnown && !/[{}]/.test(literalText);
+}
+
+/** Checks the stored setting `app_settings.numbering_formats` before use (NFR-15, DEC-111). */
+export const NumberingConfigSchema = z.record(
+  z.enum(DOCUMENT_KINDS),
+  z.string().refine(isValidFormat, 'Needs one {NNNN} and only {yymmdd} or {dd-mm-yy} besides it'),
+);
 
 /** The one numbering configuration (NFR-15, DEC-46, DEC-104, DEC-109, DEC-110). */
 export const NUMBERING_CONFIG: NumberingConfig = {
@@ -58,13 +77,13 @@ export function formatDocumentNumber(
 ): string {
   assertRunningNumber(sequence);
   const format = config[kind];
-  if (!format.includes(RUNNING_NUMBER_TOKEN)) {
-    throw new RangeError(`The ${kind} format has no running number: ${format}`);
+  if (!isValidFormat(format)) {
+    throw new RangeError(`The ${kind} format is not valid: ${format}`);
   }
   const [year = '', month = '', day = ''] = formatDateWib(createdAt).split('-');
   const shortYear = year.slice(2);
   return format
     .replace(RUNNING_NUMBER_TOKEN, String(sequence).padStart(MIN_RUNNING_DIGITS, '0'))
-    .replace('{yymmdd}', `${shortYear}${month}${day}`)
-    .replace('{dd-mm-yy}', `${day}-${month}-${shortYear}`);
+    .replaceAll('{yymmdd}', `${shortYear}${month}${day}`)
+    .replaceAll('{dd-mm-yy}', `${day}-${month}-${shortYear}`);
 }

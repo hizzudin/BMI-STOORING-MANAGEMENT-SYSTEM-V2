@@ -6,11 +6,11 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-101 is merged. Next task: **TASK-102** |
+| Active task | TASK-101 review fixes (TASK-022) are on branch `fix/phase1-task101-numbering-config`, not merged. Next task: **TASK-102** |
 | Phase | 1 (R1 step 1) |
 | Spec status | TASK-021 and TASK-101 merged into `main` and pushed on the owner's go-ahead (2026-11-05) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.21 |
+| Spec version | PRD v2.22 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0 selesai dan `main` sudah di GitHub; CI hijau. Tersisa untuk Anda: mengaktifkan branch protection di `main`. Berikutnya TASK-101. Masa simpan Idempotency-Key 30 hari masih asumsi [A].
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 18 | 2026-11-06 | TASK-101 review, all fixes approved by the owner (DEC-111, v2.22): numbering formats validated (unknown token, repeated or missing running number refused, repeated date token replaced everywhere), `roundHalfUp` refuses invalid decimals with RangeError, `Part_Item_Alert`, `cr_number`, OB number in `sa_number`, one sequence per code, TASK-120 seeds and reads `numbering_formats`. Corrected: the session 17 note that the PRD had no stored setting was wrong | packages/shared/, PRD.md, docs/prd/, specs/ |
 | 17 | 2026-11-05 | TASK-101: enums of 9.1 with a drift test against the data model, decimal money with big.js, Indonesian number format, WIB date and time, one numbering configuration. 71 tests, 100 percent coverage of `@bmi/shared` | packages/shared/, specs/ |
 | 16 | 2026-11-05 | Owner: every running code follows CODE-yymmddNNNN (DEC-110, v2.21), also tyre codes; customer invoices keep NNNN/BMI/dd-mm-yy (DEC-46). Sample numbers updated in the spec and artboards. No code used these formats yet | PRD.md, docs/prd/, Design Artifact/, specs/ |
 | 15 | 2026-11-05 | Owner replaced the field draft SPK with the Report Breakdown (DEC-109, v2.20). New area BRK, SM-BRK, TX-23, TX-24, numbering RB-yymmddNNNN, `breakdown_report_photos`. Drafts come only from alerts, a verified Part Check and an Urgent breakdown report (with one Mobilisasi step). Blocking pop-up for Planners on an Urgent report from a Driver. An inspection Fail, now also by a Mechanic, raises a report. "Report reference: RB-yymmddNNNN" shows in the description of an SPK made from a report. Report number RB-yymmddNNNN like the SPK number (owner). Eight screens renamed or merged, two new. Defaults the owner approved: Urgent inspection Fail has no pop-up, Mechanic inspection uses the same checklist and is not daily, a report is rejected with a reason, Mechanic and Field Coordinator report on web and phone. Added by the agent, to be reviewed: at least one photo is required, pop-up within 30 seconds [A], draft opens in a new tab | PRD.md, docs/prd/, Design Artifact/, specs/ |
@@ -62,7 +63,7 @@ The design choices are D-01 to D-14 in design.md §11. Process and product decis
 
 | ID | Question | Blocks | Proposed answer |
 | --- | --- | --- | --- |
-| OQ-6 | NFR-15 says number formats change after the build without code changes, but the PRD has no setting or screen for them. Where does the owner change them? | Nothing yet; TASK-120 reads the formats | Keep them in `NUMBERING_CONFIG` until the owner asks; a change then needs a deploy, not a code rewrite of the callers |
+| OQ-6 | NFR-15 stores the number formats in `app_settings.numbering_formats` (9.12), but no screen edits that setting. Does the owner want one, or is a change by a developer in the database enough? | Nothing yet | No screen until the owner asks; the value is checked with `NumberingConfigSchema` before use |
 | Q-03 | Who owns the Google Cloud, Cloudflare, Firebase and Expo (EAS) accounts, and which domain do web and API use? (PRD §11.3) | TASK-127 B, 128, 709 to 711; R1 step 1 close | — (product owner) |
 | OQ-5 | Is an internal developer available to review the ENG/REG design note and critical merges (§8.4)? | TASK-202, 203 | Until one joins, ADR-0002 applies |
 

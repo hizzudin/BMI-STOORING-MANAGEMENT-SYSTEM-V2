@@ -25,7 +25,7 @@ CREATE TYPE trigger_t         AS ENUM ('Mileage','Time');
 CREATE TYPE alert_type_t      AS ENUM ('PM','Part_Item','Tyre','Document');
 CREATE TYPE alert_status_t    AS ENUM ('Pending','Converted_To_SPK','Dismissed');
 CREATE TYPE spk_status_t       AS ENUM ('Draft','Pending_Approval','Rejected','Active','In_Progress','Pending_Verification','Pending_Amendment','Completed','Cancelled');
-CREATE TYPE spk_source_t       AS ENUM ('System_PM','Tyre_Alert','Document_Alert','Breakdown_Report','Part_Check','Manual_Planner','Manual_Admin');
+CREATE TYPE spk_source_t       AS ENUM ('System_PM','Tyre_Alert','Part_Item_Alert','Document_Alert','Breakdown_Report','Part_Check','Manual_Planner','Manual_Admin');
 CREATE TYPE report_kind_t      AS ENUM ('Breakdown','Inspection_Fail');   -- REQ-BRK-001, REQ-BRK-009
 CREATE TYPE report_status_t    AS ENUM ('New','Converted','Rejected');    -- SM-BRK
 CREATE TYPE spk_category_t     AS ENUM ('PM','Corrective','Tyre','Document','Other');   -- DEC-85
@@ -491,7 +491,9 @@ CREATE TABLE mobilisation_location_trail (    -- AO; the mechanic's location tra
   recorded_at TIMESTAMP NOT NULL,             -- only between Start and Submit of the step; recording stops at Submit
   received_at TIMESTAMP NOT NULL DEFAULT now()
 );   -- visible to Planner and System Admin only; every read is written to an access log (RSK-09, NFR-04)
+CREATE SEQUENCE cr_number_seq;                 -- running part of CR-yymmddNNNN, never reset, never reused (NFR-15, DEC-110)
 CREATE TABLE spk_change_requests (
+  cr_number VARCHAR(30) NOT NULL UNIQUE,       -- CR-yymmddNNNN (DEC-111)
   spk_id BIGINT NOT NULL REFERENCES spks(id),
   assignment_id BIGINT NOT NULL REFERENCES spk_assignments(id),
   requested_by BIGINT NOT NULL REFERENCES users(id),   -- executor of the open step
@@ -663,6 +665,7 @@ CREATE TABLE vendors (                        -- SD, REQ-INV-014; every vendor_n
   phone VARCHAR(30), address TEXT,
   is_active BOOLEAN NOT NULL DEFAULT true
 );
+CREATE SEQUENCE gr_number_seq;                 -- running part of GR-yymmddNNNN (DEC-110)
 CREATE TABLE goods_receipts (                 -- SD; posted without approval (BR-12)
   gr_number VARCHAR(30) NOT NULL UNIQUE,      -- GR-yymmddNNNN (NFR-15, DEC-110)
   po_number VARCHAR(40),
@@ -684,6 +687,7 @@ CREATE TABLE goods_receipt_items (
   expiry_date DATE,
   rack_location VARCHAR(30)
 );
+CREATE SEQUENCE grc_number_seq;                -- running part of GRC-yymmddNNNN (DEC-110)
 CREATE TABLE gr_corrections (                 -- fixes a posted receipt line; no approval
   correction_number VARCHAR(30) NOT NULL UNIQUE,   -- GRC-yymmddNNNN
   goods_receipt_id BIGINT NOT NULL REFERENCES goods_receipts(id),
@@ -694,6 +698,7 @@ CREATE TABLE gr_corrections (                 -- fixes a posted receipt line; no
   posted_by BIGINT NOT NULL REFERENCES users(id),
   posted_at TIMESTAMP NOT NULL DEFAULT now()
 );
+CREATE SEQUENCE gi_number_seq;                 -- running part of GI-yymmddNNNN (DEC-110)
 CREATE TABLE goods_issues (                   -- Warehouse source only
   gi_number VARCHAR(30) NOT NULL UNIQUE,      -- GI-yymmddNNNN
   spk_id BIGINT NOT NULL REFERENCES spks(id),          -- guard (BR-01)
@@ -712,9 +717,11 @@ CREATE TABLE goods_issue_items (
   qty INT NOT NULL CHECK (qty > 0),
   unit_cost NUMERIC(14,4) NOT NULL                                  -- average cost at issue time
 );
+CREATE SEQUENCE sa_number_seq;                 -- running part of SA-yymmddNNNN (DEC-110)
+CREATE SEQUENCE ob_number_seq;                 -- running part of OB-yymmddNNNN (DEC-110)
 CREATE TABLE stock_adjustments (              -- stock opname document, or the opening balance
   kind VARCHAR(8) NOT NULL DEFAULT 'Opname' CHECK (kind IN ('Opname','Opening')),   -- Opening: REQ-INV-013, Setup mode only, saved without approval
-  sa_number VARCHAR(30) NOT NULL UNIQUE,      -- SA-yymmddNNNN
+  sa_number VARCHAR(30) NOT NULL UNIQUE,      -- SA-yymmddNNNN; OB-yymmddNNNN when kind is Opening (DEC-111)
   adjustment_date DATE NOT NULL,
   rack_filter VARCHAR(30),
   status VARCHAR(16) NOT NULL DEFAULT 'Draft' CHECK (status IN ('Draft','Pending_Approval','Approved')),
@@ -737,7 +744,7 @@ CREATE TABLE stock_adjustment_items (
 CREATE TABLE stock_cards (                    -- AO ledger
   sku VARCHAR(40) NOT NULL REFERENCES parts_catalog(sku),
   transaction_type stock_tx_t NOT NULL,
-  reference_doc_id VARCHAR(30) NOT NULL,      -- GR, GRC, GI or SA number: no movement without a document (BR-06)
+  reference_doc_id VARCHAR(30) NOT NULL,      -- OB, GR, GRC, GI or SA number: no movement without a document (BR-06)
   spk_id BIGINT REFERENCES spks(id),
   vehicle_id BIGINT REFERENCES vehicles(id),  -- for GI and GIR
   qty_in INT NOT NULL DEFAULT 0 CHECK (qty_in >= 0),
@@ -760,6 +767,7 @@ CREATE TABLE tyre_statuses (                  -- master data (REQ-TYR-003)
   sort_order INT NOT NULL DEFAULT 0
 );
 CREATE SEQUENCE tyre_code_seq;                -- running part of TY-yymmddNNNN, never reset, never reused (DEC-110)
+CREATE SEQUENCE rd_number_seq;                 -- running part of RD-yymmddNNNN (DEC-110)
 CREATE TABLE retread_orders (                 -- retread dispatch
   rd_number VARCHAR(30) NOT NULL UNIQUE,      -- RD-yymmddNNNN
   vendor_name VARCHAR(150) NOT NULL,
@@ -769,6 +777,7 @@ CREATE TABLE retread_orders (                 -- retread dispatch
   status VARCHAR(12) NOT NULL DEFAULT 'Draft' CHECK (status IN ('Draft','Sent','Partial','Closed')),
   created_by BIGINT NOT NULL REFERENCES users(id)
 );
+CREATE SEQUENCE tr_number_seq;                 -- running part of TR-yymmddNNNN (DEC-110)
 CREATE TABLE tyre_receipts (                  -- SD; Receive tyres, no approval
   receipt_number VARCHAR(30) NOT NULL UNIQUE, -- TR-yymmddNNNN
   receipt_type VARCHAR(15) NOT NULL CHECK (receipt_type IN ('New','Retread_Return')),
@@ -844,6 +853,7 @@ CREATE TABLE retread_attachments (
   file_url VARCHAR(500) NOT NULL,
   uploaded_by BIGINT NOT NULL REFERENCES users(id)
 );
+CREATE SEQUENCE tc_number_seq;                 -- running part of TC-yymmddNNNN (DEC-110)
 CREATE TABLE tyre_counts (
   count_number VARCHAR(30) NOT NULL UNIQUE,   -- TC-yymmddNNNN
   count_date DATE NOT NULL,
@@ -948,7 +958,7 @@ CREATE TABLE schedule_alerts (                -- shown to the Field Coordinator;
 
 ```sql
 CREATE TABLE app_settings (
-  setting_key VARCHAR(60) NOT NULL UNIQUE,   -- dead_stock_days = 180, odometer_jump_km_per_day = 1500, storage_budget_gb = 50, storage_alert_pct = 80, storage_ia_after_months = 12, planner_approval_until = null, planner_approval_kinds = [] (REQ-IAM-008, DEC-93), system_mode = 'Setup' then 'Live' (REQ-IAM-010), went_live_at, tyre_early_failure_pct = 80, numbering formats (NFR-15), invoice_tax_pct = 11, invoice_part_markup_pct = 50, off_unit_daily_rate = 0 (a single global daily rate for the Off_Unit invoice line, maintained by the System Admin in Settings like the other rates; global, not per vehicle_class, to match invoice_tax_pct / invoice_part_markup_pct, REQ-BIL-003, DEC-92), invoice_bank_details
+  setting_key VARCHAR(60) NOT NULL UNIQUE,   -- dead_stock_days = 180, odometer_jump_km_per_day = 1500, storage_budget_gb = 50, storage_alert_pct = 80, storage_ia_after_months = 12, planner_approval_until = null, planner_approval_kinds = [] (REQ-IAM-008, DEC-93), system_mode = 'Setup' then 'Live' (REQ-IAM-010), went_live_at, tyre_early_failure_pct = 80, numbering_formats (NFR-15, DEC-111: one format per code, seeded with NUMBERING_CONFIG of @bmi/shared and checked with NumberingConfigSchema), invoice_tax_pct = 11, invoice_part_markup_pct = 50, off_unit_daily_rate = 0 (a single global daily rate for the Off_Unit invoice line, maintained by the System Admin in Settings like the other rates; global, not per vehicle_class, to match invoice_tax_pct / invoice_part_markup_pct, REQ-BIL-003, DEC-92), invoice_bank_details
   setting_value JSONB NOT NULL               -- triggers that draft SPKs are in alert_rules, document warning days on document_types (DEC-86)
 );
 CREATE TABLE stored_files (                   -- every uploaded file (8.1); file columns elsewhere hold its storage_key

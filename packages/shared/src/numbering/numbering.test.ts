@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { DOCUMENT_KINDS, formatDocumentNumber, NUMBERING_CONFIG } from './index.js';
+import {
+  DOCUMENT_KINDS,
+  formatDocumentNumber,
+  NUMBERING_CONFIG,
+  NumberingConfigSchema,
+} from './index.js';
 
 const wibNov4 = new Date('2026-11-04T02:00:00Z');
 
@@ -75,5 +80,52 @@ describe('NFR-15 one numbering configuration', () => {
   it('NFR-15 refuses a format with no running number, which could repeat a number', () => {
     const broken = { ...NUMBERING_CONFIG, GR: 'GR-{yymmdd}' };
     expect(() => formatDocumentNumber('GR', 5, wibNov4, broken)).toThrow(RangeError);
+  });
+});
+
+describe('NFR-15 DEC-111 stored numbering formats', () => {
+  const at = new Date('2026-11-03T02:00:00Z');
+
+  it('NFR-15 the default configuration passes its own check', () => {
+    expect(NumberingConfigSchema.parse(NUMBERING_CONFIG)).toEqual(NUMBERING_CONFIG);
+  });
+
+  it('NFR-15 reads a changed value from the setting', () => {
+    const stored: unknown = { ...NUMBERING_CONFIG, GR: 'GRN/{yymmdd}/{NNNN}' };
+    const config = NumberingConfigSchema.parse(stored);
+    expect(formatDocumentNumber('GR', 5, at, config)).toBe('GRN/261103/0005');
+  });
+
+  it.each([
+    ['an unknown token', 'GR-{yyyy}{NNNN}'],
+    ['no running number', 'GR-{yymmdd}'],
+    ['two running numbers', '{NNNN}-{NNNN}'],
+    ['a stray brace', 'GR-{yymmdd{NNNN}'],
+    ['an empty value', ''],
+  ])('NFR-15 the setting refuses a format with %s', (_reason, format) => {
+    expect(NumberingConfigSchema.safeParse({ ...NUMBERING_CONFIG, GR: format }).success).toBe(
+      false,
+    );
+  });
+
+  it('NFR-15 the setting refuses a missing document kind', () => {
+    const { GR: _removed, ...incomplete } = NUMBERING_CONFIG;
+    expect(NumberingConfigSchema.safeParse(incomplete).success).toBe(false);
+  });
+
+  it('NFR-15 the setting refuses an unknown document kind', () => {
+    expect(NumberingConfigSchema.safeParse({ ...NUMBERING_CONFIG, XX: 'XX-{NNNN}' }).success).toBe(
+      false,
+    );
+  });
+
+  it('NFR-15 a number is never built with an unknown token', () => {
+    const broken = { ...NUMBERING_CONFIG, GR: '{yyyy}{NNNN}' };
+    expect(() => formatDocumentNumber('GR', 5, at, broken)).toThrow(RangeError);
+  });
+
+  it('NFR-15 a repeated date token is replaced everywhere', () => {
+    const repeated = { ...NUMBERING_CONFIG, GR: '{yymmdd}-{NNNN}-{yymmdd}' };
+    expect(formatDocumentNumber('GR', 5, at, repeated)).toBe('261103-0005-261103');
   });
 });

@@ -3,6 +3,7 @@ import {
   invoiceLineAmount,
   markedUpUnitPrice,
   ppnAmount,
+  roundHalfUp,
   roundToRupiah,
   toAmount,
   toAverageCost,
@@ -74,5 +75,11 @@ describe('NFR-16 invoice price and PPN', () => {
 
   it('NFR-16 a PPN rate of 0 gives 0', () => {
     expect(ppnAmount('1000000', '0')).toBe('0');
+  });
+});
+
+describe('NFR-16 rounding arguments', () => {
+  it.each([-1, 1.5, Number.NaN])('NFR-16 refuses %s decimal places', (decimals) => {
+    expect(() => roundHalfUp('5', decimals)).toThrow(RangeError);
   });
 });

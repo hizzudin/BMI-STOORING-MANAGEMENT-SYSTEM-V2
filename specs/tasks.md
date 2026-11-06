@@ -96,6 +96,12 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `PRD.md` for DEC-110 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
   - _Verify_: `node specs/tools/check-coverage.mjs`: Coverage OK
+- [x] **TASK-022** TASK-101 review: part item source, CR number, OB number, one sequence per code, stored numbering formats (PRD v2.22)
+  - _Scope_: Spec and plan; the code part is in packages/shared.
+  - _Rules_: DEC-111
+  - _Read_: `PRD.md` for DEC-111 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
+  - _Verify_: `node specs/tools/check-coverage.mjs`: Coverage OK
 - [x] **TASK-004** Build specs: requirements, design, generated tasks, decision index, CONTEXT, ADRs, coverage tool
   - _Scope_: specs/ mirrors the PRD; specs/tools/check-coverage.mjs proves it.
   - _Read_: `PRD.md` sections named in _Scope_; `specs/design.md`
@@ -329,10 +335,10 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-VEH-003|AC-IAM-009"`; `e2e FLW-SA-01`; `e2e FLW-SA-03`; `qa` Vehicles, VehicleOverview, AddVehicle, VehicleEdit, VehicleDeactivate, VehicleChassis, ChangeDriver against their artboards
 - [ ] **TASK-120** SPK migrations and gateway, SPK numbering
-  - _Scope_: §9.6 SPK tables used in step 1 (the engine tables come in TASK-201), and spk_number_seq: the number is SPK-yymmddNNNN, yymmdd the WIB date of creation, NNNN at least four digits, never reset and never reused, also after cancel (DEC-104).
-  - _Rules_: NFR-15, DEC-104
+  - _Scope_: §9.6 SPK tables used in step 1 (the engine tables come in TASK-201), and spk_number_seq: the number is SPK-yymmddNNNN, yymmdd the WIB date of creation, NNNN at least four digits, never reset and never reused, also after cancel (DEC-104). Seeds the setting numbering_formats with NUMBERING_CONFIG, and every number is built from the stored value, parsed with NumberingConfigSchema; later tasks that issue a number read it the same way, each with the sequence §9 gives its code (DEC-111).
+  - _Rules_: NFR-15, DEC-104, DEC-111
   - _Data_: `spks` (§9.6), `spk_approvals` (§9.6), `spk_attachments` (§9.6), `spk_parts` (§9.7), `assignment_modules` (§9.6), `spk_assignments` (§9.6)
-  - _Read_: `docs/prd/data-model.md` §9.6, §9.7 (spks, spk_approvals, spk_attachments, spk_parts, assignment_modules, spk_assignments) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-15, DEC-104 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Read_: `docs/prd/data-model.md` §9.6, §9.7 (spks, spk_approvals, spk_attachments, spk_parts, assignment_modules, spk_assignments) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-15, DEC-104, DEC-111 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-103
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "SpkGateway|SPK numbering"`; migration drift test green

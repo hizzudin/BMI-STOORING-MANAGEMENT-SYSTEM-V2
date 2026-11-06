@@ -24,5 +24,12 @@ Rules: NFR-09, NFR-14, NFR-15, NFR-16, DEC-30, DEC-46, DEC-110. No acceptance cr
 ## Known gaps
 
 - NFR-09 asks for a translatable interface. TASK-126 also carries NFR-09 and builds the interface, so translation is not in this task.
-- NFR-15 asks that formats change without code changes. `formatDocumentNumber` takes the configuration as an argument, so formats are data, but no stored setting or screen for them exists in the PRD. See the open question in CONTEXT.md.
+- NFR-15 asks that formats change without code changes. They are the setting `app_settings.numbering_formats`, checked with `NumberingConfigSchema`; TASK-120 seeds and reads it. No screen edits it (OQ-6). An earlier version of this note said the PRD had no stored setting, which was wrong.
 - A negative amount shows as -Rp 1.000. The PRD names no form for it.
+
+## Review fixes (DEC-111, PRD v2.22)
+
+- RED: `pnpm --filter @bmi/shared test`: 15 of 85 tests failed, including the enum drift test after `Part_Item_Alert` entered the data model.
+- GREEN: 85 passed; the _Verify_ line: 80 passed, 5 skipped by the filter. Coverage: lines 88/88, branches 35/35, functions 24/24.
+- Repository: typecheck, lint, format, layer rules, secret scan and PRD coverage pass.
+- `pnpm test`: `@bmi/web#test` failed once more and passed on the next run with no code change. The passing run took 60,35 s, 83 percent of it starting jsdom, close to the 60 s worker start limit named by the earlier error. This points at a slow start on this machine; the failing output was not kept, so it is not proven. Not changed here.

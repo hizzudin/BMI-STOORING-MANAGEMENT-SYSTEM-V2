@@ -22,6 +22,9 @@ export function parseDecimal(value: DecimalInput): Big {
 
 /** Rounds half up to a fixed number of decimals; a rounded zero never keeps a minus sign. */
 export function roundHalfUp(value: DecimalInput, decimals: number): string {
+  if (!Number.isInteger(decimals) || decimals < 0) {
+    throw new RangeError(`Not a number of decimal places: ${String(decimals)}`);
+  }
   const text = parseDecimal(value).toFixed(decimals);
   return new Decimal(text).eq(0) ? new Decimal(0).toFixed(decimals) : text;
 }

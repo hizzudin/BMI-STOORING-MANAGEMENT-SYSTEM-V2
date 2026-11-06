@@ -48,6 +48,7 @@ export type SpkStatus = (typeof SPK_STATUSES)[number];
 export const SPK_SOURCES = [
   'System_PM',
   'Tyre_Alert',
+  'Part_Item_Alert',
   'Document_Alert',
   'Breakdown_Report',
   'Part_Check',

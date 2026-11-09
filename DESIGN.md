@@ -17,7 +17,7 @@ colors:
   border-strong: "#9CA3AF"
   border: "#E5E7EB"
   divider: "#F3F4F6"
-  page: "#F4F7F8"
+  page: "#EEF3F5"
   surface: "#FFFFFF"
   mist: "#E6EFF1"
   mist-light: "#F0F5F6"
@@ -39,9 +39,9 @@ colors:
 typography:
   headline:
     fontFamily: "system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "22px"
+    fontSize: "24px"
     fontWeight: 700
-    lineHeight: 1.25
+    lineHeight: 1.2
   title:
     fontFamily: "system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "15px"
@@ -246,7 +246,7 @@ Status colors are a separate family from the brand. Each status pairs a soft bac
 **Character:** neutral, fast to render on older Android phones, and familiar to users who are not used to smartphones. Hierarchy comes from size and weight, not from a second face.
 
 ### Hierarchy
-- **Headline** (700, 22px, 1.25): page title, one per page, top left. Mobile header titles use 19 to 20px.
+- **Headline** (700, 24px, 1.2): page title, one per page, top left. Mobile header titles use 19 to 20px.
 - **Title** (700, 15px, 1.3): card headings and section headings inside a page.
 - **Metric** (700, 20px, tabular numerals): counts and amounts on dashboard cards and summaries.
 - **Body** (400, 13px, 1.45): all desktop text, tables, forms. Values that matter are set in 600 or 700, not in a larger size.

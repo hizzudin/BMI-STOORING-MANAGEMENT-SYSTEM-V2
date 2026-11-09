@@ -191,7 +191,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-009
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations
   - _Verify_: `int "BR-14|BR-10"`; migration drift test green
-- [ ] **TASK-126** Web shell and design kit: floating rail, main sheet, pill tabs, header, Settings home, tables, dialogs, shared controls, navigation rules
+- [x] **TASK-126** Web shell and design kit: floating rail, main sheet, pill tabs, header, Settings home, tables, dialogs, shared controls, navigation rules
   - _Scope_: Re-create the shell, tokens and kit from DESIGN.md and Design Artifact/_kit, shell/ and components/ (never import them). Every shared component of ui.md 7.5 exists once. Every shared control C-01 to C-34 behaves as ui-action-map.md says. English only until the translation (Q-05). Menu items from capabilities are wired in TASK-106; this task builds the shell and kit only.
   - _Rules_: NFR-08, NFR-09, NFR-10, C-01, C-02, C-03, C-04, C-06, C-07, C-08, C-09, C-10, C-11, C-12, C-13, C-14, C-15, C-16, C-17, C-26, C-27, C-28, C-30, C-31, C-32, C-33, C-34, NAV-1, NAV-2, NAV-3, NAV-4, NAV-5, NAV-6, NAV-7, NAV-8, DEC-81, DEC-82, DEC-84, DEC-94, DEC-96
   - _Screens built here (visual target)_: [`AppShellCollapsed`](<../Design Artifact/shell/AppShellCollapsed.html#AppShellCollapsed>), [`Settings`](<../Design Artifact/settings/Settings.html#Settings>), [`UserMenu`](<../Design Artifact/shell/UserMenu.html#UserMenu>), [`LeaveConfirm`](<../Design Artifact/components/LeaveConfirm.html#LeaveConfirm>), [`DiscardConfirm`](<../Design Artifact/components/DiscardConfirm.html#DiscardConfirm>), [`DeactivateMaster`](<../Design Artifact/components/DeactivateMaster.html#DeactivateMaster>)

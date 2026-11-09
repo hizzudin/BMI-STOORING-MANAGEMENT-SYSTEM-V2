@@ -8,6 +8,12 @@
         "specs/tools/serve-artifact.mjs"
       ],
       "port": 4173
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@bmi/web", "dev"],
+      "port": 3000
     }
   ]
 }

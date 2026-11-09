@@ -1,4 +1,9 @@
-import { coverage, CRITICAL_THRESHOLD, GLOBAL_THRESHOLD } from '@bmi/config/vitest';
+import {
+  coverage,
+  CRITICAL_THRESHOLD,
+  GLOBAL_THRESHOLD,
+  UNIT_TEST_TIMEOUT_MS,
+} from '@bmi/config/vitest';
 import { defineConfig } from 'vitest/config';
 
 const SLOW_DATABASE_MS = 180_000;
@@ -17,7 +22,14 @@ export default defineConfig({
       thresholds: { ...GLOBAL_THRESHOLD, 'src/engine/**': CRITICAL_THRESHOLD },
     }),
     projects: [
-      { test: { name: 'unit', include: ['src/**/*.spec.ts'] } },
+      {
+        test: {
+          name: 'unit',
+          include: ['src/**/*.spec.ts'],
+          testTimeout: UNIT_TEST_TIMEOUT_MS,
+          hookTimeout: UNIT_TEST_TIMEOUT_MS,
+        },
+      },
       {
         test: {
           name: 'int',

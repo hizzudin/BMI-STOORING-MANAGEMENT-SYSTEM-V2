@@ -1,3 +1,5 @@
+// @vitest-environment node
+// This test needs no DOM, so it does not wait for jsdom to load.
 import { expect, it, vi } from 'vitest';
 import { api } from './api';
 

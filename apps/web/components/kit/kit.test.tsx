@@ -287,6 +287,48 @@ describe('C-01 C-02 app shell', () => {
     expect(onSignOut).toHaveBeenCalledOnce();
   });
 
+  it('C-04 C-14 the user menu shows email and role and closes by Close, Escape or the scrim', () => {
+    render(
+      <AppShell
+        items={items}
+        activeKey="spk"
+        user={{ name: 'Planner Sari', role: 'Planner', email: 'sari@bmi.co.id' }}
+        collapsed={false}
+        onCollapsedChange={vi.fn()}
+      >
+        <p>Main</p>
+      </AppShell>,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Collapse menu' }).getAttribute('aria-expanded'),
+    ).toBe('true');
+    const open = () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Planner Sari, Planner' }));
+    open();
+    expect(screen.getByText('sari@bmi.co.id · Planner')).toBeTruthy();
+    expect(
+      within(screen.getByRole('dialog'))
+        .getByRole('button', { name: 'Notification settings' })
+        .hasAttribute('disabled'),
+    ).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    open();
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).toBeNull();
+    open();
+    fireEvent.click(screen.getByRole('dialog'));
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    fireEvent.click(screen.getByRole('dialog').parentElement as HTMLElement);
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('DEC-94 a page head shows its crumb, and outside the shell it has no bell', () => {
+    render(<PageHead title="Create SPK" crumb="Surat Perintah Kerja / New" />);
+    expect(screen.getByText('Surat Perintah Kerja / New')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Notifications/ })).toBeNull();
+  });
+
   it('DEC-94 the user circle sits at the foot of the rail and the logo opens the dashboard', () => {
     render(
       <AppShell

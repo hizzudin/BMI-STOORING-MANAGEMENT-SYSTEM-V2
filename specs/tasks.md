@@ -176,7 +176,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-006
   - _Skill_: test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `unit @bmi/shared "NFR-09|NFR-14|NFR-15|NFR-16"`
-- [ ] **TASK-102** State machine tables and transition() for every machine; derived vehicle status
+- [x] **TASK-102** State machine tables and transition() for every machine; derived vehicle status
   - _Scope_: One table per machine of PRD §3; every allowed transition accepted and every other (state, event) refused (§8.3).
   - _Rules_: SM-SPK, SM-STEP, SM-VEH, SM-DOC, SM-TYRE, SM-GR, SM-SA, SM-TC, SM-TR, SM-RD, SM-CR, SM-SCH, SM-INV, SM-BRK, DEC-15, DEC-16
   - _Read_: `PRD.md` for SM-SPK, SM-STEP, SM-VEH, SM-DOC, SM-TYRE, SM-GR, SM-SA, SM-TC, SM-TR, SM-RD, SM-CR, SM-SCH, SM-INV, SM-BRK, DEC-15, DEC-16 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)

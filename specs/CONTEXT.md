@@ -6,9 +6,9 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | Three branches wait for the owner: `fix/phase1-task101-numbering-config` (TASK-022), `docs/phase0-task023-part-traceability` (TASK-023, built on the first) and `chore/phase1-test-timeouts`. Next task: **TASK-102** |
+| Active task | TASK-022, TASK-023 and the test timeout change are merged. Next task: **TASK-102** |
 | Phase | 1 (R1 step 1) |
-| Spec status | TASK-021 and TASK-101 merged into `main` and pushed on the owner's go-ahead (2026-11-05) |
+| Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
 | Spec version | PRD v2.23 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |

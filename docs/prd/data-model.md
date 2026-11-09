@@ -256,6 +256,40 @@ CREATE TABLE vehicle_part_items (             -- baseline and current state of e
   UNIQUE (vehicle_id, part_item_type_id),
   CHECK (source = 'Baseline' OR last_spk_id IS NOT NULL)
 );
+CREATE TABLE part_installations (             -- REQ-PTR-003: one fitting of a part item on a vehicle
+  vehicle_part_item_id BIGINT NOT NULL REFERENCES vehicle_part_items(id),
+  vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),
+  part_item_type_id BIGINT NOT NULL REFERENCES part_item_types(id),
+  sku VARCHAR(40) REFERENCES parts_catalog(sku),
+  brand VARCHAR(80),                          -- snapshot of parts_catalog.brand
+  source VARCHAR(13) NOT NULL CHECK (source IN ('Baseline','Stock','Part_Purchase')),
+  vendor_id BIGINT REFERENCES vendors(id),    -- from the issued lots or the purchase; NULL for Baseline, Opening lots or a typed vendor
+  vendor_other VARCHAR(150),                  -- spk_purchases.vendor_other
+  qty NUMERIC(10,2),
+  purchase_cost NUMERIC(14,2),                -- lot prices or purchase line total; NULL for Baseline
+  installed_spk_id BIGINT REFERENCES spks(id),
+  installed_date DATE NOT NULL,
+  installed_odometer INT,                     -- NULL for a Towed vehicle
+  removed_spk_id BIGINT REFERENCES spks(id),
+  removed_date DATE,
+  removed_odometer INT,
+  km_used INT, days_used INT,
+  end_reason VARCHAR(10) CHECK (end_reason IN ('Replaced')),
+  early_failure_event_id BIGINT REFERENCES early_failure_events(id),
+  CHECK (source = 'Baseline' OR installed_spk_id IS NOT NULL),
+  CHECK ((removed_date IS NULL) = (end_reason IS NULL))
+);
+CREATE UNIQUE INDEX uq_open_installation ON part_installations (vehicle_part_item_id) WHERE removed_date IS NULL;
+CREATE TABLE part_repairs (                   -- REQ-PTR-004
+  part_installation_id BIGINT REFERENCES part_installations(id),
+  tyre_id BIGINT REFERENCES tyres(id),
+  spk_id BIGINT NOT NULL REFERENCES spks(id),
+  spk_service_id BIGINT NOT NULL UNIQUE REFERENCES spk_services(id),
+  repaired_date DATE NOT NULL,
+  odometer INT,
+  cost NUMERIC(14,2) NOT NULL CHECK (cost >= 0),
+  CHECK ((part_installation_id IS NULL) <> (tyre_id IS NULL))
+);
 CREATE TABLE early_failure_events (           -- AO, REQ-BSL-009; never blocks an SPK
   vehicle_id BIGINT NOT NULL REFERENCES vehicles(id),
   spk_id BIGINT NOT NULL REFERENCES spks(id),
@@ -572,6 +606,8 @@ CREATE TABLE service_catalog (                -- SD, Internal services
   service_name VARCHAR(150) NOT NULL,
   standard_price NUMERIC(14,2) NOT NULL CHECK (standard_price >= 0),
   part_item_type_id BIGINT REFERENCES part_item_types(id),   -- [A] resets that part item when an SPK completes
+  is_tyre_service BOOLEAN NOT NULL DEFAULT false,   -- a repair of one tyre, picked in the step (REQ-PTR-004)
+  CHECK (NOT (is_tyre_service AND part_item_type_id IS NOT NULL)),
   is_active BOOLEAN NOT NULL DEFAULT true
 );
 CREATE TABLE spk_parts (               -- planned lines (required list) and actual lines
@@ -632,6 +668,9 @@ CREATE TABLE spk_services (
   description TEXT NOT NULL,
   price NUMERIC(14,2) NOT NULL CHECK (price >= 0),   -- catalog snapshot for Internal, free for External
   performed_by BIGINT NOT NULL REFERENCES users(id),
+  vehicle_part_item_id BIGINT REFERENCES vehicle_part_items(id),   -- the part item this service repairs (REQ-PTR-004)
+  tyre_id BIGINT REFERENCES tyres(id),        -- the tyre a tyre service repairs; mounted on the SPK's vehicle
+  CHECK (vehicle_part_item_id IS NULL OR tyre_id IS NULL),
   CHECK ((team = 'Internal' AND service_id IS NOT NULL AND vendor_name IS NULL)
       OR (team = 'External' AND service_id IS NULL AND vendor_name IS NOT NULL))
 );
@@ -678,6 +717,25 @@ CREATE TABLE goods_receipts (                 -- SD; posted without approval (BR
   posted_by BIGINT REFERENCES users(id),
   posted_at TIMESTAMP,
   CHECK (status = 'Draft' OR posted_by IS NOT NULL)
+);
+CREATE TABLE stock_lots (                     -- REQ-PTR-001; the remaining quantities of a SKU add up to parts_catalog.stock_qty (TX-25)
+  sku VARCHAR(40) NOT NULL REFERENCES parts_catalog(sku),
+  source VARCHAR(10) NOT NULL CHECK (source IN ('GR','Opening','Opname')),
+  goods_receipt_item_id BIGINT REFERENCES goods_receipt_items(id),   -- source GR
+  stock_adjustment_item_id BIGINT REFERENCES stock_adjustment_items(id),   -- source Opening or an Opname surplus
+  vendor_id BIGINT REFERENCES vendors(id),    -- NULL for Opening and Opname
+  unit_price NUMERIC(14,4) NOT NULL CHECK (unit_price >= 0),
+  qty_received INT NOT NULL CHECK (qty_received >= 0),
+  qty_remaining INT NOT NULL CHECK (qty_remaining >= 0),
+  received_at TIMESTAMP NOT NULL,              -- the oldest lot is issued first
+  CHECK (qty_remaining <= qty_received),
+  CHECK ((source = 'GR') = (goods_receipt_item_id IS NOT NULL))
+);
+CREATE TABLE goods_issue_item_lots (          -- which lots an issue line took (REQ-PTR-002)
+  goods_issue_item_id BIGINT NOT NULL REFERENCES goods_issue_items(id),
+  stock_lot_id BIGINT NOT NULL REFERENCES stock_lots(id),
+  qty INT NOT NULL CHECK (qty > 0),
+  UNIQUE (goods_issue_item_id, stock_lot_id)
 );
 CREATE TABLE goods_receipt_items (
   goods_receipt_id BIGINT NOT NULL REFERENCES goods_receipts(id),
@@ -1060,10 +1118,10 @@ CREATE TABLE ai_query_logs (                  -- P1, AO
 | --- | --- | --- |
 | TX-01 | Creation order | Create enums, then tables in the order of 9.2 to 9.12, then 9.14 (customers before the foreign key vehicles.customer\_id). Add the circular foreign keys last: `vehicle_part_items` → `parts_catalog`, `spks`; `maintenance_alerts` → `tyres`, `spks`; `dvir_logs`, `breakdown_reports` → `spks`; `spk_attachments` → `spk_parts`, `spk_services`; `spk_parts` → `tyres`, `goods_issue_items`; `tyres.issued_spk_id`. |
 | TX-02 | Approve creation (T3) | Lock the SPK; check status Pending\_Approval, BR-03 and the step checks of REQ-REG-004; freeze the SPK's `spk_assignments` (module, order, `step_config`, roles); set step 1 Open, the rest Locked; write `spk_approvals` (`self_approved` when the System Admin approves its own SPK) and `audit_logs`; notify the executor of step 1. |
-| TX-03 | Stock step submit | Lock the part rows (`SELECT … FOR UPDATE`); check the SPK is Active or In\_Progress, the step is Open or In\_Progress and each SKU and tyre size is on the SPK list; check stock; insert `goods_issues` and `goods_issue_items`; decrease `parts_catalog.stock_qty`; insert `stock_cards` (GI); write `spk_parts` at the average cost; for each chosen tyre set Issued, `issued_spk_id`, write a `spk_parts` row at its purchase cost and a `tyre_events` row (Issued); set the step Submitted and open the next one; write `audit_logs`. Any failure rolls back everything. |
-| TX-05 | Issue reversal | On submit write the reversing `goods_issues` row with reason and no stock change; on verification increase `stock_qty` at the original `unit_cost`, insert `stock_cards` (GIR), write the reversing `spk_parts` line, and set any Issued tyre back to In\_Stock (event Released). |
-| TX-06 | Post a Goods Receipt | Set Posted; for each line increase `stock_qty`, recompute `average_cost = (old_qty × old_cost + qty × unit_price) / (old_qty + qty)`, insert `stock_cards` (GR). A GR correction does the same with its signed change and writes GRC. |
-| TX-07 | Approve a stock opname | For each row set `stock_qty = physical_qty`, insert `stock_cards` (SA) for non-zero variance; set Approved, `approved_by`, `self_approved`; write `audit_logs`. |
+| TX-03 | Stock step submit | Lock the part rows (`SELECT … FOR UPDATE`); check the SPK is Active or In\_Progress, the step is Open or In\_Progress and each SKU and tyre size is on the SPK list; check stock; insert `goods_issues` and `goods_issue_items`; decrease `parts_catalog.stock_qty`; insert `stock_cards` (GI); write `spk_parts` at the average cost; for each chosen tyre set Issued, `issued_spk_id`, write a `spk_parts` row at its purchase cost and a `tyre_events` row (Issued); set the step Submitted and open the next one; write `audit_logs`. Any failure rolls back everything. Take each line from its lots, oldest first or as chosen, and write `goods_issue_item_lots` (TX-25). |
+| TX-05 | Issue reversal | On submit write the reversing `goods_issues` row with reason and no stock change; on verification increase `stock_qty` at the original `unit_cost`, insert `stock_cards` (GIR), write the reversing `spk_parts` line, and set any Issued tyre back to In\_Stock (event Released). On verification return the quantity to the lots of the original issue (TX-25). |
+| TX-06 | Post a Goods Receipt | Set Posted; for each line increase `stock_qty`, recompute `average_cost = (old_qty × old_cost + qty × unit_price) / (old_qty + qty)`, insert `stock_cards` (GR). A GR correction does the same with its signed change and writes GRC. Create one `stock_lots` row per line (TX-25). |
+| TX-07 | Approve a stock opname | For each row set `stock_qty = physical_qty`, insert `stock_cards` (SA) for non-zero variance; set Approved, `approved_by`, `self_approved`; write `audit_logs`. Take a shortage from the oldest lots and put a surplus in a new lot (TX-25). |
 | TX-08 | Confirm Receive tyres | New: one `tyres` row per tyre with `tyre_code` from `tyre_code_seq`, status In\_Stock, a `tyre_events` row (Received) and the invoice in `tyre_attachments`. Retread return: per tyre update `retread_order_items`, set In\_Stock (+1 `retread_count`, cost added, `last_retread_vendor`) or Scrapped, write `tyre_events`; set the dispatch Partial or Closed. Never writes `goods_receipts`, `parts_catalog` or `stock_cards`. |
 | TX-09 | Mount, demount, rotate | Mount only a tyre with status Issued and `issued_spk_id` = this SPK, not Active in `part_placements`, at a position of the vehicle's layout; mount sets Mounted and clears `issued_spk_id`. Demount sets the chosen status. Each writes `part_placements`, `part_placement_logs` and `tyre_events`. |
 | TX-10 | Approve a tyre count | For each Missing row write `tyre_events` (Missing, then Lost) and set status Lost; set Approved; write `audit_logs`. |
@@ -1081,6 +1139,8 @@ CREATE TABLE ai_query_logs (                  -- P1, AO
 | TX-22 | Idempotent request (NFR-01) | Inside the transaction of the action: insert the `idempotency_keys` row first. A concurrent request with the same key waits for the first to finish. A row that already exists returns its stored response and the action does not run; the same key with another request hash is refused. The response is stored before the commit. A rollback removes the row with the action, so a retry runs again. Rows older than 30 days [A] are removed by the daily job (DEC-108). |
 | TX-23 | Send a Report Breakdown | Take the number from `report_number_seq`; insert `breakdown_reports` and its photos; for an Urgent report of kind Breakdown also insert the Draft SPK (number from `spk_number_seq`, source `Breakdown_Report`, priority Urgent, `finding_note`) and its one Mobilisasi `spk_assignments` row with the captured location, and set the report Converted; write `audit_logs` and the notifications. An inspection Fail inserts `dvir_logs` and its report in the same transaction. |
 | TX-24 | Reject a Report Breakdown | Lock the report; refuse when its SPK has left Draft; with a linked Draft, Cancel it (T6) with the same reason; set the report Rejected with `rejected_by`, `rejected_at`, `rejected_reason`; write `audit_logs`; notify the reporter. Cancelling an SPK in any other way (T6, TX-14) sets its report back to New. |
+| TX-25 | Stock lots | Every change of `parts_catalog.stock_qty` changes `stock_lots.qty_remaining` by the same amount in the same transaction: a Goods Receipt or opening balance line creates a lot, a GR correction changes its own lot, an issue takes lots oldest first or as chosen, a reversal returns to the same lots, a stock opname shortage takes the oldest lots and a surplus creates a lot. A lot never goes below zero; the moving average is computed as before (TX-06). |
+| TX-26 | Part history at completion and verification | Inside TX-13, for each part item the SPK resets: close the open `part_installations` row (removed date, odometer, km and days used, end reason, early-failure event) and insert the new one with brand, vendor and cost from the lots of its issue lines or its Part Purchase line. On verification of a Mechanic Action step, write one `part_repairs` row per service line with a part item or a tyre. |
 
 ## 9.14 Customers and invoices
 

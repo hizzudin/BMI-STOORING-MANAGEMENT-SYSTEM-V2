@@ -6,11 +6,11 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-101 review fixes (TASK-022) are on branch `fix/phase1-task101-numbering-config`, not merged. Next task: **TASK-102** |
+| Active task | Three branches wait for the owner: `fix/phase1-task101-numbering-config` (TASK-022), `docs/phase0-task023-part-traceability` (TASK-023, built on the first) and `chore/phase1-test-timeouts`. Next task: **TASK-102** |
 | Phase | 1 (R1 step 1) |
 | Spec status | TASK-021 and TASK-101 merged into `main` and pushed on the owner's go-ahead (2026-11-05) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.22 |
+| Spec version | PRD v2.23 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0 selesai dan `main` sudah di GitHub; CI hijau. Tersisa untuk Anda: mengaktifkan branch protection di `main`. Berikutnya TASK-101. Masa simpan Idempotency-Key 30 hari masih asumsi [A].
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 19 | 2026-11-09 | Owner asked for part analysis by cost per km and per day of use, by brand, vendor and retread vendor, with traceability. Found in the PRD: tyre tracking and tyre cost per km (P1) only. Added DEC-112, area PTR (v2.23): stock lots, part installations, repairs, history panel (P0, R1 steps 3 and 5) and the Parts report and retread cycle analysis (P1). Tasks TASK-315, TASK-515, TASK-516. Local test runs: the web test failure is proven to be the 60 s fork start limit of Vitest on this HDD; a 30 s test timeout and a jsdom-free API test are on `chore/phase1-test-timeouts` | PRD.md, docs/prd/, Design Artifact/, specs/ |
 | 18 | 2026-11-06 | TASK-101 review, all fixes approved by the owner (DEC-111, v2.22): numbering formats validated (unknown token, repeated or missing running number refused, repeated date token replaced everywhere), `roundHalfUp` refuses invalid decimals with RangeError, `Part_Item_Alert`, `cr_number`, OB number in `sa_number`, one sequence per code, TASK-120 seeds and reads `numbering_formats`. Corrected: the session 17 note that the PRD had no stored setting was wrong | packages/shared/, PRD.md, docs/prd/, specs/ |
 | 17 | 2026-11-05 | TASK-101: enums of 9.1 with a drift test against the data model, decimal money with big.js, Indonesian number format, WIB date and time, one numbering configuration. 71 tests, 100 percent coverage of `@bmi/shared` | packages/shared/, specs/ |
 | 16 | 2026-11-05 | Owner: every running code follows CODE-yymmddNNNN (DEC-110, v2.21), also tyre codes; customer invoices keep NNNN/BMI/dd-mm-yy (DEC-46). Sample numbers updated in the spec and artboards. No code used these formats yet | PRD.md, docs/prd/, Design Artifact/, specs/ |

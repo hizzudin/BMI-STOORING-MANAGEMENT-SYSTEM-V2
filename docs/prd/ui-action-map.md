@@ -293,6 +293,14 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [VehicleInspections](<../../Design Artifact/fleet/VehicleInspections.html#VehicleInspections>) | Vehicle tabs, Add vehicle, Edit vehicle, Parts baseline, Create SPK | As VehicleOverview | C-06 |
 | [VehicleInspections](<../../Design Artifact/fleet/VehicleInspections.html#VehicleInspections>) | Report breakdown | [AdminBreakdownForm](<../../Design Artifact/fleet/AdminBreakdownForm.html#AdminBreakdownForm>) | FLW-SA-04 |
 | [VehicleInspections](<../../Design Artifact/fleet/VehicleInspections.html#VehicleInspections>) | Record inspection | [AdminInspectionForm](<../../Design Artifact/fleet/AdminInspectionForm.html#AdminInspectionForm>) | FLW-SA-04 |
+| [VehicleChassis](<../../Design Artifact/fleet/VehicleChassis.html#VehicleChassis>) | History (part item row) | Opens [PartItemHistory](<../../Design Artifact/fleet/PartItemHistory.html#PartItemHistory>) | REQ-PTR-005 |
+| [PartItemHistory](<../../Design Artifact/fleet/PartItemHistory.html#PartItemHistory>) | Close | C-14 | C-14 |
+| [Stock](<../../Design Artifact/steps/Stock.html#Stock>) | Change lots | Opens [StockLotPicker](<../../Design Artifact/steps/StockLotPicker.html#StockLotPicker>) for the line | REQ-PTR-002 |
+| [StockLotPicker](<../../Design Artifact/steps/StockLotPicker.html#StockLotPicker>) | Use these lots | Sets the lots of the line; the total must equal the quantity issued | REQ-PTR-002 |
+| [StockLotPicker](<../../Design Artifact/steps/StockLotPicker.html#StockLotPicker>) | Cancel | C-14 | C-14 |
+| [Mechanic](<../../Design Artifact/steps/Mechanic.html#Mechanic>) | Tyre (tyre service) | Picks a tyre mounted on the vehicle; required for a tyre service | REQ-PTR-004 |
+| [ReportsParts](<../../Design Artifact/reports/ReportsParts.html#ReportsParts>) | Group by | Brand or vendor | REQ-PTR-006 |
+| [ReportsParts](<../../Design Artifact/reports/ReportsParts.html#ReportsParts>) | Open (row) | The installations of that row with their history | REQ-PTR-006 |
 | [BaselineCorrect](<../../Design Artifact/fleet/BaselineCorrect.html#BaselineCorrect>) | Vehicle tabs, Add vehicle | As Vehicles | C-06 |
 | [BaselineCorrect](<../../Design Artifact/fleet/BaselineCorrect.html#BaselineCorrect>) | Correct baseline | Opens this side panel | REQ-BSL-005 |
 | [BaselineCorrect](<../../Design Artifact/fleet/BaselineCorrect.html#BaselineCorrect>) | Cancel | C-14 | C-14 |

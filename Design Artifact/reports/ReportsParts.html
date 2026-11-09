@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports: Parts · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+</head>
+<body data-nav="reports" data-roles="GM:|Supervisor:|Planner:|System Admin:|Warehouse Manager:|Accounting:" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><h1>Reports</h1><span class="grow"></span><a class="btn " href="../components/ExportDialog.html"><i data-i="download"></i>Export</a></div><nav class="tabs" aria-label="Tabs"><a href="Reports.html" class="">Cost</a><a href="ReportsParts.html" class="on">Parts</a><a href="ReportsTyres.html" class="">Tyres</a><a href="ReportsMaintenance.html" class="">Maintenance</a><a href="ReportsInventory.html" class="">Inventory</a><a href="ReportsStepTime.html" class="">Step time</a></nav><section class="variant" id="ReportsParts" data-label="Parts: cost per km and per day of use by brand or vendor"><div class="bar" style="justify-content:flex-start;margin:0 0 12px"><input class="input" style="width:220px" value="2026-08-01 to 2026-10-31" aria-label="Period"><select class="input" style="width:auto"><option>All vehicle classes</option><option>Tractor head</option></select><select class="input" style="width:auto"><option>Front brake pads</option><option>Battery</option><option>Oil filter</option></select><span class="seg"><a href="#" class="on">By brand</a><a href="#">By vendor</a></span></div><div class="card white"><div class="tbl"><table><thead><tr><th>Part item type</th><th>Brand</th><th class="num">Ended</th><th class="num">Avg km</th><th class="num">Avg days</th><th class="num">Avg cost</th><th class="num">Cost per km</th><th class="num">Cost per day</th><th class="num">Repairs</th><th class="num">Early failure</th></tr></thead><tbody><tr><td>Front brake pads</td><td>Bendix</td><td class="num">6</td><td class="num">40.000</td><td class="num">400</td><td class="num">Rp 500.000</td><td class="num">Rp 12,5</td><td class="num">Rp 1.250</td><td class="num">1 · Rp 50.000</td><td class="num">0%</td></tr><tr><td>Front brake pads</td><td>Akebono</td><td class="num">9</td><td class="num">21.300</td><td class="num">150</td><td class="num">Rp 425.000</td><td class="num">Rp 20,0</td><td class="num">Rp 2.833</td><td class="num">4 · Rp 160.000</td><td class="num">44%</td></tr></tbody></table></div><p class="small muted">Baseline fittings and fittings still on the vehicle show apart and do not count in the averages. A Towed vehicle counts per day only.</p></div></section></div>
+</main>
+</body>
+</html>

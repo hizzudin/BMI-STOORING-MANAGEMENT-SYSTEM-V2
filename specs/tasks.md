@@ -102,6 +102,12 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `PRD.md` for DEC-111 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
   - _Verify_: `node specs/tools/check-coverage.mjs`: Coverage OK
+- [x] **TASK-023** Part traceability and performance: stock lots, part installations, repairs, Parts report (PRD v2.23)
+  - _Scope_: Spec, Design Artifact and this plan.
+  - _Rules_: DEC-112
+  - _Read_: `PRD.md` for DEC-112 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
+  - _Verify_: `node specs/tools/check-coverage.mjs`: Coverage OK
 - [x] **TASK-004** Build specs: requirements, design, generated tasks, decision index, CONTEXT, ADRs, coverage tool
   - _Scope_: specs/ mirrors the PRD; specs/tools/check-coverage.mjs proves it.
   - _Read_: `PRD.md` sections named in _Scope_; `specs/design.md`
@@ -701,6 +707,17 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-303, TASK-111
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-INV-006"`; `e2e FLW-SA-08`; `qa` OpeningBalance against their artboards
+- [ ] **TASK-315** Stock lots: lot per receipt and opening line, oldest first on issue, choose lots, reversal and opname [REQ-PTR-001, REQ-PTR-002]
+  - _Scope_: The lots of a SKU always add up to its stock; the moving average cost is not changed.
+  - _Acceptance_: AC-PTR-001, AC-PTR-002, AC-PTR-003
+  - _Rules_: TX-25, BR-06, TX-03, TX-05, DEC-112
+  - _Screens built here (visual target)_: [`StockLotPicker`](<../Design Artifact/steps/StockLotPicker.html#StockLotPicker>)
+  - _Screens touched_: [`GoodsReceiptDetail`](<../Design Artifact/inventory/GoodsReceiptDetail.html#GoodsReceiptDetail>) (built in TASK-303; extend and regression-check it), [`Stock`](<../Design Artifact/steps/Stock.html#Stock>) (built in TASK-306; extend and regression-check it)
+  - _Data_: `stock_lots` (§9.8), `goods_issue_item_lots` (§9.8)
+  - _Read_: `docs/prd/areas/4.12a-ptr.md` (REQ-PTR-001, REQ-PTR-002); `docs/prd/data-model.md` §9.8 (stock_lots, goods_issue_item_lots) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-06, DEC-112 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for GoodsReceiptDetail, Stock, StockLotPicker; `docs/prd/ui-action-map.md`: every row of GoodsReceiptDetail, Stock, StockLotPicker and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Depends_: TASK-303, TASK-306, TASK-308, TASK-310, TASK-311
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "AC-PTR-001|AC-PTR-002|AC-PTR-003"`; `qa` StockLotPicker against their artboards; regression check of GoodsReceiptDetail, Stock
 - [ ] **TASK-312** Job framework (repeatable, idempotent, logged, dry run) and the daily stock reconciliation
   - _Scope_: §8.3 daily jobs and stock reconciliation.
   - _Rules_: NFR-12
@@ -947,6 +964,26 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-512, TASK-210
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-PUR-004"`
+- [ ] **TASK-515** Part installations at completion and the part item history panel [REQ-PTR-003]
+  - _Scope_: One open installation per part item; vendor and cost from the issued lots or the purchase line.
+  - _Acceptance_: AC-PTR-004
+  - _Rules_: TX-26, BR-01, DEC-112
+  - _Screens built here (visual target)_: [`PartItemHistory`](<../Design Artifact/fleet/PartItemHistory.html#PartItemHistory>)
+  - _Data_: `part_installations` (§9.5)
+  - _Read_: `docs/prd/areas/4.12a-ptr.md` (REQ-PTR-003); `docs/prd/data-model.md` §9.5 (part_installations) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, DEC-112 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for PartItemHistory; `docs/prd/ui-action-map.md`: every row of PartItemHistory and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Depends_: TASK-513, TASK-512, TASK-315, TASK-309
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "AC-PTR-004"`; `qa` PartItemHistory against their artboards
+- [ ] **TASK-516** Repairs of part items and tyres from verified Mechanic Action services; findings from Part Check; repairs in the part and tyre history [REQ-PTR-004, REQ-PTR-005]
+  - _Scope_: A tyre service needs a tyre mounted on the vehicle; a service of a part item type repairs that part item.
+  - _Acceptance_: AC-PTR-005, AC-PTR-006
+  - _Rules_: TX-26, DEC-112
+  - _Screens touched_: [`Mechanic`](<../Design Artifact/steps/Mechanic.html#Mechanic>) (built in TASK-402; extend and regression-check it), [`SettingsServiceCatalog`](<../Design Artifact/settings/SettingsServiceCatalog.html#SettingsServiceCatalog>) (built in TASK-401; extend and regression-check it), [`PartItemHistory`](<../Design Artifact/fleet/PartItemHistory.html#PartItemHistory>) (built in TASK-515; extend and regression-check it), [`Tyres`](<../Design Artifact/inventory/Tyres.html#Tyres>) (built in TASK-504; extend and regression-check it)
+  - _Data_: `part_repairs` (§9.5), `spk_services` (§9.7), `service_catalog` (§9.7), `part_installations` (§9.5), `tyre_events` (§9.9)
+  - _Read_: `docs/prd/areas/4.12a-ptr.md` (REQ-PTR-004, REQ-PTR-005); `docs/prd/data-model.md` §9.5, §9.7, §9.9 (part_repairs, spk_services, service_catalog, part_installations, tyre_events) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-112 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Mechanic, SettingsServiceCatalog, PartItemHistory, Tyres; `docs/prd/ui-action-map.md`: every row of Mechanic, PartItemHistory, Tyres and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Depends_: TASK-515, TASK-402, TASK-403, TASK-502, TASK-504, TASK-401
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "AC-PTR-005|AC-PTR-006"`; regression check of Mechanic, SettingsServiceCatalog, PartItemHistory, Tyres
 - [ ] **TASK-514** Step 5 UAT and sign-off
   - _Scope_: Owner sign-off.
   - _Rules_: DEC-77

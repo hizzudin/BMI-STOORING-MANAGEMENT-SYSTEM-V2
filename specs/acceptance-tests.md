@@ -106,6 +106,12 @@
 | AC-PM-003 | REQ-PM-001 | `docs/prd/areas/4.11-pm.md` | TASK-607 | FLW-PLN-02 | `AC-PM-003 ` |
 | AC-PM-004 | REQ-PM-010 | `docs/prd/areas/4.11-pm.md` | TASK-608 | FLW-PLN-08 | `AC-PM-004 ` |
 | AC-PM-005 | REQ-PM-009 | `docs/prd/areas/4.11-pm.md` | TASK-607 | FLW-PLN-02 | `AC-PM-005 ` |
+| AC-PTR-001 | REQ-PTR-001 | `docs/prd/areas/4.12a-ptr.md` | TASK-315 | — (AC-only: integration or unit test) | `AC-PTR-001 ` |
+| AC-PTR-002 | REQ-PTR-002 | `docs/prd/areas/4.12a-ptr.md` | TASK-315 | — (AC-only: integration or unit test) | `AC-PTR-002 ` |
+| AC-PTR-003 | REQ-PTR-002 | `docs/prd/areas/4.12a-ptr.md` | TASK-315 | — (AC-only: integration or unit test) | `AC-PTR-003 ` |
+| AC-PTR-004 | REQ-PTR-003 | `docs/prd/areas/4.12a-ptr.md` | TASK-515 | — (AC-only: integration or unit test) | `AC-PTR-004 ` |
+| AC-PTR-005 | REQ-PTR-004 | `docs/prd/areas/4.12a-ptr.md` | TASK-516 | — (AC-only: integration or unit test) | `AC-PTR-005 ` |
+| AC-PTR-006 | REQ-PTR-005 | `docs/prd/areas/4.12a-ptr.md` | TASK-516 | — (AC-only: integration or unit test) | `AC-PTR-006 ` |
 | AC-PUR-001 | REQ-PUR-003 | `docs/prd/areas/4.4a-pur.md` | TASK-309 | FLW-FC-01 | `AC-PUR-001 ` |
 | AC-PUR-002 | REQ-PUR-003 | `docs/prd/areas/4.4a-pur.md` | TASK-309 | FLW-FC-01 | `AC-PUR-002 ` |
 | AC-PUR-003 | REQ-PUR-006 | `docs/prd/areas/4.4a-pur.md` | TASK-309 | FLW-FC-01 | `AC-PUR-003 ` |

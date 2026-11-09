@@ -222,6 +222,9 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`StartFromPreset`](<../../Design Artifact/spk/StartFromPreset.html#StartFromPreset>) | Start from preset (dialog) | P0 | REQ-REG-003 |
 | [`SavePreset`](<../../Design Artifact/spk/SavePreset.html#SavePreset>) | Save as preset (panel) | P0 | REQ-REG-003 |
 | [`PartPicker`](<../../Design Artifact/spk/PartPicker.html#PartPicker>) | Add part (panel) | P0 | REQ-SPK-017 |
+| [StockLotPicker](<../../Design Artifact/steps/StockLotPicker.html#StockLotPicker>) | Choose stock lots for a line (panel) | P0 | REQ-PTR-002 |
+| [PartItemHistory](<../../Design Artifact/fleet/PartItemHistory.html#PartItemHistory>) | History of a part item (panel) | P0 | REQ-PTR-003, REQ-PTR-005 |
+| [ReportsParts](<../../Design Artifact/reports/ReportsParts.html#ReportsParts>) | Reports: Parts | P1 | REQ-PTR-006 |
 | [`AssignStep`](<../../Design Artifact/spk/AssignStep.html#AssignStep>) | Assign or reassign a step (dialog) | P0 | FLW-PLN-09 |
 | [`CorrectStepTime`](<../../Design Artifact/spk/CorrectStepTime.html#CorrectStepTime>) | Correct step time (dialog) | P0 | REQ-ENG-014 |
 | [`PauseStep`](<../../Design Artifact/steps/PauseStep.html#PauseStep>) | Why are you pausing? (dialog) | P0 | C-21, REQ-ENG-013 |

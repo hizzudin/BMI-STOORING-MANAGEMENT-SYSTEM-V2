@@ -1,6 +1,6 @@
 # Requirements index — BMI Stooring System v2
 
-> Spec version: PRD v2.22 (2026-11-06). The entity is SPK everywhere, in text, IDs and code (PRD §0.7, DEC-106).
+> Spec version: PRD v2.23 (2026-11-09). The entity is SPK everywhere, in text, IDs and code (PRD §0.7, DEC-106).
 > The text of every ID lives in [PRD.md](../PRD.md) and [docs/prd/](../docs/prd/); where they disagree with this file, the PRD wins.
 > Build order: data model (§9) and rules (§5) first, then requirements by release step (§10), then screens (§7).
 
@@ -79,6 +79,7 @@ Part Check and Mobilisasi are placed here by DEC-99 (server and web); their phon
 | VEH status, odometer, history, driver | REQ-VEH-005 to 008, 010; REQ-SPK-009 | — | AC-VEH-001, 002, 004 | BR-08, BR-09, SM-VEH (incl. OFF, DEC-92) | 9.3 | FLW-SA-03, FLW-SA-10 | TASK-604 to TASK-606 |
 | PM alerts and inspections | REQ-PM-001 to 004, 006 to 010; REQ-SPK-003, 012 | — | AC-PM-001 to 005 | TX-16, DEC-70, DEC-86 | 9.5 | FLW-PLN-02, FLW-SA-04 | TASK-607 to TASK-609 |
 | Report Breakdown | REQ-BRK-001 to 009; REQ-SPK-003 | — | AC-BRK-001 to 009 | RL-6, SM-BRK, TX-23, TX-24, DEC-91, DEC-109 | 9.5, 9.6 | FLW-PLN-11, FLW-FC-04, FLW-MEC-10, FLW-MEC-11, FLW-SA-04 | TASK-609, TASK-610, TASK-706, TASK-713 |
+| Part traceability (data R1, analysis R2) | REQ-PTR-001 to 005 | REQ-PTR-006, 007 (P1) | AC-PTR-001 to 006 | TX-25, TX-26, DEC-112 | 9.8, 9.9, 9.10 | FLW-WHM-01, FLW-PLN-05 | TASK-315, TASK-515, TASK-516 |
 | CR change request and amendment | REQ-CR-001 to 008 | — | AC-CR-001 to 005 | SM-CR, SM-SPK T8 to T10, TX-12, DEC-72 | 9.6 (spk_change_requests) | FLW-MEC-05, FLW-PLN-06, FLW-APR-02 | TASK-611 |
 | SCH schedule | REQ-SCH-001 to 007 | — | AC-SCH-001 to 005 | BR-13, SM-SCH, DEC-92 | 9.11 | FLW-PLN-04, FLW-FC-02, FLW-APR-09 | TASK-612, TASK-613 |
 | NTF notifications (in-app) | REQ-NTF-001, 005 | REQ-NTF-002 for other roles, 003 (P1); 004 (P2) | AC-SCH-001 | §8.3 outbox | 9.12 | FLW-FC-02 | TASK-130 |

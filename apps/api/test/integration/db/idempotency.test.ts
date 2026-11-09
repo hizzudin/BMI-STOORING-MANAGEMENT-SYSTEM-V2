@@ -14,8 +14,10 @@ import {
   type IdempotencyGateway,
 } from '../../../src/ports/idempotency.js';
 import { testPool } from '../harness/database.js';
+import { insertUsers } from '../harness/users.js';
 
-const USER = 7;
+let USER = 0;
+let OTHER_USER = 0;
 const HASH = 'a'.repeat(64);
 const OTHER_HASH = 'b'.repeat(64);
 
@@ -44,6 +46,10 @@ const issueStock = (gateways: Gateways) =>
   gateways.addProbe('issued').then(() => ({ status: 201, body: { issued: true } }));
 
 describe('NFR-01 TX-22 idempotency', () => {
+  beforeAll(async () => {
+    [USER = 0, OTHER_USER = 0] = await insertUsers(2);
+  });
+
   beforeEach(async () => {
     await testPool().query('DELETE FROM harness_probe');
     await testPool().query('DELETE FROM idempotency_keys');
@@ -97,7 +103,7 @@ describe('NFR-01 TX-22 idempotency', () => {
     await runIdempotent(unitOfWork(), { userId: USER, key: 'k-5', requestHash: HASH }, issueStock);
     const other = await runIdempotent(
       unitOfWork(),
-      { userId: USER + 1, key: 'k-5', requestHash: OTHER_HASH },
+      { userId: OTHER_USER, key: 'k-5', requestHash: OTHER_HASH },
       issueStock,
     );
     expect(other.replayed).toBe(false);
@@ -107,8 +113,8 @@ describe('NFR-01 TX-22 idempotency', () => {
   it('DEC-108 idempotency: the daily job removes keys older than 30 days and no others', async () => {
     await testPool().query(
       `INSERT INTO idempotency_keys (user_id, idem_key, request_hash, response_status, created_at)
-       VALUES (1, 'old', $1, 200, now() - interval '31 days'), (1, 'recent', $1, 200, now() - interval '29 days')`,
-      [HASH],
+       VALUES ($2, 'old', $1, 200, now() - interval '31 days'), ($2, 'recent', $1, 200, now() - interval '29 days')`,
+      [HASH, USER],
     );
     expect(await purgeIdempotencyKeys(testPool(), new Date())).toBe(1);
     const { rows } = await testPool().query<{ idem_key: string }>(

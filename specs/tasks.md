@@ -183,7 +183,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-101
   - _Skill_: test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `unit @bmi/shared "SM-"`; coverage ≥ 90 %
-- [ ] **TASK-103** Migrations: identity, access, audit, settings and platform tables
+- [x] **TASK-103** Migrations: identity, access, audit, settings and platform tables
   - _Scope_: §9.2 and the platform tables of §9.12 used in step 1; append-only and one-System-Admin guards as in §9; adds the foreign key idempotency_keys.user_id, whose table TASK-009 created before users existed.
   - _Rules_: BR-10, BR-14, NFR-02
   - _Data_: `users` (§9.2), `user_roles` (§9.2), `role_permissions` (§9.2), `audit_logs` (§9.2), `app_settings` (§9.12), `stored_files` (§9.12), `user_table_preferences` (§9.12)

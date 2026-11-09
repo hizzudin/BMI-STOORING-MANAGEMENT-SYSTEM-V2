@@ -6,7 +6,7 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-102 done on branch `feat/phase1-task102-state-machines`. Next task: **TASK-103**, then TASK-126 (trial first, DEC-113) |
+| Active task | TASK-103 done on branch `feat/phase1-task103-identity-migrations`. Next task: **TASK-126** (web shell), then TASK-104 (trial first, DEC-113) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 22 | 2026-11-09 | TASK-103: migration 0002 with every §9.1 enum, users, user_roles (BR-14 indexes), role_permissions, append-only audit_logs, app_settings, stored_files, user_table_preferences, and the users foreign key of idempotency_keys. 48 database tests, API lines 99,48 percent | apps/api/, specs/ |
 | 21 | 2026-11-09 | TASK-102: every machine of PRD §3 as a table in @bmi/shared with transition(), derived vehicle status, document status by dates, paused step state. 162 SM tests, 100 percent coverage of @bmi/shared | packages/shared/, specs/ |
 | 20 | 2026-11-09 | Owner wants to try the system locally with dummy data as soon as possible. Phase 1 reordered (DEC-113, v2.24): the 19 open tasks a sign-in, vehicle and SPK approval flow depends on come first, then TASK-131 adds a local dummy seed and `pnpm trial` (ADR-0003). No task loses content. Earlier the same day: tyres already cannot be mounted on a second unit before a demount (REQ-PLC-003, REQ-STK-006, `uq_active_tyre`); the owner chose not to track other parts per piece | PRD.md, docs/adr/, specs/ |
 | 19 | 2026-11-09 | Owner asked for part analysis by cost per km and per day of use, by brand, vendor and retread vendor, with traceability. Found in the PRD: tyre tracking and tyre cost per km (P1) only. Added DEC-112, area PTR (v2.23): stock lots, part installations, repairs, history panel (P0, R1 steps 3 and 5) and the Parts report and retread cycle analysis (P1). Tasks TASK-315, TASK-515, TASK-516. Local test runs: the web test failure is proven to be the 60 s fork start limit of Vitest on this HDD; a 30 s test timeout and a jsdom-free API test are on `chore/phase1-test-timeouts` | PRD.md, docs/prd/, Design Artifact/, specs/ |

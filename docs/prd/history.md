@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.24 (2026-11-09) adds DEC-113, product owner decision: trial first. Phase 1 is reordered so a local trial with dummy data (TASK-131, ADR-0003) comes as early as the task dependencies allow. No requirement changes.
+
 v2.23 (2026-11-09) adds DEC-112 and area PTR, product owner decision: stock lots so an issued part keeps its vendor and price, part installations for every part item fitting, repairs from verified Mechanic Action services and tyre services, a part item history panel, and in Release 2 a Parts report and retread vendor analysis per retread cycle, by cost per km and per day. New: `stock_lots`, `goods_issue_item_lots`, `part_installations`, `part_repairs`, TX-25, TX-26, three screens. Existing tyre cost per km (REQ-TYR-014, REQ-RPT-003) is kept and extended.
 
 v2.22 (2026-11-06) adds DEC-111, product owner decision after the TASK-101 review: SPK source `Part_Item_Alert`, column `spk_change_requests.cr_number`, an OB number in `sa_number` for an opening balance, one database sequence per running code, and the formats stored as the setting `numbering_formats`, checked before use.

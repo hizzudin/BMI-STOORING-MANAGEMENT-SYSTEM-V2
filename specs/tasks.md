@@ -108,6 +108,12 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `PRD.md` for DEC-112 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
   - _Verify_: `node specs/tools/check-coverage.mjs`: Coverage OK
+- [x] **TASK-024** Trial first: phase 1 reordered so a local trial with dummy data comes as early as the dependencies allow (DEC-113)
+  - _Scope_: Order only; no task loses content. TASK-131 added; ADR-0003.
+  - _Rules_: DEC-113
+  - _Read_: `PRD.md` for DEC-113 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Skill_: spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
+  - _Verify_: `node specs/tools/check-coverage.mjs`: Coverage OK
 - [x] **TASK-004** Build specs: requirements, design, generated tasks, decision index, CONTEXT, ADRs, coverage tool
   - _Scope_: specs/ mirrors the PRD; specs/tools/check-coverage.mjs proves it.
   - _Read_: `PRD.md` sections named in _Scope_; `specs/design.md`
@@ -161,7 +167,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 
 ## Phase 1 — R1 step 1: foundation, access, vehicles, SPK core
 
-**Goal:** Setup mode and Go live, sign-in, roles incl. Accounting, vendors, the Access Manager area and the Planner switch, audit log, file storage and compression, vehicles, classes and chassis layouts, the document master, and the SPK core with approvals, stamps and the scope lock (PRD §10 R1 step 1). Ends with UAT on staging (DEC-77).
+**Goal:** Trial first (DEC-113): the tasks a local trial needs come first, then TASK-131 gives a local database with dummy data and one command to run the system, so the owner can try each feature as it lands. Then setup mode and Go live, sign-in, roles incl. Accounting, vendors, the Access Manager area and the Planner switch, audit log, file storage and compression, vehicles, classes and chassis layouts, the document master, and the SPK core with approvals, stamps and the scope lock (PRD §10 R1 step 1). Ends with UAT on staging (DEC-77).
 
 - [x] **TASK-101** Shared enums (§9.1), decimal money and rounding, WIB time, Indonesian number format, numbering formats
   - _Scope_: packages/shared: every enum of §9.1 once; numbers as 48.210 km, Rp 1.240.000, 2,4 mm; half-up rounding; numbering formats in one configuration: CODE-yymmddNNNN for every code, invoices as DEC-46.
@@ -185,6 +191,14 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-009
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations
   - _Verify_: `int "BR-14|BR-10"`; migration drift test green
+- [ ] **TASK-126** Web shell and design kit: floating rail, main sheet, pill tabs, header, Settings home, tables, dialogs, shared controls, navigation rules
+  - _Scope_: Re-create the shell, tokens and kit from DESIGN.md and Design Artifact/_kit, shell/ and components/ (never import them). Every shared component of ui.md 7.5 exists once. Every shared control C-01 to C-34 behaves as ui-action-map.md says. English only until the translation (Q-05). Menu items from capabilities are wired in TASK-106; this task builds the shell and kit only.
+  - _Rules_: NFR-08, NFR-09, NFR-10, C-01, C-02, C-03, C-04, C-06, C-07, C-08, C-09, C-10, C-11, C-12, C-13, C-14, C-15, C-16, C-17, C-26, C-27, C-28, C-30, C-31, C-32, C-33, C-34, NAV-1, NAV-2, NAV-3, NAV-4, NAV-5, NAV-6, NAV-7, NAV-8, DEC-81, DEC-82, DEC-84, DEC-94, DEC-96
+  - _Screens built here (visual target)_: [`AppShellCollapsed`](<../Design Artifact/shell/AppShellCollapsed.html#AppShellCollapsed>), [`Settings`](<../Design Artifact/settings/Settings.html#Settings>), [`UserMenu`](<../Design Artifact/shell/UserMenu.html#UserMenu>), [`LeaveConfirm`](<../Design Artifact/components/LeaveConfirm.html#LeaveConfirm>), [`DiscardConfirm`](<../Design Artifact/components/DiscardConfirm.html#DiscardConfirm>), [`DeactivateMaster`](<../Design Artifact/components/DeactivateMaster.html#DeactivateMaster>)
+  - _Read_: `PRD.md` for NFR-08, NFR-09, NFR-10, DEC-81, DEC-82, DEC-84, DEC-94, DEC-96 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AppShellCollapsed, Settings; `docs/prd/ui-action-map.md`: every row of AppShellCollapsed and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Depends_: TASK-006
+  - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `qa` AppShellCollapsed, Settings, UserMenu, LeaveConfirm, DiscardConfirm, DeactivateMaster against their artboards
 - [ ] **TASK-104** Sign-in, password rules and reset, first sign-in change, lockout, sessions [REQ-IAM-001, REQ-IAM-009]
   - _Scope_: Web session and mobile tokens (§8.2); 5 failures lock 15 min; web idle 30 min, mobile 30 days; "Forgot password?" sends one reset email with an expiring link through an EmailPort adapter (DQ-02, DEC-102); the provider account is part of Q-03, so tests use a fake adapter.
   - _Rules_: NFR-05, NFR-11, DQ-02, DEC-102
@@ -242,6 +256,116 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-108
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-AM-06`; regression check of AMRolesPermissions
+- [ ] **TASK-117** @bmi/chassis-map library with snapshot tests for every launch and generated layout
+  - _Scope_: The drawing engine behind REQ-PLC-008 and REQ-PLC-010 (their screens are TASK-116, TASK-508, TASK-509). §8.3: built first as a separate library and drawn from the layout only; its look follows the Placement and ChassisLayouts artboards.
+  - _Rules_: DEC-07, DEC-73
+  - _Read_: `PRD.md` for DEC-07, DEC-73 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Depends_: TASK-101
+  - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `unit @bmi/chassis-map "layout"` with image snapshots
+- [ ] **TASK-116** Vehicle classes and chassis layouts with position generation [REQ-PLC-013, REQ-PLC-017, REQ-PLC-019, REQ-PLC-020]
+  - _Scope_: Unit kind Powered or Towed; 0 or more spare positions; a new class is data, never code.
+  - _Acceptance_: AC-PLC-007, AC-PLC-010
+  - _Rules_: BR-01, DEC-68, DEC-69, DEC-73
+  - _Screens built here (visual target)_: [`ChassisLayouts`](<../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>)
+  - _Screens touched_: [`PlacementTrailer`](<../Design Artifact/steps/PlacementTrailer.html#PlacementTrailer>) (built later in TASK-508, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built later in TASK-119, which shows what this task provides)
+  - _Data_: `vehicle_classes` (§9.3), `chassis_layouts` (§9.3), `part_positions` (§9.3)
+  - _Journey_: FLW-SA-05 Master data
+  - _Read_: `docs/prd/areas/4.6-plc.md` (REQ-PLC-013, REQ-PLC-017, REQ-PLC-019, REQ-PLC-020); `docs/prd/data-model.md` §9.3 (vehicle_classes, chassis_layouts, part_positions) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, DEC-68, DEC-69, DEC-73 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ChassisLayouts, PlacementTrailer, Placement, Vehicles; `docs/prd/ui-action-map.md`: every row of PlacementTrailer, Placement, Vehicles and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-05 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Depends_: TASK-103, TASK-117
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "AC-PLC-007|AC-PLC-010"`; `e2e FLW-SA-05`; `qa` ChassisLayouts against their artboards
+- [ ] **TASK-118** Document types master [REQ-DOC-001, REQ-DOC-002]
+  - _Scope_: Warning days per type (DEC-20; also editable in Alert rules, DEC-86).
+  - _Rules_: DEC-20
+  - _Screens built here (visual target)_: [`DocumentTypes`](<../Design Artifact/settings/DocumentTypes.html#DocumentTypes>)
+  - _Data_: `document_types` (§9.4), `document_type_classes` (§9.4), `vehicle_documents` (§9.4), `document_corrections` (§9.4)
+  - _Journey_: FLW-SA-02 Documents
+  - _Read_: `docs/prd/areas/4.7-doc.md` (REQ-DOC-001, REQ-DOC-002); `docs/prd/data-model.md` §9.4 (document_types, document_type_classes, vehicle_documents, document_corrections) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-20 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DocumentTypes; `docs/prd/ui-action-map.md`: every row of DocumentTypes and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-02 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Depends_: TASK-103, TASK-126
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `e2e FLW-SA-02`; `qa` DocumentTypes against their artboards
+- [ ] **TASK-119** Vehicles: master-detail list, add, edit with reason, deactivate, class change rule, Towed without odometer [REQ-VEH-001, REQ-VEH-002, REQ-VEH-003, REQ-VEH-004, REQ-PLC-018]
+  - _Scope_: A head and a trailer tail are separate vehicles (REQ-PLC-020).
+  - _Acceptance_: AC-VEH-003, AC-IAM-009 (here because it needs the Vehicles item and GET /vehicles)
+  - _Rules_: BR-10, DEC-17
+  - _Screens built here (visual target)_: [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>), [`VehicleOverview`](<../Design Artifact/fleet/VehicleOverview.html#VehicleOverview>), [`AddVehicle`](<../Design Artifact/fleet/AddVehicle.html#AddVehicle>), [`VehicleEdit`](<../Design Artifact/fleet/VehicleEdit.html#VehicleEdit>), [`VehicleDeactivate`](<../Design Artifact/fleet/VehicleDeactivate.html#VehicleDeactivate>), [`VehicleChassis`](<../Design Artifact/fleet/VehicleChassis.html#VehicleChassis>), [`ChangeDriver`](<../Design Artifact/fleet/ChangeDriver.html#ChangeDriver>)
+  - _Screens touched_: [`VehicleDocuments`](<../Design Artifact/fleet/VehicleDocuments.html#VehicleDocuments>) (built later in TASK-601, which shows what this task provides), [`VehicleSPKHistory`](<../Design Artifact/fleet/VehicleSPKHistory.html#VehicleSPKHistory>) (built later in TASK-606, which shows what this task provides), [`VehicleInspections`](<../Design Artifact/fleet/VehicleInspections.html#VehicleInspections>) (built later in TASK-609, which shows what this task provides), [`PlacementTrailer`](<../Design Artifact/steps/PlacementTrailer.html#PlacementTrailer>) (built later in TASK-508, which shows what this task provides)
+  - _Data_: `vehicles` (§9.3), `vehicle_documents` (§9.4), `audit_logs` (§9.2), `drivers` (§9.3)
+  - _Journey_: FLW-SA-01 Add a vehicle with its first data; FLW-SA-03 Keep a vehicle up to date
+  - _Read_: `docs/prd/areas/4.10-veh.md` (REQ-VEH-001, REQ-VEH-002, REQ-VEH-003, REQ-VEH-004); `docs/prd/areas/4.6-plc.md` (REQ-PLC-018); `docs/prd/data-model.md` §9.2, §9.3, §9.4 (vehicles, vehicle_documents, audit_logs, drivers) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-10, DEC-17 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Vehicles, VehicleOverview, VehicleDocuments, VehicleSPKHistory, VehicleInspections, AddVehicle, VehicleEdit, VehicleDeactivate, PlacementTrailer; `docs/prd/ui-action-map.md`: every row of Vehicles, VehicleOverview, VehicleDocuments, VehicleSPKHistory, VehicleInspections, AddVehicle, VehicleEdit, VehicleDeactivate, PlacementTrailer and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-01, FLW-SA-03 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Depends_: TASK-116, TASK-118, TASK-106
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "AC-VEH-003|AC-IAM-009"`; `e2e FLW-SA-01`; `e2e FLW-SA-03`; `qa` Vehicles, VehicleOverview, AddVehicle, VehicleEdit, VehicleDeactivate, VehicleChassis, ChangeDriver against their artboards
+- [ ] **TASK-120** SPK migrations and gateway, SPK numbering
+  - _Scope_: §9.6 SPK tables used in step 1 (the engine tables come in TASK-201), and spk_number_seq: the number is SPK-yymmddNNNN, yymmdd the WIB date of creation, NNNN at least four digits, never reset and never reused, also after cancel (DEC-104). Seeds the setting numbering_formats with NUMBERING_CONFIG, and every number is built from the stored value, parsed with NumberingConfigSchema; later tasks that issue a number read it the same way, each with the sequence §9 gives its code (DEC-111).
+  - _Rules_: NFR-15, DEC-104, DEC-111
+  - _Data_: `spks` (§9.6), `spk_approvals` (§9.6), `spk_attachments` (§9.6), `spk_parts` (§9.7), `assignment_modules` (§9.6), `spk_assignments` (§9.6)
+  - _Read_: `docs/prd/data-model.md` §9.6, §9.7 (spks, spk_approvals, spk_attachments, spk_parts, assignment_modules, spk_assignments) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-15, DEC-104, DEC-111 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Depends_: TASK-103
+  - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "SpkGateway|SPK numbering"`; migration drift test green
+- [ ] **TASK-130** In-app notifications foundation: outbox, recipient matrix, notification center, bell [REQ-NTF-001, REQ-NTF-005]
+  - _Scope_: §8.3 outbox with a dedupe key. Built in phase 1 because approvers are notified from T2 on; every later task adds its own events to the REQ-NTF-005 matrix.
+  - _Rules_: C-03, DEC-27
+  - _Screens built here (visual target)_: [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>)
+  - _Data_: `notifications` (§9.12), `notification_deliveries` (§9.12)
+  - _Read_: `docs/prd/areas/4.19-ntf.md` (REQ-NTF-001, REQ-NTF-005); `docs/prd/data-model.md` §9.12 (notifications, notification_deliveries) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-27 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for NotificationCenter; `docs/prd/ui-action-map.md`: every row of NotificationCenter and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Depends_: TASK-103, TASK-009, TASK-126
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:redis-patterns, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `qa` NotificationCenter against their artboards
+- [ ] **TASK-121** Create SPK header and Submit for approval; SPK sources and priorities; scope lock policy [REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015]
+  - _Scope_: Header fields of CreateSPK (title, vehicle, category, priority as an urgency pill, workshop flag, description, source); the step composer is TASK-207. The scope lock (BR-02) is one policy every module calls.
+  - _Rules_: BR-01, BR-02, DEC-85, DEC-92
+  - _Screens built here (visual target)_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>), [`PartPicker`](<../Design Artifact/spk/PartPicker.html#PartPicker>)
+  - _Screens touched_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built later in TASK-125, which shows what this task provides), [`Approvals`](<../Design Artifact/approvals/Approvals.html#Approvals>) (built later in TASK-122, which shows what this task provides)
+  - _Data_: `spks` (§9.6), `spk_parts` (§9.7), `vehicles` (§9.3)
+  - _Journey_: FLW-PLN-01 Create a planned Surat Perintah Kerja
+  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015); `docs/prd/data-model.md` §9.3, §9.6, §9.7 (spks, spk_parts, vehicles) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, BR-02, DEC-85, DEC-92 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, SPKList, Approvals; `docs/prd/ui-action-map.md`: every row of CreateSPK, SPKList, Approvals and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-01 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Depends_: TASK-120, TASK-119, TASK-106, TASK-130
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `e2e FLW-PLN-01`; `qa` CreateSPK, PartPicker against their artboards
+- [ ] **TASK-125** SPK list tabs and SPK detail with step cards and stamps [REQ-SPK-010, REQ-SPK-011]
+  - _Scope_: StepTracker and StepCard components (7.5).
+  - _Screens built here (visual target)_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>)
+  - _Screens touched_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetailVerify.html#SPKDetailVerify>) (built later in TASK-205, which shows what this task provides)
+  - _Data_: `spks` (§9.6), `spk_assignments` (§9.6)
+  - _Journey_: FLW-PLN-01 Create a planned Surat Perintah Kerja
+  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-010, REQ-SPK-011); `docs/prd/data-model.md` §9.6 (spks, spk_assignments) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKList, SPKDetail, SPKDetailVerify; `docs/prd/ui-action-map.md`: every row of SPKList, SPKDetail, SPKDetailVerify and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-01 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Depends_: TASK-121
+  - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `e2e FLW-PLN-01`; `qa` SPKList, SPKDetail against their artboards
+- [ ] **TASK-122** Approvals inbox, ApprovalReview, canApprove policy, stamps, Self-approved [REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007]
+  - _Scope_: One canApprove for every approval kind (§8.3); the stamp is the one authored motion (DEC-83).
+  - _Acceptance_: AC-SPK-001, AC-SPK-005, AC-SPK-006, AC-APR-001, AC-APR-002, AC-APR-003, AC-APR-004, AC-IAM-005 (here because it needs the Approvals inbox)
+  - _Rules_: BR-04, BR-05, BR-03, C-24, C-25, DEC-02, DEC-03, DEC-83
+  - _Screens built here (visual target)_: [`ApprovalReview`](<../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>), [`Approvals`](<../Design Artifact/approvals/Approvals.html#Approvals>), [`ApprovalsHistory`](<../Design Artifact/approvals/ApprovalsHistory.html#ApprovalsHistory>)
+  - _Screens touched_: [`SPKRejected`](<../Design Artifact/spk/SPKRejected.html#SPKRejected>) (built later in TASK-123, which shows what this task provides), [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built in TASK-125; extend and regression-check it), [`Dashboard`](<../Design Artifact/dashboard/Dashboard.html#Dashboard>) (built later in TASK-615, which shows what this task provides), [`AmendmentReview`](<../Design Artifact/approvals/AmendmentReview.html#AmendmentReview>) (built later in TASK-611, which shows what this task provides), [`CompletionReview`](<../Design Artifact/approvals/CompletionReview.html#CompletionReview>) (built later in TASK-210, which shows what this task provides), [`StockOpnameApproval`](<../Design Artifact/approvals/StockOpnameApproval.html#StockOpnameApproval>) (built later in TASK-310, which shows what this task provides), [`TyreCountApproval`](<../Design Artifact/approvals/TyreCountApproval.html#TyreCountApproval>) (built later in TASK-506, which shows what this task provides)
+  - _Data_: `spks` (§9.6), `spk_assignments` (§9.6), `spk_approvals` (§9.6)
+  - _Journey_: FLW-APR-01 Approve SPK creation; FLW-APR-06 Look back and follow up
+  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-005, REQ-SPK-006, REQ-SPK-007); `docs/prd/areas/4.15-apr.md` (REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007); `docs/prd/data-model.md` §9.6 (spks, spk_assignments, spk_approvals) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-04, BR-05, BR-03, DEC-02, DEC-03, DEC-83 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ApprovalReview, SPKRejected, SPKList, Approvals, Dashboard, AmendmentReview, CompletionReview, StockOpnameApproval, TyreCountApproval, ApprovalsHistory; `docs/prd/ui-action-map.md`: every row of ApprovalReview, SPKRejected, SPKList, Approvals, Dashboard, AmendmentReview, CompletionReview, StockOpnameApproval, TyreCountApproval, ApprovalsHistory and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-APR-01, FLW-APR-06 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Depends_: TASK-121, TASK-109, TASK-125
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "AC-SPK-001|AC-SPK-005|AC-SPK-006|AC-APR-001|AC-APR-002|AC-APR-003|AC-APR-004|AC-IAM-005"`; `e2e FLW-APR-01`; `e2e FLW-APR-06`; `qa` ApprovalReview, Approvals, ApprovalsHistory against their artboards; regression check of SPKList
+- [ ] **TASK-123** Rejected SPK, Edit and resubmit, creator cancel [REQ-SPK-007]
+  - _Scope_: T5 (edit and resubmit) and T6 (creator cancels a Draft or Rejected SPK with a reason) of SM-SPK, as DEC-101 confirms; the rejector cannot revert a rejection.
+  - _Acceptance_: AC-SPK-005
+  - _Rules_: DQ-06, DEC-101
+  - _Screens built here (visual target)_: [`SPKRejected`](<../Design Artifact/spk/SPKRejected.html#SPKRejected>)
+  - _Screens touched_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built in TASK-125; extend and regression-check it)
+  - _Data_: `spk_approvals` (§9.6)
+  - _Journey_: FLW-PLN-03 Rejected SPK
+  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-007); `docs/prd/data-model.md` §9.6 (spk_approvals) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-101 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKRejected, SPKList; `docs/prd/ui-action-map.md`: every row of SPKRejected, SPKList and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-03 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Depends_: TASK-122
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "AC-SPK-005"`; `e2e FLW-PLN-03`; `qa` SPKRejected against their artboards; regression check of SPKList
+- [ ] **TASK-131** Local trial: one command migrates a local database, seeds dummy data (one user per role, vehicles with documents, SPKs in every status) and starts the API and web app
+  - _Scope_: Dummy data is re-typed by hand, never read from artboards (ADR-0001, ADR-0003). The seed refuses any database that is not local and is never used by tests. A reset command empties and reseeds. docs/dev-setup.md gets a Local trial section with the sign-in of each role. Every later task adds the dummy data its feature needs.
+  - _Rules_: DEC-113
+  - _Read_: `PRD.md` for DEC-113 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Depends_: TASK-123, TASK-125, TASK-119, TASK-109
+  - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa, spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
+  - _Verify_: `pnpm trial` on an empty local database: every role signs in, sees its menu, a Planner creates and submits an SPK and a Supervisor approves it in the browser; `pnpm trial:reset` brings the same data back; the seed refuses a non-local DATABASE_URL
 - [ ] **TASK-110** Audit writer, Audit log page with export, access history, monthly audit archive [REQ-IAM-007]
   - _Scope_: Every later state change writes through this writer with before, after and the self-decision flag.
   - _Rules_: NFR-02, NFR-17, DEC-57, DEC-74
@@ -299,90 +423,6 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-114, TASK-126
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-FUP-004|AC-FUP-009"`; `qa` FileUploadStates, PhotoViewer against their artboards
-- [ ] **TASK-116** Vehicle classes and chassis layouts with position generation [REQ-PLC-013, REQ-PLC-017, REQ-PLC-019, REQ-PLC-020]
-  - _Scope_: Unit kind Powered or Towed; 0 or more spare positions; a new class is data, never code.
-  - _Acceptance_: AC-PLC-007, AC-PLC-010
-  - _Rules_: BR-01, DEC-68, DEC-69, DEC-73
-  - _Screens built here (visual target)_: [`ChassisLayouts`](<../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>)
-  - _Screens touched_: [`PlacementTrailer`](<../Design Artifact/steps/PlacementTrailer.html#PlacementTrailer>) (built later in TASK-508, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>) (built later in TASK-119, which shows what this task provides)
-  - _Data_: `vehicle_classes` (§9.3), `chassis_layouts` (§9.3), `part_positions` (§9.3)
-  - _Journey_: FLW-SA-05 Master data
-  - _Read_: `docs/prd/areas/4.6-plc.md` (REQ-PLC-013, REQ-PLC-017, REQ-PLC-019, REQ-PLC-020); `docs/prd/data-model.md` §9.3 (vehicle_classes, chassis_layouts, part_positions) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, DEC-68, DEC-69, DEC-73 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ChassisLayouts, PlacementTrailer, Placement, Vehicles; `docs/prd/ui-action-map.md`: every row of PlacementTrailer, Placement, Vehicles and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-05 and `specs/tdd-user-journeys.md` for the same IDs
-  - _Depends_: TASK-103, TASK-117
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-PLC-007|AC-PLC-010"`; `e2e FLW-SA-05`; `qa` ChassisLayouts against their artboards
-- [ ] **TASK-117** @bmi/chassis-map library with snapshot tests for every launch and generated layout
-  - _Scope_: The drawing engine behind REQ-PLC-008 and REQ-PLC-010 (their screens are TASK-116, TASK-508, TASK-509). §8.3: built first as a separate library and drawn from the layout only; its look follows the Placement and ChassisLayouts artboards.
-  - _Rules_: DEC-07, DEC-73
-  - _Read_: `PRD.md` for DEC-07, DEC-73 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
-  - _Depends_: TASK-101
-  - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `unit @bmi/chassis-map "layout"` with image snapshots
-- [ ] **TASK-118** Document types master [REQ-DOC-001, REQ-DOC-002]
-  - _Scope_: Warning days per type (DEC-20; also editable in Alert rules, DEC-86).
-  - _Rules_: DEC-20
-  - _Screens built here (visual target)_: [`DocumentTypes`](<../Design Artifact/settings/DocumentTypes.html#DocumentTypes>)
-  - _Data_: `document_types` (§9.4), `document_type_classes` (§9.4), `vehicle_documents` (§9.4), `document_corrections` (§9.4)
-  - _Journey_: FLW-SA-02 Documents
-  - _Read_: `docs/prd/areas/4.7-doc.md` (REQ-DOC-001, REQ-DOC-002); `docs/prd/data-model.md` §9.4 (document_types, document_type_classes, vehicle_documents, document_corrections) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-20 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DocumentTypes; `docs/prd/ui-action-map.md`: every row of DocumentTypes and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-02 and `specs/tdd-user-journeys.md` for the same IDs
-  - _Depends_: TASK-103, TASK-126
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-SA-02`; `qa` DocumentTypes against their artboards
-- [ ] **TASK-119** Vehicles: master-detail list, add, edit with reason, deactivate, class change rule, Towed without odometer [REQ-VEH-001, REQ-VEH-002, REQ-VEH-003, REQ-VEH-004, REQ-PLC-018]
-  - _Scope_: A head and a trailer tail are separate vehicles (REQ-PLC-020).
-  - _Acceptance_: AC-VEH-003, AC-IAM-009 (here because it needs the Vehicles item and GET /vehicles)
-  - _Rules_: BR-10, DEC-17
-  - _Screens built here (visual target)_: [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>), [`VehicleOverview`](<../Design Artifact/fleet/VehicleOverview.html#VehicleOverview>), [`AddVehicle`](<../Design Artifact/fleet/AddVehicle.html#AddVehicle>), [`VehicleEdit`](<../Design Artifact/fleet/VehicleEdit.html#VehicleEdit>), [`VehicleDeactivate`](<../Design Artifact/fleet/VehicleDeactivate.html#VehicleDeactivate>), [`VehicleChassis`](<../Design Artifact/fleet/VehicleChassis.html#VehicleChassis>), [`ChangeDriver`](<../Design Artifact/fleet/ChangeDriver.html#ChangeDriver>)
-  - _Screens touched_: [`VehicleDocuments`](<../Design Artifact/fleet/VehicleDocuments.html#VehicleDocuments>) (built later in TASK-601, which shows what this task provides), [`VehicleSPKHistory`](<../Design Artifact/fleet/VehicleSPKHistory.html#VehicleSPKHistory>) (built later in TASK-606, which shows what this task provides), [`VehicleInspections`](<../Design Artifact/fleet/VehicleInspections.html#VehicleInspections>) (built later in TASK-609, which shows what this task provides), [`PlacementTrailer`](<../Design Artifact/steps/PlacementTrailer.html#PlacementTrailer>) (built later in TASK-508, which shows what this task provides)
-  - _Data_: `vehicles` (§9.3), `vehicle_documents` (§9.4), `audit_logs` (§9.2), `drivers` (§9.3)
-  - _Journey_: FLW-SA-01 Add a vehicle with its first data; FLW-SA-03 Keep a vehicle up to date
-  - _Read_: `docs/prd/areas/4.10-veh.md` (REQ-VEH-001, REQ-VEH-002, REQ-VEH-003, REQ-VEH-004); `docs/prd/areas/4.6-plc.md` (REQ-PLC-018); `docs/prd/data-model.md` §9.2, §9.3, §9.4 (vehicles, vehicle_documents, audit_logs, drivers) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-10, DEC-17 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Vehicles, VehicleOverview, VehicleDocuments, VehicleSPKHistory, VehicleInspections, AddVehicle, VehicleEdit, VehicleDeactivate, PlacementTrailer; `docs/prd/ui-action-map.md`: every row of Vehicles, VehicleOverview, VehicleDocuments, VehicleSPKHistory, VehicleInspections, AddVehicle, VehicleEdit, VehicleDeactivate, PlacementTrailer and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-01, FLW-SA-03 and `specs/tdd-user-journeys.md` for the same IDs
-  - _Depends_: TASK-116, TASK-118, TASK-106
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-VEH-003|AC-IAM-009"`; `e2e FLW-SA-01`; `e2e FLW-SA-03`; `qa` Vehicles, VehicleOverview, AddVehicle, VehicleEdit, VehicleDeactivate, VehicleChassis, ChangeDriver against their artboards
-- [ ] **TASK-120** SPK migrations and gateway, SPK numbering
-  - _Scope_: §9.6 SPK tables used in step 1 (the engine tables come in TASK-201), and spk_number_seq: the number is SPK-yymmddNNNN, yymmdd the WIB date of creation, NNNN at least four digits, never reset and never reused, also after cancel (DEC-104). Seeds the setting numbering_formats with NUMBERING_CONFIG, and every number is built from the stored value, parsed with NumberingConfigSchema; later tasks that issue a number read it the same way, each with the sequence §9 gives its code (DEC-111).
-  - _Rules_: NFR-15, DEC-104, DEC-111
-  - _Data_: `spks` (§9.6), `spk_approvals` (§9.6), `spk_attachments` (§9.6), `spk_parts` (§9.7), `assignment_modules` (§9.6), `spk_assignments` (§9.6)
-  - _Read_: `docs/prd/data-model.md` §9.6, §9.7 (spks, spk_approvals, spk_attachments, spk_parts, assignment_modules, spk_assignments) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-15, DEC-104, DEC-111 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
-  - _Depends_: TASK-103
-  - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "SpkGateway|SPK numbering"`; migration drift test green
-- [ ] **TASK-121** Create SPK header and Submit for approval; SPK sources and priorities; scope lock policy [REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015]
-  - _Scope_: Header fields of CreateSPK (title, vehicle, category, priority as an urgency pill, workshop flag, description, source); the step composer is TASK-207. The scope lock (BR-02) is one policy every module calls.
-  - _Rules_: BR-01, BR-02, DEC-85, DEC-92
-  - _Screens built here (visual target)_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>), [`PartPicker`](<../Design Artifact/spk/PartPicker.html#PartPicker>)
-  - _Screens touched_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built later in TASK-125, which shows what this task provides), [`Approvals`](<../Design Artifact/approvals/Approvals.html#Approvals>) (built later in TASK-122, which shows what this task provides)
-  - _Data_: `spks` (§9.6), `spk_parts` (§9.7), `vehicles` (§9.3)
-  - _Journey_: FLW-PLN-01 Create a planned Surat Perintah Kerja
-  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015); `docs/prd/data-model.md` §9.3, §9.6, §9.7 (spks, spk_parts, vehicles) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-01, BR-02, DEC-85, DEC-92 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, SPKList, Approvals; `docs/prd/ui-action-map.md`: every row of CreateSPK, SPKList, Approvals and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-01 and `specs/tdd-user-journeys.md` for the same IDs
-  - _Depends_: TASK-120, TASK-119, TASK-106, TASK-130
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-PLN-01`; `qa` CreateSPK, PartPicker against their artboards
-- [ ] **TASK-122** Approvals inbox, ApprovalReview, canApprove policy, stamps, Self-approved [REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007]
-  - _Scope_: One canApprove for every approval kind (§8.3); the stamp is the one authored motion (DEC-83).
-  - _Acceptance_: AC-SPK-001, AC-SPK-005, AC-SPK-006, AC-APR-001, AC-APR-002, AC-APR-003, AC-APR-004, AC-IAM-005 (here because it needs the Approvals inbox)
-  - _Rules_: BR-04, BR-05, BR-03, C-24, C-25, DEC-02, DEC-03, DEC-83
-  - _Screens built here (visual target)_: [`ApprovalReview`](<../Design Artifact/approvals/ApprovalReview.html#ApprovalReview>), [`Approvals`](<../Design Artifact/approvals/Approvals.html#Approvals>), [`ApprovalsHistory`](<../Design Artifact/approvals/ApprovalsHistory.html#ApprovalsHistory>)
-  - _Screens touched_: [`SPKRejected`](<../Design Artifact/spk/SPKRejected.html#SPKRejected>) (built later in TASK-123, which shows what this task provides), [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built in TASK-125; extend and regression-check it), [`Dashboard`](<../Design Artifact/dashboard/Dashboard.html#Dashboard>) (built later in TASK-615, which shows what this task provides), [`AmendmentReview`](<../Design Artifact/approvals/AmendmentReview.html#AmendmentReview>) (built later in TASK-611, which shows what this task provides), [`CompletionReview`](<../Design Artifact/approvals/CompletionReview.html#CompletionReview>) (built later in TASK-210, which shows what this task provides), [`StockOpnameApproval`](<../Design Artifact/approvals/StockOpnameApproval.html#StockOpnameApproval>) (built later in TASK-310, which shows what this task provides), [`TyreCountApproval`](<../Design Artifact/approvals/TyreCountApproval.html#TyreCountApproval>) (built later in TASK-506, which shows what this task provides)
-  - _Data_: `spks` (§9.6), `spk_assignments` (§9.6), `spk_approvals` (§9.6)
-  - _Journey_: FLW-APR-01 Approve SPK creation; FLW-APR-06 Look back and follow up
-  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-005, REQ-SPK-006, REQ-SPK-007); `docs/prd/areas/4.15-apr.md` (REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007); `docs/prd/data-model.md` §9.6 (spks, spk_assignments, spk_approvals) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-04, BR-05, BR-03, DEC-02, DEC-03, DEC-83 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for ApprovalReview, SPKRejected, SPKList, Approvals, Dashboard, AmendmentReview, CompletionReview, StockOpnameApproval, TyreCountApproval, ApprovalsHistory; `docs/prd/ui-action-map.md`: every row of ApprovalReview, SPKRejected, SPKList, Approvals, Dashboard, AmendmentReview, CompletionReview, StockOpnameApproval, TyreCountApproval, ApprovalsHistory and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-APR-01, FLW-APR-06 and `specs/tdd-user-journeys.md` for the same IDs
-  - _Depends_: TASK-121, TASK-109, TASK-125
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-SPK-001|AC-SPK-005|AC-SPK-006|AC-APR-001|AC-APR-002|AC-APR-003|AC-APR-004|AC-IAM-005"`; `e2e FLW-APR-01`; `e2e FLW-APR-06`; `qa` ApprovalReview, Approvals, ApprovalsHistory against their artboards; regression check of SPKList
-- [ ] **TASK-123** Rejected SPK, Edit and resubmit, creator cancel [REQ-SPK-007]
-  - _Scope_: T5 (edit and resubmit) and T6 (creator cancels a Draft or Rejected SPK with a reason) of SM-SPK, as DEC-101 confirms; the rejector cannot revert a rejection.
-  - _Acceptance_: AC-SPK-005
-  - _Rules_: DQ-06, DEC-101
-  - _Screens built here (visual target)_: [`SPKRejected`](<../Design Artifact/spk/SPKRejected.html#SPKRejected>)
-  - _Screens touched_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>) (built in TASK-125; extend and regression-check it)
-  - _Data_: `spk_approvals` (§9.6)
-  - _Journey_: FLW-PLN-03 Rejected SPK
-  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-007); `docs/prd/data-model.md` §9.6 (spk_approvals) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-101 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKRejected, SPKList; `docs/prd/ui-action-map.md`: every row of SPKRejected, SPKList and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-03 and `specs/tdd-user-journeys.md` for the same IDs
-  - _Depends_: TASK-122
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-SPK-005"`; `e2e FLW-PLN-03`; `qa` SPKRejected against their artboards; regression check of SPKList
 - [ ] **TASK-124** Approver cancel with reason (reversals completed by TASK-308 and TASK-502) [REQ-SPK-008]
   - _Scope_: T15 of SM-SPK; TASK-308 adds the reversal of posted issues and TASK-502 the release of Issued tyres.
   - _Rules_: BR-06, TX-14
@@ -394,24 +434,6 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-122
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-APR-05`; `qa` CancelSPK, AssignStep, CorrectStepTime against their artboards; regression check of SPKDetail
-- [ ] **TASK-125** SPK list tabs and SPK detail with step cards and stamps [REQ-SPK-010, REQ-SPK-011]
-  - _Scope_: StepTracker and StepCard components (7.5).
-  - _Screens built here (visual target)_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>)
-  - _Screens touched_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetailVerify.html#SPKDetailVerify>) (built later in TASK-205, which shows what this task provides)
-  - _Data_: `spks` (§9.6), `spk_assignments` (§9.6)
-  - _Journey_: FLW-PLN-01 Create a planned Surat Perintah Kerja
-  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-010, REQ-SPK-011); `docs/prd/data-model.md` §9.6 (spks, spk_assignments) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKList, SPKDetail, SPKDetailVerify; `docs/prd/ui-action-map.md`: every row of SPKList, SPKDetail, SPKDetailVerify and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-01 and `specs/tdd-user-journeys.md` for the same IDs
-  - _Depends_: TASK-121
-  - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-PLN-01`; `qa` SPKList, SPKDetail against their artboards
-- [ ] **TASK-126** Web shell and design kit: floating rail, main sheet, pill tabs, header, Settings home, tables, dialogs, shared controls, navigation rules
-  - _Scope_: Re-create the shell, tokens and kit from DESIGN.md and Design Artifact/_kit, shell/ and components/ (never import them). Every shared component of ui.md 7.5 exists once. Every shared control C-01 to C-34 behaves as ui-action-map.md says. English only until the translation (Q-05). Menu items from capabilities are wired in TASK-106; this task builds the shell and kit only.
-  - _Rules_: NFR-08, NFR-09, NFR-10, C-01, C-02, C-03, C-04, C-06, C-07, C-08, C-09, C-10, C-11, C-12, C-13, C-14, C-15, C-16, C-17, C-26, C-27, C-28, C-30, C-31, C-32, C-33, C-34, NAV-1, NAV-2, NAV-3, NAV-4, NAV-5, NAV-6, NAV-7, NAV-8, DEC-81, DEC-82, DEC-84, DEC-94, DEC-96
-  - _Screens built here (visual target)_: [`AppShellCollapsed`](<../Design Artifact/shell/AppShellCollapsed.html#AppShellCollapsed>), [`Settings`](<../Design Artifact/settings/Settings.html#Settings>), [`UserMenu`](<../Design Artifact/shell/UserMenu.html#UserMenu>), [`LeaveConfirm`](<../Design Artifact/components/LeaveConfirm.html#LeaveConfirm>), [`DiscardConfirm`](<../Design Artifact/components/DiscardConfirm.html#DiscardConfirm>), [`DeactivateMaster`](<../Design Artifact/components/DeactivateMaster.html#DeactivateMaster>)
-  - _Read_: `PRD.md` for NFR-08, NFR-09, NFR-10, DEC-81, DEC-82, DEC-84, DEC-94, DEC-96 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AppShellCollapsed, Settings; `docs/prd/ui-action-map.md`: every row of AppShellCollapsed and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
-  - _Depends_: TASK-006
-  - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `qa` AppShellCollapsed, Settings, UserMenu, LeaveConfirm, DiscardConfirm, DeactivateMaster against their artboards
 - [ ] **TASK-127** Mobile spike: A) sign-in, camera, location on an Android 8 phone; B) push and signed APK — B BLOCKED Q-03
   - _Scope_: §8.3 mobile spike; design D-11.
   - _Rules_: NFR-18, DEC-66
@@ -426,15 +448,6 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-008, TASK-113
   - _Skill_: ecc:deployment-patterns, ecc:docker-patterns, ecc:delivery-gate, ecc:canary-watch, security-reviewer, ecc:security-review, ecc:production-audit
   - _Verify_: staging `/health` 200; `int "storage contract"` against R2
-- [ ] **TASK-130** In-app notifications foundation: outbox, recipient matrix, notification center, bell [REQ-NTF-001, REQ-NTF-005]
-  - _Scope_: §8.3 outbox with a dedupe key. Built in phase 1 because approvers are notified from T2 on; every later task adds its own events to the REQ-NTF-005 matrix.
-  - _Rules_: C-03, DEC-27
-  - _Screens built here (visual target)_: [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>)
-  - _Data_: `notifications` (§9.12), `notification_deliveries` (§9.12)
-  - _Read_: `docs/prd/areas/4.19-ntf.md` (REQ-NTF-001, REQ-NTF-005); `docs/prd/data-model.md` §9.12 (notifications, notification_deliveries) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-27 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for NotificationCenter; `docs/prd/ui-action-map.md`: every row of NotificationCenter and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
-  - _Depends_: TASK-103, TASK-009, TASK-126
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:redis-patterns, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `qa` NotificationCenter against their artboards
 - [ ] **TASK-129** Step 1 UAT on staging and sign-off
   - _Scope_: Every task of phase 1 verified; owner sign-off.
   - _Rules_: DEC-77

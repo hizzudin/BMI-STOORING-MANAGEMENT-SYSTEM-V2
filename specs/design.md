@@ -1,7 +1,7 @@
 # Design — BMI Stooring System v2
 
 > How Release 1 is built. Behaviour, rules and data are decided by the PRD ([PRD.md](../PRD.md), [docs/prd/](../docs/prd/)); the look of every screen by its artboard ([Design Artifact/](../Design%20Artifact/index.html), DEC-96). This file decides only what the PRD leaves to the implementation, and records each choice in §11.
-> Spec version: PRD v2.23. A change to this file that diverges from the PRD needs an ADR in [docs/adr/](../docs/adr/) first (CLAUDE.md divergence protocol).
+> Spec version: PRD v2.24. A change to this file that diverges from the PRD needs an ADR in [docs/adr/](../docs/adr/) first (CLAUDE.md divergence protocol).
 
 ## 0. One entity, one name (PRD §0.7, DEC-106)
 
@@ -158,6 +158,7 @@ Test layers, naming and journeys: [tdd-user-journeys.md](tdd-user-journeys.md). 
 | D-12 | Plain SQL migrations are the schema source; Drizzle definitions are checked for drift | §8.2 keeps enums, CHECKs and triggers in the database; §9 cannot change silently | PRD §8.2 |
 | D-13 | One NestJS code base with HTTP and worker entry points | Shared services and transactions; two Cloud Run services | PRD §8.2 |
 | D-14 | Spec files and code in English; a short Indonesian summary for the product owner in CONTEXT.md | Same terms as the PRD and the code | Q8 |
+| D-16 | Local trial with a dummy seed (DEC-113, ADR-0003) | The owner tries each feature on a local database as it lands; `pnpm trial` migrates, seeds and runs the API and web app, `pnpm trial:reset` reseeds | PRD §10 |
 | D-15 | big.js for decimal money in `packages/shared` | Exact decimals with half-up rounding on web, phone and API; small, no dependencies, MIT; a private constructor keeps its settings local | NFR-16 |
 
 ADRs (divergences): [ADR-0001](../docs/adr/0001-staging-seed-from-canvas-values.md), staging seed from canvas values (Q6); [ADR-0002](../docs/adr/0002-interim-review-rule.md), interim reviewer rule until an internal developer joins (Q20).

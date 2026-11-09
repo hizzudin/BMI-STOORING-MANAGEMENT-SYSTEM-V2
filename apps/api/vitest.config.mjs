@@ -16,6 +16,7 @@ export default defineConfig({
         'src/main.ts',
         'src/worker.ts',
         'src/infra/db/migrate-cli.ts',
+        'src/infra/db/e2e-database-cli.ts',
         'src/http/openapi/emit.ts',
       ],
       // D-09: the critical tier of PRD 8.4; the registry service lives in src/engine/registry/.

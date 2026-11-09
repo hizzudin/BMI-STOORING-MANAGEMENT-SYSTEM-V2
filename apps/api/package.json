@@ -14,7 +14,8 @@
     "test:int": "vitest run --project int",
     "test:coverage": "vitest run --coverage",
     "db:migrate": "node dist/infra/db/migrate-cli.js",
-    "openapi:emit": "node dist/http/openapi/emit.js"
+    "openapi:emit": "node dist/http/openapi/emit.js",
+    "e2e:db": "node dist/infra/db/e2e-database-cli.js"
   },
   "dependencies": {
     "@bmi/shared": "workspace:*",

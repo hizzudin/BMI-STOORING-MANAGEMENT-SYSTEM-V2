@@ -653,3 +653,90 @@ textarea:focus-visible {
     transition: none;
   }
 }
+
+/* Forms */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.field label {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: var(--mist);
+  color: var(--info-text);
+}
+
+/* Sign-in screens: one raised sheet, brand on the left and the form on the right (WebLogin). */
+.auth-stage {
+  padding: 0 18px;
+}
+.auth-screen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 26px;
+  max-width: 980px;
+  margin: 40px auto;
+  padding: 22px 26px 26px;
+  border-radius: var(--radius-sheet);
+  background: var(--surface);
+  box-shadow: var(--float);
+}
+.auth-brand {
+  text-align: center;
+}
+.auth-brand h1 {
+  margin: 18px 0 4px;
+  font-size: 26px;
+  line-height: 1.45;
+}
+.auth-logo {
+  display: inline-grid;
+  place-items: center;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: var(--mist-light);
+}
+.auth-logo img {
+  width: 150px;
+  height: auto;
+  mix-blend-mode: multiply;
+}
+.auth-title {
+  margin: 0 0 8px;
+  line-height: 22px;
+}
+.auth-link {
+  margin: 10px 0 0;
+}
+.auth-sent {
+  margin: 12px 0 0;
+  color: var(--success-text);
+}
+.auth-form .refusal {
+  margin: 12px 0 0;
+}
+@media (max-width: 760px) {
+  .auth-screen {
+    grid-template-columns: 1fr;
+    margin: 0 auto;
+  }
+  .auth-logo {
+    width: 120px;
+    height: 120px;
+  }
+  .auth-logo img {
+    width: 90px;
+  }
+}

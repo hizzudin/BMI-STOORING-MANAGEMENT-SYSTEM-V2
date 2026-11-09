@@ -18,6 +18,7 @@ const PATHS = {
   audit: 'M12 8v5l3 2M12 3a9 9 0 1 0 .1 0',
   setup: 'M12 3v12M7 10l5 5 5-5M4 21h16',
   bell: 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4',
+  lock: 'M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3',
   expand: 'M9 6l6 6-6 6',
   back: 'M15 6l-6 6 6 6M9 12h11',
   plus: 'M12 5v14M5 12h14',

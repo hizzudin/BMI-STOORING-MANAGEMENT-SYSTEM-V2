@@ -37,6 +37,29 @@ export const users = pgTable('users', {
   lockedUntil: timestamp('locked_until'),
 });
 
+// DEC-114: sign-in sessions and reset links; tokens only as SHA-256 hashes.
+export const authSessions = pgTable('auth_sessions', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  userId: bigint('user_id', { mode: 'number' }).notNull(),
+  client: varchar('client', { length: 10 }).notNull(),
+  refreshTokenHash: varchar('refresh_token_hash', { length: 64 }).notNull().unique(),
+  lastSeenAt: timestamp('last_seen_at').notNull().defaultNow(),
+  expiresAt: timestamp('expires_at').notNull(),
+  revokedAt: timestamp('revoked_at'),
+});
+
+export const passwordResetTokens = pgTable('password_reset_tokens', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  userId: bigint('user_id', { mode: 'number' }).notNull(),
+  tokenHash: varchar('token_hash', { length: 64 }).notNull().unique(),
+  expiresAt: timestamp('expires_at').notNull(),
+  usedAt: timestamp('used_at'),
+});
+
 export const userRoles = pgTable(
   'user_roles',
   {
@@ -140,6 +163,8 @@ export const idempotencyKeys = pgTable(
 export const allTables: readonly PgTable[] = [
   idempotencyKeys,
   users,
+  authSessions,
+  passwordResetTokens,
   userRoles,
   rolePermissions,
   auditLogs,

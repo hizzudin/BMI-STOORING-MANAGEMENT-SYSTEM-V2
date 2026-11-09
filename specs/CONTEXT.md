@@ -6,7 +6,7 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-104 in progress on branch `feat/phase1-task104-sign-in` (spec update DEC-114 done). Then TASK-105 (trial first, DEC-113) |
+| Active task | TASK-104 done on branch `feat/phase1-task104-sign-in`. Next task: **TASK-105** (permission catalogue, GET /me capabilities), then TASK-106 (trial first, DEC-113) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 25 | 2026-11-09 | TASK-104: sign-in, lock after 5 failures, web and mobile sessions, first sign-in change, forgot and reset password by link (console email adapter locally), GET /me; four web screens matched to the artboards; e2e auth runs the API on a fresh bmi_e2e database | apps/api/, apps/web/, packages/, specs/ |
 | 24 | 2026-11-09 | TASK-126 merged; web coverage gate fixed (tests for /kit, /settings and the user menu). TASK-104 started: owner decisions DEC-114 (v2.25): REQ-IAM-009 follows DEC-102 (reset link by email, 60 minutes, once); 9.2 gains auth_sessions and password_reset_tokens; e2e FLW-AM-04 runs in TASK-107. design.md 5.1 describes sign-in and sessions | PRD.md, docs/prd/, specs/ |
 | 23 | 2026-11-09 | TASK-126: web kit (Button, BusyButton, StatusPill, Tabs, ConfirmDialog, useLeaveGuard, DataTable, Icon), AppShell with floating rail, PageHead with the bell, Settings home, globals.css matched to the artboards, dev-only /kit gallery; DESIGN.md page colour and headline size corrected to the artboards. 22 web tests | apps/web/, DESIGN.md, specs/ |
 | 22 | 2026-11-09 | TASK-103: migration 0002 with every §9.1 enum, users, user_roles (BR-14 indexes), role_permissions, append-only audit_logs, app_settings, stored_files, user_table_preferences, and the users foreign key of idempotency_keys. 48 database tests, API lines 99,48 percent | apps/api/, specs/ |

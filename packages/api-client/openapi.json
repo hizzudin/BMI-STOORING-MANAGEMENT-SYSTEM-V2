@@ -22,6 +22,182 @@
           }
         }
       }
+    },
+    "/auth/sign-in": {
+      "post": {
+        "operationId": "signIn",
+        "summary": "Signs in with email and password (web: cookies, phone: tokens in the body)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signs in with email and password (web: cookies, phone: tokens in the body)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "refreshSession",
+        "summary": "Renews the access token and rotates the refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Renews the access token and rotates the refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/sign-out": {
+      "post": {
+        "operationId": "signOut",
+        "summary": "Ends this session (C-04)",
+        "responses": {
+          "200": {
+            "description": "Ends this session (C-04)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/change-password": {
+      "post": {
+        "operationId": "changePassword",
+        "summary": "Changes the password; the current one is asked except at the first sign-in",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Changes the password; the current one is asked except at the first sign-in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "operationId": "forgotPassword",
+        "summary": "Emails one reset link when the address belongs to an active account (DEC-102)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Emails one reset link when the address belongs to an active account (DEC-102)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "resetPassword",
+        "summary": "Sets a new password from a reset link (once, within 60 minutes)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sets a new password from a reset link (once, within 60 minutes)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "operationId": "getMe",
+        "summary": "The signed-in account",
+        "responses": {
+          "200": {
+            "description": "The signed-in account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -36,6 +212,256 @@
         },
         "required": [
           "status"
+        ],
+        "additionalProperties": false
+      },
+      "SignInResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "Planner",
+                      "Mechanic",
+                      "Warehouse_Manager",
+                      "Supervisor",
+                      "GM",
+                      "System_Admin",
+                      "Access_Manager",
+                      "Driver",
+                      "Field_Coordinator",
+                      "Accounting"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mustChangePassword": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "email",
+              "role",
+              "mustChangePassword"
+            ],
+            "additionalProperties": false
+          },
+          "accessToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user"
+        ],
+        "additionalProperties": false
+      },
+      "SignInRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "client": {
+            "type": "string",
+            "enum": [
+              "web",
+              "mobile"
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "client"
+        ],
+        "additionalProperties": false
+      },
+      "RefreshRequest": {
+        "default": {},
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "additionalProperties": false
+      },
+      "OkResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": false
+      },
+      "SessionResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "Planner",
+                      "Mechanic",
+                      "Warehouse_Manager",
+                      "Supervisor",
+                      "GM",
+                      "System_Admin",
+                      "Access_Manager",
+                      "Driver",
+                      "Field_Coordinator",
+                      "Accounting"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mustChangePassword": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "email",
+              "role",
+              "mustChangePassword"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "user"
+        ],
+        "additionalProperties": false
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128,
+            "allOf": [
+              {
+                "pattern": "[A-Za-z]"
+              },
+              {
+                "pattern": "\\d"
+              }
+            ]
+          },
+          "repeatPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "newPassword",
+          "repeatPassword"
+        ],
+        "additionalProperties": false
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 200
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128,
+            "allOf": [
+              {
+                "pattern": "[A-Za-z]"
+              },
+              {
+                "pattern": "\\d"
+              }
+            ]
+          },
+          "repeatPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "newPassword",
+          "repeatPassword"
         ],
         "additionalProperties": false
       }

@@ -199,7 +199,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-006
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `qa` AppShellCollapsed, Settings, UserMenu, LeaveConfirm, DiscardConfirm, DeactivateMaster against their artboards
-- [ ] **TASK-104** Sign-in, password rules and reset, first sign-in change, lockout, sessions [REQ-IAM-001, REQ-IAM-009]
+- [x] **TASK-104** Sign-in, password rules and reset, first sign-in change, lockout, sessions [REQ-IAM-001, REQ-IAM-009]
   - _Scope_: Web session and mobile tokens (§8.2); 5 failures lock 15 min; web idle 30 min, mobile 30 days; "Forgot password?" sends one reset email with an expiring link through an EmailPort adapter (DQ-02, DEC-102); the provider account is part of Q-03, so tests use a fake adapter and the local trial a console adapter. Lock and unlock are tested through the API; the end-to-end FLW-AM-04 runs with its screen in TASK-107 (DEC-114).
   - _Rules_: NFR-05, NFR-11, DQ-02, DEC-102, DEC-114
   - _Screens built here (visual target)_: [`WebLogin`](<../Design Artifact/shell/WebLogin.html#WebLogin>), [`ChangePassword`](<../Design Artifact/shell/ChangePassword.html#ChangePassword>), [`ForgotPassword`](<../Design Artifact/shell/ForgotPassword.html#ForgotPassword>), [`ResetPassword`](<../Design Artifact/shell/ResetPassword.html#ResetPassword>)

@@ -58,6 +58,22 @@ CREATE TABLE users (                          -- SD
   must_change_password BOOLEAN NOT NULL DEFAULT true,   -- REQ-IAM-009
   locked_until TIMESTAMP                      -- 5 failed sign-ins lock 15 minutes [A]
 );
+CREATE TABLE auth_sessions (                  -- one signed-in device (NFR-05, DEC-114)
+  user_id BIGINT NOT NULL REFERENCES users(id),
+  client VARCHAR(10) NOT NULL CHECK (client IN ('web','mobile')),
+  refresh_token_hash VARCHAR(64) NOT NULL UNIQUE,   -- SHA-256 of the current refresh token; it rotates on every refresh
+  last_seen_at TIMESTAMP NOT NULL DEFAULT now(),    -- web: ends 30 minutes after this
+  expires_at TIMESTAMP NOT NULL,              -- mobile: created_at + 30 days
+  revoked_at TIMESTAMP                        -- sign out, password change, reset, deactivation
+);
+CREATE INDEX ix_auth_sessions_user ON auth_sessions (user_id) WHERE revoked_at IS NULL;
+CREATE TABLE password_reset_tokens (          -- Forgot password? link (DQ-02, DEC-102, DEC-114)
+  user_id BIGINT NOT NULL REFERENCES users(id),
+  token_hash VARCHAR(64) NOT NULL UNIQUE,     -- SHA-256 of the token in the link; the token itself is never stored
+  expires_at TIMESTAMP NOT NULL,              -- created_at + 60 minutes
+  used_at TIMESTAMP                           -- works once; a newer link or a password change voids the older ones
+);
+-- Service layer: a password change or reset, an Access Manager reset and a deactivation revoke every open auth_sessions row of the user.
 CREATE TABLE user_roles (
   user_id BIGINT NOT NULL REFERENCES users(id),
   role role_t NOT NULL,

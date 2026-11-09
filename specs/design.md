@@ -98,6 +98,15 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - `allowedActions` runs the same L1 + L2 functions for each candidate action. A contract test per record type sends every listed action to the API (accepted) and every unlisted one (refused).
 - A generated matrix test turns the §2.2 rows × roles into expected codes and checks the guard of each endpoint.
 
+### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
+
+- Passwords: argon2id hashes (`@node-rs/argon2`, prebuilt binaries); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.
+- `core/iam/AuthService` depends on `UserGateway`, `AuthSessionGateway`, `PasswordResetGateway`, `PasswordHasher`, `EmailPort` and `ClockPort` only. Five failures in a row set `locked_until = now + 15 min`; a success resets `failed_logins`. A locked, inactive or unknown account gets the same one-sentence refusal, except a locked one, which says it is locked and who unlocks it.
+- A sign-in creates one `auth_sessions` row and returns a short-lived access token (JWT, 5 minutes, claims `sub` and `sid`) and an opaque refresh token (32 random bytes; only its SHA-256 is stored, rotated on every refresh). The guard checks the token and that its session is open: a web session closes 30 minutes after `last_seen_at` (touched at most once a minute), a mobile one at `expires_at` (30 days). Sign out, a password change or reset, an Access Manager reset and a deactivation set `revoked_at` on every open row of the user, so the next request is refused.
+- Web: the Next.js app proxies `/api/*` to the API (same origin), and the API sets both tokens as `HttpOnly`, `Secure` (outside local), `SameSite=Strict` cookies; mutating requests also need the `Origin` of the web app. Phone: tokens in the response body, kept in Expo secure store.
+- `must_change_password` lets the session reach only `POST /auth/change-password`, `POST /auth/sign-out` and `GET /me` until the password is changed.
+- Forgot password: `POST /auth/forgot-password` always answers the same way (no account discovery); for an active account it voids older links, stores the SHA-256 of a new 32-byte token valid 60 minutes, and sends the link through `EmailPort`. Adapters: `FakeEmailAdapter` (tests), `ConsoleEmailAdapter` (local trial, prints the link), the provider adapter after Q-03. `POST /auth/reset-password` accepts a token once, sets the new password, clears the lock and `must_change_password`, and revokes every session.
+
 ## 6. Assignment engine and module registry (critical tier)
 
 - The engine is built and tested first with `modules/dummy` (§8.3). It owns step order, freezing the steps as a JSON snapshot at approval (TX-02), Locked → Open on the previous submit (BR-05), claim and assignment (REQ-ENG-011), the step time log (`step_time_events`, REQ-ENG-012 to 017, honouring `tracks_work_time`), verify and return attempts, and the completion request.

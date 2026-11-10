@@ -18,6 +18,7 @@ import { DataTable, type Column } from '../kit/DataTable';
 import { Icon } from '../kit/Icon';
 import { StatusPill, type Tone } from '../kit/StatusPill';
 import { PageHead } from '../shell/AppShell';
+import { AccessTabs } from './AccessTabs';
 
 type RowAction = 'unlock' | 'reset_password' | 'deactivate' | 'activate';
 
@@ -45,23 +46,6 @@ const COLUMNS: Column<Account>[] = [
       a.lastSignInAt ? formatDateTimeWib(new Date(a.lastSignInAt)).slice(0, 16) : 'Never',
   },
 ];
-
-/** REQ-IAM-003: the tabs of Users and roles; each opens its own page of the area. */
-function AccessTabs() {
-  return (
-    <nav className="tabs" aria-label="Users and roles">
-      <a className="tab on" href="/users" aria-current="page">
-        Accounts
-      </a>
-      <a className="tab" href="/users/roles">
-        Roles and permissions
-      </a>
-      <a className="tab" href="/users/history">
-        Access history
-      </a>
-    </nav>
-  );
-}
 
 type Panel =
   | { kind: 'none' }
@@ -156,7 +140,7 @@ export function UsersRoles({ api }: { api: AccountsApi }) {
           </>
         }
       />
-      <AccessTabs />
+      <AccessTabs current="accounts" />
       <DataTable
         rows={page.accounts}
         columns={COLUMNS}

@@ -7,6 +7,7 @@ import {
   PERMISSION_CODES,
   type PermissionCode,
 } from './index.js';
+import { isSwitchableCell, PERMISSION_GROUPS, PERMISSION_MEANINGS } from './groups.js';
 
 const rows = defaultRolePermissions();
 const allowed = (role: Role) =>
@@ -98,6 +99,50 @@ describe('2.4 permission catalogue and 2.2 default matrix', () => {
     ]);
     expect(cell('Accounting', 'mechanic.execute')?.isLocked).toBe(true);
     expect(cell('Accounting', 'vehicle.view')).toMatchObject({ allowed: true, isLocked: false });
+  });
+
+  it('DEC-117 REQ-IAM-005 approvals stay with Supervisor, GM and System Admin; accounts with the Access Manager', () => {
+    for (const role of ['Mechanic', 'Warehouse_Manager', 'Driver'] as const) {
+      expect(cell(role, 'spk.approve'), role).toMatchObject({ allowed: false, isLocked: true });
+      expect(cell(role, 'count.approve'), role).toMatchObject({ allowed: false, isLocked: true });
+    }
+    for (const role of ['Planner', 'Mechanic', 'Supervisor', 'GM', 'Driver'] as const) {
+      for (const code of ['accounts.manage', 'iam.planner_approval_switch'] as const) {
+        expect(cell(role, code), `${role} ${code}`).toMatchObject({
+          allowed: false,
+          isLocked: true,
+        });
+      }
+    }
+    expect(cell('Mechanic', 'audit.view')).toMatchObject({ allowed: false, isLocked: false });
+  });
+
+  it('DEC-117 the matrix groups every catalogue code once, each with its 2.4 meaning', () => {
+    const grouped = PERMISSION_GROUPS.flatMap((group) => group.codes);
+    expect(grouped).toHaveLength(PERMISSION_CODES.length);
+    expect(new Set(grouped)).toEqual(new Set(PERMISSION_CODES));
+    for (const code of PERMISSION_CODES)
+      expect(PERMISSION_MEANINGS[code].length).toBeGreaterThan(3);
+    expect(PERMISSION_GROUPS.map((group) => group.label)).toEqual([
+      'Dashboard',
+      'Surat Perintah Kerja',
+      'Report Breakdown',
+      'Steps and files',
+      'Settings and master data',
+      'Vehicles',
+      'Inventory',
+      'Schedule',
+      'Billing',
+      'Reports',
+      'Administration',
+    ]);
+  });
+
+  it('DEC-117 the S cells are the Planner approval cells; every other cell is X, blank or locked', () => {
+    expect(isSwitchableCell('Planner', 'spk.approve')).toBe(true);
+    expect(isSwitchableCell('Planner', 'count.approve')).toBe(true);
+    expect(isSwitchableCell('Mechanic', 'spk.approve')).toBe(false);
+    expect(isSwitchableCell('Planner', 'spk.create')).toBe(false);
   });
 
   it('DEC-115 a - cell is off but editable, and files.upload belongs to the executor roles', () => {

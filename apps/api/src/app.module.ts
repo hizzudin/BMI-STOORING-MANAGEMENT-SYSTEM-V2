@@ -5,6 +5,7 @@ import { CLOCK, EMAIL, PASSWORD_HASHER, PG_POOL } from './app.tokens.js';
 import { AccountService } from './core/iam/account-service.js';
 import { AuthService } from './core/iam/auth-service.js';
 import { CapabilityService } from './core/iam/capability-service.js';
+import { RolePermissionService } from './core/iam/role-permission-service.js';
 import { AccountErrorFilter, AccountsController } from './http/accounts/accounts.controller.js';
 import { AuthController } from './http/auth/auth.controller.js';
 import {
@@ -17,11 +18,13 @@ import {
 import { ConcurrentUpdateFilter } from './http/concurrent-update.filter.js';
 import { ContractInterceptor } from './http/contract.interceptor.js';
 import { HealthController } from './http/health.controller.js';
+import { RolePermissionsController } from './http/role-permissions/role-permissions.controller.js';
 import { SystemClock } from './infra/clock/system-clock.js';
 import { HmacAccessTokenSigner } from './infra/crypto/hmac-access-token-signer.js';
 import { ScryptPasswordHasher } from './infra/crypto/scrypt-password-hasher.js';
 import { accountGateways } from './infra/db/account-gateways.js';
 import { iamGateways } from './infra/db/iam-gateways.js';
+import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { ConsoleEmailAdapter } from './infra/email/console-email.js';
 import type { ClockPort } from './ports/clock.js';
@@ -48,7 +51,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
 
 /** The composition root: the only place that knows both the core and the adapters. */
 @Module({
-  controllers: [HealthController, AuthController, AccountsController],
+  controllers: [HealthController, AuthController, AccountsController, RolePermissionsController],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
     { provide: APP_FILTER, useClass: AuthRefusedFilter },
@@ -94,6 +97,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, PASSWORD_HASHER, CLOCK],
       useFactory: (pool: pg.Pool, hasher: PasswordHasher, clock: ClockPort) =>
         new AccountService(new DrizzleUnitOfWork(pool, accountGateways), hasher, clock),
+    },
+    {
+      provide: RolePermissionService,
+      inject: [PG_POOL],
+      useFactory: (pool: pg.Pool) =>
+        new RolePermissionService(new DrizzleUnitOfWork(pool, rolePermissionGateways)),
     },
     SessionGuard,
   ],

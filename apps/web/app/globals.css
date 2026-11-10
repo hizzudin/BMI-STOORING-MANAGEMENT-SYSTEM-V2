@@ -584,6 +584,65 @@ textarea:focus-visible {
 .table .num {
   text-align: right;
 }
+
+/* AMRolesPermissions: the permission matrix (DEC-117). Rows are not links; a cell is a toggle. */
+.matrix tbody tr {
+  cursor: default;
+}
+.matrix tbody tr:hover td,
+.matrix tbody tr:hover th {
+  background: none;
+}
+.matrix tbody th {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--divider);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.matrix .cell {
+  text-align: center;
+}
+.matrix .group td {
+  padding-top: 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+}
+.cell-fixed {
+  color: var(--text-subtle);
+}
+.cell-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 32px;
+  height: 28px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.cell-btn:hover {
+  background: var(--mist-light);
+}
+.matrix .staged .cell-btn {
+  border-color: var(--warning);
+  font-weight: 700;
+}
+.matrix .staged .pill {
+  margin-left: 6px;
+}
+.matrix-bar {
+  position: sticky;
+  bottom: 0;
+  padding: 12px 0;
+  background: #fff;
+}
+.matrix-bar .refusal {
+  margin: 0;
+}
 .th-sort {
   all: unset;
   display: block;

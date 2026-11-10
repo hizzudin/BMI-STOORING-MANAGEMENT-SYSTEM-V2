@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { Controller, Get, Module, UseGuards, type INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import {
@@ -15,6 +13,7 @@ import { CLOCK, EMAIL, PASSWORD_HASHER, PG_POOL } from '../../../src/app.tokens.
 import { RequireCapability, SessionGuard } from '../../../src/http/auth/auth-http.js';
 import { ScryptPasswordHasher } from '../../../src/infra/crypto/scrypt-password-hasher.js';
 import { testPool } from '../harness/database.js';
+import { seedRolePermissions } from '../harness/role-permissions.js';
 import { FakeClock } from '../harness/fake-clock.js';
 import { FakeEmail, insertAccount, postJson } from './auth-harness.js';
 
@@ -85,11 +84,7 @@ const expected = (role: Role) =>
 
 beforeAll(async () => {
   // The worker setup empties every table, so the seed migration of TASK-105 runs again here.
-  const seed = await readFile(
-    join(import.meta.dirname, '../../../migrations/0004_role_permissions_seed.sql'),
-    'utf8',
-  );
-  await testPool().query(seed);
+  await seedRolePermissions();
   await setting('system_mode', 'Live');
   const moduleRef = await Test.createTestingModule({ imports: [ProbeModule] })
     .overrideProvider(PG_POOL)

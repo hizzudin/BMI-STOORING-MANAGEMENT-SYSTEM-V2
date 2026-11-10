@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import {
   Body,
   Controller,
@@ -35,6 +33,7 @@ import {
 import { ScryptPasswordHasher } from '../../../src/infra/crypto/scrypt-password-hasher.js';
 import { findContractBreaks, type ContractCase } from '../harness/allowed-actions-contract.js';
 import { testPool } from '../harness/database.js';
+import { seedRolePermissions } from '../harness/role-permissions.js';
 import { FakeClock } from '../harness/fake-clock.js';
 import { FakeEmail, insertAccount, postJson } from './auth-harness.js';
 
@@ -185,11 +184,7 @@ const contractCase = (who: string, orderId: number, what: string): ContractCase<
 });
 
 beforeAll(async () => {
-  const seed = await readFile(
-    join(import.meta.dirname, '../../../migrations/0004_role_permissions_seed.sql'),
-    'utf8',
-  );
-  await testPool().query(seed);
+  await seedRolePermissions();
   await setting('system_mode', 'Live');
   const moduleRef = await Test.createTestingModule({ imports: [ProbeModule] })
     .overrideProvider(PG_POOL)

@@ -342,12 +342,19 @@ const AM_OWN_CODES: readonly PermissionCode[] = [
   'audit.view',
 ];
 
-/** DEC-115: the cells a business rule fixes, besides the L and S cells of the matrix. */
+const APPROVAL_CODES: readonly PermissionCode[] = ['spk.approve', 'count.approve'];
+const APPROVER_ROLES: readonly Role[] = ['Supervisor', 'GM', 'System_Admin'];
+const ACCESS_CODES: readonly PermissionCode[] = ['accounts.manage', 'iam.planner_approval_switch'];
+
+/** DEC-115, DEC-117: the cells a business rule fixes, besides the L and S cells of the matrix. */
 function lockedByRoleRule(
   role: Role,
   code: PermissionCode,
   ownCells: ReadonlySet<PermissionCode>,
 ): boolean {
+  // REQ-IAM-005: approvals stay with the approvers; managing accounts stays with Access Managers.
+  if (APPROVAL_CODES.includes(code) && !APPROVER_ROLES.includes(role)) return true;
+  if (ACCESS_CODES.includes(code) && role !== 'Access_Manager') return true;
   switch (role) {
     case 'System_Admin':
       return true; // REQ-IAM-005, RL-4: the whole column

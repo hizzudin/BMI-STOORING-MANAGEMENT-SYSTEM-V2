@@ -237,12 +237,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-106, TASK-126
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-IAM-001|AC-IAM-002|AC-IAM-003|AC-IAM-004"`; `e2e FLW-AM-01`; `e2e FLW-AM-03`; `e2e FLW-AM-04`; `qa` UsersRoles, AMAccountForm against their artboards
-- [ ] **TASK-108** Roles and permissions matrix with locked cells [REQ-IAM-005]
+- [x] **TASK-108** Roles and permissions matrix with locked cells [REQ-IAM-005]
   - _Scope_: Edits change what users see on the next page load (NAV-9).
+  - _Rules_: DEC-117
   - _Screens built here (visual target)_: [`AMRolesPermissions`](<../Design Artifact/access/AMRolesPermissions.html#AMRolesPermissions>)
   - _Data_: `role_permissions` (§9.2)
   - _Journey_: FLW-AM-02 Change a role or its permissions
-  - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-005); `docs/prd/data-model.md` §9.2 (role_permissions) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AMRolesPermissions; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-AM-02 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-005); `docs/prd/data-model.md` §9.2 (role_permissions) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-117 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AMRolesPermissions; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-AM-02 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-107
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-AM-02`; `qa` AMRolesPermissions against their artboards

@@ -106,6 +106,13 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - Rules: the create form never offers System Admin; an edit may send the current System_Admin role, and a change to or from it is refused; an Access Manager cannot change its own role or deactivate itself, and the last active Access Manager stays (DEC-116). The temporary password is returned once and never stored in clear.
 - Web: `app/(app)/users` renders `UsersRoles` (table with search and column filters, status pills, tabs as links to the area's pages, the account and move panels, confirmations). A user without the Dashboard item lands on its first menu item, so the Access Manager opens Users and roles.
 
+### 5.3 Roles and permissions (REQ-IAM-005, DEC-115, DEC-117)
+
+- `@bmi/shared` `permissions/groups.ts`: `PERMISSION_GROUPS` (the 2.4 codes by area, each code once), `PERMISSION_MEANINGS` (2.4 text) and `isSwitchableCell` (the Planner S cells). The DEC-117 lock rule (approval codes outside Supervisor, GM, System Admin; account codes outside the Access Manager) sits in `defaultRolePermissions()`; migration `0005_role_permissions_locks.sql` applies it to a database seeded by 0004, and the seed test runs both (`harness/role-permissions.ts`).
+- `core/iam/role-permission-service.ts` behind `RolePermissionGateways` (`rolePermissions`, `audit`): `matrix(actor)` returns every cell with `isLocked`, `switchable` and the page action `edit`; `change(actor, changes)` locks the rows (`FOR UPDATE`), refuses the whole save with 403 when any change touches a locked or S cell, skips changes equal to the stored value and writes one `audit_logs` row (entity `role_permissions`, entity_id 0, before and after `{ role: { code: allowed } }`) when anything changed.
+- Routes `GET` and `PATCH /role-permissions`, `accounts.manage` on the controller. A change shows on the user's next request, because the capability set is read per request (NAV-9).
+- Web: `app/(app)/users/roles` renders `RolesPermissions`: ten role columns, group rows, a toggle per unlocked cell (`aria-pressed`), staged cells marked "changed", a sticky bar with the count, Cancel and Save changes, and the leave guard while anything is staged. The Planner approval card of the artboard is TASK-109.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

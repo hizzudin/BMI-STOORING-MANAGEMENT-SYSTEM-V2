@@ -481,6 +481,50 @@ textarea:focus-visible {
 .card-link:hover {
   background: var(--mist-light);
 }
+/* Planner approval card (REQ-IAM-008, DEC-118): a white card above the matrix. */
+.switch-card {
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.switch-card h2 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+.switch-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.switch-row .grow {
+  flex: 1;
+  min-width: 220px;
+}
+.checks {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+}
+.checks legend {
+  margin-bottom: 5px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--divider);
+  font-size: 13px;
+}
+.field .check {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 400;
+}
 .circle-ic {
   display: grid;
   place-items: center;

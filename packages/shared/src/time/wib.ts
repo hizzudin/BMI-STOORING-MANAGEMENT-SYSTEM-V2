@@ -28,3 +28,15 @@ export function formatTimeWib(instant: Date): string {
 export function formatDateTimeWib(instant: Date): string {
   return `${formatDateWib(instant)} ${formatTimeWib(instant)}`;
 }
+
+/** The value of a datetime-local field showing the instant in WIB: YYYY-MM-DDTHH:MM (NFR-14). */
+export function wibInputValue(instant: Date): string {
+  return wibIso(instant).slice(0, 16);
+}
+
+/** The instant a datetime-local field means when it is read as WIB; null when empty or unreadable. */
+export function fromWibInput(value: string): Date | null {
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return null;
+  const instant = new Date(`${value}:00+07:00`);
+  return Number.isNaN(instant.getTime()) ? null : instant;
+}

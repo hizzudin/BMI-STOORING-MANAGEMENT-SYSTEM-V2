@@ -113,6 +113,14 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - Routes `GET` and `PATCH /role-permissions`, `accounts.manage` on the controller. A change shows on the user's next request, because the capability set is read per request (NAV-9).
 - Web: `app/(app)/users/roles` renders `RolesPermissions`: ten role columns, group rows, a toggle per unlocked cell (`aria-pressed`), staged cells marked "changed", a sticky bar with the count, Cancel and Save changes, and the leave guard while anything is staged. The Planner approval card of the artboard is TASK-109.
 
+### 5.4 Planner approval switch (REQ-IAM-008, RL-7, TX-20, DEC-118)
+
+- `@bmi/shared` `schemas/planner-approval.ts`: `APPROVAL_KINDS` with labels (the API's capability function imports them), the response (`on`, `kinds`, `until`, `allowedActions` switch_on, change, switch_off) and the requests (kinds, optional ISO end time, reason; switch off: reason). `time/wib.ts` reads and writes a datetime-local field in WIB.
+- `core/iam/planner-approval-service.ts` behind `PlannerApprovalGateways` (`plannerApproval` over app_settings `planner_approval_kinds` and `planner_approval_until` with a transaction advisory lock, `audit`) and the `PlannerApprovalEndScheduler` port: `state`, `set` (switch on or change; an end time must be later than now, 400), `switchOff` (403 when already off) and `endIfDue`. Every change writes one `audit_logs` row (entity `planner_approval`, entity_id 0, before, after, reason); a switch whose end time passed is ended first in every call, with one "end" record and no user.
+- `infra/queue/planner-approval-end-queue.ts`: a delayed BullMQ job per end time (job id = the end time), connected on first use, given up after 3 s with an error log so a down Redis never holds the save; `worker.ts` runs `endIfDue` for each job. Capabilities never wait for the job: they read the end time on every request (REQ-IAM-012).
+- Routes `GET` and `PUT /planner-approval`, `POST /planner-approval/switch-off`, `iam.planner_approval_switch` on the controller.
+- Web: `PlannerApprovalCard` above the matrix on `/users/roles`, its side panel (kinds, end time in WIB, reason) through the shared `kit/SidePanel`. The notice to Supervisors and GMs is TASK-130 (DEC-118).
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

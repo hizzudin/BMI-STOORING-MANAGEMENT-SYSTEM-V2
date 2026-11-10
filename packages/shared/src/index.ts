@@ -9,4 +9,5 @@ export * from './schemas/accounts.js';
 export * from './schemas/auth.js';
 export * from './schemas/role-permissions.js';
 export * from './schemas/health.js';
+export * from './schemas/planner-approval.js';
 export * from './time/wib.js';

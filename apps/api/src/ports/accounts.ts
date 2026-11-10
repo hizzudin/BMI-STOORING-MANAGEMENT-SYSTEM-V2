@@ -35,7 +35,8 @@ export interface AuditEntry {
   before?: unknown;
   after?: unknown;
   reason?: string;
-  userId: number;
+  /** Null when the system itself acts, e.g. a switch that ends at its end time (DEC-118). */
+  userId: number | null;
   userRole: Role | null;
 }
 

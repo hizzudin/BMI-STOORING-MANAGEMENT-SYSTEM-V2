@@ -9,7 +9,7 @@ import {
   type AccountUpdateRequest,
   type Role,
 } from '@bmi/shared';
-import { useCallback, useEffect, useId, useState, type FormEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { AccountsApi } from '../../lib/accounts-api';
 import type { Outcome } from '../../lib/auth-api';
 import { Button } from '../kit/Button';
@@ -17,6 +17,7 @@ import { ConfirmDialog } from '../kit/ConfirmDialog';
 import { DataTable, type Column } from '../kit/DataTable';
 import { Icon } from '../kit/Icon';
 import { StatusPill, type Tone } from '../kit/StatusPill';
+import { Field, Panel, Refusal } from '../kit/SidePanel';
 import { PageHead } from '../shell/AppShell';
 import { AccessTabs } from './AccessTabs';
 
@@ -231,58 +232,6 @@ export function UsersRoles({ api }: { api: AccountsApi }) {
         />
       )}
     </>
-  );
-}
-
-function Field({ label, children }: { label: string; children: (id: string) => ReactNode }) {
-  const id = useId();
-  return (
-    <div className="field">
-      <label htmlFor={id}>{label}</label>
-      {children(id)}
-    </div>
-  );
-}
-
-function Refusal({ message }: { message: string | null }) {
-  return message ? (
-    <p className="refusal" role="alert">
-      {message}
-    </p>
-  ) : null;
-}
-
-function Panel({
-  label,
-  onClose,
-  onSubmit,
-  children,
-}: {
-  label: string;
-  onClose: () => void;
-  onSubmit?: (event: FormEvent) => void;
-  children: ReactNode;
-}) {
-  return (
-    <div
-      className="overlay right"
-      onClick={(event) => event.target === event.currentTarget && onClose()}
-    >
-      <form
-        className="panel"
-        role="dialog"
-        aria-modal="true"
-        aria-label={label}
-        noValidate
-        onSubmit={(event) => {
-          event.preventDefault();
-          onSubmit?.(event);
-        }}
-        onKeyDown={(event) => event.key === 'Escape' && onClose()}
-      >
-        {children}
-      </form>
-    </div>
   );
 }
 

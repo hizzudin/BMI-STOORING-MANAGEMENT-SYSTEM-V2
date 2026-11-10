@@ -1,14 +1,12 @@
-import { blockedInSetupMode, type PermissionCode, type Role, type SystemMode } from '@bmi/shared';
+import {
+  blockedInSetupMode,
+  type ApprovalKind,
+  type PermissionCode,
+  type Role,
+  type SystemMode,
+} from '@bmi/shared';
 
-/** REQ-IAM-008: the approval kinds the Access Manager ticks when switching Planner approval on. */
-export const APPROVAL_KINDS = [
-  'spk_creation',
-  'spk_amendment',
-  'spk_completion',
-  'stock_opname',
-  'tyre_count',
-] as const;
-export type ApprovalKind = (typeof APPROVAL_KINDS)[number];
+export { APPROVAL_KINDS, type ApprovalKind } from '@bmi/shared';
 
 const SPK_KINDS: readonly ApprovalKind[] = ['spk_creation', 'spk_amendment', 'spk_completion'];
 const COUNT_KINDS: readonly ApprovalKind[] = ['stock_opname', 'tyre_count'];

@@ -14,8 +14,8 @@ export class BullMqQueue implements QueuePort<Payload> {
     this.queue = new Queue(name, { connection: { url: redisUrl } });
   }
 
-  async enqueue(payload: Payload, { jobId }: EnqueueOptions): Promise<void> {
-    await this.queue.add(this.name, payload, { jobId });
+  async enqueue(payload: Payload, { jobId, delayMs }: EnqueueOptions): Promise<void> {
+    await this.queue.add(this.name, payload, { jobId, delay: delayMs });
   }
 
   process(handler: (payload: Payload) => Promise<void>): void {
@@ -27,6 +27,12 @@ export class BullMqQueue implements QueuePort<Payload> {
 
   pendingCount(): Promise<number> {
     return this.queue.getJobCountByTypes('waiting', 'delayed', 'active');
+  }
+
+  /** Closes the connections and keeps the jobs (the process is shutting down). */
+  async close(): Promise<void> {
+    await this.worker?.close();
+    await this.queue.close();
   }
 
   /** Removes the queue and its jobs: for tests and for a queue that is retired. */

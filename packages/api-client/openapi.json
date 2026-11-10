@@ -464,6 +464,78 @@
           }
         }
       }
+    },
+    "/planner-approval": {
+      "get": {
+        "operationId": "getPlannerApproval",
+        "summary": "The Planner approval switch: on or off, the ticked kinds and the end time",
+        "responses": {
+          "200": {
+            "description": "The Planner approval switch: on or off, the ticked kinds and the end time",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannerApprovalResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "setPlannerApproval",
+        "summary": "Switch Planner approval on, or change it while on, with a reason (TX-20)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannerApprovalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Switch Planner approval on, or change it while on, with a reason (TX-20)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannerApprovalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/planner-approval/switch-off": {
+      "post": {
+        "operationId": "switchOffPlannerApproval",
+        "summary": "Switch Planner approval off, with a reason",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannerApprovalOffRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Switch Planner approval off, with a reason",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannerApprovalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1410,6 +1482,107 @@
         },
         "required": [
           "changes"
+        ],
+        "additionalProperties": false
+      },
+      "PlannerApprovalResponse": {
+        "type": "object",
+        "properties": {
+          "on": {
+            "type": "boolean"
+          },
+          "kinds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "spk_creation",
+                "spk_amendment",
+                "spk_completion",
+                "stock_opname",
+                "tyre_count"
+              ]
+            }
+          },
+          "until": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "switch_on",
+                "change",
+                "switch_off"
+              ]
+            }
+          }
+        },
+        "required": [
+          "on",
+          "kinds",
+          "until",
+          "allowedActions"
+        ],
+        "additionalProperties": false
+      },
+      "PlannerApprovalRequest": {
+        "type": "object",
+        "properties": {
+          "kinds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "spk_creation",
+                "spk_amendment",
+                "spk_completion",
+                "stock_opname",
+                "tyre_count"
+              ]
+            }
+          },
+          "until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "kinds",
+          "until",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "PlannerApprovalOffRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
         ],
         "additionalProperties": false
       }

@@ -247,14 +247,14 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-107
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-AM-02`; `qa` AMRolesPermissions against their artboards
-- [ ] **TASK-109** Planner approval switch with kinds, end time, audit and notice [REQ-IAM-008]
-  - _Scope_: BR-03 still applies to Planners.
-  - _Rules_: RL-7, BR-04, TX-20, DEC-35, DEC-48
+- [x] **TASK-109** Planner approval switch with kinds, end time, audit and notice [REQ-IAM-008]
+  - _Scope_: BR-03 still applies to Planners. DEC-118: card, side panel, Change and Switch off with a reason, one audit record per change and one when the end time ends the switch (delayed job). The notice to Supervisors and GMs is added in TASK-130.
+  - _Rules_: RL-7, BR-04, TX-20, DEC-35, DEC-48, DEC-118
   - _Screens touched_: [`AMRolesPermissions`](<../Design Artifact/access/AMRolesPermissions.html#AMRolesPermissions>) (built in TASK-108; extend and regression-check it)
   - _Journey_: FLW-AM-06 Let Planners approve for a while
-  - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-008); `PRD.md` for RL-7, BR-04, DEC-35, DEC-48 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AMRolesPermissions; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-AM-06 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-008); `PRD.md` for RL-7, BR-04, DEC-35, DEC-48, DEC-118 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AMRolesPermissions; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-AM-06 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-108
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:redis-patterns, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-AM-06`; regression check of AMRolesPermissions
 - [ ] **TASK-117** @bmi/chassis-map library with snapshot tests for every launch and generated layout
   - _Scope_: The drawing engine behind REQ-PLC-008 and REQ-PLC-010 (their screens are TASK-116, TASK-508, TASK-509). §8.3: built first as a separate library and drawn from the layout only; its look follows the Placement and ChassisLayouts artboards.
@@ -306,7 +306,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "SpkGateway|SPK numbering"`; migration drift test green
 - [ ] **TASK-130** In-app notifications foundation: outbox, recipient matrix, notification center, bell [REQ-NTF-001, REQ-NTF-005]
-  - _Scope_: §8.3 outbox with a dedupe key. Built in phase 1 because approvers are notified from T2 on; every later task adds its own events to the REQ-NTF-005 matrix.
+  - _Scope_: §8.3 outbox with a dedupe key. Built in phase 1 because approvers are notified from T2 on; every later task adds its own events to the REQ-NTF-005 matrix. DEC-118: it also sends the Planner approval switch event of TASK-109 (switched on, changed, off, ended) to Supervisors and GMs, in-app.
   - _Rules_: C-03, DEC-27
   - _Screens built here (visual target)_: [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>)
   - _Data_: `notifications` (§9.12), `notification_deliveries` (§9.12)

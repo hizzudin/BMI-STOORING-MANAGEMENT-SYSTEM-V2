@@ -278,6 +278,41 @@ export interface paths {
         patch: operations["changeRolePermissions"];
         trace?: never;
     };
+    "/planner-approval": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The Planner approval switch: on or off, the ticked kinds and the end time */
+        get: operations["getPlannerApproval"];
+        /** Switch Planner approval on, or change it while on, with a reason (TX-20) */
+        put: operations["setPlannerApproval"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planner-approval/switch-off": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Switch Planner approval off, with a reason */
+        post: operations["switchOffPlannerApproval"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -423,6 +458,20 @@ export interface components {
                 permissionCode: "dashboard.view" | "spk.view" | "spk.create" | "breakdown.view" | "breakdown.review" | "breakdown.send" | "breakdown.urgent_alert" | "spk.approve" | "spk.cancel" | "stock.issue" | "purchase.line" | "mechanic.execute" | "mobilisasi.execute" | "docstep.execute" | "step.verify" | "step.request_completion" | "step.assign" | "changerequest.raise" | "registry.manage" | "parttype.manage" | "masterdata.manage" | "settings.manage" | "vehicle.view" | "vehicle.manage" | "vehicle.driver_set" | "odometer.manual" | "inspection.proxy" | "inspection.perform" | "driver.menu" | "inventory.manage" | "tyre.manage" | "count.approve" | "schedule.view" | "schedule.manage" | "partage.view" | "invoice.view" | "invoice.manage" | "report.view" | "audit.view" | "accounts.manage" | "iam.planner_approval_switch" | "ai.settings" | "setup.golive" | "files.upload";
                 allowed: boolean;
             }[];
+        };
+        PlannerApprovalResponse: {
+            on: boolean;
+            kinds: ("spk_creation" | "spk_amendment" | "spk_completion" | "stock_opname" | "tyre_count")[];
+            until: string | null;
+            allowedActions: ("switch_on" | "change" | "switch_off")[];
+        };
+        PlannerApprovalRequest: {
+            kinds: ("spk_creation" | "spk_amendment" | "spk_completion" | "stock_opname" | "tyre_count")[];
+            until: string | null;
+            reason: string;
+        };
+        PlannerApprovalOffRequest: {
+            reason: string;
         };
     };
     responses: never;
@@ -835,6 +884,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RolePermissionsResponse"];
+                };
+            };
+        };
+    };
+    getPlannerApproval: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The Planner approval switch: on or off, the ticked kinds and the end time */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlannerApprovalResponse"];
+                };
+            };
+        };
+    };
+    setPlannerApproval: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlannerApprovalRequest"];
+            };
+        };
+        responses: {
+            /** @description Switch Planner approval on, or change it while on, with a reason (TX-20) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlannerApprovalResponse"];
+                };
+            };
+        };
+    };
+    switchOffPlannerApproval: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlannerApprovalOffRequest"];
+            };
+        };
+        responses: {
+            /** @description Switch Planner approval off, with a reason */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlannerApprovalResponse"];
                 };
             };
         };

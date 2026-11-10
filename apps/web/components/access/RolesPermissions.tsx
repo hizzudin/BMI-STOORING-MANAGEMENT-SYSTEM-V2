@@ -9,7 +9,7 @@ import {
   type RolePermissionCell,
   type RolePermissionsResponse,
 } from '@bmi/shared';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { RolePermissionsApi } from '../../lib/role-permissions-api';
 import { Button } from '../kit/Button';
 import { StatusPill } from '../kit/StatusPill';
@@ -41,7 +41,14 @@ function fixedText(cell: RolePermissionCell): string {
 }
 
 /** AMRolesPermissions (REQ-IAM-005, DEC-117): the 2.4 codes × the ten roles; locked cells stay. */
-export function RolesPermissions({ api }: { api: RolePermissionsApi }) {
+export function RolesPermissions({
+  api,
+  switchCard,
+}: {
+  api: RolePermissionsApi;
+  /** The Planner approval card above the matrix (REQ-IAM-008, TASK-109). */
+  switchCard?: ReactNode;
+}) {
   const [matrix, setMatrix] = useState<RolePermissionsResponse | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   /** Staged cells: key → the new value; the matrix keeps the saved one. */
@@ -67,6 +74,7 @@ export function RolesPermissions({ api }: { api: RolePermissionsApi }) {
     <>
       <PageHead title="Users and roles" />
       <AccessTabs current="roles" />
+      {switchCard}
     </>
   );
 

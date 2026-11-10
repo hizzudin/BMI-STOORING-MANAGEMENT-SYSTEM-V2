@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="chassis" viewBox="0 0 300 626" role="img" aria-label="Chassis map, 3 axles"><style>/* @bmi/chassis-map: the look of the map from the artboard kit (DEC-96), on the web's colour tokens. */
+.chassis-map {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+svg.chassis {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font, system-ui, -apple-system, 'Segoe UI', sans-serif);
+}
+.chassis .m-front {
+  font-size: 9px;
+  font-weight: 700;
+  fill: var(--text-subtle, #6b7280);
+  text-anchor: middle;
+  letter-spacing: 0.12em;
+}
+.chassis .m-rail {
+  fill: #9fb3bb;
+}
+.chassis .m-cross {
+  fill: #b9c8ce;
+}
+.chassis .m-bumper {
+  fill: #8ea4ad;
+}
+.chassis .m-axle {
+  fill: #7d939c;
+}
+.chassis .m-hubcap {
+  fill: #fff;
+  stroke: #7d939c;
+  stroke-width: 2;
+}
+.chassis .m-pin {
+  fill: #fff;
+  stroke: var(--petrol, #1f4e5f);
+  stroke-width: 3;
+}
+.chassis .m-fifth {
+  fill: rgba(31, 78, 95, 0.08);
+  stroke: var(--petrol, #1f4e5f);
+  stroke-width: 2;
+}
+.chassis .m-fifth-slot {
+  stroke: var(--petrol, #1f4e5f);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.chassis .m-role {
+  font-size: 9px;
+  font-weight: 700;
+  fill: var(--text-subtle, #6b7280);
+}
+.chassis .m-tyre rect,
+.chassis .m-tyre circle:not(.m-hub) {
+  stroke-width: 2.5;
+}
+.chassis .m-tread {
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+.chassis .m-hub {
+  fill: #fff;
+  stroke-width: 2;
+}
+.chassis .m-code {
+  font-size: 8.5px;
+  font-weight: 800;
+  text-anchor: middle;
+}
+.chassis .m-miss {
+  font-size: 12px;
+  font-weight: 800;
+  fill: #2e3a40;
+  text-anchor: middle;
+}
+.chassis .m-miss-small {
+  font-size: 9px;
+}
+
+/* Statuses (REQ-PLC-008); each also has its text in the legend and the position's title. */
+.chassis .t-ok rect,
+.chassis .t-ok circle:not(.m-hub) {
+  fill: var(--success-bg, #dcfce7);
+  stroke: var(--success, #15803d);
+}
+.chassis .t-ok .m-tread,
+.chassis .t-ok .m-hub {
+  stroke: var(--success, #15803d);
+}
+.chassis .t-ok .m-code {
+  fill: var(--success-text, #14532d);
+}
+.chassis .t-due rect,
+.chassis .t-due circle:not(.m-hub) {
+  fill: var(--warning-bg, #fef3c7);
+  stroke: var(--warning, #b45309);
+}
+.chassis .t-due .m-tread,
+.chassis .t-due .m-hub {
+  stroke: var(--warning, #b45309);
+}
+.chassis .t-due .m-code {
+  fill: var(--warning-text, #78350f);
+}
+.chassis .t-act rect,
+.chassis .t-act circle:not(.m-hub) {
+  fill: var(--danger-bg, #fee2e2);
+  stroke: var(--danger, #b91c1c);
+  stroke-dasharray: 5 3;
+}
+.chassis .t-act .m-tread,
+.chassis .t-act .m-hub {
+  stroke: var(--danger, #b91c1c);
+}
+.chassis .t-act .m-code {
+  fill: var(--danger-text, #7f1d1d);
+}
+.chassis .t-empty rect,
+.chassis .t-empty circle:not(.m-hub) {
+  fill: #fff;
+  stroke: var(--border-strong, #9ca3af);
+  stroke-dasharray: 4 3;
+}
+.chassis .t-empty .m-tread {
+  display: none;
+}
+.chassis .t-empty .m-hub {
+  stroke: var(--border-strong, #9ca3af);
+}
+.chassis .t-empty .m-code {
+  fill: var(--text-subtle, #6b7280);
+}
+/* DEC-119: Missing is grey with a solid dark outline and a "?". */
+.chassis .t-miss rect,
+.chassis .t-miss circle:not(.m-hub) {
+  fill: #e3e9ec;
+  stroke: #4a5a61;
+}
+.chassis .t-miss .m-tread {
+  display: none;
+}
+.chassis .t-miss .m-hub {
+  stroke: #4a5a61;
+}
+.chassis .t-miss .m-code {
+  fill: #2e3a40;
+}
+.chassis .t-sel rect,
+.chassis .t-sel circle:not(.m-hub) {
+  stroke: var(--brand-red, #ad2713);
+  stroke-width: 3.5;
+}
+.chassis .t-sel .m-tread {
+  stroke: var(--brand-red, #ad2713);
+}
+.chassis .t-sel .m-code {
+  fill: var(--brand-red, #ad2713);
+}
+.chassis .m-tyre[role='button'] {
+  cursor: pointer;
+}
+.chassis .m-tyre[role='button']:hover rect,
+.chassis .m-tyre[role='button']:hover circle:not(.m-hub) {
+  filter: brightness(0.96);
+}
+.chassis .m-tyre[role='button']:focus-visible {
+  outline: 2px solid var(--petrol, #1f4e5f);
+  outline-offset: 2px;
+}
+
+/* The legend: every status with its text (NFR-10). */
+.chassis-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chassis-legend-item {
+  padding: 3px 10px;
+  border: 1.5px solid;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.chassis-legend-item.t-ok {
+  border-color: var(--success, #15803d);
+  background: var(--success-bg, #dcfce7);
+  color: var(--success-text, #14532d);
+}
+.chassis-legend-item.t-due {
+  border-color: var(--warning, #b45309);
+  background: var(--warning-bg, #fef3c7);
+  color: var(--warning-text, #78350f);
+}
+.chassis-legend-item.t-act {
+  border-color: var(--danger, #b91c1c);
+  border-style: dashed;
+  background: var(--danger-bg, #fee2e2);
+  color: var(--danger-text, #7f1d1d);
+}
+.chassis-legend-item.t-empty {
+  border-color: var(--border-strong, #9ca3af);
+  border-style: dashed;
+  background: #fff;
+  color: var(--text-subtle, #6b7280);
+}
+.chassis-legend-item.t-miss {
+  border-color: #4a5a61;
+  background: #e3e9ec;
+  color: #2e3a40;
+}
+</style><rect width="100%" height="100%" fill="#fff"/><text x="150" y="12" class="m-front">FRONT</text><rect class="m-rail" x="116" y="24" width="11" height="572" rx="5"></rect><rect class="m-rail" x="173" y="24" width="11" height="572" rx="5"></rect><rect class="m-cross" x="127" y="34" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="80" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="126" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="172" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="218" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="264" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="310" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="356" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="402" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="448" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="494" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="540" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="108" y="24" width="84" height="8" rx="4"></rect><circle class="m-pin" cx="150" cy="58" r="9"><title>Kingpin</title></circle><g class="m-axle-group"><rect class="m-axle" x="68" y="326" width="164" height="8" rx="4"></rect><text x="2" y="333" class="m-role">Trailer</text></g><g class="m-axle-group"><rect class="m-axle" x="68" y="476" width="164" height="8" rx="4"></rect><text x="2" y="483" class="m-role">Trailer</text></g><g class="m-axle-group"><rect class="m-axle" x="68" y="542" width="164" height="8" rx="4"></rect><text x="2" y="549" class="m-role">Trailer</text></g><g class="m-tyre t-ok" data-code="A1_L"><title>A1_L, Axle 1 left, Normal</title><rect x="50" y="304" width="22" height="52" rx="9"></rect><path class="m-tread" d="M55 311 h12"></path><path class="m-tread" d="M55 317 h12"></path><path class="m-tread" d="M55 347 h12"></path><path class="m-tread" d="M55 353 h12"></path><text x="61" y="330" class="m-code" transform="rotate(-90 61 330)">A1_L</text></g><g class="m-tyre t-due" data-code="A1_R"><title>A1_R, Axle 1 right, Due soon</title><rect x="228" y="304" width="22" height="52" rx="9"></rect><path class="m-tread" d="M233 311 h12"></path><path class="m-tread" d="M233 317 h12"></path><path class="m-tread" d="M233 347 h12"></path><path class="m-tread" d="M233 353 h12"></path><text x="239" y="330" class="m-code" transform="rotate(-90 239 330)">A1_R</text></g><g class="m-tyre t-act" data-code="A2_L"><title>A2_L, Axle 2 left, Act now</title><rect x="50" y="454" width="22" height="52" rx="9"></rect><path class="m-tread" d="M55 461 h12"></path><path class="m-tread" d="M55 467 h12"></path><path class="m-tread" d="M55 497 h12"></path><path class="m-tread" d="M55 503 h12"></path><text x="61" y="480" class="m-code" transform="rotate(-90 61 480)">A2_L</text></g><g class="m-tyre t-empty" data-code="A2_R"><title>A2_R, Axle 2 right, Empty</title><rect x="228" y="454" width="22" height="52" rx="9"></rect><path class="m-tread" d="M233 461 h12"></path><path class="m-tread" d="M233 467 h12"></path><path class="m-tread" d="M233 497 h12"></path><path class="m-tread" d="M233 503 h12"></path><text x="239" y="480" class="m-code" transform="rotate(-90 239 480)">A2_R</text></g><g class="m-tyre t-miss" data-code="A3_L"><title>A3_L, Axle 3 left, Missing</title><rect x="50" y="520" width="22" height="52" rx="9"></rect><path class="m-tread" d="M55 527 h12"></path><path class="m-tread" d="M55 533 h12"></path><path class="m-tread" d="M55 563 h12"></path><path class="m-tread" d="M55 569 h12"></path><text x="61" y="540" class="m-code" transform="rotate(-90 61 540)">A3_L</text><text x="61" y="567" class="m-miss">?</text></g><g class="m-tyre t-ok" data-code="A3_R"><title>A3_R, Axle 3 right, Normal</title><rect x="228" y="520" width="22" height="52" rx="9"></rect><path class="m-tread" d="M233 527 h12"></path><path class="m-tread" d="M233 533 h12"></path><path class="m-tread" d="M233 563 h12"></path><path class="m-tread" d="M233 569 h12"></path><text x="239" y="546" class="m-code" transform="rotate(-90 239 546)">A3_R</text></g><g class="m-tyre t-due" data-code="SP1"><title>SP1, Spare 1, Due soon</title><circle cx="150" cy="194" r="21"></circle><circle class="m-hub" cx="150" cy="194" r="11"></circle><text x="150" y="197" class="m-code">SP1</text></g><circle class="m-hubcap" cx="78" cy="330" r="6"></circle><circle class="m-hubcap" cx="222" cy="330" r="6"></circle><circle class="m-hubcap" cx="78" cy="480" r="6"></circle><circle class="m-hubcap" cx="222" cy="480" r="6"></circle><circle class="m-hubcap" cx="78" cy="546" r="6"></circle><circle class="m-hubcap" cx="222" cy="546" r="6"></circle></svg>

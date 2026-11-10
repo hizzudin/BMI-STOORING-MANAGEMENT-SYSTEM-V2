@@ -276,17 +276,17 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-PLC-007|AC-PLC-010"`; `e2e FLW-SA-05`; `qa` ChassisLayouts against their artboards
 - [ ] **TASK-118** Document types master [REQ-DOC-001, REQ-DOC-002]
-  - _Scope_: Warning days per type (DEC-20; also editable in Alert rules, DEC-86).
-  - _Rules_: DEC-20
+  - _Scope_: Warning days per type (DEC-20; also editable in Alert rules, DEC-86). DEC-121: the four launch types are seeded; the non-compliance count comes in TASK-119 and the SPK preset of a type in TASK-208.
+  - _Rules_: DEC-20, DEC-121
   - _Screens built here (visual target)_: [`DocumentTypes`](<../Design Artifact/settings/DocumentTypes.html#DocumentTypes>)
   - _Data_: `document_types` (§9.4), `document_type_classes` (§9.4), `vehicle_documents` (§9.4), `document_corrections` (§9.4)
   - _Journey_: FLW-SA-02 Documents
-  - _Read_: `docs/prd/areas/4.7-doc.md` (REQ-DOC-001, REQ-DOC-002); `docs/prd/data-model.md` §9.4 (document_types, document_type_classes, vehicle_documents, document_corrections) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-20 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DocumentTypes; `docs/prd/ui-action-map.md`: every row of DocumentTypes and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-02 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Read_: `docs/prd/areas/4.7-doc.md` (REQ-DOC-001, REQ-DOC-002); `docs/prd/data-model.md` §9.4 (document_types, document_type_classes, vehicle_documents, document_corrections) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-20, DEC-121 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for DocumentTypes; `docs/prd/ui-action-map.md`: every row of DocumentTypes and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-02 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-103, TASK-126
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-SA-02`; `qa` DocumentTypes against their artboards
 - [ ] **TASK-119** Vehicles: master-detail list, add, edit with reason, deactivate, class change rule, Towed without odometer [REQ-VEH-001, REQ-VEH-002, REQ-VEH-003, REQ-VEH-004, REQ-PLC-018]
-  - _Scope_: A head and a trailer tail are separate vehicles (REQ-PLC-020). DEC-120: also adds the Vehicles column of ChassisLayouts (REQ-PLC-013, the number of vehicles using each layout).
+  - _Scope_: A head and a trailer tail are separate vehicles (REQ-PLC-020). DEC-120: also adds the Vehicles column of ChassisLayouts (REQ-PLC-013, the number of vehicles using each layout). DEC-121: also adds to DocumentTypes the count of vehicles that become non-compliant when the required classes change (REQ-DOC-002).
   - _Acceptance_: AC-VEH-003, AC-IAM-009 (here because it needs the Vehicles item and GET /vehicles)
   - _Rules_: BR-10, DEC-17
   - _Screens built here (visual target)_: [`Vehicles`](<../Design Artifact/fleet/Vehicles.html#Vehicles>), [`VehicleOverview`](<../Design Artifact/fleet/VehicleOverview.html#VehicleOverview>), [`AddVehicle`](<../Design Artifact/fleet/AddVehicle.html#AddVehicle>), [`VehicleEdit`](<../Design Artifact/fleet/VehicleEdit.html#VehicleEdit>), [`VehicleDeactivate`](<../Design Artifact/fleet/VehicleDeactivate.html#VehicleDeactivate>), [`VehicleChassis`](<../Design Artifact/fleet/VehicleChassis.html#VehicleChassis>), [`ChangeDriver`](<../Design Artifact/fleet/ChangeDriver.html#ChangeDriver>)
@@ -536,7 +536,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-SPK-003|AC-REG-001|AC-REG-002|AC-REG-004"`; `e2e FLW-PLN-01`; regression check of CreateSPK
 - [ ] **TASK-208** SPK presets: Save as preset (versions), start from preset, presets page [REQ-REG-003, REQ-ENG-004]
-  - _Scope_: An SPK never follows later preset versions.
+  - _Scope_: An SPK never follows later preset versions. DEC-121: also adds document_types.preset_id and its preset field on DocumentTypes (DEC-86).
   - _Acceptance_: AC-ENG-003, AC-REG-005
   - _Screens built here (visual target)_: [`SettingsSPKPresets`](<../Design Artifact/settings/SettingsSPKPresets.html#SettingsSPKPresets>)
   - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it)

@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.33 (2026-11-11) adds DEC-121, product owner decision on document types: the four launch types seeded as data, the fields and controls of DocumentTypes, the non-compliance count added with the vehicles in TASK-119 and the SPK preset of a type added with the presets in TASK-208.
+
 v2.32 (2026-11-11) adds DEC-120, product owner decision on vehicle classes and chassis layouts: New class with a typed code, a layout change saved as a new version that existing vehicles do not follow, no layout restriction by unit kind, and the vehicle count per layout added with the vehicles in TASK-119.
 
 v2.31 (2026-11-11) revises DEC-119 at the product owner's request: a tyre on the map shows only its code and status colour (no "?", tread marks or hub rings), and a guide under the map explains each colour.

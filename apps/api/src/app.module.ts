@@ -6,6 +6,7 @@ import { AuthService } from './core/iam/auth-service.js';
 import { CapabilityService } from './core/iam/capability-service.js';
 import { AuthController } from './http/auth/auth.controller.js';
 import {
+  ActionRefusedFilter,
   AUTH_HTTP_CONFIG,
   AuthRefusedFilter,
   SessionGuard,
@@ -48,6 +49,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
     { provide: APP_FILTER, useClass: AuthRefusedFilter },
+    { provide: APP_FILTER, useClass: ActionRefusedFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,

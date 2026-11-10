@@ -346,7 +346,7 @@ describe('C-01 C-02 app shell', () => {
       true,
     );
     expect(screen.getByRole('link', { name: 'BMI Stooring System' }).getAttribute('href')).toBe(
-      '/dashboard',
+      '/',
     );
   });
 

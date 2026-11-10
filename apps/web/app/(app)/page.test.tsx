@@ -4,7 +4,7 @@ import HomePage from './page';
 
 afterEach(cleanup);
 
-it('renders the product name in the main region', () => {
+it('C-01 the Dashboard item opens the home page', () => {
   render(<HomePage />);
-  expect(screen.getByRole('main').textContent).toBe('BMI Stooring System');
+  expect(screen.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeTruthy();
 });

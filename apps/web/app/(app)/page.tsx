@@ -1,4 +1,6 @@
-// Scaffold only: the shell and the sign-in screen arrive with TASK-126 and TASK-104.
+import { PageHead } from '../../components/shell/AppShell';
+
+// The Dashboard item opens here (C-01). The role dashboards themselves arrive with TASK-615.
 export default function HomePage() {
-  return <main>BMI Stooring System</main>;
+  return <PageHead title="Dashboard" />;
 }

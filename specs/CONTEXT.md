@@ -6,7 +6,7 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-105 done on branch `feat/phase1-task105-capabilities`. Next task: **TASK-106** (allowedActions, menu from capabilities), then TASK-107 (trial first, DEC-113) |
+| Active task | TASK-106 done on branch `feat/phase1-task106-allowed-actions`. Next task: **TASK-107** (Access Manager area: accounts, lock/unlock, move System Admin), then TASK-108 (trial first, DEC-113) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 27 | 2026-11-10 | TASK-106: allowedActions framework (Policies, allowedActions, assertAllowed, shared rules for BR-02 and BR-03), contract helper for every record type, 403 with one sentence; web shell behind the sign-in with the menu from GET /me, not-allowed page, sign out, refresh on 401 | apps/api/, apps/web/, specs/ |
 | 26 | 2026-11-10 | TASK-105: DEC-115 (v2.26, lock rules, - cells, files.upload); permission catalogue, 2.2 matrix and menu in @bmi/shared; role_permissions seed migration 0004; effective capability set per request; SessionGuard with @RequireCapability; GET /me with capabilities and system mode; capability matrix test (10 roles x 44 codes). WSL service hung and needed the owner to restart it | apps/api/, packages/, specs/, PRD.md |
 | 25 | 2026-11-09 | TASK-104: sign-in, lock after 5 failures, web and mobile sessions, first sign-in change, forgot and reset password by link (console email adapter locally), GET /me; four web screens matched to the artboards; e2e auth runs the API on a fresh bmi_e2e database | apps/api/, apps/web/, packages/, specs/ |
 | 24 | 2026-11-09 | TASK-126 merged; web coverage gate fixed (tests for /kit, /settings and the user menu). TASK-104 started: owner decisions DEC-114 (v2.25): REQ-IAM-009 follows DEC-102 (reset link by email, 60 minutes, once); 9.2 gains auth_sessions and password_reset_tokens; e2e FLW-AM-04 runs in TASK-107. design.md 5.1 describes sign-in and sessions | PRD.md, docs/prd/, specs/ |

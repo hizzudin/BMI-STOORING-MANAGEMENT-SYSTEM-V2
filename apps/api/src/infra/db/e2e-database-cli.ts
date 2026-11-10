@@ -36,6 +36,10 @@ const client = new pg.Client({ connectionString: url.toString() });
 await client.connect();
 try {
   await runMigrations(client, join(import.meta.dirname, '../../../migrations'));
+  // The browser tests run a live system; a fresh database would start in Setup mode (REQ-IAM-010).
+  await client.query(
+    `INSERT INTO app_settings (setting_key, setting_value) VALUES ('system_mode', '"Live"'::jsonb)`,
+  );
   const hasher = new ScryptPasswordHasher();
   for (const account of accounts) {
     const { rows } = await client.query<{ id: string }>(

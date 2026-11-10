@@ -60,7 +60,7 @@ export function AppShell({
   return (
     <div className="shell" data-collapsed={collapsed}>
       <aside className="rail">
-        <a className="rail-logo" href="/dashboard" aria-label="BMI Stooring System">
+        <a className="rail-logo" href="/" aria-label="BMI Stooring System">
           {/* DEC-81: the client's logo in a white circle, blended into the rail. */}
           <img className="logo-tile" src="/bmi-logo.png" alt="" width={52} height={52} />
           <span className="rail-brand">

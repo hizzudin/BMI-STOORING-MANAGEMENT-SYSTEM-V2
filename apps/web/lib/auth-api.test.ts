@@ -92,6 +92,42 @@ describe('DEC-66 the web reaches the sign-in API through the generated client', 
     expect(requestOf(reset.fetchStub).url).toBe('http://web.test/api/auth/reset-password');
   });
 
+  it('NFR-05 a 401 from /me is answered by one refresh and the call again', async () => {
+    const answers = [
+      [401, { message: 'Your session ended. Sign in again.' }],
+      [200, { user }],
+      [200, { user, capabilities: [], systemMode: 'Live' }],
+    ] as const;
+    let calls = 0;
+    const fetchStub = vi.fn<typeof fetch>((): Promise<Response> => {
+      const [status, body] = answers[calls] ?? [500, {}];
+      calls += 1;
+      return Promise.resolve(
+        new Response(JSON.stringify(body), {
+          status,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+    });
+    const api = authApi(createApiClient('http://web.test/api', { fetch: fetchStub }));
+    expect(await api.me()).toMatchObject({ ok: true, data: { systemMode: 'Live' } });
+    expect(fetchStub.mock.calls.map((call) => (call[0] as Request).url)).toEqual([
+      'http://web.test/api/me',
+      'http://web.test/api/auth/refresh',
+      'http://web.test/api/me',
+    ]);
+  });
+
+  it('NFR-05 when the refresh is refused too, /me stays refused', async () => {
+    const { api, fetchStub } = apiAnswering(401, { message: 'Your session ended. Sign in again.' });
+    expect(await api.me()).toEqual({
+      ok: false,
+      status: 401,
+      message: 'Your session ended. Sign in again.',
+    });
+    expect(fetchStub).toHaveBeenCalledTimes(2);
+  });
+
   it('REQ-IAM-009 the first sign-in goes to ChangePassword, any other to the home page', () => {
     expect(homeAfterSignIn({ ...user, mustChangePassword: true })).toBe('/change-password');
     expect(homeAfterSignIn(user)).toBe('/');

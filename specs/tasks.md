@@ -218,7 +218,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-104
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "capability matrix"`
-- [ ] **TASK-106** allowedActions framework and its per-record contract test; menu table from capabilities [REQ-IAM-014]
+- [x] **TASK-106** allowedActions framework and its per-record contract test; menu table from capabilities [REQ-IAM-014]
   - _Scope_: Every record type returned later uses this; buttons never come from the role name.
   - _Rules_: BR-02, BR-03, NAV-9
   - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-014); `PRD.md` for BR-02, BR-03 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)

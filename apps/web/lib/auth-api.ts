@@ -8,6 +8,7 @@ export function browserApi(): ApiClient {
 
 export type Outcome<T> = { ok: true; data: T } | { ok: false; status: number; message: string };
 
+const UNAUTHORIZED = 401;
 const NETWORK_MESSAGE = 'The server cannot be reached. Check the connection and try again.';
 
 /** One sentence from the API (C-34), or a generic one when the answer carries none. */
@@ -34,7 +35,13 @@ export function authApi(given?: ApiClient) {
   return {
     signIn: (email: string, password: string) =>
       settle(client().POST('/auth/sign-in', { body: { email, password, client: 'web' } })),
-    me: () => settle(client().GET('/me')),
+    // The access token lives 5 minutes: a 401 is answered by one refresh, then the call again (design.md 5.1).
+    me: async () => {
+      const first = await settle(client().GET('/me'));
+      if (first.ok || first.status !== UNAUTHORIZED) return first;
+      const renewed = await settle(client().POST('/auth/refresh', { body: {} }));
+      return renewed.ok ? settle(client().GET('/me')) : first;
+    },
     changePassword: (body: {
       currentPassword?: string;
       newPassword: string;

@@ -15,6 +15,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import type { PermissionCode } from '@bmi/shared';
 import type { Request, Response } from 'express';
+import { ActionRefusedError, NOT_ALLOWED, type Actor } from '../../core/iam/actions.js';
 import { AuthService, WEB_IDLE_MINUTES, type Authenticated } from '../../core/iam/auth-service.js';
 import { CapabilityService, type CapabilitySnapshot } from '../../core/iam/capability-service.js';
 import { AuthRefusedError, type AuthRefusalKind } from '../../core/iam/errors.js';
@@ -86,8 +87,6 @@ const REQUIRED_CAPABILITY = Symbol('required-capability');
 export const RequireCapability = (...codes: PermissionCode[]) =>
   SetMetadata(REQUIRED_CAPABILITY, codes);
 
-export const NOT_ALLOWED = 'You do not have permission to do this.';
-
 const ALLOW_WHILE_PASSWORD_CHANGE = Symbol('allow-while-password-change');
 /** REQ-IAM-009: the only routes a session may use before the first password change. */
 export const AllowWhilePasswordChange = () => SetMetadata(ALLOW_WHILE_PASSWORD_CHANGE, true);
@@ -153,5 +152,23 @@ export class AuthRefusedFilter implements ExceptionFilter<AuthRefusedError> {
       .getResponse<Response>()
       .status(status)
       .json({ statusCode: status, message: error.message });
+  }
+}
+
+/** The actor of the record policies: the signed-in account and its capability set (2.4 L2). */
+export const actorOf = (session: SignedIn): Actor => ({
+  user: session.user,
+  capabilities: session.capabilities,
+});
+
+/** REQ-IAM-014: an action the record policies refuse is a 403 with the sentence that says why. */
+@Catch(ActionRefusedError)
+export class ActionRefusedFilter implements ExceptionFilter<ActionRefusedError> {
+  catch(error: ActionRefusedError, host: ArgumentsHost): void {
+    host
+      .switchToHttp()
+      .getResponse<Response>()
+      .status(HttpStatus.FORBIDDEN)
+      .json({ statusCode: HttpStatus.FORBIDDEN, message: error.message });
   }
 }

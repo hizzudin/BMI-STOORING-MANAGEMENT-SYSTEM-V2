@@ -31,6 +31,12 @@ test.describe('auth', () => {
       expect(cookie.sameSite).toBe('Strict');
     }
     expect(await page.evaluate(() => document.cookie)).toBe('');
+    // NAV-9: the menu is the Planner's capabilities, not a list per role.
+    const menu = page.getByRole('navigation', { name: 'Main menu' });
+    await expect(menu.getByRole('link', { name: 'Surat Perintah Kerja' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Settings' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Users and roles' })).toHaveCount(0);
+    await expect(menu.getByRole('link', { name: 'Approvals' })).toHaveCount(0);
   });
 
   test('REQ-IAM-009 the first sign-in asks for a new password, then the new one signs in', async ({

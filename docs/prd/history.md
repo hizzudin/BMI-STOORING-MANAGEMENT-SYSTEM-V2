@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.30 (2026-11-11) adds DEC-119, product owner decision on the chassis map: the map shows the PRD position codes (A2_LO, SP1), the look of the Missing status, and the Close or Wide spacing of each axle.
+
 v2.29 (2026-11-11) adds DEC-118, product owner decision on the Planner approval switch: the card and side panel, Change while on, a reason for every change, an audit record when the end time ends it, and the notice to Supervisors and GMs sent from TASK-130.
 
 v2.28 (2026-11-11) adds DEC-117, product owner decision on the Roles and permissions matrix: all ten roles, rows grouped by area with their meaning, staged changes saved together with one audit record; REQ-IAM-005 read as locking the approval codes outside Supervisor, GM and System Admin and the account codes outside the Access Manager.

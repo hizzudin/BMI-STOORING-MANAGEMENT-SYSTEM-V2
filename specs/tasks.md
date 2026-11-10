@@ -258,8 +258,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Verify_: `e2e FLW-AM-06`; regression check of AMRolesPermissions
 - [ ] **TASK-117** @bmi/chassis-map library with snapshot tests for every launch and generated layout
   - _Scope_: The drawing engine behind REQ-PLC-008 and REQ-PLC-010 (their screens are TASK-116, TASK-508, TASK-509). §8.3: built first as a separate library and drawn from the layout only; its look follows the Placement and ChassisLayouts artboards.
-  - _Rules_: DEC-07, DEC-73
-  - _Read_: `PRD.md` for DEC-07, DEC-73 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Rules_: DEC-07, DEC-73, DEC-119
+  - _Read_: `PRD.md` for DEC-07, DEC-73, DEC-119 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-101
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `unit @bmi/chassis-map "layout"` with image snapshots

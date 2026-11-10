@@ -26,7 +26,7 @@ function statusesOf(definition: ChassisDefinition): Record<string, PositionStatu
 function picture(definition: ChassisDefinition): string {
   const svg = /<svg[\s\S]*<\/svg>/.exec(
     renderToStaticMarkup(
-      <ChassisMap definition={definition} statuses={statusesOf(definition)} legend={false} />,
+      <ChassisMap definition={definition} statuses={statusesOf(definition)} guide={false} />,
     ),
   )?.[0];
   if (!svg) throw new Error('the map rendered no svg');

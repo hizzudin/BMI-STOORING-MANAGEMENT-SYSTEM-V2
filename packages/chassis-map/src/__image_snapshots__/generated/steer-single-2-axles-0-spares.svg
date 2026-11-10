@@ -56,108 +56,64 @@ svg.chassis {
   fill: var(--text-subtle, #6b7280);
 }
 .chassis .m-tyre rect,
-.chassis .m-tyre circle:not(.m-hub) {
+.chassis .m-tyre circle {
   stroke-width: 2.5;
 }
-.chassis .m-tread {
-  stroke-width: 2;
-  stroke-linecap: round;
-  opacity: 0.45;
-}
-.chassis .m-hub {
-  fill: #fff;
-  stroke-width: 2;
-}
 .chassis .m-code {
-  font-size: 8.5px;
+  font-size: 9.5px;
+  dominant-baseline: central;
   font-weight: 800;
   text-anchor: middle;
-}
-.chassis .m-miss {
-  font-size: 12px;
-  font-weight: 800;
-  fill: #2e3a40;
-  text-anchor: middle;
-}
-.chassis .m-miss-small {
-  font-size: 9px;
 }
 
-/* Statuses (REQ-PLC-008); each also has its text in the legend and the position's title. */
+/* Statuses (REQ-PLC-008): only the colour, and a dashed outline for Act now and Empty (NFR-10); the guide and the title name them. */
 .chassis .t-ok rect,
-.chassis .t-ok circle:not(.m-hub) {
+.chassis .t-ok circle {
   fill: var(--success-bg, #dcfce7);
-  stroke: var(--success, #15803d);
-}
-.chassis .t-ok .m-tread,
-.chassis .t-ok .m-hub {
   stroke: var(--success, #15803d);
 }
 .chassis .t-ok .m-code {
   fill: var(--success-text, #14532d);
 }
 .chassis .t-due rect,
-.chassis .t-due circle:not(.m-hub) {
+.chassis .t-due circle {
   fill: var(--warning-bg, #fef3c7);
-  stroke: var(--warning, #b45309);
-}
-.chassis .t-due .m-tread,
-.chassis .t-due .m-hub {
   stroke: var(--warning, #b45309);
 }
 .chassis .t-due .m-code {
   fill: var(--warning-text, #78350f);
 }
 .chassis .t-act rect,
-.chassis .t-act circle:not(.m-hub) {
+.chassis .t-act circle {
   fill: var(--danger-bg, #fee2e2);
   stroke: var(--danger, #b91c1c);
   stroke-dasharray: 5 3;
-}
-.chassis .t-act .m-tread,
-.chassis .t-act .m-hub {
-  stroke: var(--danger, #b91c1c);
 }
 .chassis .t-act .m-code {
   fill: var(--danger-text, #7f1d1d);
 }
 .chassis .t-empty rect,
-.chassis .t-empty circle:not(.m-hub) {
+.chassis .t-empty circle {
   fill: #fff;
   stroke: var(--border-strong, #9ca3af);
   stroke-dasharray: 4 3;
 }
-.chassis .t-empty .m-tread {
-  display: none;
-}
-.chassis .t-empty .m-hub {
-  stroke: var(--border-strong, #9ca3af);
-}
 .chassis .t-empty .m-code {
   fill: var(--text-subtle, #6b7280);
 }
-/* DEC-119: Missing is grey with a solid dark outline and a "?". */
+/* DEC-119: Missing is grey with a solid dark outline. */
 .chassis .t-miss rect,
-.chassis .t-miss circle:not(.m-hub) {
+.chassis .t-miss circle {
   fill: #e3e9ec;
-  stroke: #4a5a61;
-}
-.chassis .t-miss .m-tread {
-  display: none;
-}
-.chassis .t-miss .m-hub {
   stroke: #4a5a61;
 }
 .chassis .t-miss .m-code {
   fill: #2e3a40;
 }
 .chassis .t-sel rect,
-.chassis .t-sel circle:not(.m-hub) {
+.chassis .t-sel circle {
   stroke: var(--brand-red, #ad2713);
   stroke-width: 3.5;
-}
-.chassis .t-sel .m-tread {
-  stroke: var(--brand-red, #ad2713);
 }
 .chassis .t-sel .m-code {
   fill: var(--brand-red, #ad2713);
@@ -166,7 +122,7 @@ svg.chassis {
   cursor: pointer;
 }
 .chassis .m-tyre[role='button']:hover rect,
-.chassis .m-tyre[role='button']:hover circle:not(.m-hub) {
+.chassis .m-tyre[role='button']:hover circle {
   filter: brightness(0.96);
 }
 .chassis .m-tyre[role='button']:focus-visible {
@@ -174,48 +130,56 @@ svg.chassis {
   outline-offset: 2px;
 }
 
-/* The legend: every status with its text (NFR-10). */
-.chassis-legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+/* DEC-119: the guide under the map: each tyre colour with its status and what it means. */
+.chassis-guide {
+  display: grid;
   gap: 6px;
+  width: 100%;
+  max-width: 360px;
   margin: 0;
   padding: 0;
   list-style: none;
-}
-.chassis-legend-item {
-  padding: 3px 10px;
-  border: 1.5px solid;
-  border-radius: 999px;
   font-size: 12px;
-  font-weight: 600;
 }
-.chassis-legend-item.t-ok {
+.chassis-guide li {
+  display: grid;
+  grid-template-columns: 22px 70px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.chassis-guide b {
+  font-weight: 700;
+}
+.chassis-guide li > span:last-child {
+  color: var(--text-muted, #4b5563);
+}
+.chassis-swatch {
+  box-sizing: border-box;
+  width: 14px;
+  height: 22px;
+  border: 2px solid;
+  border-radius: 6px;
+}
+.chassis-swatch.t-ok {
   border-color: var(--success, #15803d);
   background: var(--success-bg, #dcfce7);
-  color: var(--success-text, #14532d);
 }
-.chassis-legend-item.t-due {
+.chassis-swatch.t-due {
   border-color: var(--warning, #b45309);
   background: var(--warning-bg, #fef3c7);
-  color: var(--warning-text, #78350f);
 }
-.chassis-legend-item.t-act {
+.chassis-swatch.t-act {
   border-color: var(--danger, #b91c1c);
   border-style: dashed;
   background: var(--danger-bg, #fee2e2);
-  color: var(--danger-text, #7f1d1d);
 }
-.chassis-legend-item.t-empty {
+.chassis-swatch.t-empty {
   border-color: var(--border-strong, #9ca3af);
   border-style: dashed;
   background: #fff;
-  color: var(--text-subtle, #6b7280);
 }
-.chassis-legend-item.t-miss {
+.chassis-swatch.t-miss {
   border-color: #4a5a61;
   background: #e3e9ec;
-  color: #2e3a40;
 }
-</style><rect width="100%" height="100%" fill="#fff"/><text x="150" y="12" class="m-front">FRONT</text><rect class="m-rail" x="116" y="24" width="11" height="246" rx="5"></rect><rect class="m-rail" x="173" y="24" width="11" height="246" rx="5"></rect><rect class="m-cross" x="127" y="34" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="80" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="126" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="172" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="218" width="46" height="5" rx="2.5"></rect><rect class="m-bumper" x="90" y="20" width="120" height="9" rx="4.5"></rect><g class="m-axle-group"><rect class="m-axle" x="68" y="66" width="164" height="8" rx="4"></rect><text x="2" y="73" class="m-role">Steer</text></g><g class="m-axle-group"><rect class="m-axle" x="68" y="216" width="164" height="8" rx="4"></rect><text x="2" y="223" class="m-role">Steer</text></g><g class="m-tyre t-ok" data-code="A1_L"><title>A1_L, Axle 1 left, Normal</title><rect x="50" y="44" width="22" height="52" rx="9"></rect><path class="m-tread" d="M55 51 h12"></path><path class="m-tread" d="M55 57 h12"></path><path class="m-tread" d="M55 87 h12"></path><path class="m-tread" d="M55 93 h12"></path><text x="61" y="70" class="m-code" transform="rotate(-90 61 70)">A1_L</text></g><g class="m-tyre t-due" data-code="A1_R"><title>A1_R, Axle 1 right, Due soon</title><rect x="228" y="44" width="22" height="52" rx="9"></rect><path class="m-tread" d="M233 51 h12"></path><path class="m-tread" d="M233 57 h12"></path><path class="m-tread" d="M233 87 h12"></path><path class="m-tread" d="M233 93 h12"></path><text x="239" y="70" class="m-code" transform="rotate(-90 239 70)">A1_R</text></g><g class="m-tyre t-act" data-code="A2_L"><title>A2_L, Axle 2 left, Act now</title><rect x="50" y="194" width="22" height="52" rx="9"></rect><path class="m-tread" d="M55 201 h12"></path><path class="m-tread" d="M55 207 h12"></path><path class="m-tread" d="M55 237 h12"></path><path class="m-tread" d="M55 243 h12"></path><text x="61" y="220" class="m-code" transform="rotate(-90 61 220)">A2_L</text></g><g class="m-tyre t-empty" data-code="A2_R"><title>A2_R, Axle 2 right, Empty</title><rect x="228" y="194" width="22" height="52" rx="9"></rect><path class="m-tread" d="M233 201 h12"></path><path class="m-tread" d="M233 207 h12"></path><path class="m-tread" d="M233 237 h12"></path><path class="m-tread" d="M233 243 h12"></path><text x="239" y="220" class="m-code" transform="rotate(-90 239 220)">A2_R</text></g><circle class="m-hubcap" cx="78" cy="70" r="6"></circle><circle class="m-hubcap" cx="222" cy="70" r="6"></circle><circle class="m-hubcap" cx="78" cy="220" r="6"></circle><circle class="m-hubcap" cx="222" cy="220" r="6"></circle></svg>
+</style><rect width="100%" height="100%" fill="#fff"/><text x="150" y="12" class="m-front">FRONT</text><rect class="m-rail" x="116" y="24" width="11" height="246" rx="5"></rect><rect class="m-rail" x="173" y="24" width="11" height="246" rx="5"></rect><rect class="m-cross" x="127" y="34" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="80" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="126" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="172" width="46" height="5" rx="2.5"></rect><rect class="m-cross" x="127" y="218" width="46" height="5" rx="2.5"></rect><rect class="m-bumper" x="90" y="20" width="120" height="9" rx="4.5"></rect><g class="m-axle-group"><rect class="m-axle" x="68" y="66" width="164" height="8" rx="4"></rect><text x="2" y="73" class="m-role">Steer</text></g><g class="m-axle-group"><rect class="m-axle" x="68" y="216" width="164" height="8" rx="4"></rect><text x="2" y="223" class="m-role">Steer</text></g><g class="m-tyre t-ok" data-code="A1_L"><title>A1_L, Axle 1 left, Normal</title><rect x="50" y="44" width="22" height="52" rx="9"></rect><text x="61" y="70" class="m-code" transform="rotate(-90 61 70)">A1_L</text></g><g class="m-tyre t-due" data-code="A1_R"><title>A1_R, Axle 1 right, Due soon</title><rect x="228" y="44" width="22" height="52" rx="9"></rect><text x="239" y="70" class="m-code" transform="rotate(-90 239 70)">A1_R</text></g><g class="m-tyre t-act" data-code="A2_L"><title>A2_L, Axle 2 left, Act now</title><rect x="50" y="194" width="22" height="52" rx="9"></rect><text x="61" y="220" class="m-code" transform="rotate(-90 61 220)">A2_L</text></g><g class="m-tyre t-empty" data-code="A2_R"><title>A2_R, Axle 2 right, Empty</title><rect x="228" y="194" width="22" height="52" rx="9"></rect><text x="239" y="220" class="m-code" transform="rotate(-90 239 220)">A2_R</text></g><circle class="m-hubcap" cx="78" cy="70" r="6"></circle><circle class="m-hubcap" cx="222" cy="70" r="6"></circle><circle class="m-hubcap" cx="78" cy="220" r="6"></circle><circle class="m-hubcap" cx="222" cy="220" r="6"></circle></svg>

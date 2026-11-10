@@ -16,5 +16,6 @@ export {
   POSITION_STATUSES,
   STATUS_CLASSES,
   STATUS_LABELS,
+  STATUS_MEANINGS,
   type PositionStatus,
 } from './statuses.js';

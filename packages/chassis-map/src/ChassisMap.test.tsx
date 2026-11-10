@@ -21,28 +21,47 @@ describe('ChassisMap layout component (REQ-PLC-008, REQ-PLC-010, DEC-119)', () =
     expect(map.querySelectorAll('g.m-tyre')).toHaveLength(11);
   });
 
-  it('REQ-PLC-008 every status has its text in the legend', () => {
+  it('REQ-PLC-008 DEC-119 the guide under the map tells what each colour means', () => {
     render(<ChassisMap definition={head} />);
-    const legend = screen.getByRole('list', { name: 'Position status' });
+    const guide = screen.getByRole('list', { name: 'Tyre colours' });
     expect(
-      within(legend)
+      within(guide)
         .getAllByRole('listitem')
         .map((i) => i.textContent),
-    ).toEqual(['Normal', 'Due soon', 'Act now', 'Empty', 'Missing']);
+    ).toEqual([
+      'NormalFitted and within its life',
+      'Due soonNear its replacement limit',
+      'Act nowAt or past its limit: replace or check it',
+      'EmptyNo tyre fitted',
+      'MissingNo baseline recorded for this position',
+    ]);
+    const swatches = guide.querySelectorAll('.chassis-swatch');
+    expect([...swatches].map((s) => s.className)).toEqual([
+      'chassis-swatch t-ok',
+      'chassis-swatch t-due',
+      'chassis-swatch t-act',
+      'chassis-swatch t-empty',
+      'chassis-swatch t-miss',
+    ]);
   });
 
-  it('DEC-119 a Missing tyre is grey with a "?"; the code is written in every tyre', () => {
+  it('DEC-119 a tyre holds only its shape and its code: no "?", tread marks or hub ring', () => {
     render(
       <ChassisMap
         definition={head}
         statuses={{ A3_LI: 'Missing', SP1: 'Missing' }}
-        legend={false}
+        guide={false}
       />,
     );
-    const missing = document.querySelectorAll('g.t-miss');
-    expect(missing).toHaveLength(2);
-    missing.forEach((g) => expect(g.querySelector('.m-miss')?.textContent).toBe('?'));
-    expect(document.querySelector('g[data-code="A2_RO"] .m-code')?.textContent).toBe('A2_RO');
+    expect(document.querySelectorAll('g.t-miss')).toHaveLength(2);
+    for (const tyre of document.querySelectorAll('g.m-tyre')) {
+      const parts = [...tyre.children].map((c) => c.tagName.toLowerCase());
+      expect(parts.sort()).toEqual(
+        [tyre.querySelector('rect') ? 'rect' : 'circle', 'text', 'title'].sort(),
+      );
+      expect(tyre.querySelector('text')?.textContent).toBe(tyre.getAttribute('data-code'));
+    }
+    expect(document.body.textContent).not.toContain('?');
     expect(screen.queryByRole('list')).toBeNull();
   });
 

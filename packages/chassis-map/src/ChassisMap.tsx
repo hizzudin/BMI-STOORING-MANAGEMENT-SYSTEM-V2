@@ -5,6 +5,7 @@ import {
   POSITION_STATUSES,
   STATUS_CLASSES,
   STATUS_LABELS,
+  STATUS_MEANINGS,
   type PositionStatus,
 } from './statuses.js';
 
@@ -17,12 +18,9 @@ export interface ChassisMapProps {
   onSelect?: (code: string) => void;
   /** Accessible name of the map, for example "Chassis map, B 9012 KX". */
   title?: string;
-  /** The status legend under the map; on by default. */
-  legend?: boolean;
+  /** The guide under the map: each tyre colour with its status and meaning; on by default. */
+  guide?: boolean;
 }
-
-/** Tread marks across a wheel, as in the artboards. */
-const TREADS = [7, 13, 43, 49];
 
 function Tyre({
   shape,
@@ -37,7 +35,6 @@ function Tyre({
 }) {
   const name = `${shape.code}, ${shape.label}, ${STATUS_LABELS[status]}`;
   const classes = ['m-tyre', STATUS_CLASSES[status], selected ? 't-sel' : ''].join(' ').trim();
-  const missing = status === 'Missing';
   const press = onSelect
     ? {
         role: 'button',
@@ -58,39 +55,24 @@ function Tyre({
     return (
       <g className={classes} data-code={shape.code} {...press}>
         <title>{name}</title>
+        {/* DEC-119: only the code and the status colour, nothing else in the tyre. */}
         <circle cx={shape.cx} cy={shape.cy} r={shape.r} />
-        <circle className="m-hub" cx={shape.cx} cy={shape.cy} r={11} />
-        <text x={shape.cx} y={shape.cy + 3} className="m-code">
+        <text x={shape.cx} y={shape.cy} className="m-code">
           {shape.code}
         </text>
-        {missing && (
-          // Between the hub and the rim, under the code.
-          <text x={shape.cx} y={shape.cy + 19} className="m-miss m-miss-small">
-            ?
-          </text>
-        )}
       </g>
     );
   }
   const cx = shape.x + shape.width / 2;
-  const axleY = shape.y + shape.height / 2;
-  // DEC-119: the code reads upright in the tyre; a Missing tyre keeps room for its "?".
-  const codeY = missing ? axleY - 6 : axleY;
+  const cy = shape.y + shape.height / 2;
   return (
     <g className={classes} data-code={shape.code} {...press}>
       <title>{name}</title>
       <rect x={shape.x} y={shape.y} width={shape.width} height={shape.height} rx={9} />
-      {TREADS.map((offset) => (
-        <path key={offset} className="m-tread" d={`M${shape.x + 5} ${shape.y + offset} h12`} />
-      ))}
-      <text x={cx} y={codeY} className="m-code" transform={`rotate(-90 ${cx} ${codeY})`}>
+      {/* The code reads upright along the wheel, centred on it. */}
+      <text x={cx} y={cy} className="m-code" transform={`rotate(-90 ${cx} ${cy})`}>
         {shape.code}
       </text>
-      {missing && (
-        <text x={cx} y={axleY + 21} className="m-miss">
-          ?
-        </text>
-      )}
     </g>
   );
 }
@@ -105,7 +87,7 @@ export function ChassisMap({
   selected = null,
   onSelect,
   title,
-  legend = true,
+  guide = true,
 }: ChassisMapProps) {
   const map = chassisGeometry(definition);
   const name =
@@ -192,11 +174,13 @@ export function ChassisMap({
           )),
         )}
       </svg>
-      {legend && (
-        <ul className="chassis-legend" aria-label="Position status">
+      {guide && (
+        <ul className="chassis-guide" aria-label="Tyre colours">
           {POSITION_STATUSES.map((status) => (
-            <li key={status} className={`chassis-legend-item ${STATUS_CLASSES[status]}`}>
-              {STATUS_LABELS[status]}
+            <li key={status}>
+              <span className={`chassis-swatch ${STATUS_CLASSES[status]}`} aria-hidden="true" />
+              <b>{STATUS_LABELS[status]}</b>
+              <span>{STATUS_MEANINGS[status]}</span>
             </li>
           ))}
         </ul>

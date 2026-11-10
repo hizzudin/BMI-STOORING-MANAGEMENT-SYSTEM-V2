@@ -10,7 +10,7 @@
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.30 |
+| Spec version | PRD v2.31 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0 selesai dan `main` sudah di GitHub; CI hijau. Tersisa untuk Anda: mengaktifkan branch protection di `main`. Berikutnya TASK-101. Masa simpan Idempotency-Key 30 hari masih asumsi [A].
@@ -19,7 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
-| 31 | 2026-11-11 | TASK-117: DEC-119 (v2.30; the map shows the PRD position codes, the Missing look, Close or Wide axle spacing; 14 map artboards recoded); chassis layout definition and position generation in @bmi/shared; @bmi/chassis-map geometry, ChassisMap component, style sheet and 116 SVG image snapshots | packages/chassis-map, packages/shared, specs/, Design Artifact, PRD.md |
+| 31 | 2026-11-11 | TASK-117: DEC-119 (v2.30, revised v2.31: plain tyres with code and colour, a colour guide under the map; the map shows the PRD position codes, the Missing look, Close or Wide axle spacing; 14 map artboards recoded); chassis layout definition and position generation in @bmi/shared; @bmi/chassis-map geometry, ChassisMap component, style sheet and 116 SVG image snapshots | packages/chassis-map, packages/shared, specs/, Design Artifact, PRD.md |
 | 30 | 2026-11-11 | TASK-109: DEC-118 (v2.29; card and side panel, Change while on, a reason for every change, the end at its end time audited by a delayed job, the notice to Supervisors and GMs moved to TASK-130); Planner approval switch API, end job and card; FLW-AM-06 e2e; side panel parts shared in kit/SidePanel | apps/, packages/shared, specs/, Design Artifact/access, Design Artifact/_kit, PRD.md |
 | 29 | 2026-11-11 | TASK-108: DEC-117 (v2.28, ten role columns, rows by area with meanings, staged save with one audit record; REQ-IAM-005 locks approval codes outside Supervisor, GM, System Admin and account codes outside the Access Manager, migration 0005); Roles and permissions matrix API and screen; FLW-AM-02 e2e | apps/, packages/shared, specs/, Design Artifact/access, PRD.md |
 | 28 | 2026-11-10 | TASK-107: DEC-116 (v2.27); Users and roles (accounts with one role, temporary password, unlock, reset, deactivate and activate, move System Admin, audit records), account allowedActions with the contract test, Access Manager lands on Users and roles; qa found and fixed a refresh race that signed web users out | apps/, packages/shared, specs/, Design Artifact/access |

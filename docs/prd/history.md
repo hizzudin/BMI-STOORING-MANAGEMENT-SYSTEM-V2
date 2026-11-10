@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.31 (2026-11-11) revises DEC-119 at the product owner's request: a tyre on the map shows only its code and status colour (no "?", tread marks or hub rings), and a guide under the map explains each colour.
+
 v2.30 (2026-11-11) adds DEC-119, product owner decision on the chassis map: the map shows the PRD position codes (A2_LO, SP1), the look of the Missing status, and the Close or Wide spacing of each axle.
 
 v2.29 (2026-11-11) adds DEC-118, product owner decision on the Planner approval switch: the card and side panel, Change while on, a reason for every change, an audit record when the end time ends it, and the notice to Supervisors and GMs sent from TASK-130.

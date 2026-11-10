@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.26 (2026-11-10) adds DEC-115, product owner decision on the permission matrix: which cells are locked, what a - cell means and which roles hold `files.upload`.
+
 v2.25 (2026-11-09) adds DEC-114, product owner decision on sign-in: REQ-IAM-009 now follows DEC-102 (reset link by email, 60 minutes, once), and 9.2 gains `auth_sessions` and `password_reset_tokens`.
 
 v2.24 (2026-11-09) adds DEC-113, product owner decision: trial first. Phase 1 is reordered so a local trial with dummy data (TASK-131, ADR-0003) comes as early as the task dependencies allow. No requirement changes.

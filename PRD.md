@@ -199,7 +199,7 @@ Ten roles exist, each account holds exactly one, and exactly one account holds S
 
 ### 2.2 Permission matrix
 
-X = allowed, V = view only, blank = not allowed, L = locked by a business rule (the Access Manager cannot change it), S = switchable: off by default, the Access Manager switches it on or off (REQ-IAM-008).
+X = allowed, V = view only, blank = not allowed, L = locked by a business rule (the Access Manager cannot change it), S = switchable: off by default, the Access Manager switches it on or off (REQ-IAM-008), - = not allowed by default, like blank. Locked besides the L cells (DEC-115): every cell of the System Admin column (REQ-IAM-005, RL-4), the S cells (only the Planner approval switch turns them on), every code of the Access Manager other than its own cells (RL-5), every action code of the Field Coordinator other than its X cells (RL-6) and every action code of Accounting other than `invoice.manage` (RL-9); a view code (`*.view`) of those roles stays editable.
 
 | Capability | PLN | MEC | WHM | SUP | GM | SA | AM | DRV | FC | ACC | Ref |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -320,7 +320,7 @@ The matrix of 2.2 says *what kind of action* a role may take. It does not say wh
 | `iam.planner_approval_switch` | Switch Planner approval on or off | The Planner approval switch |
 | `ai.settings` | AI assistant settings (P1) | AI settings (P1) |
 | `setup.golive` | Setup mode data entry without approval; Go live | Setup and go live item; bulk import |
-| `files.upload` | Not a row: held by every role that holds an action code above whose screen has an upload slot | Signed upload link (`REQ-FUP-004`) |
+| `files.upload` | Not a row: held by the executor roles Planner, Mechanic, Warehouse Manager, System Admin, Driver and Field Coordinator (DEC-115) | Signed upload link (`REQ-FUP-004`) |
 
 **Menu.** Each navigation item names the codes that show it; it shows when the user holds at least one of them (`NAV-9`). The table replaces any per-role list of items.
 
@@ -790,6 +790,7 @@ Release 1 is built in seven steps; each step ends with its acceptance criteria p
 | DEC-112 | Part traceability and performance, product owner decision: the tracked parts are the part items (parts with a part item type) and the tyres. Stock is kept in lots so an issued part keeps its vendor and purchase price, while the moving average stays the cost on the SPK; the warehouse takes the oldest lot by default and may choose another. Each fitting of a part item is a part installation; repairs come from verified Mechanic Action service lines tied to the part item or a chosen tyre, and Part Check findings show without cost. The data is recorded from go-live in Release 1 (P0); the Parts report and the retread vendor cycle analysis come in Release 2 (P1) | 4.12a, 4.4, 4.5, 4.13, 4.14, 4.21, 9 |
 | DEC-113 | Trial first, product owner decision: the owner wants to try the system on a local computer with dummy data as soon as possible. Phase 1 starts with the tasks a working sign-in, vehicle and SPK flow needs, then a local trial with a dummy seed and one command to run it; every later task adds its own dummy data. No requirement changes; the local seed is never used by tests or loaded into staging or production (ADR-0003) | 10, 8.3 |
 | DEC-114 | Sign-in details, product owner decision: REQ-IAM-009 follows DEC-102, so Forgot password? emails one reset link that works once and expires after 60 minutes, and the Access Manager can still give a temporary password. Two tables join 9.2: `auth_sessions` (one row per signed-in device, refresh token stored only as a hash, rotated on every refresh, revoked by sign out, password change or reset and deactivation; web ends 30 minutes after the last activity, mobile after 30 days) and `password_reset_tokens` (token stored only as a hash). The end-to-end test of FLW-AM-04 runs with its screen in TASK-107; TASK-104 tests lock and unlock through the API | 4.18, 8.2, 9.2, REQ-IAM-001, REQ-IAM-009, NFR-05 |
+| DEC-115 | Permission matrix details, product owner decision: besides the L cells, the cells fixed by a business rule are locked: the whole System Admin column (REQ-IAM-005, RL-4), the S cells (only the Planner approval switch turns them on), every code of the Access Manager other than its own cells (RL-5), every action code of the Field Coordinator other than its X cells (RL-6) and every action code of Accounting other than `invoice.manage` (RL-9); view codes of those roles stay editable. A - cell means not allowed by default, like a blank cell. `files.upload` is held by the executor roles only: Planner, Mechanic, Warehouse Manager, System Admin, Driver and Field Coordinator | 2.2, 2.4, REQ-IAM-005 |
 
 Fully superseded decisions (DEC-25, DEC-38, DEC-40, DEC-49, DEC-52, DEC-71, DEC-105) are in [docs/prd/history.md](docs/prd/history.md).
 

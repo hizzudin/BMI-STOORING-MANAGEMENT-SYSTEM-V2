@@ -125,7 +125,27 @@ describe('DEC-66 the web reaches the sign-in API through the generated client', 
       status: 401,
       message: 'Your session ended. Sign in again.',
     });
-    expect(fetchStub).toHaveBeenCalledTimes(2);
+    // /me, the refused refresh, and /me once more in case another tab rotated the token.
+    expect(fetchStub).toHaveBeenCalledTimes(3);
+  });
+
+  it('NFR-05 calls that find the token expired together send one refresh', async () => {
+    const urls: string[] = [];
+    const fetchStub = vi.fn<typeof fetch>((input): Promise<Response> => {
+      const url = (input as Request).url;
+      urls.push(url);
+      const expired = url.endsWith('/me') && urls.filter((u) => u.endsWith('/me')).length <= 2;
+      return Promise.resolve(
+        new Response(JSON.stringify(expired ? { message: 'Your session ended.' } : { user }), {
+          status: expired ? 401 : 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+      );
+    });
+    const api = authApi(createApiClient('http://web.test/api', { fetch: fetchStub }));
+    const [a, b] = await Promise.all([api.me(), api.me()]);
+    expect(a.ok && b.ok).toBe(true);
+    expect(urls.filter((url) => url.endsWith('/auth/refresh'))).toHaveLength(1);
   });
 
   it('REQ-IAM-009 the first sign-in goes to ChangePassword, any other to the home page', () => {

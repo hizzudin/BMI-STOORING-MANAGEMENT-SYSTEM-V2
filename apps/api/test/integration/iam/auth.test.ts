@@ -198,6 +198,20 @@ describe('NFR-05 passwords and sessions', () => {
     expect((await postJson(baseUrl, '/auth/refresh', { refreshToken })).status).toBe(401);
   });
 
+  it('NFR-05 two refreshes at once (two tabs) keep the browser signed in', async () => {
+    const { browser } = await signedIn();
+    clock.advanceMinutes(6);
+    const answers = await Promise.all([
+      browser.call('POST', '/auth/refresh'),
+      browser.call('POST', '/auth/refresh'),
+    ]);
+    expect(answers.map((a) => a.status).sort()).toEqual([200, 401]);
+    // The refused refresh must not wipe the cookies the other one has just set.
+    const refused = answers.find((a) => a.status === 401);
+    expect(refused?.headers.getSetCookie()).toEqual([]);
+    expect((await browser.call('GET', '/me')).status).toBe(200);
+  });
+
   it('C-04 sign out ends the session at once', async () => {
     const { browser } = await signedIn();
     const refresh = browser.cookie('bmi_refresh');

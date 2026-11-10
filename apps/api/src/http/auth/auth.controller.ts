@@ -85,12 +85,9 @@ export class AuthController {
     if (fromCookie) assertWebOrigin(request, this.config);
     const token = body.refreshToken ?? readCookie(request, REFRESH_COOKIE);
     if (!token) throw new AuthRefusedError('sessionEnded');
-    try {
-      return this.deliver(await this.auth.refresh(token), fromCookie, response);
-    } catch (error) {
-      if (fromCookie) clearSessionCookies(response, this.config);
-      throw error;
-    }
+    // A refused refresh leaves the cookies alone: another tab may have just rotated the token and
+    // set new ones, which this answer must not wipe. A stale cookie is harmless; it is refused again.
+    return this.deliver(await this.auth.refresh(token), fromCookie, response);
   }
 
   @Post('auth/sign-out')

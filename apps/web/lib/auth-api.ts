@@ -12,7 +12,7 @@ const UNAUTHORIZED = 401;
 const NETWORK_MESSAGE = 'The server cannot be reached. Check the connection and try again.';
 
 /** One sentence from the API (C-34), or a generic one when the answer carries none. */
-async function settle<T>(
+export async function settle<T>(
   call: Promise<{ data?: T; error?: unknown; response: Response }>,
 ): Promise<Outcome<T>> {
   try {
@@ -32,6 +32,7 @@ async function settle<T>(
 export function authApi(given?: ApiClient) {
   let made: ApiClient | undefined = given;
   const client = () => (made ??= browserApi());
+  let refreshing: Promise<unknown> | undefined;
   return {
     signIn: (email: string, password: string) =>
       settle(client().POST('/auth/sign-in', { body: { email, password, client: 'web' } })),
@@ -39,8 +40,13 @@ export function authApi(given?: ApiClient) {
     me: async () => {
       const first = await settle(client().GET('/me'));
       if (first.ok || first.status !== UNAUTHORIZED) return first;
-      const renewed = await settle(client().POST('/auth/refresh', { body: {} }));
-      return renewed.ok ? settle(client().GET('/me')) : first;
+      // Calls that find the token expired together share one refresh; a refused refresh may mean
+      // another tab already rotated it, so /me is asked once more before the session counts as ended.
+      refreshing ??= settle(client().POST('/auth/refresh', { body: {} })).finally(() => {
+        refreshing = undefined;
+      });
+      await refreshing;
+      return settle(client().GET('/me'));
     },
     changePassword: (body: {
       currentPassword?: string;

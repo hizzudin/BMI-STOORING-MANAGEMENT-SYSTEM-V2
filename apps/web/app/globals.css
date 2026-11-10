@@ -512,6 +512,7 @@ textarea:focus-visible {
   background: transparent;
   color: var(--text-muted);
   font: 600 13px var(--font);
+  text-decoration: none;
   cursor: pointer;
 }
 .tab:hover {
@@ -628,6 +629,12 @@ textarea:focus-visible {
   border-radius: var(--radius-panel);
   background: #fff;
   box-shadow: var(--panel-lift);
+}
+/* In a panel the last field keeps its 12 px margin, so the bar adds 6 px: 18 px in all, as on the artboards. */
+.panel .field + .bar,
+.panel .field + .refusal + .bar,
+.panel .muted + .bar {
+  margin-top: 6px;
 }
 .menu-row {
   padding: 9px 0;

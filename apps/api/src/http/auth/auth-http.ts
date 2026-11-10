@@ -117,9 +117,10 @@ export class SessionGuard implements CanActivate {
     );
     if (request.auth.user.mustChangePassword && !allowed)
       throw new AuthRefusedError('passwordChangeFirst');
-    const required = this.reflector.get<PermissionCode[] | undefined>(
+    // A route's own codes win over its controller's (getAllAndOverride).
+    const required = this.reflector.getAllAndOverride<PermissionCode[] | undefined>(
       REQUIRED_CAPABILITY,
-      context.getHandler(),
+      [context.getHandler(), context.getClass()],
     );
     if (required && !required.some((code) => request.auth?.capabilities.has(code))) {
       throw new ForbiddenException(NOT_ALLOWED);

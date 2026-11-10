@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import pg from 'pg';
 import { CLOCK, EMAIL, PASSWORD_HASHER, PG_POOL } from './app.tokens.js';
+import { AccountService } from './core/iam/account-service.js';
 import { AuthService } from './core/iam/auth-service.js';
 import { CapabilityService } from './core/iam/capability-service.js';
+import { AccountErrorFilter, AccountsController } from './http/accounts/accounts.controller.js';
 import { AuthController } from './http/auth/auth.controller.js';
 import {
   ActionRefusedFilter,
@@ -18,6 +20,7 @@ import { HealthController } from './http/health.controller.js';
 import { SystemClock } from './infra/clock/system-clock.js';
 import { HmacAccessTokenSigner } from './infra/crypto/hmac-access-token-signer.js';
 import { ScryptPasswordHasher } from './infra/crypto/scrypt-password-hasher.js';
+import { accountGateways } from './infra/db/account-gateways.js';
 import { iamGateways } from './infra/db/iam-gateways.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { ConsoleEmailAdapter } from './infra/email/console-email.js';
@@ -45,11 +48,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
 
 /** The composition root: the only place that knows both the core and the adapters. */
 @Module({
-  controllers: [HealthController, AuthController],
+  controllers: [HealthController, AuthController, AccountsController],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
     { provide: APP_FILTER, useClass: AuthRefusedFilter },
     { provide: APP_FILTER, useClass: ActionRefusedFilter },
+    { provide: APP_FILTER, useClass: AccountErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -84,6 +88,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, CLOCK],
       useFactory: (pool: pg.Pool, clock: ClockPort) =>
         new CapabilityService(new DrizzleUnitOfWork(pool, iamGateways), clock),
+    },
+    {
+      provide: AccountService,
+      inject: [PG_POOL, PASSWORD_HASHER, CLOCK],
+      useFactory: (pool: pg.Pool, hasher: PasswordHasher, clock: ClockPort) =>
+        new AccountService(new DrizzleUnitOfWork(pool, accountGateways), hasher, clock),
     },
     SessionGuard,
   ],

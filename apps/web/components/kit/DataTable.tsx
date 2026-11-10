@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
 export interface Column<Row> {
   key: string;
@@ -9,6 +9,8 @@ export interface Column<Row> {
   /** C-33: the search box matches the code and name columns. */
   searchable?: boolean;
   align?: 'start' | 'end';
+  /** What the cell shows when it is more than its value (a pill); search, filter and sort keep using `value`. */
+  render?: (row: Row) => ReactNode;
 }
 
 export interface DataTableProps<Row> {
@@ -114,7 +116,7 @@ export function DataTable<Row>({
               >
                 {columns.map((column) => (
                   <td key={column.key} className={column.align === 'end' ? 'num' : undefined}>
-                    {column.value(row)}
+                    {column.render ? column.render(row) : column.value(row)}
                   </td>
                 ))}
               </tr>

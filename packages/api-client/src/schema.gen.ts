@@ -140,6 +140,126 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Users and roles: Accounts */
+        get: operations["listAccounts"];
+        put?: never;
+        /** New account with one role and a one-time temporary password (FLW-AM-01) */
+        post: operations["createAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit the name, email and the one role of an account */
+        patch: operations["updateAccount"];
+        trace?: never;
+    };
+    "/accounts/{id}/unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unlock after 5 failed sign-ins */
+        post: operations["unlockAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounts/{id}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Deactivate an account and end its sessions (FLW-AM-04) */
+        post: operations["deactivateAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounts/{id}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Activate a deactivated account */
+        post: operations["activateAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounts/{id}/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A new one-time temporary password, changed at the next sign-in (REQ-IAM-009) */
+        post: operations["resetAccountPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounts/move-system-admin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move the System Admin role to another active account, with a reason (FLW-AM-03) */
+        post: operations["moveSystemAdmin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -208,6 +328,62 @@ export interface components {
             capabilities: ("dashboard.view" | "spk.view" | "spk.create" | "breakdown.view" | "breakdown.review" | "breakdown.send" | "breakdown.urgent_alert" | "spk.approve" | "spk.cancel" | "stock.issue" | "purchase.line" | "mechanic.execute" | "mobilisasi.execute" | "docstep.execute" | "step.verify" | "step.request_completion" | "step.assign" | "changerequest.raise" | "registry.manage" | "parttype.manage" | "masterdata.manage" | "settings.manage" | "vehicle.view" | "vehicle.manage" | "vehicle.driver_set" | "odometer.manual" | "inspection.proxy" | "inspection.perform" | "driver.menu" | "inventory.manage" | "tyre.manage" | "count.approve" | "schedule.view" | "schedule.manage" | "partage.view" | "invoice.view" | "invoice.manage" | "report.view" | "audit.view" | "accounts.manage" | "iam.planner_approval_switch" | "ai.settings" | "setup.golive" | "files.upload")[];
             /** @enum {string} */
             systemMode: "Setup" | "Live";
+        };
+        AccountListResponse: {
+            accounts: {
+                id: number;
+                name: string;
+                email: string;
+                role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                /** @enum {string} */
+                status: "Active" | "Locked" | "Inactive";
+                lastSignInAt: string | null;
+                allowedActions: ("edit" | "unlock" | "reset_password" | "deactivate" | "activate")[];
+            }[];
+            allowedActions: ("create" | "move_system_admin")[];
+        };
+        AccountWithPassword: {
+            account: {
+                id: number;
+                name: string;
+                email: string;
+                role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                /** @enum {string} */
+                status: "Active" | "Locked" | "Inactive";
+                lastSignInAt: string | null;
+                allowedActions: ("edit" | "unlock" | "reset_password" | "deactivate" | "activate")[];
+            };
+            temporaryPassword: string;
+        };
+        AccountRequest: {
+            name: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting";
+        };
+        AccountResponse: {
+            account: {
+                id: number;
+                name: string;
+                email: string;
+                role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                /** @enum {string} */
+                status: "Active" | "Locked" | "Inactive";
+                lastSignInAt: string | null;
+                allowedActions: ("edit" | "unlock" | "reset_password" | "deactivate" | "activate")[];
+            };
+        };
+        AccountUpdateRequest: {
+            name: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting";
+        };
+        MoveSystemAdminRequest: {
+            toUserId: number;
+            reason: string;
         };
     };
     responses: never;
@@ -394,6 +570,188 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+        };
+    };
+    listAccounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Users and roles: Accounts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountListResponse"];
+                };
+            };
+        };
+    };
+    createAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountRequest"];
+            };
+        };
+        responses: {
+            /** @description New account with one role and a one-time temporary password (FLW-AM-01) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountWithPassword"];
+                };
+            };
+        };
+    };
+    updateAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Edit the name, email and the one role of an account */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountResponse"];
+                };
+            };
+        };
+    };
+    unlockAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unlock after 5 failed sign-ins */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountResponse"];
+                };
+            };
+        };
+    };
+    deactivateAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deactivate an account and end its sessions (FLW-AM-04) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountResponse"];
+                };
+            };
+        };
+    };
+    activateAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Activate a deactivated account */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountResponse"];
+                };
+            };
+        };
+    };
+    resetAccountPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A new one-time temporary password, changed at the next sign-in (REQ-IAM-009) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountWithPassword"];
+                };
+            };
+        };
+    };
+    moveSystemAdmin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MoveSystemAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description Move the System Admin role to another active account, with a reason (FLW-AM-03) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountListResponse"];
                 };
             };
         };

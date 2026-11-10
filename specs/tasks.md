@@ -225,7 +225,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-105
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "allowedActions contract"`
-- [ ] **TASK-107** Access Manager area: accounts with one role, lock/unlock, deactivate, move System Admin [REQ-IAM-002, REQ-IAM-003, REQ-IAM-004]
+- [x] **TASK-107** Access Manager area: accounts with one role, lock/unlock, deactivate, move System Admin [REQ-IAM-002, REQ-IAM-003, REQ-IAM-004]
   - _Scope_: Users and roles is the Access Manager's own area; the System Admin never opens it.
   - _Acceptance_: AC-IAM-001, AC-IAM-002, AC-IAM-003, AC-IAM-004
   - _Rules_: RL-1, RL-4, BR-14, DEC-28

@@ -2,7 +2,7 @@
 export const E2E_ACCOUNTS_ENV = 'BMI_E2E_ACCOUNTS';
 
 export interface E2eAccount {
-  key: 'planner' | 'firstSignIn' | 'locked';
+  key: 'planner' | 'firstSignIn' | 'locked' | 'accessManager' | 'systemAdmin' | 'driver';
   name: string;
   email: string;
   password: string;

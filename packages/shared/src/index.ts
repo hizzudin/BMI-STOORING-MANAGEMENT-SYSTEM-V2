@@ -4,6 +4,7 @@ export * from './format/index.js';
 export * from './money/index.js';
 export * from './numbering/index.js';
 export * from './permissions/index.js';
+export * from './schemas/accounts.js';
 export * from './schemas/auth.js';
 export * from './schemas/health.js';
 export * from './time/wib.js';

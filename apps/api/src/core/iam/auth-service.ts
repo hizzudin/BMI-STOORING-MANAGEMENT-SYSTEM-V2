@@ -46,6 +46,14 @@ const sha256 = (value: string) => createHash('sha256').update(value).digest('hex
 const newToken = () => randomBytes(32).toString('base64url');
 const minutesAfter = (at: Date, minutes: number) => new Date(at.getTime() + minutes * MINUTE_MS);
 
+/** REQ-IAM-009: a one-time temporary password that meets NFR-05 (letters and digits). */
+export function temporaryPassword(): string {
+  const letters = Array.from({ length: TEMPORARY_LETTERS }, () =>
+    TEMPORARY_ALPHABET.charAt(randomInt(TEMPORARY_ALPHABET.length)),
+  );
+  return `${letters.join('')}${randomInt(10, 100)}`;
+}
+
 function toSessionUser(user: AuthUser): SessionUser {
   return {
     id: user.id,
@@ -210,10 +218,7 @@ export class AuthService {
   /** REQ-IAM-009: a one-time temporary password, changed at the next sign-in (screen in TASK-107). */
   async issueTemporaryPassword(userId: number): Promise<string> {
     const now = this.clock.now();
-    const letters = Array.from({ length: TEMPORARY_LETTERS }, () =>
-      TEMPORARY_ALPHABET.charAt(randomInt(TEMPORARY_ALPHABET.length)),
-    );
-    const temporary = `${letters.join('')}${randomInt(10, 100)}`;
+    const temporary = temporaryPassword();
     const hash = await this.hasher.hash(temporary);
     await this.unitOfWork.run(async ({ users, sessions, resets }) => {
       await users.setPassword(userId, hash, true);

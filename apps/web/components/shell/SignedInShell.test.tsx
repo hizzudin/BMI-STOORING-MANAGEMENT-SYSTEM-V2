@@ -73,6 +73,12 @@ describe('NAV-9 the menu follows the capabilities of GET /me', () => {
     expect(menu()).toContain('Approvals');
   });
 
+  it('C-01 a user without the Dashboard item opens its first item instead: the Access Manager lands on Users and roles', async () => {
+    const { navigate } = await show(meOf('Access_Manager'), '/');
+    expect(navigate).toHaveBeenCalledWith('/users');
+    expect(screen.queryByText('Page content')).toBeNull();
+  });
+
   it('NAV-9 the Access Manager has its own navigation', async () => {
     await show(meOf('Access_Manager'), '/users');
     expect(menu()).toEqual(['Users and roles', 'Audit log']);

@@ -198,6 +198,228 @@
           }
         }
       }
+    },
+    "/accounts": {
+      "get": {
+        "operationId": "listAccounts",
+        "summary": "Users and roles: Accounts",
+        "responses": {
+          "200": {
+            "description": "Users and roles: Accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createAccount",
+        "summary": "New account with one role and a one-time temporary password (FLW-AM-01)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New account with one role and a one-time temporary password (FLW-AM-01)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountWithPassword"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}": {
+      "patch": {
+        "operationId": "updateAccount",
+        "summary": "Edit the name, email and the one role of an account",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Edit the name, email and the one role of an account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}/unlock": {
+      "post": {
+        "operationId": "unlockAccount",
+        "summary": "Unlock after 5 failed sign-ins",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unlock after 5 failed sign-ins",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}/deactivate": {
+      "post": {
+        "operationId": "deactivateAccount",
+        "summary": "Deactivate an account and end its sessions (FLW-AM-04)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deactivate an account and end its sessions (FLW-AM-04)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}/activate": {
+      "post": {
+        "operationId": "activateAccount",
+        "summary": "Activate a deactivated account",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activate a deactivated account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}/reset-password": {
+      "post": {
+        "operationId": "resetAccountPassword",
+        "summary": "A new one-time temporary password, changed at the next sign-in (REQ-IAM-009)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A new one-time temporary password, changed at the next sign-in (REQ-IAM-009)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountWithPassword"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/move-system-admin": {
+      "post": {
+        "operationId": "moveSystemAdmin",
+        "summary": "Move the System Admin role to another active account, with a reason (FLW-AM-03)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveSystemAdminRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Move the System Admin role to another active account, with a reason (FLW-AM-03)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -581,6 +803,369 @@
           "user",
           "capabilities",
           "systemMode"
+        ],
+        "additionalProperties": false
+      },
+      "AccountListResponse": {
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "role": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "Planner",
+                        "Mechanic",
+                        "Warehouse_Manager",
+                        "Supervisor",
+                        "GM",
+                        "System_Admin",
+                        "Access_Manager",
+                        "Driver",
+                        "Field_Coordinator",
+                        "Accounting"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "Active",
+                    "Locked",
+                    "Inactive"
+                  ]
+                },
+                "lastSignInAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "allowedActions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "edit",
+                      "unlock",
+                      "reset_password",
+                      "deactivate",
+                      "activate"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "email",
+                "role",
+                "status",
+                "lastSignInAt",
+                "allowedActions"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "create",
+                "move_system_admin"
+              ]
+            }
+          }
+        },
+        "required": [
+          "accounts",
+          "allowedActions"
+        ],
+        "additionalProperties": false
+      },
+      "AccountWithPassword": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "Planner",
+                      "Mechanic",
+                      "Warehouse_Manager",
+                      "Supervisor",
+                      "GM",
+                      "System_Admin",
+                      "Access_Manager",
+                      "Driver",
+                      "Field_Coordinator",
+                      "Accounting"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Active",
+                  "Locked",
+                  "Inactive"
+                ]
+              },
+              "lastSignInAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "allowedActions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "edit",
+                    "unlock",
+                    "reset_password",
+                    "deactivate",
+                    "activate"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "email",
+              "role",
+              "status",
+              "lastSignInAt",
+              "allowedActions"
+            ],
+            "additionalProperties": false
+          },
+          "temporaryPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account",
+          "temporaryPassword"
+        ],
+        "additionalProperties": false
+      },
+      "AccountRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 150,
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "Planner",
+              "Mechanic",
+              "Warehouse_Manager",
+              "Supervisor",
+              "GM",
+              "Access_Manager",
+              "Driver",
+              "Field_Coordinator",
+              "Accounting"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "role"
+        ],
+        "additionalProperties": false
+      },
+      "AccountResponse": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "Planner",
+                      "Mechanic",
+                      "Warehouse_Manager",
+                      "Supervisor",
+                      "GM",
+                      "System_Admin",
+                      "Access_Manager",
+                      "Driver",
+                      "Field_Coordinator",
+                      "Accounting"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Active",
+                  "Locked",
+                  "Inactive"
+                ]
+              },
+              "lastSignInAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "allowedActions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "edit",
+                    "unlock",
+                    "reset_password",
+                    "deactivate",
+                    "activate"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "email",
+              "role",
+              "status",
+              "lastSignInAt",
+              "allowedActions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "account"
+        ],
+        "additionalProperties": false
+      },
+      "AccountUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 150,
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "Planner",
+              "Mechanic",
+              "Warehouse_Manager",
+              "Supervisor",
+              "GM",
+              "System_Admin",
+              "Access_Manager",
+              "Driver",
+              "Field_Coordinator",
+              "Accounting"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "role"
+        ],
+        "additionalProperties": false
+      },
+      "MoveSystemAdminRequest": {
+        "type": "object",
+        "properties": {
+          "toUserId": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "toUserId",
+          "reason"
         ],
         "additionalProperties": false
       }

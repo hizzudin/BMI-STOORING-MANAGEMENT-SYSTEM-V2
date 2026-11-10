@@ -99,6 +99,13 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - Web: every page behind the sign-in sits in the `app/(app)` route group, whose layout renders `SignedInShell`: it loads `GET /me` on each page load (one refresh on 401), builds the rail from `menuFor(capabilities, systemMode)`, marks the item of the open path, shows the not-allowed page for the path of a hidden item (NAV-9), keeps the rail choice per user in the browser (C-02) and signs out (C-04).
 - A generated matrix test turns the §2.2 rows × roles into expected codes and checks the guard of each endpoint.
 
+### 5.2 Users and roles (REQ-IAM-002 to REQ-IAM-004, DEC-116)
+
+- `core/iam/account-service.ts` behind `AccountGateways` (`accounts`, `audit` and the sign-in gateways): list with each account's `allowedActions` (edit, unlock, reset_password, deactivate, activate) from one `Policies` table, create with a temporary password, edit, unlock, reset password, deactivate (ends every session), activate, and Move System Admin role. Every change writes one `audit_logs` row (entity `user`); the move is one transaction: the old holder's role row is deleted, the new holder's row becomes System_Admin.
+- Routes `/accounts` need `accounts.manage` at the controller (`@RequireCapability` on the class; the guard reads class and route). 404 and 409 come from `AccountErrorFilter`. NFR-01 asks idempotency for submit, approve, post and issue, so these routes take no Idempotency-Key.
+- Rules: the create form never offers System Admin; an edit may send the current System_Admin role, and a change to or from it is refused; an Access Manager cannot change its own role or deactivate itself, and the last active Access Manager stays (DEC-116). The temporary password is returned once and never stored in clear.
+- Web: `app/(app)/users` renders `UsersRoles` (table with search and column filters, status pills, tabs as links to the area's pages, the account and move panels, confirmations). A user without the Dashboard item lands on its first menu item, so the Access Manager opens Users and roles.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

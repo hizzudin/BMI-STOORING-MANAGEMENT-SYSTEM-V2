@@ -32,6 +32,8 @@ const covers = (href: string, pathname: string) =>
 const itemOf = (pathname: string): MenuKey | undefined =>
   MENU.find((item) => covers(ROUTES[item.key].href, pathname))?.key;
 
+const homeOf = (menu: { key: MenuKey }[]): string => (menu[0] ? ROUTES[menu[0].key].href : '/');
+
 const railKey = (userId: number) => `bmi.rail.${userId}`;
 
 /** C-02: the rail is collapsed unless this user expanded it on this browser. */
@@ -80,6 +82,15 @@ export function SignedInShell({ api, navigate, pathname, children }: SignedInShe
     };
   }, [api, navigate]);
 
+  useEffect(() => {
+    if (!me) return;
+    const menu = menuFor(new Set(me.capabilities), me.systemMode);
+    const home = homeOf(menu);
+    if (pathname === '/' && !menu.some((item) => item.key === 'dashboard') && home !== '/') {
+      navigate(home);
+    }
+  }, [me, pathname, navigate]);
+
   if (!me) return null;
 
   const menu = menuFor(new Set(me.capabilities), me.systemMode);
@@ -90,6 +101,12 @@ export function SignedInShell({ api, navigate, pathname, children }: SignedInShe
   }));
   const current = itemOf(pathname);
   const hidden = current !== undefined && !menu.some((item) => item.key === current);
+  // The home page of a user without the Dashboard item is its first menu item: the Access Manager
+  // lands on Users and roles (ui-action-map WebLogin), decided by the capabilities, not the role name.
+  const home = homeOf(menu);
+  const sendHome = pathname === '/' && hidden && home !== '/';
+
+  if (sendHome) return null;
 
   return (
     <AppShell

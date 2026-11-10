@@ -6,11 +6,11 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-106 done on branch `feat/phase1-task106-allowed-actions`. Next task: **TASK-107** (Access Manager area: accounts, lock/unlock, move System Admin), then TASK-108 (trial first, DEC-113) |
+| Active task | TASK-107 done on branch `feat/phase1-task107-access-manager`. Next task: **TASK-108** (roles and permissions matrix), then TASK-109 (trial first, DEC-113) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.26 |
+| Spec version | PRD v2.27 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0 selesai dan `main` sudah di GitHub; CI hijau. Tersisa untuk Anda: mengaktifkan branch protection di `main`. Berikutnya TASK-101. Masa simpan Idempotency-Key 30 hari masih asumsi [A].
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 28 | 2026-11-10 | TASK-107: DEC-116 (v2.27); Users and roles (accounts with one role, temporary password, unlock, reset, deactivate and activate, move System Admin, audit records), account allowedActions with the contract test, Access Manager lands on Users and roles; qa found and fixed a refresh race that signed web users out | apps/, packages/shared, specs/, Design Artifact/access |
 | 27 | 2026-11-10 | TASK-106: allowedActions framework (Policies, allowedActions, assertAllowed, shared rules for BR-02 and BR-03), contract helper for every record type, 403 with one sentence; web shell behind the sign-in with the menu from GET /me, not-allowed page, sign out, refresh on 401 | apps/api/, apps/web/, specs/ |
 | 26 | 2026-11-10 | TASK-105: DEC-115 (v2.26, lock rules, - cells, files.upload); permission catalogue, 2.2 matrix and menu in @bmi/shared; role_permissions seed migration 0004; effective capability set per request; SessionGuard with @RequireCapability; GET /me with capabilities and system mode; capability matrix test (10 roles x 44 codes). WSL service hung and needed the owner to restart it | apps/api/, packages/, specs/, PRD.md |
 | 25 | 2026-11-09 | TASK-104: sign-in, lock after 5 failures, web and mobile sessions, first sign-in change, forgot and reset password by link (console email adapter locally), GET /me; four web screens matched to the artboards; e2e auth runs the API on a fresh bmi_e2e database | apps/api/, apps/web/, packages/, specs/ |

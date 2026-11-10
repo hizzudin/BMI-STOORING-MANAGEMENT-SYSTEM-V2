@@ -33,6 +33,30 @@ export default function globalSetup(): void {
       role: 'Field_Coordinator',
       mustChangePassword: false,
     },
+    {
+      key: 'accessManager',
+      name: 'Access Manager E2E',
+      email: 'access.manager@e2e.test',
+      password: password(),
+      role: 'Access_Manager',
+      mustChangePassword: false,
+    },
+    {
+      key: 'systemAdmin',
+      name: 'Yusuf E2E',
+      email: 'yusuf@e2e.test',
+      password: password(),
+      role: 'System_Admin',
+      mustChangePassword: false,
+    },
+    {
+      key: 'driver',
+      name: 'Rina E2E',
+      email: 'rina@e2e.test',
+      password: password(),
+      role: 'Driver',
+      mustChangePassword: false,
+    },
   ];
   const serialized = JSON.stringify(accounts);
   execFileSync('pnpm', ['--filter', '@bmi/api', 'e2e:db'], {

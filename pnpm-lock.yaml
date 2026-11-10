@@ -300,6 +300,9 @@ importers:
       '@bmi/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client
+      '@bmi/chassis-map':
+        specifier: workspace:*
+        version: link:../../packages/chassis-map
       '@bmi/shared':
         specifier: workspace:*
         version: link:../../packages/shared

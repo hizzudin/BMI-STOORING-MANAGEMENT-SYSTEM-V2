@@ -263,7 +263,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-101
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `unit @bmi/chassis-map "layout"` with image snapshots
-- [ ] **TASK-116** Vehicle classes and chassis layouts with position generation [REQ-PLC-013, REQ-PLC-017, REQ-PLC-019, REQ-PLC-020]
+- [x] **TASK-116** Vehicle classes and chassis layouts with position generation [REQ-PLC-013, REQ-PLC-017, REQ-PLC-019, REQ-PLC-020]
   - _Scope_: Unit kind Powered or Towed; 0 or more spare positions; a new class is data, never code. DEC-120: New class with a typed code; a changed layout is saved as a new version that existing vehicles do not follow; the Vehicles column comes in TASK-119.
   - _Acceptance_: AC-PLC-007, AC-PLC-010
   - _Rules_: BR-01, DEC-68, DEC-69, DEC-73, DEC-120

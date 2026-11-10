@@ -313,6 +313,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/vehicle-classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Vehicle classes, each with its current layout version */
+        get: operations["listVehicleClasses"];
+        put?: never;
+        /** New class with its first layout; saving generates the positions */
+        post: operations["createVehicleClass"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vehicle-classes/{id}/layouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Save as new layout version; existing vehicles keep theirs (DEC-120) */
+        post: operations["saveLayoutVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -472,6 +507,95 @@ export interface components {
         };
         PlannerApprovalOffRequest: {
             reason: string;
+        };
+        VehicleClassListResponse: {
+            classes: {
+                id: number;
+                code: string;
+                name: string;
+                /** @enum {string} */
+                unitKind: "Powered" | "Towed";
+                layout: {
+                    id: number;
+                    code: string;
+                    version: number;
+                    definition: {
+                        /** @enum {string} */
+                        frontDrawing: "None" | "Fifth_wheel" | "Kingpin";
+                        spareCount: number;
+                        axles: {
+                            /** @enum {string} */
+                            role: "Steer" | "Drive" | "Trailer";
+                            tyresPerSide: 1 | 2;
+                            /** @enum {string} */
+                            spacing?: "Close" | "Wide";
+                        }[];
+                    };
+                    axleCount: number;
+                    tyreCount: number;
+                };
+            }[];
+            allowedActions: ("create" | "new_layout_version")[];
+        };
+        VehicleClassResponse: {
+            vehicleClass: {
+                id: number;
+                code: string;
+                name: string;
+                /** @enum {string} */
+                unitKind: "Powered" | "Towed";
+                layout: {
+                    id: number;
+                    code: string;
+                    version: number;
+                    definition: {
+                        /** @enum {string} */
+                        frontDrawing: "None" | "Fifth_wheel" | "Kingpin";
+                        spareCount: number;
+                        axles: {
+                            /** @enum {string} */
+                            role: "Steer" | "Drive" | "Trailer";
+                            tyresPerSide: 1 | 2;
+                            /** @enum {string} */
+                            spacing?: "Close" | "Wide";
+                        }[];
+                    };
+                    axleCount: number;
+                    tyreCount: number;
+                };
+            };
+        };
+        VehicleClassRequest: {
+            code: string;
+            name: string;
+            /** @enum {string} */
+            unitKind: "Powered" | "Towed";
+            definition: {
+                /** @enum {string} */
+                frontDrawing: "None" | "Fifth_wheel" | "Kingpin";
+                spareCount: number;
+                axles: {
+                    /** @enum {string} */
+                    role: "Steer" | "Drive" | "Trailer";
+                    tyresPerSide: 1 | 2;
+                    /** @enum {string} */
+                    spacing?: "Close" | "Wide";
+                }[];
+            };
+        };
+        LayoutVersionRequest: {
+            definition: {
+                /** @enum {string} */
+                frontDrawing: "None" | "Fifth_wheel" | "Kingpin";
+                spareCount: number;
+                axles: {
+                    /** @enum {string} */
+                    role: "Steer" | "Drive" | "Trailer";
+                    tyresPerSide: 1 | 2;
+                    /** @enum {string} */
+                    spacing?: "Close" | "Wide";
+                }[];
+            };
         };
     };
     responses: never;
@@ -952,6 +1076,76 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlannerApprovalResponse"];
+                };
+            };
+        };
+    };
+    listVehicleClasses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vehicle classes, each with its current layout version */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleClassListResponse"];
+                };
+            };
+        };
+    };
+    createVehicleClass: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VehicleClassRequest"];
+            };
+        };
+        responses: {
+            /** @description New class with its first layout; saving generates the positions */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleClassResponse"];
+                };
+            };
+        };
+    };
+    saveLayoutVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LayoutVersionRequest"];
+            };
+        };
+        responses: {
+            /** @description Save as new layout version; existing vehicles keep theirs (DEC-120) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleClassResponse"];
                 };
             };
         };

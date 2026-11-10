@@ -159,6 +159,52 @@ export const idempotencyKeys = pgTable(
   (table) => [unique().on(table.userId, table.idemKey)],
 );
 
+// §9.3 vehicle classes and chassis layouts (DEC-120)
+export const chassisLayouts = pgTable(
+  'chassis_layouts',
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    code: varchar('code', { length: 40 }).notNull(),
+    name: varchar('name', { length: 100 }).notNull(),
+    version: integer('version').notNull().default(1),
+    definition: jsonb('definition').notNull(),
+    axleCount: smallint('axle_count').notNull(),
+    tyreCount: smallint('tyre_count').notNull(),
+    isActive: boolean('is_active').notNull().default(true),
+  },
+  (table) => [unique().on(table.code, table.version)],
+);
+
+export const vehicleClasses = pgTable('vehicle_classes', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  code: varchar('code', { length: 30 }).notNull().unique(),
+  unitKind: varchar('unit_kind', { length: 7 }).notNull().default('Powered'),
+  name: varchar('name', { length: 100 }).notNull(),
+  defaultChassisLayoutId: bigint('default_chassis_layout_id', { mode: 'number' }).notNull(),
+  isActive: boolean('is_active').notNull().default(true),
+});
+
+export const partPositions = pgTable(
+  'part_positions',
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    chassisLayoutId: bigint('chassis_layout_id', { mode: 'number' }).notNull(),
+    code: varchar('code', { length: 40 }).notNull(),
+    positionKind: varchar('position_kind', { length: 5 }).notNull().default('Wheel'),
+    axleIndex: smallint('axle_index'),
+    side: varchar('side', { length: 5 }),
+    ordinal: smallint('ordinal').notNull(),
+    label: varchar('label', { length: 80 }).notNull(),
+  },
+  (table) => [unique().on(table.chassisLayoutId, table.code)],
+);
+
 // One entry per table of §9 as its migration arrives. The drift test reads this list.
 export const allTables: readonly PgTable[] = [
   idempotencyKeys,
@@ -171,4 +217,7 @@ export const allTables: readonly PgTable[] = [
   appSettings,
   storedFiles,
   userTablePreferences,
+  chassisLayouts,
+  vehicleClasses,
+  partPositions,
 ];

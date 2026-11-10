@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@bmi/api-client": "workspace:*",
+    "@bmi/chassis-map": "workspace:*",
     "@bmi/shared": "workspace:*",
     "next": "^16.4.4",
     "react": "^19.3.1",

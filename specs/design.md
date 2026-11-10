@@ -121,6 +121,12 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - Routes `GET` and `PUT /planner-approval`, `POST /planner-approval/switch-off`, `iam.planner_approval_switch` on the controller.
 - Web: `PlannerApprovalCard` above the matrix on `/users/roles`, its side panel (kinds, end time in WIB, reason) through the shared `kit/SidePanel`. The notice to Supervisors and GMs is TASK-130 (DEC-118).
 
+### 5.5 Vehicle classes and chassis layouts (REQ-PLC-013, REQ-PLC-017, REQ-PLC-019, DEC-120)
+
+- Migration `0006_vehicle_classes_layouts.sql`: `chassis_layouts`, `vehicle_classes`, `part_positions` as in §9.3 (identity ids, ON DELETE RESTRICT).
+- `core/fleet/vehicle-class-service.ts` behind `VehicleClassGateways` (`vehicleClasses`, `audit`): `list` (each class with its default layout version), `create` (a typed code unique without regard to case, 409; layout v1 with the class code; positions from `generatePositions`; one audit record) and `newLayoutVersion` (class row locked; the next version of the layout code with its positions becomes the class default; older versions and their positions stay for the vehicles that use them; one audit record). Routes `GET`/`POST /vehicle-classes`, `POST /vehicle-classes/:id/layouts` under `masterdata.manage`; 404 and 409 from `VehicleClassErrorFilter`.
+- Web: `/settings/chassis-layouts` renders `ChassisLayouts`: the class table, the layout panel (new class: code, name, unit kind; existing: name with its version note), front drawing, axle rows (role, tyres per side, spacing after the first, remove), Add axle, spare positions, the live preview from `@bmi/chassis-map` (its style sheet loads in the root layout; the package is transpiled by Next), Discard with a confirmation (C-16) and Save. The Vehicles column comes with the vehicles in TASK-119.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

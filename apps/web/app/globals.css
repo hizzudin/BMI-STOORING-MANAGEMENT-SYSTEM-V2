@@ -850,3 +850,63 @@ textarea:focus-visible {
     width: 90px;
   }
 }
+
+/* ChassisLayouts (ui.md 7.4): classes, layout editor and live preview side by side. */
+.layout-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  margin-top: 16px;
+}
+.layout-panel {
+  padding: 18px;
+  border-radius: var(--radius-panel);
+  background: #fff;
+  box-shadow: var(--panel-lift);
+}
+.axle-table td {
+  padding: 6px 8px;
+  vertical-align: middle;
+}
+.axle-table tbody tr {
+  cursor: default;
+}
+.axle-table tbody tr:hover td {
+  background: none;
+}
+.axle-table select {
+  width: 100%;
+  min-width: 0;
+  padding: 7px 10px;
+}
+.axle-table td:first-child,
+.axle-table th:first-child {
+  width: 36px;
+}
+.axle-table .btn {
+  padding: 6px 10px;
+}
+.bar.bar-start {
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+.map-card {
+  padding: 16px;
+  border-radius: var(--radius-card);
+  background: var(--mist-light);
+}
+@media (max-width: 1100px) {
+  .layout-editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Text for screen readers only, e.g. the heading of a column of buttons. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -100,6 +100,20 @@ test.describe('Access Manager', () => {
     await confirm.getByRole('button', { name: 'Move role' }).click();
     await expect(row(page, driver.name)).toContainText('System Admin');
     await expect(row(page, admin.name)).toContainText('No role');
+
+    // The role goes back to Yusuf, an account without a role, so later specs find their System Admin.
+    await page.getByRole('button', { name: 'Move System Admin role' }).click();
+    await panel(page)
+      .getByLabel('New System Admin')
+      .selectOption({ label: `${admin.name} (No role)` });
+    await panel(page).getByLabel('Reason').fill('Yusuf is back');
+    await panel(page).getByRole('button', { name: 'Move role' }).click();
+    await page
+      .getByRole('dialog', { name: `Move the System Admin role to ${admin.name}?` })
+      .getByRole('button', { name: 'Move role' })
+      .click();
+    await expect(row(page, admin.name)).toContainText('System Admin');
+    await expect(row(page, driver.name)).toContainText('No role');
   });
 
   test('AC-IAM-003 RL-4 the System Admin cannot open Users and roles', async ({ page }) => {

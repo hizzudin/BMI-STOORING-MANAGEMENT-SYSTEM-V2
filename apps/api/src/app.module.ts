@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import pg from 'pg';
 import { CLOCK, EMAIL, PASSWORD_HASHER, PG_POOL, PLANNER_APPROVAL_END } from './app.tokens.js';
+import { VehicleClassService } from './core/fleet/vehicle-class-service.js';
 import { AccountService } from './core/iam/account-service.js';
 import { AuthService } from './core/iam/auth-service.js';
 import { CapabilityService } from './core/iam/capability-service.js';
@@ -24,6 +25,10 @@ import {
   PlannerApprovalErrorFilter,
 } from './http/planner-approval/planner-approval.controller.js';
 import { RolePermissionsController } from './http/role-permissions/role-permissions.controller.js';
+import {
+  VehicleClassErrorFilter,
+  VehicleClassesController,
+} from './http/vehicle-classes/vehicle-classes.controller.js';
 import { SystemClock } from './infra/clock/system-clock.js';
 import { HmacAccessTokenSigner } from './infra/crypto/hmac-access-token-signer.js';
 import { ScryptPasswordHasher } from './infra/crypto/scrypt-password-hasher.js';
@@ -32,6 +37,7 @@ import { iamGateways } from './infra/db/iam-gateways.js';
 import { plannerApprovalGateways } from './infra/db/planner-approval-gateways.js';
 import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
+import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
 import { ConsoleEmailAdapter } from './infra/email/console-email.js';
 import { PlannerApprovalEndQueue } from './infra/queue/planner-approval-end-queue.js';
 import type { ClockPort } from './ports/clock.js';
@@ -66,6 +72,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     AccountsController,
     RolePermissionsController,
     PlannerApprovalController,
+    VehicleClassesController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -73,6 +80,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: ActionRefusedFilter },
     { provide: APP_FILTER, useClass: AccountErrorFilter },
     { provide: APP_FILTER, useClass: PlannerApprovalErrorFilter },
+    { provide: APP_FILTER, useClass: VehicleClassErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -135,6 +143,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
           clock,
           scheduler,
         ),
+    },
+    {
+      provide: VehicleClassService,
+      inject: [PG_POOL],
+      useFactory: (pool: pg.Pool) =>
+        new VehicleClassService(new DrizzleUnitOfWork(pool, vehicleClassGateways)),
     },
     SessionGuard,
   ],

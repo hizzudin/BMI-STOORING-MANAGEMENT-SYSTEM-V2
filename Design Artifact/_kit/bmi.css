@@ -79,8 +79,8 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .grid{display:grid;gap:14px}.g2{grid-template-columns:1.6fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.ge{grid-template-columns:1fr 1fr}
 .card{background:var(--frost);border-radius:var(--r-card);padding:16px 18px;min-width:0}
 .card.white{background:#fff;border:1px solid var(--line)}
-.card h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
-.card h3 .grow{flex:1}
+.card h2,.card h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
+.card h2 .grow,.card h3 .grow{flex:1}
 .metric{display:flex;align-items:center;gap:12px}
 .metric .dot{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--mist);color:var(--petrol);flex:none}
 .metric .dot.r{background:var(--bad-bg);color:var(--bad)}.metric .dot.a{background:var(--warn-bg);color:var(--warn)}.metric .dot.g{background:var(--ok-bg);color:var(--ok)}

@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.28 (2026-11-11) adds DEC-117, product owner decision on the Roles and permissions matrix: all ten roles, rows grouped by area with their meaning, staged changes saved together with one audit record; REQ-IAM-005 read as locking the approval codes outside Supervisor, GM and System Admin and the account codes outside the Access Manager.
+
 v2.27 (2026-11-10) adds DEC-116, product owner decision on Users and roles: where Move System Admin role and Deactivate sit, Activate for a deactivated account, and the Access Manager may not deactivate itself or the last active Access Manager.
 
 v2.26 (2026-11-10) adds DEC-115, product owner decision on the permission matrix: which cells are locked, what a - cell means and which roles hold `files.upload`.

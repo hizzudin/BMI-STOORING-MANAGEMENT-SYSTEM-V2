@@ -88,7 +88,8 @@ export function RolesPermissions({
       </>
     );
   }
-  if (!matrix) return head;
+  // The same shape as below, so the Planner approval card keeps its state when the matrix arrives.
+  if (!matrix) return <>{head}</>;
 
   const cells = new Map(matrix.cells.map((cell) => [keyOf(cell.role, cell.permissionCode), cell]));
   const editable = matrix.allowedActions.includes('edit');

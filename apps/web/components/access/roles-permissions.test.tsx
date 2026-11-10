@@ -5,6 +5,7 @@ import {
   type RolePermissionsResponse,
 } from '@bmi/shared';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { RolePermissionsApi } from '../../lib/role-permissions-api';
 import { RolesPermissions } from './RolesPermissions';
@@ -148,5 +149,35 @@ describe('AMRolesPermissions (REQ-IAM-005, DEC-117)', () => {
       }),
     );
     expect(screen.getByText('You do not have permission to do this.')).toBeTruthy();
+  });
+});
+
+function ClickCounter() {
+  const [clicks, setClicks] = useState(0);
+  return (
+    <button type="button" onClick={() => setClicks(clicks + 1)}>
+      {`clicked ${clicks}`}
+    </button>
+  );
+}
+
+describe('AMRolesPermissions with the Planner approval card (DEC-118)', () => {
+  it('the card keeps its state when the matrix arrives after a click', async () => {
+    let arrive: (value: Awaited<ReturnType<RolePermissionsApi['get']>>) => void = () => undefined;
+    const api = apiWith({
+      get: vi.fn(
+        () =>
+          new Promise<Awaited<ReturnType<RolePermissionsApi['get']>>>((resolve) => {
+            arrive = resolve;
+          }),
+      ),
+    });
+    render(<RolesPermissions api={api} switchCard={<ClickCounter />} />);
+    fireEvent.click(screen.getByRole('button', { name: 'clicked 0' }));
+    await act(async () => {
+      arrive({ ok: true, data: defaults() });
+    });
+    expect(screen.getByRole('button', { name: 'clicked 1' })).toBeTruthy();
+    expect(screen.getAllByRole('rowheader').length).toBeGreaterThan(0);
   });
 });

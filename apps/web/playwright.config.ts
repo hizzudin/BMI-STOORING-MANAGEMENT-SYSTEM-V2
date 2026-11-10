@@ -20,6 +20,9 @@ export default defineConfig({
   globalSetup: './e2e/global-setup.ts',
   forbidOnly: inCi,
   retries: inCi ? 1 : 0,
+  // Every spec shares one e2e database and accounts whose roles change during the run (FLW-AM-03
+  // moves the System Admin role), so the specs run one at a time.
+  workers: 1,
   reporter: inCi ? 'github' : 'list',
   // A sign-in hashes with the production scrypt cost, which takes seconds on a slow machine.
   expect: { timeout: 20_000 },

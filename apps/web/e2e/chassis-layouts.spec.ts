@@ -10,7 +10,10 @@ const preview = (page: Page) => page.getByRole('img', { name: /^Layout preview/ 
 test.describe('Vehicle classes and chassis layouts', () => {
   test('FLW-SA-05 AC-PLC-010 REQ-PLC-013 DEC-120 a Powered 8x4 is added as data, then saved as layout v2', async ({
     page,
-  }) => {
+  }, testInfo) => {
+    // Unique per attempt: a retry finds the class of the failed attempt already saved.
+    const run = `${Date.now().toString(36)}${testInfo.retry}`;
+    const name = `Powered 8x4 ${run}`;
     const admin = e2eAccount('systemAdmin');
     await page.goto('/login');
     await page.getByLabel('Email').fill(admin.email);
@@ -23,8 +26,8 @@ test.describe('Vehicle classes and chassis layouts', () => {
       'Vehicle classes and chassis layouts',
     );
     await page.getByRole('button', { name: 'New class' }).click();
-    await editor(page).getByLabel('Code').fill('Powered_8x4');
-    await editor(page).getByLabel('Name').fill('Powered 8x4');
+    await editor(page).getByLabel('Code').fill(`P8x4_${run}`);
+    await editor(page).getByLabel('Name').fill(name);
     await editor(page).getByLabel('Unit kind').selectOption('Powered');
     // Steer, Steer (close), Drive dual (wide), Drive dual (close), no spare.
     for (let i = 0; i < 3; i += 1)
@@ -38,15 +41,15 @@ test.describe('Vehicle classes and chassis layouts', () => {
     await expect(page.getByRole('list', { name: 'Tyre colours' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Save class' }).click();
-    await expect(page.getByRole('status')).toHaveText('Class Powered 8x4 saved.');
-    const row = page.getByRole('row', { name: /Powered 8x4/ });
+    await expect(page.getByRole('status')).toHaveText(`Class ${name} saved.`);
+    const row = page.getByRole('row', { name: new RegExp(name) });
     await expect(row).toContainText('12 + 0 spares');
     await expect(row).toContainText('v1');
 
     await editor(page).getByLabel('Spare positions').fill('1');
     await expect(preview(page).locator('g.m-tyre')).toHaveCount(13);
     await page.getByRole('button', { name: 'Save as new layout version' }).click();
-    await expect(page.getByRole('status')).toHaveText('Layout v2 of Powered 8x4 saved.');
+    await expect(page.getByRole('status')).toHaveText(`Layout v2 of ${name} saved.`);
     await expect(row).toContainText('12 + 1 spare');
     await expect(row).toContainText('v2');
   });

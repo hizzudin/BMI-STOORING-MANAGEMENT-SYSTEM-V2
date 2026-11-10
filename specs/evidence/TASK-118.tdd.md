@@ -24,3 +24,7 @@ Owner decisions: the four types of REQ-DOC-001 are seeded as data; the count of 
 - RED: the shared tests failed before the schema existed; the integration and web tests were written before their code and first ran after it.
 - GREEN: shared 293 tests, 100 %; API 168 tests, 96.3 % statements, including `document-types.test.ts` 5 (the launch types; only the System Admin; an edit with classes and one audit record; a new type with a unique code and known classes; deactivation) and the drift test; web 106 tests, 89.4 %, including `document-types.test.ts` 7; e2e 13 of 13. Layers, lint, format, secrets, types and `check-coverage --tests` clean.
 - `qa` at 1440 x 900 against DocumentTypes on the local database: list columns, record panel, fixed code note, validity and warning days side by side, receipt, class checklist and the three buttons match. Kept on purpose: numbers right-aligned in the table and the search and column filters (NFR-08).
+
+## CI fix after the merge
+
+The main CI run failed: CI ran the e2e spec files in parallel, and FLW-AM-03 moved the System Admin role while this spec used the System Admin account (Not allowed), and the retry then hit 409 on the class the first attempt had made. Playwright now runs one worker (every spec shares one database and accounts whose roles change), and the specs that create records use names unique per attempt.

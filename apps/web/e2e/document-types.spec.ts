@@ -10,7 +10,11 @@ const row = (page: Page, name: string | RegExp) => page.getByRole('row', { name 
 test.describe('Document types', () => {
   test('FLW-SA-02 REQ-DOC-001 REQ-DOC-002 DEC-121 the launch types, an edit, a new type and a deactivation', async ({
     page,
-  }) => {
+  }, testInfo) => {
+    // Unique per attempt: a retry finds the records of the failed attempt already saved.
+    const run = `${Date.now().toString(36)}${testInfo.retry}`;
+    const className = `Doc test rigid ${run}`;
+    const typeName = `Izin trayek ${run}`;
     const admin = e2eAccount('systemAdmin');
     await page.goto('/login');
     await page.getByLabel('Email').fill(admin.email);
@@ -23,8 +27,8 @@ test.describe('Document types', () => {
     const created = await page.request.post('/api/vehicle-classes', {
       headers: { Origin: origin },
       data: {
-        code: 'Doc_Test_Rigid',
-        name: 'Doc test rigid',
+        code: `Doc_Test_${run}`,
+        name: className,
         unitKind: 'Powered',
         definition: {
           frontDrawing: 'None',
@@ -43,25 +47,25 @@ test.describe('Document types', () => {
 
     await row(page, /^KIR/).click();
     await panel(page).getByLabel('Warning days').fill('45');
-    await panel(page).getByLabel('Doc test rigid').check();
+    await panel(page).getByLabel(className).check();
     await panel(page).getByRole('button', { name: 'Save' }).click();
     await expect(page.getByRole('status')).toHaveText('Saved.');
-    await expect(row(page, /^KIR/)).toContainText('Doc test rigid');
+    await expect(row(page, /^KIR/)).toContainText(className);
     await expect(row(page, /^KIR/)).toContainText('45');
 
     await page.getByRole('button', { name: 'New document type' }).click();
-    await panel(page).getByLabel('Code').fill('Izin_Trayek');
-    await panel(page).getByLabel('Name').fill('Izin trayek');
+    await panel(page).getByLabel('Code').fill(`Izin_Trayek_${run}`);
+    await panel(page).getByLabel('Name').fill(typeName);
     await panel(page).getByLabel('Usual validity (months)').fill('60');
     await panel(page).getByRole('button', { name: 'Save' }).click();
     await expect(page.getByRole('status')).toHaveText('Saved.');
-    await expect(row(page, /^Izin trayek/)).toContainText('60 months');
+    await expect(row(page, new RegExp(`^${typeName}`))).toContainText('60 months');
 
     await panel(page).getByRole('button', { name: 'Deactivate' }).click();
     await page
-      .getByRole('dialog', { name: 'Deactivate Izin trayek?' })
+      .getByRole('dialog', { name: `Deactivate ${typeName}?` })
       .getByRole('button', { name: 'Deactivate' })
       .click();
-    await expect(row(page, /^Izin trayek/)).toHaveCount(0);
+    await expect(row(page, new RegExp(`^${typeName}`))).toHaveCount(0);
   });
 });

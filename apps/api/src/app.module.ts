@@ -3,6 +3,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import pg from 'pg';
 import { CLOCK, EMAIL, PASSWORD_HASHER, PG_POOL } from './app.tokens.js';
 import { AuthService } from './core/iam/auth-service.js';
+import { CapabilityService } from './core/iam/capability-service.js';
 import { AuthController } from './http/auth/auth.controller.js';
 import {
   AUTH_HTTP_CONFIG,
@@ -76,7 +77,15 @@ const authHttpConfig = (): AuthHttpConfig => ({
           { resetPageUrl: `${config.webOrigin}/reset-password` },
         ),
     },
+    {
+      provide: CapabilityService,
+      inject: [PG_POOL, CLOCK],
+      useFactory: (pool: pg.Pool, clock: ClockPort) =>
+        new CapabilityService(new DrizzleUnitOfWork(pool, iamGateways), clock),
+    },
     SessionGuard,
   ],
+  // Feature modules guard their routes with SessionGuard and @RequireCapability (2.4 L1).
+  exports: [AuthService, CapabilityService, AUTH_HTTP_CONFIG, SessionGuard],
 })
 export class AppModule {}

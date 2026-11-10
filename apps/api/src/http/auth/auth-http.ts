@@ -13,8 +13,10 @@ import {
   type ExecutionContext,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import type { PermissionCode } from '@bmi/shared';
 import type { Request, Response } from 'express';
 import { AuthService, WEB_IDLE_MINUTES, type Authenticated } from '../../core/iam/auth-service.js';
+import { CapabilityService, type CapabilitySnapshot } from '../../core/iam/capability-service.js';
 import { AuthRefusedError, type AuthRefusalKind } from '../../core/iam/errors.js';
 
 export const AUTH_HTTP_CONFIG = Symbol('AUTH_HTTP_CONFIG');
@@ -76,7 +78,15 @@ export function assertWebOrigin(request: Request, config: AuthHttpConfig): void 
   }
 }
 
-export type AuthenticatedRequest = Request & { auth?: Authenticated };
+export type SignedIn = Authenticated & CapabilitySnapshot;
+export type AuthenticatedRequest = Request & { auth?: SignedIn };
+
+const REQUIRED_CAPABILITY = Symbol('required-capability');
+/** REQ-IAM-006, 2.4 L1: the route needs at least one of these codes of the effective capability set. */
+export const RequireCapability = (...codes: PermissionCode[]) =>
+  SetMetadata(REQUIRED_CAPABILITY, codes);
+
+export const NOT_ALLOWED = 'You do not have permission to do this.';
 
 const ALLOW_WHILE_PASSWORD_CHANGE = Symbol('allow-while-password-change');
 /** REQ-IAM-009: the only routes a session may use before the first password change. */
@@ -87,6 +97,7 @@ export const AllowWhilePasswordChange = () => SetMetadata(ALLOW_WHILE_PASSWORD_C
 export class SessionGuard implements CanActivate {
   constructor(
     @Inject(AuthService) private readonly auth: AuthService,
+    @Inject(CapabilityService) private readonly capabilities: CapabilityService,
     @Inject(AUTH_HTTP_CONFIG) private readonly config: AuthHttpConfig,
     @Inject(Reflector) private readonly reflector: Reflector,
   ) {}
@@ -98,13 +109,22 @@ export class SessionGuard implements CanActivate {
     const token = bearer ?? cookie;
     if (!token) throw new AuthRefusedError('sessionEnded');
     if (!bearer) assertWebOrigin(request, this.config);
-    request.auth = await this.auth.authenticate(token);
+    const session = await this.auth.authenticate(token);
+    // REQ-IAM-012: computed on every request, so a matrix change counts without a new sign-in.
+    request.auth = { ...session, ...(await this.capabilities.forRole(session.user.role)) };
     const allowed = this.reflector.get<boolean | undefined>(
       ALLOW_WHILE_PASSWORD_CHANGE,
       context.getHandler(),
     );
     if (request.auth.user.mustChangePassword && !allowed)
       throw new AuthRefusedError('passwordChangeFirst');
+    const required = this.reflector.get<PermissionCode[] | undefined>(
+      REQUIRED_CAPABILITY,
+      context.getHandler(),
+    );
+    if (required && !required.some((code) => request.auth?.capabilities.has(code))) {
+      throw new ForbiddenException(NOT_ALLOWED);
+    }
     return true;
   }
 }

@@ -4,11 +4,13 @@ import {
   OkResponseSchema,
   RefreshRequestSchema,
   ResetPasswordRequestSchema,
+  MeResponseSchema,
   SessionResponseSchema,
   SignInRequestSchema,
   SignInResponseSchema,
   type ChangePasswordRequest,
   type ResetPasswordRequest,
+  type MeResponse,
   type SessionResponse,
   type SignInRequest,
   type SignInResponse,
@@ -34,6 +36,7 @@ import {
   SessionGuard,
   setSessionCookies,
   type AuthHttpConfig,
+  type SignedIn,
 } from './auth-http.js';
 
 const SignIn = { name: 'SignInResponse', schema: SignInResponseSchema };
@@ -156,9 +159,18 @@ export class AuthController {
   @Get('me')
   @UseGuards(SessionGuard)
   @AllowWhilePasswordChange()
-  @ApiContract({ operationId: 'getMe', summary: 'The signed-in account', response: Session })
-  me(@CurrentSession() session: Authenticated): SessionResponse {
-    return { user: session.user };
+  @ApiContract({
+    operationId: 'getMe',
+    summary:
+      'The signed-in account, its effective capability set and the system mode (REQ-IAM-013)',
+    response: { name: 'MeResponse', schema: MeResponseSchema },
+  })
+  me(@CurrentSession() session: SignedIn): MeResponse {
+    return {
+      user: session.user,
+      capabilities: [...session.capabilities].sort(),
+      systemMode: session.systemMode,
+    };
   }
 
   private deliver(session: IssuedSession, web: boolean, response: Response): SignInResponse {

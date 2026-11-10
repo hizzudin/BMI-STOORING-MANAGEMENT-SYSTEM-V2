@@ -1,15 +1,23 @@
 import type { Client, Role } from '@bmi/shared';
-import { and, eq, isNull, ne, sql, type SQL } from 'drizzle-orm';
+import { and, eq, inArray, isNull, ne, sql, type SQL } from 'drizzle-orm';
 import type {
   AuthSession,
   AuthSessionGateway,
   AuthUser,
+  CapabilityGateway,
   IamGateways,
   PasswordResetGateway,
   PasswordResetToken,
   UserGateway,
 } from '../../ports/iam.js';
-import { authSessions, passwordResetTokens, userRoles, users } from './schema/index.js';
+import {
+  appSettings,
+  authSessions,
+  passwordResetTokens,
+  rolePermissions,
+  userRoles,
+  users,
+} from './schema/index.js';
 import type { DbTransaction } from './unit-of-work.js';
 
 export class DrizzleUserGateway implements UserGateway {
@@ -179,8 +187,52 @@ export class DrizzlePasswordResetGateway implements PasswordResetGateway {
   }
 }
 
+const PLANNER_APPROVAL_KINDS = 'planner_approval_kinds';
+const PLANNER_APPROVAL_UNTIL = 'planner_approval_until';
+const SYSTEM_MODE = 'system_mode';
+
+/** role_permissions and the app_settings keys of 2.4 (REQ-IAM-008, REQ-IAM-010). */
+export class DrizzleCapabilityGateway implements CapabilityGateway {
+  constructor(private readonly tx: DbTransaction) {}
+
+  async allowedCodes(role: Role): Promise<string[]> {
+    const rows = await this.tx
+      .select({ code: rolePermissions.permissionCode })
+      .from(rolePermissions)
+      .where(and(eq(rolePermissions.role, role), eq(rolePermissions.allowed, true)));
+    return rows.map((row) => row.code);
+  }
+
+  async plannerApproval(): Promise<{ kinds: string[]; until: Date | null }> {
+    const settings = await this.settings([PLANNER_APPROVAL_KINDS, PLANNER_APPROVAL_UNTIL]);
+    const kinds = settings.get(PLANNER_APPROVAL_KINDS);
+    const until = settings.get(PLANNER_APPROVAL_UNTIL);
+    return {
+      kinds: Array.isArray(kinds)
+        ? kinds.filter((kind): kind is string => typeof kind === 'string')
+        : [],
+      until: typeof until === 'string' ? new Date(until) : null,
+    };
+  }
+
+  async systemMode(): Promise<'Setup' | 'Live'> {
+    const mode = (await this.settings([SYSTEM_MODE])).get(SYSTEM_MODE);
+    // REQ-IAM-010: the system starts in Setup mode until Go live writes Live.
+    return mode === 'Live' ? 'Live' : 'Setup';
+  }
+
+  private async settings(keys: string[]): Promise<Map<string, unknown>> {
+    const rows = await this.tx
+      .select({ key: appSettings.settingKey, value: appSettings.settingValue })
+      .from(appSettings)
+      .where(inArray(appSettings.settingKey, keys));
+    return new Map(rows.map((row) => [row.key, row.value]));
+  }
+}
+
 export const iamGateways = (tx: DbTransaction): IamGateways => ({
   users: new DrizzleUserGateway(tx),
   sessions: new DrizzleAuthSessionGateway(tx),
   resets: new DrizzlePasswordResetGateway(tx),
+  capabilities: new DrizzleCapabilityGateway(tx),
 });

@@ -68,10 +68,21 @@ export interface PasswordResetGateway {
   markUsed(id: number, at: Date): Promise<void>;
 }
 
+/** What the effective capability set is computed from (PRD 2.4, REQ-IAM-012). */
+export interface CapabilityGateway {
+  /** `role_permissions` codes of the role with `allowed = true`. */
+  allowedCodes(role: Role): Promise<string[]>;
+  /** app_settings planner_approval_kinds and planner_approval_until (REQ-IAM-008). */
+  plannerApproval(): Promise<{ kinds: string[]; until: Date | null }>;
+  /** app_settings system_mode; Setup until Go live (REQ-IAM-010). */
+  systemMode(): Promise<'Setup' | 'Live'>;
+}
+
 export interface IamGateways {
   users: UserGateway;
   sessions: AuthSessionGateway;
   resets: PasswordResetGateway;
+  capabilities: CapabilityGateway;
 }
 
 export interface PasswordHasher {

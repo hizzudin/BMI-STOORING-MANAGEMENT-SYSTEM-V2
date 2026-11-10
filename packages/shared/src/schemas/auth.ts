@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ROLES } from '../enums/index.js';
+import { PERMISSION_CODES } from '../permissions/index.js';
 
 /** NFR-05: one rule for web, phone and API. */
 export const PASSWORD_RULE = 'At least 8 characters with letters and digits.';
@@ -78,3 +79,11 @@ export const OkResponseSchema = z.object({ ok: z.literal(true) });
 /** GET /me and a password change answer with the account only. */
 export const SessionResponseSchema = z.object({ user: SessionUserSchema });
 export type SessionResponse = z.infer<typeof SessionResponseSchema>;
+
+/** REQ-IAM-013: GET /me answers with the user, the effective capability set and the system mode. */
+export const MeResponseSchema = z.object({
+  user: SessionUserSchema,
+  capabilities: z.array(z.enum(PERMISSION_CODES)),
+  systemMode: z.enum(['Setup', 'Live']),
+});
+export type MeResponse = z.infer<typeof MeResponseSchema>;

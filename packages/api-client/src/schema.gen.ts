@@ -130,7 +130,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** The signed-in account */
+        /** The signed-in account, its effective capability set and the system mode (REQ-IAM-013) */
         get: operations["getMe"];
         put?: never;
         post?: never;
@@ -196,6 +196,18 @@ export interface components {
             token: string;
             newPassword: string & (unknown & unknown);
             repeatPassword: string;
+        };
+        MeResponse: {
+            user: {
+                id: number;
+                name: string;
+                email: string;
+                role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                mustChangePassword: boolean;
+            };
+            capabilities: ("dashboard.view" | "spk.view" | "spk.create" | "breakdown.view" | "breakdown.review" | "breakdown.send" | "breakdown.urgent_alert" | "spk.approve" | "spk.cancel" | "stock.issue" | "purchase.line" | "mechanic.execute" | "mobilisasi.execute" | "docstep.execute" | "step.verify" | "step.request_completion" | "step.assign" | "changerequest.raise" | "registry.manage" | "parttype.manage" | "masterdata.manage" | "settings.manage" | "vehicle.view" | "vehicle.manage" | "vehicle.driver_set" | "odometer.manual" | "inspection.proxy" | "inspection.perform" | "driver.menu" | "inventory.manage" | "tyre.manage" | "count.approve" | "schedule.view" | "schedule.manage" | "partage.view" | "invoice.view" | "invoice.manage" | "report.view" | "audit.view" | "accounts.manage" | "iam.planner_approval_switch" | "ai.settings" | "setup.golive" | "files.upload")[];
+            /** @enum {string} */
+            systemMode: "Setup" | "Live";
         };
     };
     responses: never;
@@ -375,13 +387,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description The signed-in account */
+            /** @description The signed-in account, its effective capability set and the system mode (REQ-IAM-013) */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SessionResponse"];
+                    "application/json": components["schemas"]["MeResponse"];
                 };
             };
         };

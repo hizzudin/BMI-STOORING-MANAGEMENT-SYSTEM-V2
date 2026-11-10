@@ -6,7 +6,7 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-116 done on branch `feat/phase1-task116-vehicle-classes-layouts`. Next task: **TASK-118** (document types master), then TASK-119 (trial first, DEC-113) |
+| Active task | TASK-118 done on branch `feat/phase1-task118-document-types`. Next task: **TASK-119** (vehicles), then TASK-120 (trial first, DEC-113) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 33 | 2026-11-11 | TASK-118: DEC-121 (v2.33; four launch types seeded, DocumentTypes fields and controls, non-compliance count in TASK-119, type preset in TASK-208); migration 0007; document type service and routes; DocumentTypes screen; FLW-SA-02 step 4 e2e; vehicle_documents and document_corrections moved to TASK-119 (they reference vehicles) | apps/, packages/shared, specs/, Design Artifact/settings, PRD.md |
 | 32 | 2026-11-11 | TASK-116: DEC-120 (v2.32; New class with a typed code, layout changes saved as new versions that existing vehicles do not follow, no layout restriction by unit kind, vehicle count per layout in TASK-119); migration 0006; vehicle class service and routes; ChassisLayouts screen with live preview; FLW-SA-05 e2e; FLW-AM-03 e2e now moves the System Admin role back; local QA System Admin sa.qa@bmi.test | apps/, packages/shared, specs/, Design Artifact/settings, PRD.md |
 | 31 | 2026-11-11 | TASK-117: DEC-119 (v2.30, revised v2.31: plain tyres with code and colour, a colour guide under the map; the map shows the PRD position codes, the Missing look, Close or Wide axle spacing; 14 map artboards recoded); chassis layout definition and position generation in @bmi/shared; @bmi/chassis-map geometry, ChassisMap component, style sheet and 116 SVG image snapshots | packages/chassis-map, packages/shared, specs/, Design Artifact, PRD.md |
 | 30 | 2026-11-11 | TASK-109: DEC-118 (v2.29; card and side panel, Change while on, a reason for every change, the end at its end time audited by a delayed job, the notice to Supervisors and GMs moved to TASK-130); Planner approval switch API, end job and card; FLW-AM-06 e2e; side panel parts shared in kit/SidePanel | apps/, packages/shared, specs/, Design Artifact/access, Design Artifact/_kit, PRD.md |

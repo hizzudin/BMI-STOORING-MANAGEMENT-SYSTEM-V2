@@ -618,6 +618,116 @@
           }
         }
       }
+    },
+    "/document-types": {
+      "get": {
+        "operationId": "listDocumentTypes",
+        "summary": "Active document types with their required classes",
+        "responses": {
+          "200": {
+            "description": "Active document types with their required classes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentTypeListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createDocumentType",
+        "summary": "New document type (C-31)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentTypeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New document type (C-31)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentTypeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/document-types/{id}": {
+      "patch": {
+        "operationId": "updateDocumentType",
+        "summary": "Save a document type: fields and required classes (C-17)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentTypeUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Save a document type: fields and required classes (C-17)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentTypeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/document-types/{id}/deactivate": {
+      "post": {
+        "operationId": "deactivateDocumentType",
+        "summary": "Deactivate a document type (C-32)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deactivate a document type (C-32)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2132,6 +2242,268 @@
         },
         "required": [
           "definition"
+        ],
+        "additionalProperties": false
+      },
+      "DocumentTypeListResponse": {
+        "type": "object",
+        "properties": {
+          "documentTypes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "code": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "usualValidityMonths": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "warningDays": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "receiptRequired": {
+                  "type": "boolean"
+                },
+                "classIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "code",
+                "name",
+                "usualValidityMonths",
+                "warningDays",
+                "receiptRequired",
+                "classIds"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "classes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "create",
+                "edit",
+                "deactivate"
+              ]
+            }
+          }
+        },
+        "required": [
+          "documentTypes",
+          "classes",
+          "allowedActions"
+        ],
+        "additionalProperties": false
+      },
+      "DocumentTypeResponse": {
+        "type": "object",
+        "properties": {
+          "documentType": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "usualValidityMonths": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "warningDays": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "receiptRequired": {
+                "type": "boolean"
+              },
+              "classIds": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              }
+            },
+            "required": [
+              "id",
+              "code",
+              "name",
+              "usualValidityMonths",
+              "warningDays",
+              "receiptRequired",
+              "classIds"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "documentType"
+        ],
+        "additionalProperties": false
+      },
+      "DocumentTypeRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30,
+            "pattern": "^[A-Za-z0-9_]+$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "usualValidityMonths": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 240
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warningDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "receiptRequired": {
+            "type": "boolean"
+          },
+          "classIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "usualValidityMonths",
+          "warningDays",
+          "receiptRequired",
+          "classIds"
+        ],
+        "additionalProperties": false
+      },
+      "DocumentTypeUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "usualValidityMonths": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 240
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warningDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "receiptRequired": {
+            "type": "boolean"
+          },
+          "classIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "required": [
+          "name",
+          "usualValidityMonths",
+          "warningDays",
+          "receiptRequired",
+          "classIds"
         ],
         "additionalProperties": false
       }

@@ -205,6 +205,28 @@ export const partPositions = pgTable(
   (table) => [unique().on(table.chassisLayoutId, table.code)],
 );
 
+// §9.4 document types (DEC-121); preset_id comes with the SPK presets in TASK-208.
+export const documentTypes = pgTable('document_types', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  code: varchar('code', { length: 30 }).notNull().unique(),
+  name: varchar('name', { length: 100 }).notNull(),
+  usualValidityMonths: smallint('usual_validity_months'),
+  warningDays: smallint('warning_days').notNull().default(30),
+  receiptRequired: boolean('receipt_required').notNull().default(true),
+  isActive: boolean('is_active').notNull().default(true),
+});
+
+export const documentTypeClasses = pgTable(
+  'document_type_classes',
+  {
+    documentTypeId: bigint('document_type_id', { mode: 'number' }).notNull(),
+    vehicleClassId: bigint('vehicle_class_id', { mode: 'number' }).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.documentTypeId, table.vehicleClassId] })],
+);
+
 // One entry per table of §9 as its migration arrives. The drift test reads this list.
 export const allTables: readonly PgTable[] = [
   idempotencyKeys,
@@ -220,4 +242,6 @@ export const allTables: readonly PgTable[] = [
   chassisLayouts,
   vehicleClasses,
   partPositions,
+  documentTypes,
+  documentTypeClasses,
 ];

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import pg from 'pg';
 import { CLOCK, EMAIL, PASSWORD_HASHER, PG_POOL, PLANNER_APPROVAL_END } from './app.tokens.js';
+import { DocumentTypeService } from './core/fleet/document-type-service.js';
 import { VehicleClassService } from './core/fleet/vehicle-class-service.js';
 import { AccountService } from './core/iam/account-service.js';
 import { AuthService } from './core/iam/auth-service.js';
@@ -19,6 +20,10 @@ import {
 } from './http/auth/auth-http.js';
 import { ConcurrentUpdateFilter } from './http/concurrent-update.filter.js';
 import { ContractInterceptor } from './http/contract.interceptor.js';
+import {
+  DocumentTypeErrorFilter,
+  DocumentTypesController,
+} from './http/document-types/document-types.controller.js';
 import { HealthController } from './http/health.controller.js';
 import {
   PlannerApprovalController,
@@ -33,6 +38,7 @@ import { SystemClock } from './infra/clock/system-clock.js';
 import { HmacAccessTokenSigner } from './infra/crypto/hmac-access-token-signer.js';
 import { ScryptPasswordHasher } from './infra/crypto/scrypt-password-hasher.js';
 import { accountGateways } from './infra/db/account-gateways.js';
+import { documentTypeGateways } from './infra/db/document-type-gateways.js';
 import { iamGateways } from './infra/db/iam-gateways.js';
 import { plannerApprovalGateways } from './infra/db/planner-approval-gateways.js';
 import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
@@ -73,6 +79,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     RolePermissionsController,
     PlannerApprovalController,
     VehicleClassesController,
+    DocumentTypesController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -81,6 +88,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: AccountErrorFilter },
     { provide: APP_FILTER, useClass: PlannerApprovalErrorFilter },
     { provide: APP_FILTER, useClass: VehicleClassErrorFilter },
+    { provide: APP_FILTER, useClass: DocumentTypeErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -149,6 +157,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL],
       useFactory: (pool: pg.Pool) =>
         new VehicleClassService(new DrizzleUnitOfWork(pool, vehicleClassGateways)),
+    },
+    {
+      provide: DocumentTypeService,
+      inject: [PG_POOL],
+      useFactory: (pool: pg.Pool) =>
+        new DocumentTypeService(new DrizzleUnitOfWork(pool, documentTypeGateways)),
     },
     SessionGuard,
   ],

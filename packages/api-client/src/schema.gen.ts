@@ -348,6 +348,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/document-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Active document types with their required classes */
+        get: operations["listDocumentTypes"];
+        put?: never;
+        /** New document type (C-31) */
+        post: operations["createDocumentType"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-types/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Save a document type: fields and required classes (C-17) */
+        patch: operations["updateDocumentType"];
+        trace?: never;
+    };
+    "/document-types/{id}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Deactivate a document type (C-32) */
+        post: operations["deactivateDocumentType"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -596,6 +648,48 @@ export interface components {
                     spacing?: "Close" | "Wide";
                 }[];
             };
+        };
+        DocumentTypeListResponse: {
+            documentTypes: {
+                id: number;
+                code: string;
+                name: string;
+                usualValidityMonths: number | null;
+                warningDays: number;
+                receiptRequired: boolean;
+                classIds: number[];
+            }[];
+            classes: {
+                id: number;
+                name: string;
+            }[];
+            allowedActions: ("create" | "edit" | "deactivate")[];
+        };
+        DocumentTypeResponse: {
+            documentType: {
+                id: number;
+                code: string;
+                name: string;
+                usualValidityMonths: number | null;
+                warningDays: number;
+                receiptRequired: boolean;
+                classIds: number[];
+            };
+        };
+        DocumentTypeRequest: {
+            code: string;
+            name: string;
+            usualValidityMonths: number | null;
+            warningDays: number;
+            receiptRequired: boolean;
+            classIds: number[];
+        };
+        DocumentTypeUpdateRequest: {
+            name: string;
+            usualValidityMonths: number | null;
+            warningDays: number;
+            receiptRequired: boolean;
+            classIds: number[];
         };
     };
     responses: never;
@@ -1146,6 +1240,98 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VehicleClassResponse"];
+                };
+            };
+        };
+    };
+    listDocumentTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active document types with their required classes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTypeListResponse"];
+                };
+            };
+        };
+    };
+    createDocumentType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentTypeRequest"];
+            };
+        };
+        responses: {
+            /** @description New document type (C-31) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTypeResponse"];
+                };
+            };
+        };
+    };
+    updateDocumentType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentTypeUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Save a document type: fields and required classes (C-17) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTypeResponse"];
+                };
+            };
+        };
+    };
+    deactivateDocumentType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deactivate a document type (C-32) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
                 };
             };
         };

@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import pg from 'pg';
-import { CLOCK, EMAIL, PASSWORD_HASHER, PG_POOL, PLANNER_APPROVAL_END } from './app.tokens.js';
+import {
+  CLOCK,
+  EMAIL,
+  PASSWORD_HASHER,
+  PG_POOL,
+  PLANNER_APPROVAL_END,
+  VEHICLE_ACTIVITY,
+} from './app.tokens.js';
 import { DocumentTypeService } from './core/fleet/document-type-service.js';
 import { VehicleClassService } from './core/fleet/vehicle-class-service.js';
+import { VehicleService } from './core/fleet/vehicle-service.js';
 import { AccountService } from './core/iam/account-service.js';
 import { AuthService } from './core/iam/auth-service.js';
 import { CapabilityService } from './core/iam/capability-service.js';
@@ -34,6 +42,7 @@ import {
   VehicleClassErrorFilter,
   VehicleClassesController,
 } from './http/vehicle-classes/vehicle-classes.controller.js';
+import { VehicleErrorFilter, VehiclesController } from './http/vehicles/vehicles.controller.js';
 import { SystemClock } from './infra/clock/system-clock.js';
 import { HmacAccessTokenSigner } from './infra/crypto/hmac-access-token-signer.js';
 import { ScryptPasswordHasher } from './infra/crypto/scrypt-password-hasher.js';
@@ -44,11 +53,13 @@ import { plannerApprovalGateways } from './infra/db/planner-approval-gateways.js
 import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
+import { NoVehicleActivityYet, vehicleGateways } from './infra/db/vehicle-gateways.js';
 import { ConsoleEmailAdapter } from './infra/email/console-email.js';
 import { PlannerApprovalEndQueue } from './infra/queue/planner-approval-end-queue.js';
 import type { ClockPort } from './ports/clock.js';
 import type { EmailPort, PasswordHasher } from './ports/iam.js';
 import type { PlannerApprovalEndScheduler } from './ports/planner-approval.js';
+import type { VehicleActivityGateway } from './ports/vehicles.js';
 
 const LOCAL_DATABASE_URL = 'postgres://bmi:bmi_local_dev@localhost:5432/bmi_dev';
 const LOCAL_WEB_ORIGIN = 'http://localhost:3000';
@@ -80,6 +91,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     PlannerApprovalController,
     VehicleClassesController,
     DocumentTypesController,
+    VehiclesController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -89,6 +101,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: PlannerApprovalErrorFilter },
     { provide: APP_FILTER, useClass: VehicleClassErrorFilter },
     { provide: APP_FILTER, useClass: DocumentTypeErrorFilter },
+    { provide: APP_FILTER, useClass: VehicleErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -163,6 +176,13 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL],
       useFactory: (pool: pg.Pool) =>
         new DocumentTypeService(new DrizzleUnitOfWork(pool, documentTypeGateways)),
+    },
+    { provide: VEHICLE_ACTIVITY, useFactory: () => new NoVehicleActivityYet() },
+    {
+      provide: VehicleService,
+      inject: [PG_POOL, VEHICLE_ACTIVITY, CLOCK],
+      useFactory: (pool: pg.Pool, activity: VehicleActivityGateway, clock: ClockPort) =>
+        new VehicleService(new DrizzleUnitOfWork(pool, vehicleGateways), activity, clock),
     },
     SessionGuard,
   ],

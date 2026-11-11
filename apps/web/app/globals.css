@@ -785,6 +785,15 @@ textarea:focus-visible {
   background: var(--mist);
   color: var(--info-text);
 }
+/* A read-only field (e.g. Axles and tyres, from the class layout) looks set, not editable. */
+.input[readonly] {
+  background: var(--divider);
+  color: var(--text-subtle);
+}
+.note.warn {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
 
 /* Sign-in screens: one raised sheet, brand on the left and the form on the right (WebLogin). */
 .auth-stage {
@@ -854,10 +863,16 @@ textarea:focus-visible {
 /* ChassisLayouts (ui.md 7.4): classes, layout editor and live preview side by side. */
 .layout-editor {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.5fr) minmax(0, 0.95fr);
   gap: 14px;
   align-items: start;
   margin-top: 16px;
+}
+/* Six class columns fit the narrow list column (DEC-120 adds Vehicles). */
+.layout-editor .table th,
+.layout-editor .table td {
+  padding-right: 8px;
+  padding-left: 8px;
 }
 .layout-panel {
   padding: 18px;
@@ -937,4 +952,55 @@ textarea:focus-visible {
   .master-detail {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Vehicle pages (REQ-VEH-001 to REQ-VEH-004): a form or map beside its preview, two field columns. */
+.g2 {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+}
+.ge {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.card.white {
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.card h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+.subline {
+  margin: 6px 0 0;
+}
+.vehicle-body {
+  margin-top: 16px;
+}
+.bar .reason {
+  min-width: 280px;
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .g2,
+  .ge {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* A title with its status pill beside it (PageHead status). */
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card .map-card {
+  padding: 12px;
+}
+/* Bold record links in a list (the plate in Vehicles), kept on one line. */
+.b {
+  font-weight: 700;
+}
+.nowrap {
+  white-space: nowrap;
 }

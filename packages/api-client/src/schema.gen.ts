@@ -400,6 +400,59 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/vehicles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Vehicles with their class, layout and allowed actions */
+        get: operations["listVehicles"];
+        put?: never;
+        /** Add a vehicle (REQ-VEH-002) */
+        post: operations["createVehicle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vehicles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One vehicle */
+        get: operations["getVehicle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit a vehicle with a reason (REQ-VEH-003) */
+        patch: operations["updateVehicle"];
+        trace?: never;
+    };
+    "/vehicles/{id}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Deactivate a vehicle with a reason (REQ-VEH-004) */
+        post: operations["deactivateVehicle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -585,6 +638,7 @@ export interface components {
                     };
                     axleCount: number;
                     tyreCount: number;
+                    vehicleCount: number;
                 };
             }[];
             allowedActions: ("create" | "new_layout_version")[];
@@ -614,6 +668,7 @@ export interface components {
                     };
                     axleCount: number;
                     tyreCount: number;
+                    vehicleCount: number;
                 };
             };
         };
@@ -662,6 +717,7 @@ export interface components {
             classes: {
                 id: number;
                 name: string;
+                vehicleCount: number;
             }[];
             allowedActions: ("create" | "edit" | "deactivate")[];
         };
@@ -690,6 +746,143 @@ export interface components {
             warningDays: number;
             receiptRequired: boolean;
             classIds: number[];
+        };
+        VehicleListResponse: {
+            vehicles: {
+                id: number;
+                licensePlate: string;
+                vin: string | null;
+                engineNumber: string | null;
+                brand: string | null;
+                model: string | null;
+                year: number | null;
+                fuelType: string | null;
+                vehicleClass: {
+                    id: number;
+                    name: string;
+                    /** @enum {string} */
+                    unitKind: "Powered" | "Towed";
+                };
+                layout: {
+                    id: number;
+                    version: number;
+                    definition: {
+                        /** @enum {string} */
+                        frontDrawing: "None" | "Fifth_wheel" | "Kingpin";
+                        spareCount: number;
+                        axles: {
+                            /** @enum {string} */
+                            role: "Steer" | "Drive" | "Trailer";
+                            tyresPerSide: 1 | 2;
+                            /** @enum {string} */
+                            spacing?: "Close" | "Wide";
+                        }[];
+                    };
+                    axleCount: number;
+                    tyreCount: number;
+                };
+                currentOdometer: number;
+                /** @enum {string} */
+                status: "Active" | "Repair" | "Blocked" | "OFF" | "Inactive";
+                deactivateReason: string | null;
+                version: number;
+                classLock: string | null;
+                allowedActions: ("edit" | "change_class" | "deactivate")[];
+            }[];
+            classes: {
+                id: number;
+                name: string;
+                /** @enum {string} */
+                unitKind: "Powered" | "Towed";
+                layout: {
+                    id: number;
+                    version: number;
+                    definition: {
+                        /** @enum {string} */
+                        frontDrawing: "None" | "Fifth_wheel" | "Kingpin";
+                        spareCount: number;
+                        axles: {
+                            /** @enum {string} */
+                            role: "Steer" | "Drive" | "Trailer";
+                            tyresPerSide: 1 | 2;
+                            /** @enum {string} */
+                            spacing?: "Close" | "Wide";
+                        }[];
+                    };
+                    axleCount: number;
+                    tyreCount: number;
+                };
+            }[];
+            allowedActions: "create"[];
+        };
+        VehicleResponse: {
+            vehicle: {
+                id: number;
+                licensePlate: string;
+                vin: string | null;
+                engineNumber: string | null;
+                brand: string | null;
+                model: string | null;
+                year: number | null;
+                fuelType: string | null;
+                vehicleClass: {
+                    id: number;
+                    name: string;
+                    /** @enum {string} */
+                    unitKind: "Powered" | "Towed";
+                };
+                layout: {
+                    id: number;
+                    version: number;
+                    definition: {
+                        /** @enum {string} */
+                        frontDrawing: "None" | "Fifth_wheel" | "Kingpin";
+                        spareCount: number;
+                        axles: {
+                            /** @enum {string} */
+                            role: "Steer" | "Drive" | "Trailer";
+                            tyresPerSide: 1 | 2;
+                            /** @enum {string} */
+                            spacing?: "Close" | "Wide";
+                        }[];
+                    };
+                    axleCount: number;
+                    tyreCount: number;
+                };
+                currentOdometer: number;
+                /** @enum {string} */
+                status: "Active" | "Repair" | "Blocked" | "OFF" | "Inactive";
+                deactivateReason: string | null;
+                version: number;
+                classLock: string | null;
+                allowedActions: ("edit" | "change_class" | "deactivate")[];
+            };
+        };
+        VehicleRequest: {
+            licensePlate: string;
+            vin: string | null;
+            engineNumber: string | null;
+            brand: string | null;
+            model: string | null;
+            year: number | null;
+            fuelType: string | null;
+            vehicleClassId: number;
+            odometer: number | null;
+        };
+        VehicleUpdateRequest: {
+            licensePlate: string;
+            vin: string | null;
+            engineNumber: string | null;
+            brand: string | null;
+            model: string | null;
+            year: number | null;
+            fuelType: string | null;
+            vehicleClassId: number;
+            reason: string;
+            version: number;
+        };
+        VehicleDeactivateRequest: {
+            reason: string;
         };
     };
     responses: never;
@@ -1332,6 +1525,124 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+        };
+    };
+    listVehicles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vehicles with their class, layout and allowed actions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleListResponse"];
+                };
+            };
+        };
+    };
+    createVehicle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VehicleRequest"];
+            };
+        };
+        responses: {
+            /** @description Add a vehicle (REQ-VEH-002) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleResponse"];
+                };
+            };
+        };
+    };
+    getVehicle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description One vehicle */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleResponse"];
+                };
+            };
+        };
+    };
+    updateVehicle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VehicleUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Edit a vehicle with a reason (REQ-VEH-003) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleResponse"];
+                };
+            };
+        };
+    };
+    deactivateVehicle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VehicleDeactivateRequest"];
+            };
+        };
+        responses: {
+            /** @description Deactivate a vehicle with a reason (REQ-VEH-004) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VehicleResponse"];
                 };
             };
         };

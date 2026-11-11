@@ -40,9 +40,14 @@ export class DrizzleDocumentTypeGateway implements DocumentTypeGateway {
     return row !== undefined;
   }
 
-  classes(): Promise<{ id: number; name: string }[]> {
+  classes(): Promise<{ id: number; name: string; vehicleCount: number }[]> {
     return this.tx
-      .select({ id: vehicleClasses.id, name: vehicleClasses.name })
+      .select({
+        id: vehicleClasses.id,
+        name: vehicleClasses.name,
+        // Written out in full: inside a one-table select drizzle leaves column names unqualified.
+        vehicleCount: sql<number>`(SELECT count(*)::int FROM vehicles v WHERE v.vehicle_class_id = vehicle_classes.id AND v.deleted_at IS NULL AND v.status <> 'Inactive')`,
+      })
       .from(vehicleClasses)
       .where(eq(vehicleClasses.isActive, true))
       .orderBy(asc(vehicleClasses.name), asc(vehicleClasses.id));

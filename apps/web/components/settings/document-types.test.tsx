@@ -27,8 +27,8 @@ const stnk: DocumentType = {
 const page: DocumentTypeListResponse = {
   documentTypes: [kir, stnk],
   classes: [
-    { id: 1, name: 'Tractor head' },
-    { id: 2, name: 'Wingbox rigid' },
+    { id: 1, name: 'Tractor head', vehicleCount: 38 },
+    { id: 2, name: 'Wingbox rigid', vehicleCount: 6 },
   ],
   allowedActions: ['create', 'edit', 'deactivate'],
 };
@@ -61,6 +61,19 @@ describe('DocumentTypes (REQ-DOC-002, DEC-121)', () => {
     expect(row.textContent).toContain('6 months');
     expect(row.textContent).toContain('30');
     expect(screen.getByRole('row', { name: /STNK annual/ }).textContent).toContain('None');
+  });
+
+  it('REQ-DOC-002 DEC-121 ticking a class shows how many vehicles become non-compliant before saving', async () => {
+    await open(apiWith());
+    const warning = () => within(panel()).queryByText(/non-compliant/);
+    expect(warning()).toBeNull();
+    fireEvent.click(within(panel()).getByLabelText('Wingbox rigid'));
+    expect(warning()?.textContent).toBe(
+      'Saving makes 6 vehicles of Wingbox rigid non-compliant until each has a KIR.',
+    );
+    // A class KIR already needs adds nothing; unticking the new one clears the warning.
+    fireEvent.click(within(panel()).getByLabelText('Wingbox rigid'));
+    expect(warning()).toBeNull();
   });
 
   it('C-17 Save sends the fields and the ticked classes; the code stays fixed', async () => {

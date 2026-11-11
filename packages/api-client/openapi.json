@@ -728,6 +728,152 @@
           }
         }
       }
+    },
+    "/vehicles": {
+      "get": {
+        "operationId": "listVehicles",
+        "summary": "Vehicles with their class, layout and allowed actions",
+        "responses": {
+          "200": {
+            "description": "Vehicles with their class, layout and allowed actions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createVehicle",
+        "summary": "Add a vehicle (REQ-VEH-002)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Add a vehicle (REQ-VEH-002)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicles/{id}": {
+      "get": {
+        "operationId": "getVehicle",
+        "summary": "One vehicle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One vehicle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateVehicle",
+        "summary": "Edit a vehicle with a reason (REQ-VEH-003)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Edit a vehicle with a reason (REQ-VEH-003)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicles/{id}/deactivate": {
+      "post": {
+        "operationId": "deactivateVehicle",
+        "summary": "Deactivate a vehicle with a reason (REQ-VEH-004)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleDeactivateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deactivate a vehicle with a reason (REQ-VEH-004)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1894,6 +2040,11 @@
                       "type": "integer",
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
+                    },
+                    "vehicleCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
                     }
                   },
                   "required": [
@@ -1902,7 +2053,8 @@
                     "version",
                     "definition",
                     "axleCount",
-                    "tyreCount"
+                    "tyreCount",
+                    "vehicleCount"
                   ],
                   "additionalProperties": false
                 }
@@ -2048,6 +2200,11 @@
                     "type": "integer",
                     "minimum": -9007199254740991,
                     "maximum": 9007199254740991
+                  },
+                  "vehicleCount": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
                   }
                 },
                 "required": [
@@ -2056,7 +2213,8 @@
                   "version",
                   "definition",
                   "axleCount",
-                  "tyreCount"
+                  "tyreCount",
+                  "vehicleCount"
                 ],
                 "additionalProperties": false
               }
@@ -2317,11 +2475,17 @@
                 },
                 "name": {
                   "type": "string"
+                },
+                "vehicleCount": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
                 }
               },
               "required": [
                 "id",
-                "name"
+                "name",
+                "vehicleCount"
               ],
               "additionalProperties": false
             }
@@ -2504,6 +2668,873 @@
           "warningDays",
           "receiptRequired",
           "classIds"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleListResponse": {
+        "type": "object",
+        "properties": {
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "licensePlate": {
+                  "type": "string"
+                },
+                "vin": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "engineNumber": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "brand": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "model": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "year": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "fuelType": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "vehicleClass": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "unitKind": {
+                      "type": "string",
+                      "enum": [
+                        "Powered",
+                        "Towed"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "unitKind"
+                  ],
+                  "additionalProperties": false
+                },
+                "layout": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "definition": {
+                      "type": "object",
+                      "properties": {
+                        "frontDrawing": {
+                          "type": "string",
+                          "enum": [
+                            "None",
+                            "Fifth_wheel",
+                            "Kingpin"
+                          ]
+                        },
+                        "spareCount": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "axles": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "role": {
+                                "type": "string",
+                                "enum": [
+                                  "Steer",
+                                  "Drive",
+                                  "Trailer"
+                                ]
+                              },
+                              "tyresPerSide": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "const": 1
+                                  },
+                                  {
+                                    "type": "number",
+                                    "const": 2
+                                  }
+                                ]
+                              },
+                              "spacing": {
+                                "type": "string",
+                                "enum": [
+                                  "Close",
+                                  "Wide"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "role",
+                              "tyresPerSide"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "frontDrawing",
+                        "spareCount",
+                        "axles"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "axleCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "tyreCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "version",
+                    "definition",
+                    "axleCount",
+                    "tyreCount"
+                  ],
+                  "additionalProperties": false
+                },
+                "currentOdometer": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "Active",
+                    "Repair",
+                    "Blocked",
+                    "OFF",
+                    "Inactive"
+                  ]
+                },
+                "deactivateReason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "classLock": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "allowedActions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "edit",
+                      "change_class",
+                      "deactivate"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "licensePlate",
+                "vin",
+                "engineNumber",
+                "brand",
+                "model",
+                "year",
+                "fuelType",
+                "vehicleClass",
+                "layout",
+                "currentOdometer",
+                "status",
+                "deactivateReason",
+                "version",
+                "classLock",
+                "allowedActions"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "classes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "name": {
+                  "type": "string"
+                },
+                "unitKind": {
+                  "type": "string",
+                  "enum": [
+                    "Powered",
+                    "Towed"
+                  ]
+                },
+                "layout": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "definition": {
+                      "type": "object",
+                      "properties": {
+                        "frontDrawing": {
+                          "type": "string",
+                          "enum": [
+                            "None",
+                            "Fifth_wheel",
+                            "Kingpin"
+                          ]
+                        },
+                        "spareCount": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "axles": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "role": {
+                                "type": "string",
+                                "enum": [
+                                  "Steer",
+                                  "Drive",
+                                  "Trailer"
+                                ]
+                              },
+                              "tyresPerSide": {
+                                "anyOf": [
+                                  {
+                                    "type": "number",
+                                    "const": 1
+                                  },
+                                  {
+                                    "type": "number",
+                                    "const": 2
+                                  }
+                                ]
+                              },
+                              "spacing": {
+                                "type": "string",
+                                "enum": [
+                                  "Close",
+                                  "Wide"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "role",
+                              "tyresPerSide"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "frontDrawing",
+                        "spareCount",
+                        "axles"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "axleCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "tyreCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "version",
+                    "definition",
+                    "axleCount",
+                    "tyreCount"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "unitKind",
+                "layout"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "create"
+              ]
+            }
+          }
+        },
+        "required": [
+          "vehicles",
+          "classes",
+          "allowedActions"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleResponse": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "licensePlate": {
+                "type": "string"
+              },
+              "vin": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "engineNumber": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "brand": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "model": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "year": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fuelType": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "vehicleClass": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "unitKind": {
+                    "type": "string",
+                    "enum": [
+                      "Powered",
+                      "Towed"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "unitKind"
+                ],
+                "additionalProperties": false
+              },
+              "layout": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "version": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "definition": {
+                    "type": "object",
+                    "properties": {
+                      "frontDrawing": {
+                        "type": "string",
+                        "enum": [
+                          "None",
+                          "Fifth_wheel",
+                          "Kingpin"
+                        ]
+                      },
+                      "spareCount": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "axles": {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "Steer",
+                                "Drive",
+                                "Trailer"
+                              ]
+                            },
+                            "tyresPerSide": {
+                              "anyOf": [
+                                {
+                                  "type": "number",
+                                  "const": 1
+                                },
+                                {
+                                  "type": "number",
+                                  "const": 2
+                                }
+                              ]
+                            },
+                            "spacing": {
+                              "type": "string",
+                              "enum": [
+                                "Close",
+                                "Wide"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "role",
+                            "tyresPerSide"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "frontDrawing",
+                      "spareCount",
+                      "axles"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "axleCount": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "tyreCount": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "id",
+                  "version",
+                  "definition",
+                  "axleCount",
+                  "tyreCount"
+                ],
+                "additionalProperties": false
+              },
+              "currentOdometer": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Active",
+                  "Repair",
+                  "Blocked",
+                  "OFF",
+                  "Inactive"
+                ]
+              },
+              "deactivateReason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "version": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "classLock": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "allowedActions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "edit",
+                    "change_class",
+                    "deactivate"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "licensePlate",
+              "vin",
+              "engineNumber",
+              "brand",
+              "model",
+              "year",
+              "fuelType",
+              "vehicleClass",
+              "layout",
+              "currentOdometer",
+              "status",
+              "deactivateReason",
+              "version",
+              "classLock",
+              "allowedActions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "vehicle"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleRequest": {
+        "type": "object",
+        "properties": {
+          "licensePlate": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20
+          },
+          "vin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "engineNumber": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "brand": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1950,
+                "maximum": 2100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fuelType": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vehicleClassId": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "odometer": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "licensePlate",
+          "vin",
+          "engineNumber",
+          "brand",
+          "model",
+          "year",
+          "fuelType",
+          "vehicleClassId",
+          "odometer"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "licensePlate": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20
+          },
+          "vin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "engineNumber": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "brand": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1950,
+                "maximum": 2100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fuelType": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vehicleClassId": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "version": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "licensePlate",
+          "vin",
+          "engineNumber",
+          "brand",
+          "model",
+          "year",
+          "fuelType",
+          "vehicleClassId",
+          "reason",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "VehicleDeactivateRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
         ],
         "additionalProperties": false
       }

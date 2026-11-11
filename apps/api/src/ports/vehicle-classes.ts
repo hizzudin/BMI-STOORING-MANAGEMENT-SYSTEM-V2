@@ -18,7 +18,8 @@ export interface VehicleClassRow {
   code: string;
   name: string;
   unitKind: UnitKind;
-  layout: LayoutRow;
+  /** DEC-120: with the count of vehicles that use this version. */
+  layout: LayoutRow & { vehicleCount: number };
 }
 
 export interface VehicleClassGateway {

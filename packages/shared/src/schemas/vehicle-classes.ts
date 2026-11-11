@@ -22,6 +22,8 @@ export const VehicleClassSchema = z.object({
     definition: ChassisDefinitionSchema,
     axleCount: z.number().int(),
     tyreCount: z.number().int(),
+    /** DEC-120: vehicles that use this layout version. */
+    vehicleCount: z.number().int(),
   }),
 });
 export type VehicleClass = z.infer<typeof VehicleClassSchema>;

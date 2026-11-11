@@ -19,7 +19,14 @@ export type DocumentType = z.infer<typeof DocumentTypeSchema>;
 export const DocumentTypeListResponseSchema = z.object({
   documentTypes: z.array(DocumentTypeSchema),
   /** The classes a type can be required for (§9.3). */
-  classes: z.array(z.object({ id: z.number().int(), name: z.string() })),
+  classes: z.array(
+    z.object({
+      id: z.number().int(),
+      name: z.string(),
+      /** REQ-DOC-002, DEC-121: vehicles of the class that are not Inactive. */
+      vehicleCount: z.number().int(),
+    }),
+  ),
   allowedActions: z.array(z.enum(DOCUMENT_TYPES_PAGE_ACTIONS)),
 });
 export type DocumentTypeListResponse = z.infer<typeof DocumentTypeListResponseSchema>;

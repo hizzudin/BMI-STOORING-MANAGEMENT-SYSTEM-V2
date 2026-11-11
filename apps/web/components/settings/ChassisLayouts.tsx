@@ -92,6 +92,8 @@ const COLUMNS: Column<VehicleClass>[] = [
     },
   },
   { key: 'layout', label: 'Layout', value: (c) => `v${c.layout.version}` },
+  // DEC-120: vehicles that use this layout version.
+  { key: 'vehicles', label: 'Vehicles', value: (c) => c.layout.vehicleCount, align: 'end' },
 ];
 
 /** An axle keeps its spacing only after the first (DEC-119). */

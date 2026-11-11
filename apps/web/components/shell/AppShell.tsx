@@ -154,18 +154,27 @@ export interface PageHeadProps {
   title: string;
   /** A short trail above the title, e.g. "Surat Perintah Kerja / New". */
   crumb?: string;
+  /** The record's status pill, shown beside the title (VehicleOverview). */
+  status?: ReactNode;
   /** Status pills and the primary action of the page. */
   actions?: ReactNode;
 }
 
 /** The sheet's header row: title, status and actions, then the bell (DEC-94). */
-export function PageHead({ title, crumb, actions }: PageHeadProps) {
+export function PageHead({ title, crumb, status, actions }: PageHeadProps) {
   const bell = useContext(BellContext);
   return (
     <div className="head">
       <div>
         {crumb && <div className="crumb">{crumb}</div>}
-        <h1>{title}</h1>
+        {status ? (
+          <div className="title-row">
+            <h1>{title}</h1>
+            {status}
+          </div>
+        ) : (
+          <h1>{title}</h1>
+        )}
       </div>
       <span className="grow" />
       {actions}

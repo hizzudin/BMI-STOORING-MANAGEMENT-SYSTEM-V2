@@ -11,6 +11,7 @@ export * from './schemas/chassis-layout.js';
 export * from './schemas/document-types.js';
 export * from './schemas/role-permissions.js';
 export * from './schemas/vehicle-classes.js';
+export * from './schemas/vehicles.js';
 export * from './schemas/health.js';
 export * from './schemas/planner-approval.js';
 export * from './time/wib.js';

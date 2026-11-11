@@ -105,6 +105,7 @@ export class DrizzleVehicleClassGateway implements VehicleClassGateway {
         definition: chassisLayouts.definition,
         axleCount: chassisLayouts.axleCount,
         tyreCount: chassisLayouts.tyreCount,
+        vehicleCount: sql<number>`(SELECT count(*)::int FROM vehicles v WHERE v.chassis_layout_id = chassis_layouts.id AND v.deleted_at IS NULL)`,
       })
       .from(vehicleClasses)
       .innerJoin(chassisLayouts, eq(chassisLayouts.id, vehicleClasses.defaultChassisLayoutId))
@@ -123,6 +124,7 @@ export class DrizzleVehicleClassGateway implements VehicleClassGateway {
         definition: row.definition as ChassisDefinition,
         axleCount: row.axleCount,
         tyreCount: row.tyreCount,
+        vehicleCount: row.vehicleCount,
       },
     }));
   }

@@ -1,4 +1,4 @@
-import { ROLES } from '@bmi/shared';
+import { ROLES, VEHICLE_STATUSES } from '@bmi/shared';
 import {
   bigint,
   boolean,
@@ -227,6 +227,31 @@ export const documentTypeClasses = pgTable(
   (table) => [primaryKey({ columns: [table.documentTypeId, table.vehicleClassId] })],
 );
 
+// §9.3 vehicles (DEC-122): customer_id gets its reference with the customers in TASK-701.
+export const vehicleStatusEnum = pgEnum('vehicle_status_t', VEHICLE_STATUSES);
+
+export const vehicles = pgTable('vehicles', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  deletedAt: timestamp('deleted_at'),
+  licensePlate: varchar('license_plate', { length: 20 }).notNull(),
+  vin: varchar('vin', { length: 30 }),
+  engineNumber: varchar('engine_number', { length: 30 }),
+  vehicleClassId: bigint('vehicle_class_id', { mode: 'number' }).notNull(),
+  chassisLayoutId: bigint('chassis_layout_id', { mode: 'number' }).notNull(),
+  brand: varchar('brand', { length: 50 }),
+  model: varchar('model', { length: 50 }),
+  year: smallint('year'),
+  fuelType: varchar('fuel_type', { length: 20 }),
+  customerId: bigint('customer_id', { mode: 'number' }),
+  currentOdometer: integer('current_odometer').notNull().default(0),
+  status: vehicleStatusEnum('status').notNull().default('Active'),
+  deactivatedAt: timestamp('deactivated_at'),
+  deactivateReason: text('deactivate_reason'),
+  version: integer('version').notNull().default(1),
+});
+
 // One entry per table of §9 as its migration arrives. The drift test reads this list.
 export const allTables: readonly PgTable[] = [
   idempotencyKeys,
@@ -244,4 +269,5 @@ export const allTables: readonly PgTable[] = [
   partPositions,
   documentTypes,
   documentTypeClasses,
+  vehicles,
 ];

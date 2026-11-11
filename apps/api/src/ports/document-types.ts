@@ -21,8 +21,8 @@ export interface DocumentTypeGateway {
   findById(id: number, options?: { forUpdate?: boolean }): Promise<DocumentTypeRow | null>;
   /** Case-insensitive, active or not, so KIR and kir are one code. */
   codeTaken(code: string): Promise<boolean>;
-  /** The classes a type can be required for: id and name. */
-  classes(): Promise<{ id: number; name: string }[]>;
+  /** The classes a type can be required for, with their vehicles that are not Inactive (REQ-DOC-002). */
+  classes(): Promise<{ id: number; name: string; vehicleCount: number }[]>;
   insert(code: string, fields: DocumentTypeFields): Promise<number>;
   update(id: number, fields: DocumentTypeFields): Promise<void>;
   /** Replaces the required classes of the type. */

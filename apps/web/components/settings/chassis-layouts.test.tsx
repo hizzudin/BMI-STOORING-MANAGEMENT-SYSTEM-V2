@@ -17,6 +17,7 @@ const head: VehicleClass = {
     version: 2,
     axleCount: 3,
     tyreCount: 11,
+    vehicleCount: 38,
     definition: {
       frontDrawing: 'Fifth_wheel',
       spareCount: 1,
@@ -81,6 +82,8 @@ describe('ChassisLayouts (REQ-PLC-013, REQ-PLC-017, DEC-120)', () => {
     expect(row.textContent).toContain('Powered');
     expect(row.textContent).toContain('10 + 1 spare');
     expect(row.textContent).toContain('v2');
+    // DEC-120: vehicles on this layout version.
+    expect(within(row).getAllByRole('cell').at(-1)?.textContent).toBe('38');
     expect(screen.getByRole('link', { name: 'Back to Settings' }).getAttribute('href')).toBe(
       '/settings',
     );

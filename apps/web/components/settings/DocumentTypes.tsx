@@ -49,6 +49,9 @@ const draftOf = (type: DocumentType): Draft => ({
 });
 
 /** An empty field is no value; anything else is read as a number for the schema to check. */
+const joinAnd = (items: readonly string[]) =>
+  items.length <= 1 ? (items[0] ?? '') : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
+
 const numberOf = (text: string) => (text.trim() === '' ? null : Number(text));
 
 type Confirm = { kind: 'none' } | { kind: 'discard'; go: () => void } | { kind: 'deactivate' };
@@ -118,6 +121,11 @@ export function DocumentTypes({ api }: { api: DocumentTypesApi }) {
   const stored = page.documentTypes.find((t) => t.id === draft.id) ?? null;
   const first = page.documentTypes[0];
   const isNew = draft.id === null;
+  // REQ-DOC-002: the vehicles of newly ticked classes have no document of this type yet.
+  const newlyRequired = page.classes.filter(
+    (c) => draft.classIds.includes(c.id) && !(stored?.classIds ?? []).includes(c.id),
+  );
+  const nonCompliant = newlyRequired.reduce((sum, c) => sum + c.vehicleCount, 0);
 
   const columns: Column<DocumentType>[] = [
     { key: 'name', label: 'Type', value: (t) => t.name, searchable: true },
@@ -304,6 +312,13 @@ export function DocumentTypes({ api }: { api: DocumentTypesApi }) {
               </label>
             ))}
           </fieldset>
+          {nonCompliant > 0 && (
+            <div className="note warn" aria-live="polite">
+              Saving makes {nonCompliant} {nonCompliant === 1 ? 'vehicle' : 'vehicles'} of{' '}
+              {joinAnd(newlyRequired.filter((c) => c.vehicleCount > 0).map((c) => c.name))}{' '}
+              non-compliant until each has {draft.name.trim() ? `a ${draft.name.trim()}` : 'one'}.
+            </div>
+          )}
           <Refusal message={error} />
           {saved && (
             <p className="small muted" role="status">

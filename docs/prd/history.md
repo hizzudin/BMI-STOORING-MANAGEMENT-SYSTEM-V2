@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.37 (2026-11-11) adds DEC-125, product owner decision on the notifications foundation: notifications.dedupe_key (one notice per user and event), the Planner approval switch notice as kind Approval with no link, and the bell badge refreshed on page load, panel open and every 60 seconds.
+
 v2.36 (2026-11-11) adds DEC-124, product owner decision on the SPK tables build order: references to tables of later tasks start as plain columns that those tasks constrain, the module registry starts empty, and an open SPK is the list of REQ-SCH-001.
 
 v2.35 (2026-11-11) adds DEC-123, product owner decision on the vehicle edit: the odometer is read only after AddVehicle and changes by readings under BR-09; it also writes down how the Vehicles column of ChassisLayouts and the non-compliance count of DocumentTypes count vehicles.

@@ -1067,8 +1067,10 @@ CREATE TABLE notifications (                  -- the only notifications table; i
   title VARCHAR(200) NOT NULL,
   body TEXT,
   link_record VARCHAR(60),                    -- the SPK, step, document or vehicle it opens
+  dedupe_key VARCHAR(120),                    -- the event that made it; one notice per user and key (outbox, DEC-125)
   created_at TIMESTAMP NOT NULL DEFAULT now(),
-  read_at TIMESTAMP
+  read_at TIMESTAMP,
+  UNIQUE (user_id, dedupe_key)
 );
 CREATE TABLE push_devices (                   -- P1: phones where a user is signed in
   user_id BIGINT NOT NULL REFERENCES users(id),

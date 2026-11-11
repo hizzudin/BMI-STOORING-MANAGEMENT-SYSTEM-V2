@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.36 (2026-11-11) adds DEC-124, product owner decision on the SPK tables build order: references to tables of later tasks start as plain columns that those tasks constrain, the module registry starts empty, and an open SPK is the list of REQ-SCH-001.
+
 v2.35 (2026-11-11) adds DEC-123, product owner decision on the vehicle edit: the odometer is read only after AddVehicle and changes by readings under BR-09; it also writes down how the Vehicles column of ChassisLayouts and the non-compliance count of DocumentTypes count vehicles.
 
 v2.34 (2026-11-11) adds DEC-122, product owner decision on the vehicles build order: customer reference with the customers (TASK-701), first documents with the document entry (TASK-601), driver screen and table with REQ-VEH-010 (TASK-606), and the class change rule built now with its tests when tyres and SPKs exist.

@@ -305,7 +305,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-103
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "SpkGateway|SPK numbering"`; migration drift test green
-- [ ] **TASK-130** In-app notifications foundation: outbox, recipient matrix, notification center, bell [REQ-NTF-001, REQ-NTF-005]
+- [x] **TASK-130** In-app notifications foundation: outbox, recipient matrix, notification center, bell [REQ-NTF-001, REQ-NTF-005]
   - _Scope_: §8.3 outbox with a dedupe key. Built in phase 1 because approvers are notified from T2 on; every later task adds its own events to the REQ-NTF-005 matrix. DEC-118: it also sends the Planner approval switch event of TASK-109 (switched on, changed, off, ended) to Supervisors and GMs, in-app. DEC-125: notifications.dedupe_key; the InApp delivery is written Sent with the notice; the switch notice is kind Approval with no link; the badge refreshes on page load, panel open and every 60 seconds.
   - _Rules_: C-03, DEC-27, DEC-125
   - _Screens built here (visual target)_: [`NotificationCenter`](<../Design Artifact/shell/NotificationCenter.html#NotificationCenter>)

@@ -12,6 +12,7 @@ import {
 import { DocumentTypeService } from './core/fleet/document-type-service.js';
 import { VehicleClassService } from './core/fleet/vehicle-class-service.js';
 import { VehicleService } from './core/fleet/vehicle-service.js';
+import { NotificationService } from './core/notifications/notification-service.js';
 import { AccountService } from './core/iam/account-service.js';
 import { AuthService } from './core/iam/auth-service.js';
 import { CapabilityService } from './core/iam/capability-service.js';
@@ -34,6 +35,10 @@ import {
 } from './http/document-types/document-types.controller.js';
 import { HealthController } from './http/health.controller.js';
 import {
+  NotificationErrorFilter,
+  NotificationsController,
+} from './http/notifications/notifications.controller.js';
+import {
   PlannerApprovalController,
   PlannerApprovalErrorFilter,
 } from './http/planner-approval/planner-approval.controller.js';
@@ -49,6 +54,7 @@ import { ScryptPasswordHasher } from './infra/crypto/scrypt-password-hasher.js';
 import { accountGateways } from './infra/db/account-gateways.js';
 import { documentTypeGateways } from './infra/db/document-type-gateways.js';
 import { iamGateways } from './infra/db/iam-gateways.js';
+import { notificationGateways } from './infra/db/notification-gateways.js';
 import { plannerApprovalGateways } from './infra/db/planner-approval-gateways.js';
 import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
@@ -92,6 +98,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     VehicleClassesController,
     DocumentTypesController,
     VehiclesController,
+    NotificationsController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -102,6 +109,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: VehicleClassErrorFilter },
     { provide: APP_FILTER, useClass: DocumentTypeErrorFilter },
     { provide: APP_FILTER, useClass: VehicleErrorFilter },
+    { provide: APP_FILTER, useClass: NotificationErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -187,6 +195,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, VEHICLE_ACTIVITY, CLOCK],
       useFactory: (pool: pg.Pool, activity: VehicleActivityGateway, clock: ClockPort) =>
         new VehicleService(new DrizzleUnitOfWork(pool, vehicleGateways), activity, clock),
+    },
+    {
+      provide: NotificationService,
+      inject: [PG_POOL, CLOCK],
+      useFactory: (pool: pg.Pool, clock: ClockPort) =>
+        new NotificationService(new DrizzleUnitOfWork(pool, notificationGateways), clock),
     },
     SessionGuard,
   ],

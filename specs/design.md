@@ -146,6 +146,20 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - `ports/numbering.ts` (`DocumentNumberGateway.next(kind, createdAt)`, `NumberingConfigError`) and `ports/spks.ts` (`SpkGateway`: `insert`, `findById`, `openNumbersByVehicle`), implemented in `infra/db/spk-gateways.ts`: a number reads the stored formats, checks them with `NumberingConfigSchema` (a missing or broken value is refused), takes `nextval` of the code's own sequence inside the caller's transaction (never given back, also after a rollback or a cancel) and formats it with the WIB date. `OPEN_SPK_STATUSES` in `@bmi/shared` is the REQ-SCH-001 list.
 - The drift check compares `numeric(p, s)` without the space Drizzle writes.
 
+### 5.9 In-app notifications (REQ-NTF-001, REQ-NTF-005, C-03, DEC-118, DEC-125)
+
+- Migration `0010_notifications.sql`: `notifications` with `dedupe_key` (unique per user) and `notification_deliveries`; `device_id` stays a plain column until `push_devices` comes with mobile push (the DEC-124 rule).
+- `ports/notifications.ts` and `infra/db/notification-gateways.ts`: `send(userIds, notice)` is the outbox of 8.3. It writes the notices in the caller's transaction (`ON CONFLICT (user_id, dedupe_key) DO NOTHING`) and an InApp delivery row, Sent, for each one written. Recipients the matrix names by role come from `activeUsersWithRoles`, active accounts only. Every later task adds its events by calling `send` in its own transaction with a key naming the event.
+- `core/notifications/notification-service.ts` and `/notifications` for any signed-in user, own notices only:
+  - list: the newest 50, with unread counts per tab;
+  - unread count;
+  - read one: 404 when it is not the user's;
+  - read all.
+- DEC-118: `PlannerApprovalService` sends "switched on", "changed", "switched off" and "ended" to active Supervisors and GMs, kind Approval, no link, in the transaction of its audit record. The end is keyed by the end time it passed, so a rerun of the end job adds nothing.
+- Web:
+  - `SignedInShell` takes `notices`. It reads the badge on page load and every `NOTIFICATION_POLL_MS` (60 s), and opens `NotificationCenter` from the bell of `PageHead`.
+  - The panel has tabs All, Approvals, Steps, Alerts and Schedule with unread counts, Mark all read, Close and Escape (C-14). A notice marks itself read, then opens its link or stays (DEC-125). Times are shown in WIB.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

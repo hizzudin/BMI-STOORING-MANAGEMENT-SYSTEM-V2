@@ -6,6 +6,7 @@ import type {
   PlannerApprovalState,
 } from '../../ports/planner-approval.js';
 import { DrizzleAuditGateway } from './account-gateways.js';
+import { DrizzleNotificationGateway } from './notification-gateways.js';
 import { appSettings } from './schema/index.js';
 import type { DbTransaction } from './unit-of-work.js';
 
@@ -59,4 +60,5 @@ export class DrizzlePlannerApprovalGateway implements PlannerApprovalGateway {
 export const plannerApprovalGateways = (tx: DbTransaction): PlannerApprovalGateways => ({
   plannerApproval: new DrizzlePlannerApprovalGateway(tx),
   audit: new DrizzleAuditGateway(tx),
+  notifications: new DrizzleNotificationGateway(tx),
 });

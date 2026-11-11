@@ -1,10 +1,12 @@
 'use client';
 
-import { menuFor, MENU, type MenuKey, type MeResponse } from '@bmi/shared';
-import { useEffect, useState, type ReactNode } from 'react';
+import { menuFor, MENU, NOTIFICATION_POLL_MS, type MenuKey, type MeResponse } from '@bmi/shared';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { AuthApi } from '../../lib/auth-api';
+import type { NotificationsApi } from '../../lib/notifications-api';
 import type { IconName } from '../kit/Icon';
 import { AppShell, PageHead, type NavItem } from './AppShell';
+import { NotificationCenter } from './NotificationCenter';
 
 /** C-01: where each item of the 2.4 menu table opens, and its icon. */
 const ROUTES: Record<MenuKey, { href: string; icon: IconName }> = {
@@ -57,6 +59,8 @@ export interface SignedInShellProps {
   api: AuthApi;
   navigate: (path: string) => void;
   pathname: string;
+  /** REQ-NTF-001, C-03: the bell and its panel; without it the shell shows no bell. */
+  notices?: NotificationsApi;
   children: ReactNode;
 }
 
@@ -64,9 +68,26 @@ export interface SignedInShellProps {
  * NAV-9, REQ-IAM-013: every signed-in page asks GET /me on load and shows exactly the items of the 2.4
  * menu table whose codes the user holds. Nothing here looks at the role name to decide what shows.
  */
-export function SignedInShell({ api, navigate, pathname, children }: SignedInShellProps) {
+export function SignedInShell({ api, navigate, pathname, notices, children }: SignedInShellProps) {
   const [me, setMe] = useState<MeResponse | null>(null);
   const [collapsed, setCollapsed] = useState(true);
+  const [unread, setUnread] = useState(0);
+  const [panelOpen, setPanelOpen] = useState(false);
+  const signedIn = me !== null;
+
+  // DEC-125: the badge is read when a page loads and every 60 seconds while it is open.
+  useEffect(() => {
+    if (!notices || !signedIn) return undefined;
+    const refresh = () =>
+      void notices.unreadCount().then((outcome) => {
+        if (outcome.ok) setUnread(outcome.data.unread);
+      });
+    refresh();
+    const timer = window.setInterval(refresh, NOTIFICATION_POLL_MS);
+    return () => window.clearInterval(timer);
+  }, [notices, signedIn, pathname]);
+
+  const closePanel = useCallback(() => setPanelOpen(false), []);
 
   useEffect(() => {
     let live = true;
@@ -125,6 +146,9 @@ export function SignedInShell({ api, navigate, pathname, children }: SignedInShe
       onSignOut={() => {
         void api.signOut().then(() => navigate('/login'));
       }}
+      {...(notices
+        ? { unreadNotifications: unread, onOpenNotifications: () => setPanelOpen(true) }
+        : {})}
     >
       {hidden ? (
         <>
@@ -133,6 +157,14 @@ export function SignedInShell({ api, navigate, pathname, children }: SignedInShe
         </>
       ) : (
         children
+      )}
+      {notices && panelOpen && (
+        <NotificationCenter
+          api={notices}
+          navigate={navigate}
+          onClose={closePanel}
+          onUnread={setUnread}
+        />
       )}
     </AppShell>
   );

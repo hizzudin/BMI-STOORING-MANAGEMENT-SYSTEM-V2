@@ -874,6 +874,88 @@
           }
         }
       }
+    },
+    "/notifications": {
+      "get": {
+        "operationId": "listNotifications",
+        "summary": "The newest notices of the signed-in user with unread counts per tab",
+        "responses": {
+          "200": {
+            "description": "The newest notices of the signed-in user with unread counts per tab",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/unread-count": {
+      "get": {
+        "operationId": "countUnreadNotifications",
+        "summary": "The bell badge",
+        "responses": {
+          "200": {
+            "description": "The bell badge",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/read-all": {
+      "post": {
+        "operationId": "readAllNotifications",
+        "summary": "Mark all read",
+        "responses": {
+          "200": {
+            "description": "Mark all read",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/{id}/read": {
+      "post": {
+        "operationId": "readNotification",
+        "summary": "Mark one notice read",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mark one notice read",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3535,6 +3617,122 @@
         },
         "required": [
           "reason"
+        ],
+        "additionalProperties": false
+      },
+      "NotificationListResponse": {
+        "type": "object",
+        "properties": {
+          "notifications": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "Approval",
+                    "Step",
+                    "Alert",
+                    "Schedule",
+                    "Change_Request"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "link": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "read": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "title",
+                "body",
+                "link",
+                "createdAt",
+                "read"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "unread": {
+            "type": "object",
+            "properties": {
+              "all": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "approvals": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "steps": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "alerts": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "schedule": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "all",
+              "approvals",
+              "steps",
+              "alerts",
+              "schedule"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "notifications",
+          "unread"
+        ],
+        "additionalProperties": false
+      },
+      "UnreadCountResponse": {
+        "type": "object",
+        "properties": {
+          "unread": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "unread"
         ],
         "additionalProperties": false
       }

@@ -1,8 +1,12 @@
-import type {
-  PlannerApprovalAction,
-  PlannerApprovalRequest,
-  PlannerApprovalResponse,
+import {
+  APPROVAL_KIND_LABELS,
+  formatDateTimeWib,
+  type PlannerApprovalAction,
+  type PlannerApprovalRequest,
+  type PlannerApprovalResponse,
+  type Role,
 } from '@bmi/shared';
+import type { NewNotice } from '../../ports/notifications.js';
 import type { ClockPort } from '../../ports/clock.js';
 import type {
   PlannerApprovalEndScheduler,
@@ -31,6 +35,52 @@ const OFF: PlannerApprovalState = { kinds: [], until: null };
 
 /** The switch is one record: its audit rows carry entity_id 0 (DEC-118). */
 const SWITCH_ID = 0;
+
+/** DEC-118, DEC-125: the notice each switch event sends to Supervisors and GMs. */
+export const PLANNER_SWITCH_TITLES = {
+  switch_on: 'Planner approval switched on',
+  change: 'Planner approval changed',
+  switch_off: 'Planner approval switched off',
+  end: 'Planner approval ended',
+} as const;
+type SwitchEvent = keyof typeof PLANNER_SWITCH_TITLES;
+
+/** REQ-NTF-005: "Planner approval switched on or off" goes to Supervisors and GM. */
+const SWITCH_RECIPIENTS: readonly Role[] = ['Supervisor', 'GM'];
+
+const kindsText = (state: PlannerApprovalState) =>
+  state.kinds.map((kind) => APPROVAL_KIND_LABELS[kind]).join(', ');
+
+function switchNotice(
+  event: SwitchEvent,
+  before: PlannerApprovalState,
+  after: PlannerApprovalState,
+  at: Date,
+  reason: string,
+): NewNotice {
+  const body =
+    event === 'switch_off'
+      ? `Approvals go back to Supervisors, GM and System Admin. Reason: ${reason}`
+      : event === 'end'
+        ? `Planners no longer approve ${kindsText(before)}: the end time passed.`
+        : `Planners may approve ${kindsText(after)} ${
+            after.until ? `until ${formatDateTimeWib(after.until)} WIB` : 'until it is switched off'
+          }. Reason: ${reason}`;
+  return {
+    kind: 'Approval',
+    title: PLANNER_SWITCH_TITLES[event],
+    body,
+    // Supervisors and GMs cannot open Roles and permissions: a click only marks it read (DEC-125).
+    linkRecord: null,
+    // The end is keyed by the end time it passed, so a rerun of the end job adds nothing.
+    dedupeKey: `planner_approval:${event}:${(event === 'end' ? (before.until ?? at) : at).toISOString()}`,
+  };
+}
+
+async function sendSwitchNotice(gateways: PlannerApprovalGateways, notice: NewNotice) {
+  const recipients = await gateways.notifications.activeUsersWithRoles(SWITCH_RECIPIENTS);
+  await gateways.notifications.send(recipients, notice);
+}
 
 const auditView = (state: PlannerApprovalState) => ({
   kinds: state.kinds,
@@ -120,10 +170,12 @@ export class PlannerApprovalService {
       userId: null,
       userRole: null,
     });
+    await sendSwitchNotice(gateways, switchNotice('end', state, OFF, now, ''));
     return OFF;
   }
 
-  private audit(
+  /** One audit record and the switch notice, in the transaction of the change (DEC-118). */
+  private async audit(
     gateways: PlannerApprovalGateways,
     actor: Actor,
     action: PlannerApprovalAction,
@@ -131,6 +183,7 @@ export class PlannerApprovalService {
     after: PlannerApprovalState,
     reason: string,
   ): Promise<void> {
+    await sendSwitchNotice(gateways, switchNotice(action, before, after, this.clock.now(), reason));
     return gateways.audit.write({
       entity: 'planner_approval',
       entityId: SWITCH_ID,

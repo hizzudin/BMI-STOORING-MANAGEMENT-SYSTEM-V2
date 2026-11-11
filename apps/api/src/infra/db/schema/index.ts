@@ -434,6 +434,35 @@ export const spkAttachments = pgTable('spk_attachments', {
   uploadedBy: bigint('uploaded_by', { mode: 'number' }).notNull(),
 });
 
+// §9.12 in-app notifications (DEC-125); device_id gets its reference with push_devices.
+export const notifications = pgTable(
+  'notifications',
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    userId: bigint('user_id', { mode: 'number' }).notNull(),
+    kind: varchar('kind', { length: 20 }).notNull(),
+    title: varchar('title', { length: 200 }).notNull(),
+    body: text('body'),
+    linkRecord: varchar('link_record', { length: 60 }),
+    dedupeKey: varchar('dedupe_key', { length: 120 }),
+    readAt: timestamp('read_at'),
+  },
+  (table) => [unique().on(table.userId, table.dedupeKey)],
+);
+
+export const notificationDeliveries = pgTable('notification_deliveries', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  notificationId: bigint('notification_id', { mode: 'number' }).notNull(),
+  channel: varchar('channel', { length: 10 }).notNull(),
+  deviceId: bigint('device_id', { mode: 'number' }),
+  status: varchar('status', { length: 10 }).notNull().default('Pending'),
+  sentAt: timestamp('sent_at'),
+});
+
 // One entry per table of §9 as its migration arrives. The drift test reads this list.
 export const allTables: readonly PgTable[] = [
   idempotencyKeys,
@@ -458,4 +487,6 @@ export const allTables: readonly PgTable[] = [
   spkApprovals,
   spkParts,
   spkAttachments,
+  notifications,
+  notificationDeliveries,
 ];

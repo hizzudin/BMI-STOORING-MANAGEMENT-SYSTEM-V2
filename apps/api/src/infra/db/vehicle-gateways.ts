@@ -1,5 +1,7 @@
 import type { ChassisDefinition, UnitKind } from '@bmi/shared';
 import { and, asc, eq, isNull, ne, sql, type SQL } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import type { Pool } from 'pg';
 import type {
   VehicleActivity,
   VehicleActivityGateway,
@@ -10,6 +12,7 @@ import type {
 import { DrizzleAuditGateway } from './account-gateways.js';
 import { updateWithVersion } from './optimistic-lock.js';
 import { chassisLayouts, vehicleClasses, vehicles } from './schema/index.js';
+import { DrizzleSpkGateway } from './spk-gateways.js';
 import type { DbTransaction } from './unit-of-work.js';
 import { DrizzleVehicleClassGateway } from './vehicle-class-gateways.js';
 
@@ -130,13 +133,18 @@ export const vehicleGateways = (tx: DbTransaction): VehicleGateways => ({
 });
 
 /**
- * DEC-122: no tyre can be mounted (TASK-501) and no SPK opened (TASK-120) yet, so nothing blocks a
- * class change or a deactivation. Those tasks replace this adapter.
+ * DEC-122, DEC-124: what locks a vehicle's class and refuses its deactivation. The open SPKs come
+ * from spks (REQ-SCH-001); no tyre can be mounted until TASK-501, which adds the mounted count.
  */
-export class NoVehicleActivityYet implements VehicleActivityGateway {
-  of(vehicleIds: readonly number[]): Promise<Map<number, VehicleActivity>> {
-    return Promise.resolve(
-      new Map(vehicleIds.map((id) => [id, { mountedTyres: 0, openSpks: [] }])),
-    );
+export class DrizzleVehicleActivity implements VehicleActivityGateway {
+  private readonly spks: DrizzleSpkGateway;
+
+  constructor(pool: Pool) {
+    this.spks = new DrizzleSpkGateway(drizzle(pool));
+  }
+
+  async of(vehicleIds: readonly number[]): Promise<Map<number, VehicleActivity>> {
+    const open = await this.spks.openNumbersByVehicle(vehicleIds);
+    return new Map(vehicleIds.map((id) => [id, { mountedTyres: 0, openSpks: open.get(id) ?? [] }]));
   }
 }

@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { SQL_ENUMS } from './index.js';
+import { OPEN_SPK_STATUSES, SPK_STATUSES, SQL_ENUMS } from './index.js';
 
 const dataModel = readFileSync(
   new URL('../../../../docs/prd/data-model.md', import.meta.url),
@@ -28,5 +28,13 @@ describe('Section 9.1 enums', () => {
     for (const values of Object.values(SQL_ENUMS)) {
       expect(new Set(values).size).toBe(values.length);
     }
+  });
+});
+
+describe('REQ-SCH-001 open SPKs', () => {
+  it('is every SPK status but Rejected, Completed and Cancelled', () => {
+    expect([...OPEN_SPK_STATUSES]).toEqual(
+      SPK_STATUSES.filter((status) => !['Rejected', 'Completed', 'Cancelled'].includes(status)),
+    );
   });
 });

@@ -17,9 +17,11 @@ interface DatabaseColumn {
   not_null: boolean;
 }
 
-// Drizzle writes the short SQL names; format_type answers with the long ones.
+// Drizzle writes the short SQL names and numeric(14, 2); format_type answers with the long names
+// and numeric(14,2).
 function canonicalType(drizzleType: string): string {
   return drizzleType
+    .replace(/,\s+/g, ',')
     .replace(/^varchar/, 'character varying')
     .replace(/^char\b/, 'character')
     .replace(/^timestamp$/, 'timestamp without time zone');

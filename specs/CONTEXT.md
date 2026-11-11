@@ -6,7 +6,7 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-119 done on branch `feat/phase1-task119-vehicles`. Next task: **TASK-120** (SPK core), then TASK-130 (trial first, DEC-113) |
+| Active task | TASK-120 done on branch `feat/phase1-task120-spk-core`. Next task: **TASK-130** (notifications foundation), then TASK-121 (trial first, DEC-113) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 35 | 2026-11-11 | TASK-120: DEC-124 (v2.36; references to tables of later tasks start as plain columns that the owning tasks constrain, the module registry starts empty, an open SPK is the REQ-SCH-001 list); migration 0009 (six SPK tables, spk_number_seq, numbering_formats seed); SPK gateway and document numbers from the stored formats; open SPKs now lock the vehicle class and refuse its deactivation | apps/api, packages/shared, specs/, PRD.md |
 | 34 | 2026-11-11 | TASK-119: DEC-122 (v2.34; customer reference in TASK-701, first documents in TASK-601, drivers in TASK-606, the class change rule behind a port, later controls hidden) and DEC-123 (v2.35; odometer read only in VehicleEdit, how the layout and non-compliance counts count); migration 0008; vehicle service with one policy table, activity port and optimistic lock; Vehicles, AddVehicle, VehicleOverview, VehicleEdit and VehicleDeactivate; Vehicles column of ChassisLayouts and the non-compliance count of DocumentTypes; FLW-SA-01 and FLW-SA-03 e2e | apps/, packages/shared, packages/api-client, specs/, Design Artifact/fleet, Design Artifact/settings, PRD.md |
 | 33 | 2026-11-11 | TASK-118: DEC-121 (v2.33; four launch types seeded, DocumentTypes fields and controls, non-compliance count in TASK-119, type preset in TASK-208); migration 0007; document type service and routes; DocumentTypes screen; FLW-SA-02 step 4 e2e; vehicle_documents and document_corrections moved to TASK-119 (they reference vehicles) | apps/, packages/shared, specs/, Design Artifact/settings, PRD.md |
 | 32 | 2026-11-11 | TASK-116: DEC-120 (v2.32; New class with a typed code, layout changes saved as new versions that existing vehicles do not follow, no layout restriction by unit kind, vehicle count per layout in TASK-119); migration 0006; vehicle class service and routes; ChassisLayouts screen with live preview; FLW-SA-05 e2e; FLW-AM-03 e2e now moves the System Admin role back; local QA System Admin sa.qa@bmi.test | apps/, packages/shared, specs/, Design Artifact/settings, PRD.md |

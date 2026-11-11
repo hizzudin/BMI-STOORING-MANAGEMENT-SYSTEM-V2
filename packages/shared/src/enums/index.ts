@@ -45,6 +45,16 @@ export const SPK_STATUSES = [
 ] as const;
 export type SpkStatus = (typeof SPK_STATUSES)[number];
 
+/** REQ-SCH-001, DEC-124: an open SPK; it locks its vehicle's class (DEC-17) and its deactivation. */
+export const OPEN_SPK_STATUSES = [
+  'Draft',
+  'Pending_Approval',
+  'Active',
+  'In_Progress',
+  'Pending_Verification',
+  'Pending_Amendment',
+] as const satisfies readonly SpkStatus[];
+
 export const SPK_SOURCES = [
   'System_PM',
   'Tyre_Alert',

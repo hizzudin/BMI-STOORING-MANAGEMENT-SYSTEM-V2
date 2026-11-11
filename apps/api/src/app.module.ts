@@ -53,7 +53,7 @@ import { plannerApprovalGateways } from './infra/db/planner-approval-gateways.js
 import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
-import { NoVehicleActivityYet, vehicleGateways } from './infra/db/vehicle-gateways.js';
+import { DrizzleVehicleActivity, vehicleGateways } from './infra/db/vehicle-gateways.js';
 import { ConsoleEmailAdapter } from './infra/email/console-email.js';
 import { PlannerApprovalEndQueue } from './infra/queue/planner-approval-end-queue.js';
 import type { ClockPort } from './ports/clock.js';
@@ -177,7 +177,11 @@ const authHttpConfig = (): AuthHttpConfig => ({
       useFactory: (pool: pg.Pool) =>
         new DocumentTypeService(new DrizzleUnitOfWork(pool, documentTypeGateways)),
     },
-    { provide: VEHICLE_ACTIVITY, useFactory: () => new NoVehicleActivityYet() },
+    {
+      provide: VEHICLE_ACTIVITY,
+      inject: [PG_POOL],
+      useFactory: (pool: pg.Pool) => new DrizzleVehicleActivity(pool),
+    },
     {
       provide: VehicleService,
       inject: [PG_POOL, VEHICLE_ACTIVITY, CLOCK],

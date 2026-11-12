@@ -125,6 +125,20 @@ GIT DISCIPLINE (every task):
   3. Stage specific files (never `git add -A`); keep PRs small
   4. Never force-push, reset --hard, or skip hooks unless explicitly asked
 
+TWO AGENTS (Claude Code and Kiro; .kiro/steering/ holds Kiro's copy of these rules):
+  1. One task, one agent: the agent that claims a task does all of it, from
+     the owner's questions to the merge request; the other never touches it.
+  2. Claim by creating the task branch from main before anything else. Run
+     `node specs/tools/next-numbers.mjs` first: it lists claimed tasks and the
+     next free DEC, PRD version, migration number and CONTEXT row across all
+     branches. Take every such number from it when you write it, and renumber
+     yours before a merge if the other agent's branch was merged first.
+  3. Each agent works in its own folder (git worktree); never switch branches
+     in the other agent's folder. Do not run e2e, dev servers or the full
+     coverage run while the other agent does (one database, ports, ~1 GB free).
+  4. A task delegated to Kiro gets a thin spec in .kiro/specs/task-nnn-slug/
+     that points at the PRD IDs and specs/, never copies them.
+
 AFTER COMPLETING A TASK:
   1. Run its _Verify_ step; for a screen, compare it with its artboard
   2. If the implementation diverged from specs/design.md, update it FIRST

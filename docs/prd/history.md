@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.38 (2026-11-12) adds DEC-126, product owner decision on Create SPK in phase 1: the common fields, Save draft and Submit with its notices; the steps, palette, Checks and presets hidden until TASK-207 and Submit refused without a step; PartPicker moved to the Stock module (TASK-306); Create SPK opened from the menu and the vehicle page.
+
 v2.37 (2026-11-11) adds DEC-125, product owner decision on the notifications foundation: notifications.dedupe_key (one notice per user and event), the Planner approval switch notice as kind Approval with no link, and the bell badge refreshed on page load, panel open and every 60 seconds.
 
 v2.36 (2026-11-11) adds DEC-124, product owner decision on the SPK tables build order: references to tables of later tasks start as plain columns that those tasks constrain, the module registry starts empty, and an open SPK is the list of REQ-SCH-001.

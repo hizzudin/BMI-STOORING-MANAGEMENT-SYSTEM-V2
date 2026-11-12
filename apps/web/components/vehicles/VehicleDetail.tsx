@@ -40,8 +40,8 @@ const ChassisTab = ({ vehicle }: { vehicle: Vehicle }) => (
 
 /**
  * REQ-VEH-001: one vehicle with the Overview and Chassis and parts tabs; the map is read only.
- * DEC-122: the Documents, SPK history and Inspections tabs and the Parts baseline, Create SPK,
- * Record reading and Change driver buttons stay hidden until their tasks are done.
+ * DEC-122: the Documents, SPK history and Inspections tabs and the Parts baseline, Record reading
+ * and Change driver buttons stay hidden until their tasks are done; Create SPK came with TASK-121.
  */
 export function VehicleDetail({ api, id }: { api: VehiclesApi; id: number }) {
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
@@ -71,11 +71,19 @@ export function VehicleDetail({ api, id }: { api: VehiclesApi; id: number }) {
         title={vehicle.licensePlate}
         status={<StatusPill tone={STATUS_TONES[vehicle.status]}>{vehicle.status}</StatusPill>}
         actions={
-          vehicle.allowedActions.includes('edit') && (
-            <a className="btn btn-secondary" href={`/vehicles/${vehicle.id}/edit`}>
-              Edit vehicle
-            </a>
-          )
+          <>
+            {vehicle.allowedActions.includes('edit') && (
+              <a className="btn btn-secondary" href={`/vehicles/${vehicle.id}/edit`}>
+                Edit vehicle
+              </a>
+            )}
+            {/* C-11, DEC-126: Create SPK with this vehicle filled. */}
+            {vehicle.allowedActions.includes('create_spk') && (
+              <a className="btn btn-primary" href={`/spk/new?vehicle=${vehicle.id}`}>
+                Create SPK
+              </a>
+            )}
+          </>
         }
       />
       <p className="muted subline">

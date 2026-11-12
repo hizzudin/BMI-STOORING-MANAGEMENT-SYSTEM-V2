@@ -1047,3 +1047,7 @@ textarea:focus-visible {
 .notice-row:hover {
   background: var(--mist-light);
 }
+/* A single checkbox inside a form card (CreateSPK workshop flag): no list divider. */
+.check.flat {
+  border-bottom: 0;
+}

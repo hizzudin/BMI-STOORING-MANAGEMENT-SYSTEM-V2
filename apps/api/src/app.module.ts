@@ -13,6 +13,7 @@ import { DocumentTypeService } from './core/fleet/document-type-service.js';
 import { VehicleClassService } from './core/fleet/vehicle-class-service.js';
 import { VehicleService } from './core/fleet/vehicle-service.js';
 import { NotificationService } from './core/notifications/notification-service.js';
+import { SpkService } from './core/spk/spk-service.js';
 import { AccountService } from './core/iam/account-service.js';
 import { AuthService } from './core/iam/auth-service.js';
 import { CapabilityService } from './core/iam/capability-service.js';
@@ -43,6 +44,7 @@ import {
   PlannerApprovalErrorFilter,
 } from './http/planner-approval/planner-approval.controller.js';
 import { RolePermissionsController } from './http/role-permissions/role-permissions.controller.js';
+import { SpkErrorFilter, SpksController } from './http/spks/spks.controller.js';
 import {
   VehicleClassErrorFilter,
   VehicleClassesController,
@@ -57,6 +59,7 @@ import { iamGateways } from './infra/db/iam-gateways.js';
 import { notificationGateways } from './infra/db/notification-gateways.js';
 import { plannerApprovalGateways } from './infra/db/planner-approval-gateways.js';
 import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
+import { spkGateways } from './infra/db/spk-gateways.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
 import { DrizzleVehicleActivity, vehicleGateways } from './infra/db/vehicle-gateways.js';
@@ -99,6 +102,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     DocumentTypesController,
     VehiclesController,
     NotificationsController,
+    SpksController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -110,6 +114,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: DocumentTypeErrorFilter },
     { provide: APP_FILTER, useClass: VehicleErrorFilter },
     { provide: APP_FILTER, useClass: NotificationErrorFilter },
+    { provide: APP_FILTER, useClass: SpkErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -201,6 +206,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, CLOCK],
       useFactory: (pool: pg.Pool, clock: ClockPort) =>
         new NotificationService(new DrizzleUnitOfWork(pool, notificationGateways), clock),
+    },
+    {
+      provide: SpkService,
+      inject: [PG_POOL, CLOCK],
+      useFactory: (pool: pg.Pool, clock: ClockPort) =>
+        new SpkService(new DrizzleUnitOfWork(pool, spkGateways), clock),
     },
     SessionGuard,
   ],

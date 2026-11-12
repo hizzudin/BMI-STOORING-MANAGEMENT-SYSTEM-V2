@@ -3,8 +3,11 @@ import { VEHICLE_STATUSES } from '../enums/index.js';
 import { ChassisDefinitionSchema } from './chassis-layout.js';
 import { UNIT_KINDS } from './vehicle-classes.js';
 
-/** REQ-VEH-003, REQ-VEH-004: what may be done on one vehicle (its `allowedActions`). */
-export const VEHICLE_ACTIONS = ['edit', 'change_class', 'deactivate'] as const;
+/**
+ * REQ-VEH-003, REQ-VEH-004: what may be done on one vehicle (its `allowedActions`); create_spk opens
+ * Create SPK with the vehicle filled (C-11, REQ-SPK-013, DEC-126).
+ */
+export const VEHICLE_ACTIONS = ['edit', 'change_class', 'deactivate', 'create_spk'] as const;
 export type VehicleAction = (typeof VEHICLE_ACTIONS)[number];
 
 export const VEHICLES_PAGE_ACTIONS = ['create'] as const;

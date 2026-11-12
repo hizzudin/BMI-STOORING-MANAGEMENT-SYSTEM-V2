@@ -206,7 +206,7 @@ describe('Vehicles', () => {
       status: 'Active',
       version: 1,
       classLock: null,
-      allowedActions: ['edit', 'change_class', 'deactivate'],
+      allowedActions: ['edit', 'change_class', 'deactivate', 'create_spk'],
     });
     expect(await audits(vehicle.id)).toEqual([{ action: 'create', reason: null }]);
   });
@@ -262,7 +262,8 @@ describe('Vehicles', () => {
     expect(planner.vehicles.length).toBeGreaterThan(0);
     expect(planner.allowedActions).toEqual([]);
     expect(planner.classes).toEqual([]);
-    expect(planner.vehicles[0]?.allowedActions).toEqual([]);
+    // DEC-126: a Planner may open Create SPK from a vehicle, and nothing else.
+    expect(planner.vehicles[0]?.allowedActions).toEqual(['create_spk']);
     const one = planner.vehicles[0] as Vehicle;
     expect((await call('rina', 'GET', `/vehicles/${one.id}`)).status).toBe(200);
     expect((await call('rina', 'GET', '/vehicles/999999')).status).toBe(404);
@@ -323,7 +324,7 @@ describe('Vehicles', () => {
     expect(shown.classLock).toBe(
       'Class is locked: 10 tyres are mounted and SPK-2611040139 is open.',
     );
-    expect(shown.allowedActions).toEqual(['edit']);
+    expect(shown.allowedActions).toEqual(['edit', 'create_spk']);
     const refused = await call(
       'yusuf',
       'PATCH',

@@ -314,7 +314,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-103, TASK-009, TASK-126
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:redis-patterns, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `qa` NotificationCenter against their artboards
-- [ ] **TASK-121** Create SPK header and Submit for approval; SPK sources and priorities; scope lock policy [REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015]
+- [x] **TASK-121** Create SPK header and Submit for approval; SPK sources and priorities; scope lock policy [REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015]
   - _Scope_: Header fields of CreateSPK (title, vehicle, category, priority as an urgency pill, workshop flag, description, source); the step composer is TASK-207. The scope lock (BR-02) is one policy every module calls. DEC-126: Steps, palette, Checks and presets hidden until TASK-207; Submit refused without a step; PartPicker moved to TASK-306; Create SPK from the menu and the vehicle page.
   - _Rules_: BR-01, BR-02, DEC-85, DEC-92, DEC-126
   - _Screens built here (visual target)_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>)

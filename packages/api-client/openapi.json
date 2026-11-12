@@ -956,6 +956,154 @@
           }
         }
       }
+    },
+    "/spks/options": {
+      "get": {
+        "operationId": "spkFormOptions",
+        "summary": "The vehicles Create SPK offers (never an Inactive one)",
+        "responses": {
+          "200": {
+            "description": "The vehicles Create SPK offers (never an Inactive one)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkFormOptionsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/spks": {
+      "post": {
+        "operationId": "createSpk",
+        "summary": "Save a new SPK as Draft (T1)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Save a new SPK as Draft (T1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/spks/{id}": {
+      "get": {
+        "operationId": "getSpk",
+        "summary": "One SPK",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One SPK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateSpk",
+        "summary": "Save draft (C-15)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpkUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Save draft (C-15)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/spks/{id}/submit": {
+      "post": {
+        "operationId": "submitSpk",
+        "summary": "Submit for approval (T2, T5)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpkSubmitRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Submit for approval (T2, T5)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2974,7 +3122,8 @@
                     "enum": [
                       "edit",
                       "change_class",
-                      "deactivate"
+                      "deactivate",
+                      "create_spk"
                     ]
                   }
                 }
@@ -3364,7 +3513,8 @@
                   "enum": [
                     "edit",
                     "change_class",
-                    "deactivate"
+                    "deactivate",
+                    "create_spk"
                   ]
                 }
               }
@@ -3733,6 +3883,316 @@
         },
         "required": [
           "unread"
+        ],
+        "additionalProperties": false
+      },
+      "SpkFormOptionsResponse": {
+        "type": "object",
+        "properties": {
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "licensePlate": {
+                  "type": "string"
+                },
+                "className": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "Active",
+                    "Repair",
+                    "Blocked",
+                    "OFF",
+                    "Inactive"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "licensePlate",
+                "className",
+                "status"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "create"
+              ]
+            }
+          }
+        },
+        "required": [
+          "vehicles",
+          "allowedActions"
+        ],
+        "additionalProperties": false
+      },
+      "SpkResponse": {
+        "type": "object",
+        "properties": {
+          "spk": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "spkNumber": {
+                "type": "string"
+              },
+              "vehicle": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "licensePlate": {
+                    "type": "string"
+                  },
+                  "className": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "licensePlate",
+                  "className"
+                ],
+                "additionalProperties": false
+              },
+              "title": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "PM",
+                  "Corrective",
+                  "Tyre",
+                  "Document",
+                  "Other"
+                ]
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "Low",
+                  "Normal",
+                  "High",
+                  "Urgent"
+                ]
+              },
+              "requiresDowntime": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string"
+              },
+              "requestSource": {
+                "type": "string",
+                "enum": [
+                  "System_PM",
+                  "Tyre_Alert",
+                  "Part_Item_Alert",
+                  "Document_Alert",
+                  "Breakdown_Report",
+                  "Part_Check",
+                  "Manual_Planner",
+                  "Manual_Admin"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Draft",
+                  "Pending_Approval",
+                  "Rejected",
+                  "Active",
+                  "In_Progress",
+                  "Pending_Verification",
+                  "Pending_Amendment",
+                  "Completed",
+                  "Cancelled"
+                ]
+              },
+              "stepCount": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "version": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "allowedActions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "edit",
+                    "submit"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "spkNumber",
+              "vehicle",
+              "title",
+              "category",
+              "priority",
+              "requiresDowntime",
+              "description",
+              "requestSource",
+              "status",
+              "stepCount",
+              "version",
+              "allowedActions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "spk"
+        ],
+        "additionalProperties": false
+      },
+      "SpkRequest": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "PM",
+              "Corrective",
+              "Tyre",
+              "Document",
+              "Other"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "Low",
+              "Normal",
+              "High",
+              "Urgent"
+            ]
+          },
+          "requiresDowntime": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "vehicleId",
+          "title",
+          "category",
+          "priority",
+          "requiresDowntime",
+          "description"
+        ],
+        "additionalProperties": false
+      },
+      "SpkUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "PM",
+              "Corrective",
+              "Tyre",
+              "Document",
+              "Other"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "Low",
+              "Normal",
+              "High",
+              "Urgent"
+            ]
+          },
+          "requiresDowntime": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "vehicleId",
+          "title",
+          "category",
+          "priority",
+          "requiresDowntime",
+          "description",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "SpkSubmitRequest": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "version"
         ],
         "additionalProperties": false
       }

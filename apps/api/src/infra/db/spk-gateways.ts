@@ -5,16 +5,28 @@ import {
   type SpkCategory,
   type SpkSource,
   type SpkStatus,
+  type VehicleStatus,
 } from '@bmi/shared';
-import { and, asc, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, isNull, ne, sql, type SQL } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import {
   NumberingConfigError,
   type DocumentNumberGateway,
   type NumberedKind,
 } from '../../ports/numbering.js';
-import type { NewSpk, SpkGateway, SpkGateways, SpkRow } from '../../ports/spks.js';
-import { appSettings, spks } from './schema/index.js';
+import type {
+  NewSpk,
+  SpkFields,
+  SpkGateway,
+  SpkGateways,
+  SpkRow,
+  SpkVehicleRow,
+} from '../../ports/spks.js';
+import { DrizzleAuditGateway } from './account-gateways.js';
+import { DrizzleNotificationGateway } from './notification-gateways.js';
+import { updateWithVersion } from './optimistic-lock.js';
+import { DrizzlePlannerApprovalGateway } from './planner-approval-gateways.js';
+import { appSettings, spkApprovals, spks, vehicleClasses, vehicles } from './schema/index.js';
 import type { DbTransaction } from './unit-of-work.js';
 
 type Db = NodePgDatabase | DbTransaction;
@@ -70,12 +82,17 @@ export class DrizzleSpkGateway implements SpkGateway {
     return row.id;
   }
 
-  async findById(id: number): Promise<SpkRow | null> {
+  async findById(id: number, options: { forUpdate?: boolean } = {}): Promise<SpkRow | null> {
+    if (options.forUpdate) {
+      await this.db.select({ id: spks.id }).from(spks).where(eq(spks.id, id)).for('update');
+    }
     const [row] = await this.db
       .select({
         id: spks.id,
         spkNumber: spks.spkNumber,
         vehicleId: spks.vehicleId,
+        licensePlate: vehicles.licensePlate,
+        className: vehicleClasses.name,
         title: spks.title,
         category: spks.category,
         requiresDowntime: spks.requiresDowntime,
@@ -84,17 +101,66 @@ export class DrizzleSpkGateway implements SpkGateway {
         description: spks.description,
         status: spks.status,
         createdBy: spks.createdBy,
+        // Written out in full: a subquery inside this select would leave its columns unqualified.
+        stepCount: sql<number>`(SELECT count(*)::int FROM spk_assignments a WHERE a.spk_id = spks.id)`,
         version: spks.version,
       })
       .from(spks)
+      .innerJoin(vehicles, eq(vehicles.id, spks.vehicleId))
+      .innerJoin(vehicleClasses, eq(vehicleClasses.id, vehicles.vehicleClassId))
       .where(and(eq(spks.id, id), isNull(spks.deletedAt)));
     if (!row) return null;
+    const { licensePlate, className, ...rest } = row;
     return {
-      ...row,
+      ...rest,
+      vehicle: { id: row.vehicleId, licensePlate, className },
       category: row.category as SpkCategory,
       requestSource: row.requestSource as SpkSource,
       status: row.status as SpkStatus,
     };
+  }
+
+  update(id: number, version: number, fields: SpkFields): Promise<void> {
+    return updateWithVersion(this.db, spks, id, version, fields);
+  }
+
+  setStatus(id: number, version: number, status: SpkStatus): Promise<void> {
+    return updateWithVersion(this.db, spks, id, version, { status });
+  }
+
+  async insertApproval(row: Parameters<SpkGateway['insertApproval']>[0]): Promise<void> {
+    await this.db.insert(spkApprovals).values({
+      spkId: row.spkId,
+      stage: row.stage,
+      action: row.action,
+      actedBy: row.actedBy,
+      approverRole: row.approverRole,
+      note: row.note ?? null,
+    });
+  }
+
+  async vehicle(id: number): Promise<SpkVehicleRow | null> {
+    const [row] = await this.vehicleRows(and(eq(vehicles.id, id), isNull(vehicles.deletedAt)));
+    return row ?? null;
+  }
+
+  vehiclesForNewSpk(): Promise<SpkVehicleRow[]> {
+    return this.vehicleRows(and(ne(vehicles.status, 'Inactive'), isNull(vehicles.deletedAt)));
+  }
+
+  private async vehicleRows(condition: SQL | undefined): Promise<SpkVehicleRow[]> {
+    const rows = await this.db
+      .select({
+        id: vehicles.id,
+        licensePlate: vehicles.licensePlate,
+        className: vehicleClasses.name,
+        status: vehicles.status,
+      })
+      .from(vehicles)
+      .innerJoin(vehicleClasses, eq(vehicleClasses.id, vehicles.vehicleClassId))
+      .where(condition)
+      .orderBy(asc(vehicles.licensePlate), asc(vehicles.id));
+    return rows.map((row) => ({ ...row, status: row.status as VehicleStatus }));
   }
 
   async openNumbersByVehicle(vehicleIds: readonly number[]): Promise<Map<number, string[]>> {
@@ -121,4 +187,7 @@ export class DrizzleSpkGateway implements SpkGateway {
 export const spkGateways = (tx: DbTransaction): SpkGateways => ({
   spks: new DrizzleSpkGateway(tx),
   numbers: new DrizzleDocumentNumbers(tx),
+  audit: new DrizzleAuditGateway(tx),
+  notifications: new DrizzleNotificationGateway(tx),
+  plannerApproval: new DrizzlePlannerApprovalGateway(tx),
 });

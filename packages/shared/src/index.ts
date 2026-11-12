@@ -14,5 +14,6 @@ export * from './schemas/vehicle-classes.js';
 export * from './schemas/vehicles.js';
 export * from './schemas/health.js';
 export * from './schemas/notifications.js';
+export * from './schemas/spks.js';
 export * from './schemas/planner-approval.js';
 export * from './time/wib.js';

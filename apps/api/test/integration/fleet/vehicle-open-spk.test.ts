@@ -127,7 +127,7 @@ describe('Vehicles with open SPKs (REQ-VEH-003, REQ-VEH-004, DEC-17, DEC-122)', 
     const spk = await openSpk(vehicle.id);
     const locked = await vehicleOf(await call('GET', `/vehicles/${vehicle.id}`));
     expect(locked.classLock).toBe(`Class is locked: ${spk.spkNumber} is open.`);
-    expect(locked.allowedActions).toEqual(['edit']);
+    expect(locked.allowedActions).toEqual(['edit', 'create_spk']);
 
     const edit = {
       licensePlate: locked.licensePlate,

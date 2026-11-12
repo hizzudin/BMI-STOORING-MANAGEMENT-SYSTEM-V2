@@ -39,6 +39,7 @@ export const VEHICLE_MESSAGES = {
   unknownClass: 'Choose the class from the list.',
   towedOdometer: 'A towed unit has no odometer: leave it empty.',
   inactive: 'This vehicle is Inactive; its history stays readable.',
+  inactiveForSpk: 'This vehicle is Inactive: no new SPK can be made for it.',
   /** REQ-VEH-004: a vehicle with an open SPK stays active. */
   openSpk: (numbers: readonly string[]) =>
     `${joinAnd(numbers)} ${numbers.length === 1 ? 'is' : 'are'} open: close ${
@@ -97,7 +98,10 @@ const notInactive: Rule<VehicleRecord> = (_actor, record) =>
   record.row.status === 'Inactive' ? VEHICLE_MESSAGES.inactive : null;
 
 /** REQ-VEH-003, REQ-VEH-004, DEC-17: one table answers "may I?" and the allowedActions list. */
-const VEHICLE_POLICIES: Policies<VehicleRecord, 'edit' | 'change_class' | 'deactivate'> = {
+const VEHICLE_POLICIES: Policies<
+  VehicleRecord,
+  'edit' | 'change_class' | 'deactivate' | 'create_spk'
+> = {
   edit: { anyOf: ['vehicle.manage'], rules: [notInactive] },
   change_class: {
     anyOf: ['vehicle.manage'],
@@ -111,6 +115,14 @@ const VEHICLE_POLICIES: Policies<VehicleRecord, 'edit' | 'change_class' | 'deact
         record.activity.openSpks.length > 0
           ? VEHICLE_MESSAGES.openSpk(record.activity.openSpks)
           : null,
+    ],
+  },
+  // C-11, REQ-SPK-013: Create SPK with this vehicle; never for an Inactive one.
+  create_spk: {
+    anyOf: ['spk.create'],
+    rules: [
+      (_actor, record) =>
+        record.row.status === 'Inactive' ? VEHICLE_MESSAGES.inactiveForSpk : null,
     ],
   },
 };

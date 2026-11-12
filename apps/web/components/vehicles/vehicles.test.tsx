@@ -161,6 +161,17 @@ describe('Vehicles (REQ-VEH-001)', () => {
     expect(within(map).queryAllByRole('button')).toEqual([]);
   });
 
+  it('C-11 DEC-126 Create SPK opens with this vehicle when allowedActions has create_spk', async () => {
+    const api = apiWith({
+      get: vi.fn(() => ok({ vehicle: { ...head, allowedActions: ['create_spk'] } })),
+    });
+    await show(<VehicleDetail api={api} id={7} />);
+    expect(screen.getByRole('link', { name: 'Create SPK' }).getAttribute('href')).toBe(
+      '/spk/new?vehicle=7',
+    );
+    expect(screen.queryByRole('link', { name: 'Edit vehicle' })).toBeNull();
+  });
+
   it('REQ-PLC-018 a towed vehicle shows no odometer; a reader sees no Edit', async () => {
     const api = apiWith({ get: vi.fn(() => ok({ vehicle: { ...trailer, allowedActions: [] } })) });
     await show(<VehicleDetail api={api} id={8} />);

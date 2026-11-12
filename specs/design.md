@@ -160,6 +160,28 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - `SignedInShell` takes `notices`. It reads the badge on page load and every `NOTIFICATION_POLL_MS` (60 s), and opens `NotificationCenter` from the bell of `PageHead`.
   - The panel has tabs All, Approvals, Steps, Alerts and Schedule with unread counts, Mark all read, Close and Escape (C-14). A notice marks itself read, then opens its link or stays (DEC-125). Times are shown in WIB.
 
+### 5.10 Create SPK (REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015, T1, T2, T5, DEC-126)
+
+- `core/spk/spk-service.ts` behind `SpkGateways` (`spks`, `numbers`, `audit`, `notifications`, `plannerApproval`).
+- One policy table (`edit`, `submit`) answers both the check and `allowedActions`: spk.create, Draft or Rejected, the creator only.
+- `create` (T1):
+  - refuses an unknown or Inactive vehicle (400, REQ-SPK-013); Setup mode already removes spk.* (REQ-IAM-010);
+  - takes the number from `spk_number_seq` with the stored format;
+  - the source is Manual_Planner for a Planner, otherwise Manual_Admin (REQ-SPK-002).
+- `update` (C-15) saves at the version on screen (409 when stale).
+- `submit` (T2, T5):
+  - refused with "Add at least one step before submitting." while the SPK has no step (DEC-126; TASK-207 adds the section checks of REQ-SPK-004);
+  - sets Pending_Approval and writes one `spk_approvals` row (Creation, Submit);
+  - notifies Supervisors, GM and System Admin, plus Planners while the switch covers spk_creation (REQ-NTF-005), keyed per submission.
+- One audit record per create, update and submit.
+- Routes: `GET /spks/options` (vehicles that are not Inactive), `POST /spks`, `GET /spks/:id` (spk.view or spk.create), `PATCH /spks/:id`, `POST /spks/:id/submit`.
+- Vehicles: a vehicle's `allowedActions` gains `create_spk` (spk.create, not Inactive), and VehicleOverview shows Create SPK (C-11).
+- Web:
+  - `/spk`: the page header with Create SPK; SPKList comes with TASK-125.
+  - `/spk/new?vehicle=`: CreateSPK with the common fields (title, vehicle, category, urgency with the order of REQ-SPK-015, Vehicle goes to the workshop, description), Cancel (C-12), Save draft (the page follows the new draft to `/spk/:id/edit`), and Submit for approval (saves first).
+  - An SPK no longer Draft or Rejected shows read only with its status and urgency pills.
+  - The Steps section, palette, Checks and presets stay hidden until TASK-207 and TASK-208, and PartPicker comes with TASK-306.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

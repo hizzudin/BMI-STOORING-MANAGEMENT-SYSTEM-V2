@@ -325,7 +325,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-120, TASK-119, TASK-106, TASK-130
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-PLN-01`; `qa` CreateSPK against their artboards
-- [ ] **TASK-125** SPK list tabs and SPK detail with step cards and stamps [REQ-SPK-010, REQ-SPK-011]
+- [x] **TASK-125** SPK list tabs and SPK detail with step cards and stamps [REQ-SPK-010, REQ-SPK-011]
   - _Scope_: StepTracker and StepCard components (7.5).
   - _Screens built here (visual target)_: [`SPKList`](<../Design Artifact/spk/SPKList.html#SPKList>), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>)
   - _Screens touched_: [`SPKDetailVerify`](<../Design Artifact/spk/SPKDetailVerify.html#SPKDetailVerify>) (built later in TASK-205, which shows what this task provides)
@@ -334,7 +334,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-010, REQ-SPK-011); `docs/prd/data-model.md` §9.6 (spks, spk_assignments) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKList, SPKDetail, SPKDetailVerify; `docs/prd/ui-action-map.md`: every row of SPKList, SPKDetail, SPKDetailVerify and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-01 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-121
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-PLN-01`; `qa` SPKList, SPKDetail against their artboards
+  - _Verify_: `e2e FLW-PLN-01`; `e2e FLW-PLN-01`; `qa` SPKList, SPKDetail against their artboards; `qa` SPKList, SPKDetail against their artboards
 - [ ] **TASK-122** Approvals inbox, ApprovalReview, canApprove policy, stamps, Self-approved [REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007]
   - _Scope_: One canApprove for every approval kind (§8.3); the stamp is the one authored motion (DEC-83).
   - _Acceptance_: AC-SPK-001, AC-SPK-005, AC-SPK-006, AC-APR-001, AC-APR-002, AC-APR-003, AC-APR-004, AC-IAM-005 (here because it needs the Approvals inbox)

@@ -1,4 +1,4 @@
-// Every enum of PRD section 9.1, once. enums.test.ts compares them with docs/prd/data-model.md.
+﻿// Every enum of PRD section 9.1, once. enums.test.ts compares them with docs/prd/data-model.md.
 
 export const ROLES = [
   'Planner',
@@ -75,6 +75,10 @@ export type ReportStatus = (typeof REPORT_STATUSES)[number];
 
 export const SPK_CATEGORIES = ['PM', 'Corrective', 'Tyre', 'Document', 'Other'] as const;
 export type SpkCategory = (typeof SPK_CATEGORIES)[number];
+
+/** REQ-SPK-015, DEC-92: the urgency label of an SPK; Normal is the default. */
+export const SPK_PRIORITIES = ['Low', 'Normal', 'High', 'Urgent'] as const;
+export type SpkPriority = (typeof SPK_PRIORITIES)[number];
 
 export const ASG_STATUSES = [
   'Locked',

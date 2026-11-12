@@ -1,14 +1,20 @@
+﻿import { z } from 'zod';
 import {
   SpkFormOptionsResponseSchema,
   SpkRequestSchema,
   SpkResponseSchema,
   SpkSubmitRequestSchema,
   SpkUpdateRequestSchema,
+  SpkListResponseSchema,
+  SpkDetailResponseSchema,
   type SpkFormOptionsResponse,
   type SpkRequest,
   type SpkResponse,
   type SpkSubmitRequest,
   type SpkUpdateRequest,
+  type SpkListResponse,
+  type SpkDetailResponse,
+  type SpkListTab,
 } from '@bmi/shared';
 import {
   Catch,
@@ -21,6 +27,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
   type ArgumentsHost,
   type ExceptionFilter,
@@ -37,8 +44,16 @@ import {
 import { ApiContract, ValidBody } from '../contract.js';
 
 const One = { name: 'SpkResponse', schema: SpkResponseSchema };
+const List = { name: 'SpkListResponse', schema: SpkListResponseSchema };
+const Detail = { name: 'SpkDetailResponse', schema: SpkDetailResponseSchema };
 
-/** REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015, T1, T2, T5, DEC-126: Create SPK. */
+const SpkListQuerySchema = z.object({
+  tab: z.enum(['active', 'mine', 'draft', 'pending', 'rejected', 'completed', 'cancelled', 'all']).optional(),
+  search: z.string().optional(),
+  type: z.string().optional(),
+  vehicleId: z.coerce.number().int().optional(),
+});
+
 @Controller('spks')
 @UseGuards(SessionGuard)
 export class SpksController {
@@ -53,6 +68,24 @@ export class SpksController {
   })
   options(@CurrentSession() session: SignedIn): Promise<SpkFormOptionsResponse> {
     return this.spks.options(actorOf(session));
+  }
+
+  @Get()
+  @RequireCapability('spk.view', 'spk.create')
+  @ApiContract({
+    operationId: 'listSpks',
+    summary: 'List SPKs with tabs, filters and counts (REQ-SPK-010)',
+    response: List,
+    query: { name: 'SpkListQuery', schema: SpkListQuerySchema },
+  })
+  async list(
+    @CurrentSession() session: SignedIn,
+    @Query('tab') tab: SpkListTab = 'active',
+    @Query('search') search?: string,
+    @Query('type') type?: string,
+    @Query('vehicleId') vehicleId?: number,
+  ): Promise<SpkListResponse> {
+    return await this.spks.list(actorOf(session), tab, search, type, vehicleId);
   }
 
   @Post()
@@ -78,6 +111,16 @@ export class SpksController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SpkResponse> {
     return { spk: await this.spks.get(actorOf(session), id) };
+  }
+
+  @Get(':id/detail')
+  @RequireCapability('spk.view', 'spk.create')
+  @ApiContract({ operationId: 'getSpkDetail', summary: 'Full SPK detail with steps, costs, approvals, history (REQ-SPK-011)', response: Detail })
+  async detail(
+    @CurrentSession() session: SignedIn,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SpkDetailResponse> {
+    return await this.spks.detail(actorOf(session), id);
   }
 
   @Patch(':id')
@@ -114,7 +157,6 @@ export class SpksController {
   }
 }
 
-/** 400 and 404 of the SPK routes, each with one sentence. */
 @Catch(SpkNotFoundError, SpkInvalidError)
 export class SpkErrorFilter implements ExceptionFilter<Error> {
   catch(error: Error, host: ArgumentsHost): void {

@@ -545,7 +545,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List SPKs with tabs, filters and counts (REQ-SPK-010) */
+        get: operations["listSpks"];
         put?: never;
         /** Save a new SPK as Draft (T1) */
         post: operations["createSpk"];
@@ -571,6 +572,23 @@ export interface paths {
         head?: never;
         /** Save draft (C-15) */
         patch: operations["updateSpk"];
+        trace?: never;
+    };
+    "/spks/{id}/detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Full SPK detail with steps, costs, approvals, history (REQ-SPK-011) */
+        get: operations["getSpkDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/spks/{id}/submit": {
@@ -1053,6 +1071,51 @@ export interface components {
             }[];
             allowedActions: "create"[];
         };
+        SpkListResponse: {
+            spkList: {
+                items: {
+                    id: number;
+                    spkNumber: string;
+                    vehicle: {
+                        id: number;
+                        licensePlate: string;
+                        className: string;
+                    };
+                    /** @enum {string} */
+                    category: "PM" | "Corrective" | "Tyre" | "Document" | "Other";
+                    /** @enum {string} */
+                    priority: "Low" | "Normal" | "High" | "Urgent";
+                    /** @enum {string} */
+                    status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
+                    currentStep: string | null;
+                    waitingOn: string | null;
+                    allowedActions: ("open" | "view" | "edit")[];
+                    isMine: boolean;
+                }[];
+                tabCounts: {
+                    active: number;
+                    mine: number;
+                    draft: number;
+                    pending: number;
+                    rejected: number;
+                    completed: number;
+                    cancelled: number;
+                    all: number;
+                };
+                allowedActions: string[];
+            };
+        };
+        SpkListQuery: {
+            tab?: components["schemas"]["SpkListQuery_tab"];
+            search?: components["schemas"]["SpkListQuery_search"];
+            type?: components["schemas"]["SpkListQuery_type"];
+            vehicleId?: components["schemas"]["SpkListQuery_vehicleId"];
+        };
+        /** @enum {string} */
+        SpkListQuery_tab: "active" | "mine" | "draft" | "pending" | "rejected" | "completed" | "cancelled" | "all";
+        SpkListQuery_search: string;
+        SpkListQuery_type: string;
+        SpkListQuery_vehicleId: number;
         SpkResponse: {
             spk: {
                 id: number;
@@ -1075,7 +1138,7 @@ export interface components {
                 status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
                 stepCount: number;
                 version: number;
-                allowedActions: ("edit" | "submit")[];
+                allowedActions: string[];
             };
         };
         SpkRequest: {
@@ -1087,6 +1150,155 @@ export interface components {
             priority: "Low" | "Normal" | "High" | "Urgent";
             requiresDowntime: boolean;
             description: string;
+        };
+        SpkDetailResponse: {
+            spk: {
+                id: number;
+                spkNumber: string;
+                vehicle: {
+                    id: number;
+                    licensePlate: string;
+                    className: string;
+                    currentOdometer: number | null;
+                };
+                title: string;
+                /** @enum {string} */
+                category: "PM" | "Corrective" | "Tyre" | "Document" | "Other";
+                /** @enum {string} */
+                priority: "Low" | "Normal" | "High" | "Urgent";
+                requiresDowntime: boolean;
+                description: string;
+                /** @enum {string} */
+                requestSource: "System_PM" | "Tyre_Alert" | "Part_Item_Alert" | "Document_Alert" | "Breakdown_Report" | "Part_Check" | "Manual_Planner" | "Manual_Admin";
+                /** @enum {string} */
+                status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
+                stepCount: number;
+                version: number;
+                findingNote: string | null;
+                approvedBy: {
+                    id: number;
+                    name: string;
+                } | null;
+                approvedAt: string | null;
+                activatedAt: string | null;
+                startedAt: string | null;
+                completionRequestedAt: string | null;
+                completionApprovedBy: {
+                    id: number;
+                    name: string;
+                } | null;
+                completedAt: string | null;
+                cancelledBy: {
+                    id: number;
+                    name: string;
+                } | null;
+                cancelReason: string | null;
+                laborCost: number;
+                partsCost: number;
+                documentCost: number;
+                stooringCost: number;
+                offDays: number;
+                createdByName: string | null;
+                approvedByName: string | null;
+                plannedDay: string | null;
+                assignments: {
+                    id: number;
+                    sequenceNo: number;
+                    module: string;
+                    moduleName: string;
+                    moduleIcon: string;
+                    /** @enum {string} */
+                    status: "Locked" | "Open" | "In_Progress" | "Submitted" | "Verified" | "Skipped";
+                    executorRoles: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting")[];
+                    /** @enum {string} */
+                    verifierRole: "Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting";
+                    assignedTo: {
+                        id: number;
+                        name: string;
+                    } | null;
+                    executedBy: {
+                        id: number;
+                        name: string;
+                    } | null;
+                    verifiedBy: {
+                        id: number;
+                        name: string;
+                    } | null;
+                    openedAt: string | null;
+                    startedAt: string | null;
+                    submittedAt: string | null;
+                    verifiedAt: string | null;
+                    returnNote: string | null;
+                    skipReason: string | null;
+                    isOptional: boolean;
+                    allowedActions: ("start" | "verify" | "return" | "assign" | "reassign" | "correct_time" | "open" | "view")[];
+                    stooringFee?: number;
+                    assignedToName: string | null;
+                }[];
+                approvals: {
+                    id: number;
+                    /** @enum {string} */
+                    stage: "Creation" | "Completion" | "Amendment";
+                    /** @enum {string} */
+                    action: "Submit" | "Approve" | "Reject" | "Cancel" | "Request_Completion";
+                    actedBy: {
+                        id: number;
+                        name: string;
+                        /** @enum {string} */
+                        role: "Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting";
+                    };
+                    actedAt: string;
+                    note: string | null;
+                    selfApproved: boolean;
+                }[];
+                costBreakdown: {
+                    parts: number;
+                    services: number;
+                    documents: number;
+                    stooring: number;
+                    offUnit: number;
+                    total: number;
+                };
+                history: {
+                    when: string;
+                    who: {
+                        id: number;
+                        name: string;
+                        /** @enum {string} */
+                        role: "Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting";
+                    };
+                    what: string;
+                }[];
+                changeRequests: {
+                    id: number;
+                    crNumber: string;
+                    raisedBy: {
+                        id: number;
+                        name: string;
+                    };
+                    reason: string;
+                    status: string;
+                    raisedAt: string;
+                }[];
+                partLines: {
+                    partName: string;
+                    source: string;
+                    plannedQty: number;
+                    usedQty: number | null;
+                    unitPrice: number;
+                    total: number;
+                    step: string;
+                }[];
+                serviceLines: {
+                    service: string;
+                    code: string;
+                    /** @enum {string} */
+                    team: "Internal" | "External";
+                    price: number;
+                    step: string;
+                }[];
+                allowedActions: ("document" | "change_request" | "cancel" | "reverse_issue" | "assign" | "reassign" | "correct_time")[];
+            };
         };
         SpkUpdateRequest: {
             vehicleId: number;
@@ -1967,6 +2179,31 @@ export interface operations {
             };
         };
     };
+    listSpks: {
+        parameters: {
+            query?: {
+                tab?: components["schemas"]["SpkListQuery_tab"];
+                search?: components["schemas"]["SpkListQuery_search"];
+                type?: components["schemas"]["SpkListQuery_type"];
+                vehicleId?: components["schemas"]["SpkListQuery_vehicleId"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List SPKs with tabs, filters and counts (REQ-SPK-010) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpkListResponse"];
+                };
+            };
+        };
+    };
     createSpk: {
         parameters: {
             query?: never;
@@ -2035,6 +2272,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SpkResponse"];
+                };
+            };
+        };
+    };
+    getSpkDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Full SPK detail with steps, costs, approvals, history (REQ-SPK-011) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpkDetailResponse"];
                 };
             };
         };

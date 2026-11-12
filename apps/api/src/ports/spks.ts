@@ -6,6 +6,8 @@ import type {
   SpkSource,
   SpkStatus,
   VehicleStatus,
+  SpkPriority,
+  SpkListAction,
 } from '@bmi/shared';
 import type { AuditGateway } from './accounts.js';
 import type { NotificationGateway } from './notifications.js';
@@ -63,6 +65,161 @@ export interface SpkVehicleRow {
   status: VehicleStatus;
 }
 
+/** SPK list item (REQ-SPK-010). */
+export interface SpkListItem {
+  id: number;
+  spkNumber: string;
+  vehicle: { id: number; licensePlate: string; className: string };
+  category: SpkCategory;
+  priority: SpkPriority;
+  status: SpkStatus;
+  currentStep: string | null;
+  waitingOn: string | null;
+  allowedActions: SpkListAction[];
+  isMine: boolean;
+}
+
+/** SPK list tab counts. */
+export interface SpkTabCounts {
+  active: number;
+  mine: number;
+  draft: number;
+  pending: number;
+  rejected: number;
+  completed: number;
+  cancelled: number;
+  all: number;
+}
+
+/** SPK list response. */
+export interface SpkListResult {
+  items: SpkListItem[];
+  tabCounts: SpkTabCounts;
+  allowedActions: string[];
+}
+
+/** SPK detail: step assignment. */
+export interface SpkAssignmentRow {
+  id: number;
+  sequenceNo: number;
+  module: string;
+  moduleName: string;
+  moduleIcon: string;
+  status: string;
+  executorRoles: Role[];
+  verifierRole: Role;
+  assignedTo: { id: number; name: string } | null;
+  executedBy: { id: number; name: string } | null;
+  verifiedBy: { id: number; name: string } | null;
+  openedAt: string | null;
+  startedAt: string | null;
+  submittedAt: string | null;
+  verifiedAt: string | null;
+  returnNote: string | null;
+  skipReason: string | null;
+  isOptional: boolean;
+  allowedActions: string[];
+  stooringFee: number | null;
+}
+
+/** SPK detail: approval. */
+export interface SpkApprovalRow {
+  id: number;
+  stage: ApprovalStage;
+  action: ApprovalAction;
+  actedBy: { id: number; name: string; role: Role };
+  actedAt: string;
+  note: string | null;
+  selfApproved: boolean;
+}
+
+/** SPK detail: cost breakdown. */
+export interface SpkCostBreakdown {
+  parts: number;
+  services: number;
+  documents: number;
+  stooring: number;
+  offUnit: number;
+  total: number;
+}
+
+/** SPK detail: history entry. */
+export interface SpkHistoryEntry {
+  when: string;
+  who: { id: number; name: string; role: Role };
+  what: string;
+}
+
+/** SPK detail: change request summary. */
+export interface SpkChangeRequestSummary {
+  id: number;
+  crNumber: string;
+  raisedBy: { id: number; name: string };
+  reason: string;
+  status: string;
+  raisedAt: string;
+}
+
+/** SPK detail: part line. */
+export interface SpkPartLine {
+  partName: string;
+  source: string;
+  plannedQty: number;
+  usedQty: number | null;
+  unitPrice: number;
+  total: number;
+  step: string;
+}
+
+/** SPK detail: service line. */
+export interface SpkServiceLine {
+  service: string;
+  code: string;
+  team: string;
+  price: number;
+  step: string;
+}
+
+/** Full SPK detail row (REQ-SPK-011). */
+export interface SpkDetailRow {
+  id: number;
+  spkNumber: string;
+  vehicleId: number;
+  vehicle: { id: number; licensePlate: string; className: string };
+  title: string;
+  category: SpkCategory;
+  priority: SpkPriority;
+  requiresDowntime: boolean;
+  description: string;
+  requestSource: SpkSource;
+  status: SpkStatus;
+  stepCount: number;
+  version: number;
+  findingNote: string;
+  approvedBy: { id: number; name: string } | null;
+  approvedAt: string | null;
+  activatedAt: string | null;
+  startedAt: string | null;
+  completionRequestedAt: string | null;
+  completionApprovedBy: { id: number; name: string } | null;
+  completedAt: string | null;
+  cancelledBy: { id: number; name: string } | null;
+  cancelReason: string;
+  laborCost: number;
+  partsCost: number;
+  documentCost: number;
+  stooringCost: number;
+  offDays: number;
+  assignments: SpkAssignmentRow[];
+  approvals: SpkApprovalRow[];
+  costBreakdown: SpkCostBreakdown;
+  history: SpkHistoryEntry[];
+  changeRequests: SpkChangeRequestSummary[];
+  partLines: SpkPartLine[];
+  serviceLines: SpkServiceLine[];
+  allowedActions: string[];
+}
+
 export interface SpkGateway {
   /** A Draft SPK with a number already taken from the sequence (TX-01 adds its steps). */
   insert(spk: NewSpk & { spkNumber: string }): Promise<number>;
@@ -85,6 +242,10 @@ export interface SpkGateway {
   vehicle(id: number): Promise<SpkVehicleRow | null>;
   /** Not Inactive and not soft-deleted, by plate. */
   vehiclesForNewSpk(): Promise<SpkVehicleRow[]>;
+  /** SPK list with tabs, filters and counts (REQ-SPK-010). */
+  list(actorId: number, actorRole: Role, tab: string, search?: string, type?: string, vehicleId?: number): Promise<SpkListResult>;
+  /** Full SPK detail with steps, costs, approvals, history (REQ-SPK-011). */
+  detail(actorId: number, actorRole: Role, id: number): Promise<SpkDetailRow | null>;
 }
 
 export interface SpkGateways {

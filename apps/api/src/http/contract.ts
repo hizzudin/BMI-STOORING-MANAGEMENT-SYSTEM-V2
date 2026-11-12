@@ -16,6 +16,7 @@ export interface RouteContract<Response extends z.ZodType = z.ZodType> {
   summary: string;
   response: NamedSchema<Response>;
   body?: NamedSchema;
+  query?: NamedSchema;
 }
 
 type Handler<Response extends z.ZodType> = (

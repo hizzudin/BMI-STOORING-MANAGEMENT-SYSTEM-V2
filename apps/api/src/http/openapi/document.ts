@@ -83,12 +83,44 @@ export function buildOpenApiDocument(rootModule: object): OpenApiDocument {
       const status =
         (Reflect.getMetadata(HTTP_CODE_METADATA, handler) as number | undefined) ??
         (requestMethod === RequestMethod.POST ? HttpStatus.CREATED : HttpStatus.OK);
-      const parameters = [...path.matchAll(/\{(\w+)\}/g)].map(([, name]) => ({
-        name,
-        in: 'path',
-        required: true,
-        schema: { type: 'string' },
-      }));
+      type ParameterObject = {
+        name: string;
+        in: 'path' | 'query' | 'header' | 'cookie';
+        required?: boolean;
+        schema?: { type: string } | { $ref: string };
+      };
+
+      const pathParamMatches = [...path.matchAll(/\{(\w+)\}/g)];
+      const parameters: ParameterObject[] = pathParamMatches.map((match) => {
+        const name = match[1];
+        if (!name) throw new Error(`Invalid path parameter in ${path}`);
+        return {
+          name,
+          in: 'path' as const,
+          required: true,
+          schema: { type: 'string' },
+        };
+      });
+
+      if (contract.query) {
+        register(contract.query);
+        // Expand query object properties as individual query parameters
+        // Zod v4: get shape from schema._def.shape (for object schemas)
+        const querySchema = contract.query.schema;
+        const shape = (querySchema as { _def?: { shape?: Record<string, z.ZodType> } })._def?.shape;
+        if (shape) {
+          for (const [key, valueSchema] of Object.entries(shape)) {
+            register({ name: `${contract.query.name}_${key}`, schema: valueSchema });
+            const refSchema: { $ref: string } = { $ref: `#/components/schemas/${contract.query.name}_${key}` };
+            parameters.push({
+              name: key,
+              in: 'query',
+              required: false,
+              schema: refSchema,
+            });
+          }
+        }
+      }
 
       paths[path] = {
         ...paths[path],

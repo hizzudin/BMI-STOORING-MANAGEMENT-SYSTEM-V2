@@ -1,5 +1,5 @@
 import type { ApiClient } from '@bmi/api-client';
-import type { SpkRequest, SpkSubmitRequest, SpkUpdateRequest } from '@bmi/shared';
+import type { SpkRequest, SpkSubmitRequest, SpkUpdateRequest, SpkListTab, SpkListResponse, SpkDetailResponse } from '@bmi/shared';
 import { browserApi, settle } from './auth-api';
 
 /** Create SPK (REQ-SPK-001, REQ-SPK-013, REQ-SPK-015, DEC-126) through the generated client. */
@@ -9,7 +9,10 @@ export function spksApi(given?: ApiClient) {
   const path = (id: number) => ({ params: { path: { id: String(id) } } });
   return {
     options: () => settle(client().GET('/spks/options')),
+    list: (tab?: SpkListTab, search?: string, type?: string, vehicleId?: number) =>
+      settle(client().GET('/spks', { params: { query: { tab, search, type, vehicleId } } })),
     get: (id: number) => settle(client().GET('/spks/{id}', path(id))),
+    detail: (id: number) => settle(client().GET('/spks/{id}/detail', path(id))),
     create: (body: SpkRequest) => settle(client().POST('/spks', { body })),
     update: (id: number, body: SpkUpdateRequest) =>
       settle(client().PATCH('/spks/{id}', { ...path(id), body })),

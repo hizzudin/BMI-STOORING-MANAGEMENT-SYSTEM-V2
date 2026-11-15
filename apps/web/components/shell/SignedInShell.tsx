@@ -2,7 +2,8 @@
 
 import { menuFor, MENU, NOTIFICATION_POLL_MS, type MenuKey, type MeResponse } from '@bmi/shared';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import type { AuthApi } from '../../lib/auth-api';
+import type { ApprovalCountResponse } from '@bmi/shared';
+import type { AuthApi, Outcome } from '../../lib/auth-api';
 import type { NotificationsApi } from '../../lib/notifications-api';
 import type { IconName } from '../kit/Icon';
 import { AppShell, PageHead, type NavItem } from './AppShell';
@@ -61,6 +62,8 @@ export interface SignedInShellProps {
   pathname: string;
   /** REQ-NTF-001, C-03: the bell and its panel; without it the shell shows no bell. */
   notices?: NotificationsApi;
+  /** REQ-APR-001: the count beside the Approvals item; asked only when the menu has the item. */
+  approvals?: { count: () => Promise<Outcome<ApprovalCountResponse>> };
   children: ReactNode;
 }
 
@@ -68,11 +71,19 @@ export interface SignedInShellProps {
  * NAV-9, REQ-IAM-013: every signed-in page asks GET /me on load and shows exactly the items of the 2.4
  * menu table whose codes the user holds. Nothing here looks at the role name to decide what shows.
  */
-export function SignedInShell({ api, navigate, pathname, notices, children }: SignedInShellProps) {
+export function SignedInShell({
+  api,
+  navigate,
+  pathname,
+  notices,
+  approvals,
+  children,
+}: SignedInShellProps) {
   const [me, setMe] = useState<MeResponse | null>(null);
   const [collapsed, setCollapsed] = useState(true);
   const [unread, setUnread] = useState(0);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [waiting, setWaiting] = useState(0);
   const signedIn = me !== null;
 
   // DEC-125: the badge is read when a page loads and every 60 seconds while it is open.
@@ -86,6 +97,21 @@ export function SignedInShell({ api, navigate, pathname, notices, children }: Si
     const timer = window.setInterval(refresh, NOTIFICATION_POLL_MS);
     return () => window.clearInterval(timer);
   }, [notices, signedIn, pathname]);
+
+  // REQ-APR-001, DEC-128: like the bell, read when a page loads and every 60 seconds.
+  const hasApprovals =
+    me !== null &&
+    menuFor(new Set(me.capabilities), me.systemMode).some((item) => item.key === 'approvals');
+  useEffect(() => {
+    if (!approvals || !hasApprovals) return undefined;
+    const refresh = () =>
+      void approvals.count().then((outcome) => {
+        if (outcome.ok) setWaiting(outcome.data.count);
+      });
+    refresh();
+    const timer = window.setInterval(refresh, NOTIFICATION_POLL_MS);
+    return () => window.clearInterval(timer);
+  }, [approvals, hasApprovals, pathname]);
 
   const closePanel = useCallback(() => setPanelOpen(false), []);
 
@@ -119,6 +145,7 @@ export function SignedInShell({ api, navigate, pathname, notices, children }: Si
     key: item.key,
     label: item.label,
     ...ROUTES[item.key],
+    ...(item.key === 'approvals' && waiting > 0 ? { count: waiting } : {}),
   }));
   const current = itemOf(pathname);
   const hidden = current !== undefined && !menu.some((item) => item.key === current);

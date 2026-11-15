@@ -142,3 +142,51 @@ describe('session', () => {
     expect(screen.getByRole('button', { name: 'Collapse menu' })).toBeTruthy();
   });
 });
+
+describe('REQ-APR-001 DEC-128 the Approvals badge', () => {
+  it('REQ-APR-001 the Approvals item shows how many items wait, read when the page loads and every 60 seconds', async () => {
+    vi.useFakeTimers();
+    try {
+      const count = vi
+        .fn()
+        .mockResolvedValueOnce({ ok: true as const, data: { count: 3 } })
+        .mockResolvedValue({ ok: true as const, data: { count: 2 } });
+      await act(async () =>
+        render(
+          <SignedInShell
+            api={fakeApi(meOf('Supervisor'))}
+            navigate={vi.fn()}
+            pathname="/"
+            approvals={{ count }}
+          >
+            <p>Page content</p>
+          </SignedInShell>,
+        ),
+      );
+      expect(screen.getByRole('link', { name: 'Approvals, 3 waiting' })).toBeTruthy();
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(60_000);
+      });
+      expect(screen.getByRole('link', { name: 'Approvals, 2 waiting' })).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('REQ-APR-001 a user without the Approvals item never asks for the count', async () => {
+    const count = vi.fn();
+    await act(async () =>
+      render(
+        <SignedInShell
+          api={fakeApi(meOf('Mechanic'))}
+          navigate={vi.fn()}
+          pathname="/"
+          approvals={{ count }}
+        >
+          <p>Page content</p>
+        </SignedInShell>,
+      ),
+    );
+    expect(count).not.toHaveBeenCalled();
+  });
+});

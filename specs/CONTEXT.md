@@ -93,3 +93,4 @@ The design choices are D-01 to D-14 in design.md §11. Process and product decis
 | --- | --- |
 | ADR-0001 staging seed from canvas values (PRD §8.3 vs CLAUDE.md) | Accepted (Q6); CLAUDE.md note added |
 | ADR-0002 interim reviewer rule (PRD §8.4) | Accepted (Q20); revisit when an internal developer joins |
+| TASK-125 SPKList vehicle filter is a select of the vehicles that have an SPK; the artboard shows a text input | Accepted (owner, 2026-11-16); design.md §5.11 |

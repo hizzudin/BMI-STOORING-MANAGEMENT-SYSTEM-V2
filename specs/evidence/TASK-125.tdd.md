@@ -75,5 +75,5 @@ The SPKList artboard gained the urgency pills and the pager before the code.
 - **QA** at 1440 x 900 against SPKList and SPKDetail, on the e2e database (three SPKs; one In_Progress with three steps and a creation approval written by the QA script):
   - SPKList matches: header with search and Create SPK, tabs with counts, filter row, the columns with the urgency pill beside the number, status pills, current step, Waiting on, and the pager.
   - Fixed: Open is a plain button, as in the artboard.
-  - Kept: the vehicle filter is a select of the vehicles that have an SPK; the artboard shows a text input.
+  - Kept, approved by the owner on 2026-11-16: the vehicle filter is a select of the vehicles that have an SPK; the artboard shows a text input. Recorded in CONTEXT.md Divergences and design.md §5.11.
   - SPKDetail matches: crumb, title, status and urgency pills, subline, Steps and History tabs, tracker, step cards, context card with odometer and cost so far, and approval block. What DEC-127 hides is absent.

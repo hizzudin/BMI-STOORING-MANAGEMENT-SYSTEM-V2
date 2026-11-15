@@ -204,6 +204,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - Routes: `GET /spks` (spk.view, `SpkListQuerySchema`) and `GET /spks/:id/detail` (spk.view, 404 when unknown), both in `SpksController`.
 - Web:
   - `/spk`: SPKList with the search in the header, Create SPK when the page allows it, the tabs with counts, type and vehicle filters, a plain table (server-side pages cannot use the client-side `DataTable`), and the pager.
+  - The vehicle filter is a select of the vehicles that have an SPK, where the SPKList artboard shows a text input (owner, 2026-11-16).
   - Open goes to Create SPK when the row allows `edit`; every other row offers View.
   - `/spk/:id`: SPKDetail read only, with the Steps tab (`StepTracker`, `StepCard`, the context card with odometer and cost so far, `ApprovalBlock`) and the History tab (the `spk_approvals` rows, newest first).
   - What later tasks build stays hidden (DEC-127).

@@ -2,6 +2,9 @@ import 'reflect-metadata';
 import { BadRequestException, createParamDecorator, type ExecutionContext } from '@nestjs/common';
 import type { Request } from 'express';
 import type { z } from 'zod';
+import type { ZodIssue } from 'zod';
+
+type IssuePath = (string | number)[];
 
 const CONTRACT = Symbol('api-contract');
 
@@ -16,6 +19,7 @@ export interface RouteContract<Response extends z.ZodType = z.ZodType> {
   summary: string;
   response: NamedSchema<Response>;
   body?: NamedSchema;
+  query?: NamedSchema;
 }
 
 type Handler<Response extends z.ZodType> = (
@@ -49,8 +53,27 @@ export const ValidBody = createParamDecorator((_data: unknown, context: Executio
   throw new BadRequestException({
     statusCode: 400,
     message: 'Validation failed',
-    issues: result.error.issues.map((issue) => ({
-      path: issue.path.join('.'),
+    issues: result.error.issues.map((issue: ZodIssue) => ({
+      path: (issue.path as IssuePath).join('.'),
+      message: issue.message,
+    })),
+  });
+});
+
+/** NFR-04: the request query of the route, parsed with the schema of its contract. */
+export const ValidQuery = createParamDecorator((_data: unknown, context: ExecutionContext) => {
+  const contract = contractOf(context.getHandler());
+  if (!contract?.query)
+    throw new Error(`${context.getHandler().name} has no query in its contract`);
+  const result = contract.query.schema.safeParse(
+    context.switchToHttp().getRequest<Request>().query,
+  );
+  if (result.success) return result.data;
+  throw new BadRequestException({
+    statusCode: 400,
+    message: 'Validation failed',
+    issues: result.error.issues.map((issue: ZodIssue) => ({
+      path: (issue.path as IssuePath).join('.'),
       message: issue.message,
     })),
   });

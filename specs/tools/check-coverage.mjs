@@ -191,7 +191,8 @@ const checkName = (name, text) => {
 for (const f of nameSources) checkName(f, read(f));
 checkName('PRD.md', prd.replace(/### 0\.7[\s\S]*?\n## 1\./, '## 1.'));
 checkName('CLAUDE.md', read('CLAUDE.md').replace(/ONE ENTITY, ONE NAME[\s\S]*?nothing to map\.\n/, ''));
-for (const f of namedFiles('.', /(^|[\\/])[^\\/]*(WO[A-Z.]|WorkOrder|work-order|-wod?\.)[^\\/]*$/).filter((x) => !x.startsWith('.git') && !x.startsWith('.claude'))) {
+// WO followed by a capitalised word or a dot (WOList, CreateWO.html), not the WO of WORKFLOW.
+for (const f of namedFiles('.', /(^|[\\/])[^\\/]*(WO(?:[A-Z][a-z]|\.)|WorkOrder|work-order|-wod?\.)[^\\/]*$/).filter((x) => !x.startsWith('.git') && !x.startsWith('.claude'))) {
   gap('Retired name outside docs/prd/history.md (DEC-106)', 'file name: ' + f);
 }
 if (!prd.includes('### 0.7 Naming: one entity, one name')) gap('Retired name outside docs/prd/history.md (DEC-106)', 'PRD.md lost section 0.7');

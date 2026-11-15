@@ -20,6 +20,8 @@ import {
   type Actor,
   type Policies,
 } from '../iam/actions.js';
+
+export { allowedActions, type Actor } from '../iam/actions.js';
 import { plannerApprovalOn } from '../iam/capabilities.js';
 
 export const SPK_MESSAGES = {
@@ -49,7 +51,7 @@ export class SpkInvalidError extends Error {
 }
 
 /** T2, T5: the creator edits and submits a Draft or Rejected SPK (DEC-126). */
-const SPK_POLICIES: Policies<SpkRow, 'edit' | 'submit'> = {
+export const SPK_POLICIES: Policies<SpkRow, 'edit' | 'submit'> = {
   edit: {
     anyOf: ['spk.create'],
     rules: [

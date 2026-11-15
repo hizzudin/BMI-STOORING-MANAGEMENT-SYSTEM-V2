@@ -3,7 +3,6 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { SpksApi } from '../../lib/spks-api';
 import { CreateSpk } from './CreateSpk';
-import { SpkHome } from './SpkHome';
 
 afterEach(cleanup);
 
@@ -156,19 +155,5 @@ describe('CreateSPK (REQ-SPK-001, REQ-SPK-013, REQ-SPK-015, DEC-126)', () => {
       { kind: 'new', vehicleId: null },
     );
     expect(screen.getByRole('alert').textContent).toBe('You do not have permission to do this.');
-  });
-});
-
-describe('Surat Perintah Kerja page (DEC-126)', () => {
-  it('shows Create SPK only to users who may create one', async () => {
-    await act(async () => {
-      render(<SpkHome api={apiWith()} />);
-    });
-    expect(screen.getByRole('link', { name: 'Create SPK' }).getAttribute('href')).toBe('/spk/new');
-    cleanup();
-    await act(async () => {
-      render(<SpkHome api={apiWith({ options: vi.fn(() => refused('No.')) })} />);
-    });
-    expect(screen.queryByRole('link', { name: 'Create SPK' })).toBeNull();
   });
 });

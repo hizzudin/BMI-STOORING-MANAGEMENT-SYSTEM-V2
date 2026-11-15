@@ -182,6 +182,33 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - An SPK no longer Draft or Rejected shows read only with its status and urgency pills.
   - The Steps section, palette, Checks and presets stay hidden until TASK-207 and TASK-208, and PartPicker comes with TASK-306.
 
+### 5.11 SPK list and detail (REQ-SPK-010, REQ-SPK-011, REQ-SPK-015, DEC-127)
+
+- `core/spk/spk-list-service.ts` behind the same `SpkGateways`; the port takes plain filters (`SpkListFilter`: statuses, My steps, search, type, vehicle), and the Drizzle query lives in `infra/db/spk-gateways.ts`.
+- Tabs: Active is Active, In_Progress, Pending_Verification and Pending_Amendment; Draft, Pending approval, Rejected, Completed and Cancelled are one status each; All is every status.
+- My steps: an SPK with an Open or In_Progress step that is assigned to the user, or unassigned with the user's role among its executor roles (matching data in `executor_roles`, not a permission).
+- Every tab count uses the same search, type and vehicle. Search is "contains, any case" over the SPK number, the title and the plate.
+- Order: Urgent, High, Normal, Low, then newest first. Pages of 10, 20, 50 or 100 (20 by default); `totalPages` is at least 1.
+- Each row: the SPK with its `allowedActions` from the Create SPK policy table, its current step (the first step not Verified or Skipped) and who it waits on:
+
+  | Status | Waiting on |
+  | --- | --- |
+  | Draft, Rejected, Pending_Amendment | the creator (role and name) |
+  | Pending_Approval | "Approvers" |
+  | Active, In_Progress | the assignee of the current step, else its executor roles |
+  | Pending_Verification | the verifier role of the current step |
+  | Completed, Cancelled | none |
+
+- The page action is `create` with spk.create; the response also carries the vehicles that have an SPK (the vehicle filter).
+- Detail: the header, the vehicle with class, unit kind and odometer, the creator, the steps (status, executor roles, assignee, opened, submitted and verified times), the `spk_approvals` rows and the costs with their total, as decimal strings.
+- Routes: `GET /spks` (spk.view, `SpkListQuerySchema`) and `GET /spks/:id/detail` (spk.view, 404 when unknown), both in `SpksController`.
+- Web:
+  - `/spk`: SPKList with the search in the header, Create SPK when the page allows it, the tabs with counts, type and vehicle filters, a plain table (server-side pages cannot use the client-side `DataTable`), and the pager.
+  - The vehicle filter is a select of the vehicles that have an SPK, where the SPKList artboard shows a text input (owner, 2026-11-16).
+  - Open goes to Create SPK when the row allows `edit`; every other row offers View.
+  - `/spk/:id`: SPKDetail read only, with the Steps tab (`StepTracker`, `StepCard`, the context card with odometer and cost so far, `ApprovalBlock`) and the History tab (the `spk_approvals` rows, newest first).
+  - What later tasks build stays hidden (DEC-127).
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

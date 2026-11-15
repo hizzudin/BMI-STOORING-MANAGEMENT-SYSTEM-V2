@@ -17,11 +17,14 @@ interface Account {
 }
 
 const E2E_DATABASE = 'bmi_e2e';
-const adminUrl = process.env.TEST_DATABASE_URL;
-if (!adminUrl) throw new Error('TEST_DATABASE_URL is required');
+const testUrl = process.env.TEST_DATABASE_URL;
+if (!testUrl) throw new Error('TEST_DATABASE_URL is required');
 const accounts = JSON.parse(process.env.E2E_ACCOUNTS ?? '[]') as Account[];
 
-const admin = new pg.Client({ connectionString: adminUrl });
+// Drop and create through the postgres database, so TEST_DATABASE_URL may name any database.
+const adminUrl = new URL(testUrl);
+adminUrl.pathname = '/postgres';
+const admin = new pg.Client({ connectionString: adminUrl.toString() });
 await admin.connect();
 try {
   await admin.query(`DROP DATABASE IF EXISTS ${E2E_DATABASE} WITH (FORCE)`);
@@ -30,7 +33,7 @@ try {
   await admin.end();
 }
 
-const url = new URL(adminUrl);
+const url = new URL(testUrl);
 url.pathname = `/${E2E_DATABASE}`;
 const client = new pg.Client({ connectionString: url.toString() });
 await client.connect();

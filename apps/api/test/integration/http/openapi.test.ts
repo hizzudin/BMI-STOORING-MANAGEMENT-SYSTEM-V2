@@ -17,6 +17,7 @@ import { buildOpenApiDocument } from '../../../src/http/openapi/document.js';
 
 const ItemSchema = z.object({ id: z.string(), quantity: z.number().int() });
 const NewItemSchema = z.object({ quantity: z.number().int().positive() });
+const ItemQuerySchema = z.object({ page: z.coerce.number().int().positive().default(1) });
 
 @Controller('items')
 class ItemsController {
@@ -28,6 +29,17 @@ class ItemsController {
   })
   read(@Param('id') id: string) {
     return { id, quantity: 1, secret: 'never leaves the server' };
+  }
+
+  @Get()
+  @ApiContract({
+    operationId: 'listItems',
+    summary: 'Lists items',
+    query: { name: 'ItemQuery', schema: ItemQuerySchema },
+    response: { name: 'Item', schema: ItemSchema },
+  })
+  list() {
+    return { id: 'first', quantity: 1 };
   }
 
   @Post()
@@ -99,6 +111,15 @@ describe('DEC-66 the OpenAPI document is generated from the controllers', () => 
       operationId: 'getItem',
       summary: 'Reads one item',
       parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+    });
+  });
+
+  it('DEC-66 every field of the query contract is an optional query parameter', () => {
+    expect(document.paths['/items']?.get).toMatchObject({
+      operationId: 'listItems',
+      parameters: [
+        { name: 'page', in: 'query', required: false, schema: { type: 'integer', default: 1 } },
+      ],
     });
   });
 

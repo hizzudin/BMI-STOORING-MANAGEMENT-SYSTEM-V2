@@ -60,24 +60,9 @@ EVERY LATER SESSION, BEFORE ANY ACTION:
   0. Read AGENT_GUIDE.md — it is the single entry point (quick start, workflow, conventions, escalation)
   1. Read specs/CONTEXT.md — it has session state (resume block, blockers, last session)
   2. Read specs/requirements.md and specs/design.md
-  3. Read specs/tasks.md — pick the next incomplete [ ] task, and follow its
-     "How an agent works a task" rules. Open EVERY file on the task's _Read_
-     line and read the full PRD text of every ID it names; the task line is
-     a pointer, never the requirement. Build all of it: no feature, field,
-     control or rule may be reduced, merged or postponed without the
-     product owner's approval and a PRD update first.
-     tasks.md and decision-index.md are generated: edit
-     specs/tools/tasks.source.mjs, run `node specs/tools/build-tasks.mjs`,
-     then `node specs/tools/check-coverage.mjs` (must print Coverage OK).
-     Tests come from three sources, all required: every acceptance
-     criterion of the task (specs/acceptance-tests.md, one test per AC
-     named by its ID), every user flow (specs/tdd-user-journeys.md, one
-     E2E spec per FLW) and every rule or transition (BR, SM, TX, NFR).
-     Before closing a task run check-coverage.mjs --tests.
-  4. Load every skill on that task's _Skill_ line: bare names from
-     .claude/skills/, `ecc:` names with the Skill tool (ECC plugin; if it
-     is not installed, skip them and say so in the report)
-  5. For a screen task, open its artboard in Design Artifact/
+  3. Read specs/tasks.md — pick the next incomplete [ ] task
+  4. Follow WORKFLOW_STANDARDS.md §1 (Session Start Protocol) and §2A (Plan-Driven Implementation)
+     for the complete task workflow: session start → read files → plan → human review → implement → verify → commit → PR
 
 ALWAYS-ON SKILLS (every implementation task):
   ecc:search-first            reuse before writing new code
@@ -165,30 +150,16 @@ HARD CONSTRAINTS:
 
 GIT CONTROL DISCIPLINE (every task — Mandatory Sequence):
 
-**6.1 Task Start: Branch & Checkout**
-  1. Run `node specs/tools/next-numbers.mjs` — get next task number, DEC, PRD version, migration, CONTEXT row
-  2. Create branch from `main`: `git checkout -b feat/phaseN-taskNNN-slug main`
-  3. Verify branch: `git branch` shows * on new branch
-  4. ONLY THEN begin implementation (Session Start Protocol steps 1-9)
+See **WORKFLOW_STANDARDS.md §6** for the complete mandatory sequence.
 
-**6.2 Implementation: Commit & Push**
-  5. Implement task (TDD: RED → GREEN → Refactor)
-  6. Run ALL verification gates (Verification Gate in WORKFLOW_STANDARDS.md §4)
-  7. Stage specific files: `git add <exact-files>` — NEVER `git add -A`
-  8. Commit with Conventional Commits: `git commit -m "type(scope): message [TASK-NNN, REQ-XXX, AC-YYY]"`
-  9. Push to origin: `git push origin feat/phaseN-taskNNN-slug`
-
-**6.3 User Confirmation Gate (Mandatory)**
-  10. Report to user: "Implementation complete. Verification passed. Artboard matched. Ready for your review."
-  11. WAIT for explicit user confirmation: "Implementation is correct, proceed to PR"
-  12. DO NOT create PR without user confirmation
-
-**6.4 PR Creation & Merge (User-Initiated)**
-  13. User says "create PR" → `gh pr create --base main --head <branch> --title "..." --body "..."`
-  14. User reviews PR (or assigns reviewer)
-  15. User says "merge PR" → `gh pr merge --squash --delete-branch` (or user merges via GitHub UI)
-  16. After merge: `git checkout main && git pull origin main`
-  17. Clean up local branch: `git branch -d feat/phaseN-taskNNN-slug`
+**Summary:**
+1. **Branch from main** — `git checkout -b feat/phaseN-taskNNN-slug main`
+2. **Run `next-numbers.mjs`** — get task number, DEC, PRD version, migration, CONTEXT row
+3. **Plan-Driven Implementation** — see WORKFLOW_STANDARDS.md §2A (branch → plan → human review → implement)
+4. **Implement** — TDD (RED → GREEN → Refactor), all verification gates
+5. **Commit & Push** — specific files, Conventional Commits with TASK+REQ IDs
+6. **User Confirmation Gate** — mandatory before PR
+7. **PR Creation & Merge** — user-initiated, squash merge, cleanup
 
 **Rules:**
   - Branch naming: `feat/phase1-task125-spk-list-detail`
@@ -197,6 +168,7 @@ GIT CONTROL DISCIPLINE (every task — Mandatory Sequence):
   - Never force-push, reset --hard, or skip hooks
   - Branch from main only
   - User confirms before PR (mandatory gate)
+  - Full details: WORKFLOW_STANDARDS.md §6
 
 TWO AGENTS (Claude Code and Kiro; .kiro/steering/ holds Kiro's copy of these rules):
   1. One task, one agent: the agent that claims a task does all of it, from
@@ -218,7 +190,7 @@ AFTER COMPLETING A TASK:
   3. Mark the task [x], add a session row + next task to CONTEXT.md
   4. Append entry to AGENT_LOG.md (date, agent/session, task, action, files, outcome, notes)
   5. Report what was done and which REQ/NFR/AC it satisfies
-  6. Follow Git Control Discipline §6.3–6.4: user confirmation → create PR → merge
+  6. Follow WORKFLOW_STANDARDS.md §6.3–§6.4: user confirmation → create PR → merge
 
 DIVERGENCE PROTOCOL:
   If work must deviate from the PRD, the artboards or specs/design.md:

@@ -45,6 +45,7 @@ import {
 } from './http/planner-approval/planner-approval.controller.js';
 import { RolePermissionsController } from './http/role-permissions/role-permissions.controller.js';
 import { SpkErrorFilter, SpksController } from './http/spks/spks.controller.js';
+import { SpkListService } from './core/spk/spk-list-service.js';
 import {
   VehicleClassErrorFilter,
   VehicleClassesController,
@@ -212,6 +213,11 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, CLOCK],
       useFactory: (pool: pg.Pool, clock: ClockPort) =>
         new SpkService(new DrizzleUnitOfWork(pool, spkGateways), clock),
+    },
+    {
+      provide: SpkListService,
+      inject: [PG_POOL],
+      useFactory: (pool: pg.Pool) => new SpkListService(new DrizzleUnitOfWork(pool, spkGateways)),
     },
     SessionGuard,
   ],

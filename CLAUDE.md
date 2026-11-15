@@ -27,6 +27,13 @@ in this precedence:
                            and DESIGN.md is corrected.
   PRODUCT.md (root)      — product summary for context.
 
+AGENT ONBOARDING FILES (read order for EVERY session):
+  AGENT_GUIDE.md         — Single entry point: quick start, source-of-truth, how to work a task, git control discipline, conventions, permissions, state machines, release plan, skills, quick index, pitfalls, session checklist, escalation
+  AGENT_LOG.md           — Append-only log of agent actions across sessions (handoff continuity)
+  FILE_MAP.md            — Annotated directory structure: what each folder/file contains, why it exists
+  WORKFLOW_STANDARDS.md  — Enforced workflow: session start, task claim, TDD, verification gate, divergence, git control discipline (branch→commit→push→user confirm→PR), skills, permissions, hexagonal arch, spec maintenance, session end, escalation
+  specs/CONTEXT.md       — Session journal: resume block, session log, key decisions, open questions, divergences
+
 ONE ENTITY, ONE NAME (PRD §0.7, DEC-106):
   The entity is SPK (Surat Perintah Kerja) everywhere: screens, documents,
   IDs (REQ-SPK-*, AC-SPK-*, SM-SPK), tables (spks, spk_*), permissions (spk.*),
@@ -50,9 +57,10 @@ FIRST SESSION (nothing below exists yet):
   4. Start code only after the specs are reviewed.
 
 EVERY LATER SESSION, BEFORE ANY ACTION:
-  0. Read specs/CONTEXT.md — it has session state
-  1. Read specs/requirements.md and specs/design.md
-  2. Read specs/tasks.md — pick the next incomplete [ ] task, and follow its
+  0. Read AGENT_GUIDE.md — it is the single entry point (quick start, workflow, conventions, escalation)
+  1. Read specs/CONTEXT.md — it has session state (resume block, blockers, last session)
+  2. Read specs/requirements.md and specs/design.md
+  3. Read specs/tasks.md — pick the next incomplete [ ] task, and follow its
      "How an agent works a task" rules. Open EVERY file on the task's _Read_
      line and read the full PRD text of every ID it names; the task line is
      a pointer, never the requirement. Build all of it: no feature, field,
@@ -66,10 +74,10 @@ EVERY LATER SESSION, BEFORE ANY ACTION:
      named by its ID), every user flow (specs/tdd-user-journeys.md, one
      E2E spec per FLW) and every rule or transition (BR, SM, TX, NFR).
      Before closing a task run check-coverage.mjs --tests.
-  3. Load every skill on that task's _Skill_ line: bare names from
+  4. Load every skill on that task's _Skill_ line: bare names from
      .claude/skills/, `ecc:` names with the Skill tool (ECC plugin; if it
      is not installed, skip them and say so in the report)
-  4. For a screen task, open its artboard in Design Artifact/
+  5. For a screen task, open its artboard in Design Artifact/
 
 ALWAYS-ON SKILLS (every implementation task):
   ecc:search-first            reuse before writing new code
@@ -118,18 +126,48 @@ HARD CONSTRAINTS:
     still unresolved, ask
   ✗ Never commit secrets, .env, or cloud keys
 
-GIT DISCIPLINE (every task):
-  1. Branch: type/phaseN-taskNNN-slug  (feat/fix/chore/test/perf/ci/docs/build)
-  2. Conventional Commits referencing the TASK + REQ IDs,
-     e.g.  feat(spk): lifecycle + assignment engine [TASK-108]
-  3. Stage specific files (never `git add -A`); keep PRs small
-  4. Never force-push, reset --hard, or skip hooks unless explicitly asked
+GIT CONTROL DISCIPLINE (every task — Mandatory Sequence):
+
+**6.1 Task Start: Branch & Checkout**
+  1. Run `node specs/tools/next-numbers.mjs` — get next task number, DEC, PRD version, migration, CONTEXT row
+  2. Create branch from `main`: `git checkout -b feat/phaseN-taskNNN-slug main`
+  3. Verify branch: `git branch` shows * on new branch
+  4. ONLY THEN begin implementation (Session Start Protocol steps 1-9)
+
+**6.2 Implementation: Commit & Push**
+  5. Implement task (TDD: RED → GREEN → Refactor)
+  6. Run ALL verification gates (Verification Gate in WORKFLOW_STANDARDS.md §4)
+  7. Stage specific files: `git add <exact-files>` — NEVER `git add -A`
+  8. Commit with Conventional Commits: `git commit -m "type(scope): message [TASK-NNN, REQ-XXX, AC-YYY]"`
+  9. Push to origin: `git push origin feat/phaseN-taskNNN-slug`
+
+**6.3 User Confirmation Gate (Mandatory)**
+  10. Report to user: "Implementation complete. Verification passed. Artboard matched. Ready for your review."
+  11. WAIT for explicit user confirmation: "Implementation is correct, proceed to PR"
+  12. DO NOT create PR without user confirmation
+
+**6.4 PR Creation & Merge (User-Initiated)**
+  13. User says "create PR" → `gh pr create --base main --head <branch> --title "..." --body "..."`
+  14. User reviews PR (or assigns reviewer)
+  15. User says "merge PR" → `gh pr merge --squash --delete-branch` (or user merges via GitHub UI)
+  16. After merge: `git checkout main && git pull origin main`
+  17. Clean up local branch: `git branch -d feat/phaseN-taskNNN-slug`
+
+**Rules:**
+  - Branch naming: `feat/phase1-task125-spk-list-detail`
+  - Conventional Commits with TASK + REQ IDs: `feat(spk): list tabs + detail [TASK-125, REQ-SPK-010, REQ-SPK-011]`
+  - Stage specific files only (never `git add -A`)
+  - Never force-push, reset --hard, or skip hooks
+  - Branch from main only
+  - User confirms before PR (mandatory gate)
 
 AFTER COMPLETING A TASK:
   1. Run its _Verify_ step; for a screen, compare it with its artboard
   2. If the implementation diverged from specs/design.md, update it FIRST
   3. Mark the task [x], add a session row + next task to CONTEXT.md
-  4. Report what was done and which REQ/NFR/AC it satisfies
+  4. Append entry to AGENT_LOG.md (date, agent/session, task, action, files, outcome, notes)
+  5. Report what was done and which REQ/NFR/AC it satisfies
+  6. Follow Git Control Discipline §6.3–6.4: user confirmation → create PR → merge
 
 DIVERGENCE PROTOCOL:
   If work must deviate from the PRD, the artboards or specs/design.md:

@@ -7,6 +7,7 @@ import {
   type SpkStatus,
   type VehicleStatus,
 } from '@bmi/shared';
+import type { Actor } from '@bmi/shared';
 import { and, asc, eq, inArray, isNull, ne, sql, type SQL } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import {
@@ -104,6 +105,7 @@ export class DrizzleSpkGateway implements SpkGateway {
         // Written out in full: a subquery inside this select would leave its columns unqualified.
         stepCount: sql<number>`(SELECT count(*)::int FROM spk_assignments a WHERE a.spk_id = spks.id)`,
         version: spks.version,
+        // allowedActions will be computed by the service layer
       })
       .from(spks)
       .innerJoin(vehicles, eq(vehicles.id, spks.vehicleId))
@@ -117,6 +119,7 @@ export class DrizzleSpkGateway implements SpkGateway {
       category: row.category as SpkCategory,
       requestSource: row.requestSource as SpkSource,
       status: row.status as SpkStatus,
+      allowedActions: [],
     };
   }
 
@@ -181,6 +184,90 @@ export class DrizzleSpkGateway implements SpkGateway {
       open.set(row.vehicleId, [...(open.get(row.vehicleId) ?? []), row.spkNumber]);
     }
     return open;
+  }
+
+  // SPK List API (REQ-SPK-010)
+  async findList(
+    where: SQL,
+    pagination: { offset: number; limit: number }
+  ): Promise<SpkRow[]> {
+    const rows = await this.db
+      .select({
+        id: spks.id,
+        spkNumber: spks.spkNumber,
+        vehicleId: spks.vehicleId,
+        licensePlate: vehicles.licensePlate,
+        className: vehicleClasses.name,
+        title: spks.title,
+        category: spks.category,
+        requiresDowntime: spks.requiresDowntime,
+        requestSource: spks.requestSource,
+        priority: spks.priority,
+        description: spks.description,
+        status: spks.status,
+        createdBy: spks.createdBy,
+        stepCount: sql<number>`(SELECT count(*)::int FROM spk_assignments a WHERE a.spk_id = spks.id)`,
+        version: spks.version,
+      })
+      .from(spks)
+      .innerJoin(vehicles, eq(vehicles.id, spks.vehicleId))
+      .innerJoin(vehicleClasses, eq(vehicleClasses.id, vehicles.vehicleClassId))
+      .where(where)
+      .limit(pagination.limit)
+      .offset(pagination.offset)
+      .orderBy(sql`spks.id DESC`);
+    return rows.map((row) => {
+      const { licensePlate, className, ...rest } = row;
+      return {
+        ...rest,
+        vehicle: { id: row.vehicleId, licensePlate, className },
+        category: row.category as SpkCategory,
+        requestSource: row.requestSource as SpkSource,
+        status: row.status as SpkStatus,
+        allowedActions: [],
+      };
+    });
+  }
+
+  async countList(where: SQL): Promise<number> {
+    const [row] = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(spks)
+      .where(where);
+    return Number(row?.count ?? 0);
+  }
+
+  async countByStatuses(statuses: string[]): Promise<number> {
+    if (statuses.length === 0) return 0;
+    const [row] = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(spks)
+      .where(and(inArray(spks.status, statuses as SpkStatus[]), isNull(spks.deletedAt)));
+    return Number(row?.count ?? 0);
+  }
+
+  async countMine(actor: Actor): Promise<number> {
+    const { rows } = await this.db.execute<{ count: string }>(
+      sql`SELECT count(*)::text AS count FROM spks s
+          WHERE s.deleted_at IS NULL
+          AND EXISTS (
+            SELECT 1 FROM spk_assignments a
+            WHERE a.spk_id = s.id
+            AND (
+              ${actor.user.id} = ANY(a.executor_roles)
+              OR a.assigned_to = ${actor.user.id}
+            )
+          )`
+    );
+    return Number(rows[0]?.count ?? 0);
+  }
+
+  async countAllNonDeleted(): Promise<number> {
+    const [row] = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(spks)
+      .where(isNull(spks.deletedAt));
+    return Number(row?.count ?? 0);
   }
 }
 

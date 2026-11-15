@@ -1,4 +1,5 @@
 import type {
+  Actor,
   ApprovalAction,
   ApprovalStage,
   Role,
@@ -11,6 +12,7 @@ import type { AuditGateway } from './accounts.js';
 import type { NotificationGateway } from './notifications.js';
 import type { DocumentNumberGateway } from './numbering.js';
 import type { PlannerApprovalState } from './planner-approval.js';
+import { sql, type SQL } from 'drizzle-orm';
 
 /** The fields a new SPK row is written with (§9.6); later tasks add the steps, parts and sources. */
 export interface NewSpk {
@@ -53,6 +55,7 @@ export interface SpkRow {
   createdBy: number;
   stepCount: number;
   version: number;
+  allowedActions: string[];
 }
 
 /** A vehicle Create SPK may offer, with its status (REQ-SPK-013). */
@@ -85,6 +88,18 @@ export interface SpkGateway {
   vehicle(id: number): Promise<SpkVehicleRow | null>;
   /** Not Inactive and not soft-deleted, by plate. */
   vehiclesForNewSpk(): Promise<SpkVehicleRow[]>;
+
+  // SPK List API (REQ-SPK-010)
+  /** Find paginated list of SPKs matching filters. */
+  findList(where: SQL, pagination: { offset: number; limit: number }): Promise<SpkRow[]>;
+  /** Count SPKs matching filters. */
+  countList(where: SQL): Promise<number>;
+  /** Count SPKs by statuses. */
+  countByStatuses(statuses: string[]): Promise<number>;
+  /** Count SPKs where the actor is executor or assignee of a step. */
+  countMine(actor: Actor): Promise<number>;
+  /** Count all non-deleted SPKs. */
+  countAllNonDeleted(): Promise<number>;
 }
 
 export interface SpkGateways {

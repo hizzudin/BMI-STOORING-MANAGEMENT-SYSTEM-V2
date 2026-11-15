@@ -69,6 +69,59 @@ export type SpkRequest = z.infer<typeof SpkRequestSchema>;
 export const SpkUpdateRequestSchema = z.object({ ...fields, version: z.number().int() });
 export type SpkUpdateRequest = z.infer<typeof SpkUpdateRequestSchema>;
 
+/** REQ-SPK-010: SPK List query parameters. */
+export const SpkListQuerySchema = z.object({
+  tab: z.enum(['active', 'mine', 'draft', 'pending', 'rejected', 'completed', 'cancelled', 'all']).default('active'),
+  search: z.string().optional(),
+  type: z.enum(SPK_CATEGORIES).optional(),
+  vehicleId: z.coerce.number().int().optional(),
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(100).default(20),
+});
+export type SpkListQuery = z.infer<typeof SpkListQuerySchema>;
+
+/** REQ-SPK-010: SPK list item with current step and waiting-on info. */
+export const SpkListItemSchema = SpkSchema.extend({
+  currentStep: z.string().nullable(),
+  waitingOn: z.string().nullable(),
+});
+export type SpkListItem = z.infer<typeof SpkListItemSchema>;
+
+/** REQ-SPK-010: Tab counts for the 8 tabs. */
+export const SpkTabCountsSchema = z.object({
+  active: z.number().int(),
+  mine: z.number().int(),
+  draft: z.number().int(),
+  pending: z.number().int(),
+  rejected: z.number().int(),
+  completed: z.number().int(),
+  cancelled: z.number().int(),
+  all: z.number().int(),
+});
+export type SpkTabCounts = z.infer<typeof SpkTabCountsSchema>;
+
+/** REQ-SPK-010: SPK List response with items, tab counts, and pagination. */
+export const SpkListResponseSchema = z.object({
+  items: z.array(SpkListItemSchema),
+  tabCounts: SpkTabCountsSchema,
+  pagination: z.object({
+    page: z.number().int(),
+    pageSize: z.number().int(),
+    total: z.number().int(),
+    totalPages: z.number().int(),
+  }),
+});
+export type SpkListResponse = z.infer<typeof SpkListResponseSchema>;
+
 /** T2 and T5: Submit for approval at the version on screen. */
 export const SpkSubmitRequestSchema = z.object({ version: z.number().int() });
 export type SpkSubmitRequest = z.infer<typeof SpkSubmitRequestSchema>;
+
+/** Pagination schema for list endpoints. */
+export const PaginationSchema = z.object({
+  page: z.number().int(),
+  pageSize: z.number().int(),
+  total: z.number().int(),
+  totalPages: z.number().int(),
+});
+export type Pagination = z.infer<typeof PaginationSchema>;

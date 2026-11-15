@@ -14,7 +14,8 @@ Every finished task in `specs/evidence/TASK-*.tdd.md` followed these steps; read
 - `specs/CONTEXT.md`, then the task entry in `specs/tasks.md`. Open every file on its _Read_ line
   and read the full PRD text of every ID it names; the task line is a pointer, never the requirement.
 - The artboards under _Screens built here_ and the rows of `docs/prd/ui-action-map.md` for them.
-- The skills on its _Skill_ line (`.claude/skills/<name>/SKILL.md`).
+- The always-on skills and the skills of each area of code the task touches (`.claude/skills/<name>/SKILL.md`);
+  write in the evidence which were loaded.
 
 ## 2. Ask the product owner what the spec leaves open
 
@@ -41,6 +42,8 @@ PRD, a DEC or `specs/design.md` already answers.
 
 - Write the failing tests first: API integration (one per AC, plus the rules and transitions the
   task touches), shared schema tests, web component tests, and one e2e spec per FLW of the task.
+  On a branch whose code already exists (WORKFLOW_STANDARDS §2B), the e2e spec may be written with the
+  fix; say so in the evidence. A mocked web test never replaces the e2e run.
 - Then build: migration and Drizzle schema, shared schemas, port, core service with its policy table,
   Drizzle gateway, controller and error filter, wiring in `app.module.ts`; `pnpm gen:client`; the web
   page, its `<X>Pages.tsx` wiring and route.
@@ -67,6 +70,9 @@ Format, typecheck, lint, check:layers, check:secrets, the three test packages wi
 - Commit with specific files: `feat(<area>): <what> [TASK-nnn]`, the REQ/DEC IDs in the body.
 
 ## 8. Report and stop
+
+Before the report, go through WORKFLOW_STANDARDS.md §1 and list every step skipped or done
+differently (the workflow audit); put it in the report and in AGENT_LOG.md.
 
 Tell the owner, in Indonesian, what was built, what was decided, the test results (say plainly what
 did not pass or was not run), and ask whether to merge the branch into `main` and push. Do nothing

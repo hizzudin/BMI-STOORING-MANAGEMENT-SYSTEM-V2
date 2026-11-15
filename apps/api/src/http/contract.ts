@@ -63,8 +63,11 @@ export const ValidBody = createParamDecorator((_data: unknown, context: Executio
 /** NFR-04: the request query of the route, parsed with the schema of its contract. */
 export const ValidQuery = createParamDecorator((_data: unknown, context: ExecutionContext) => {
   const contract = contractOf(context.getHandler());
-  if (!contract?.query) throw new Error(`${context.getHandler().name} has no query in its contract`);
-  const result = contract.query.schema.safeParse(context.switchToHttp().getRequest<Request>().query);
+  if (!contract?.query)
+    throw new Error(`${context.getHandler().name} has no query in its contract`);
+  const result = contract.query.schema.safeParse(
+    context.switchToHttp().getRequest<Request>().query,
+  );
   if (result.success) return result.data;
   throw new BadRequestException({
     statusCode: 400,

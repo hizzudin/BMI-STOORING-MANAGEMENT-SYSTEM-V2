@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { spksApi } from '../../lib/spks-api';
 import { CreateSpk } from './CreateSpk';
-import { SpkHome } from './SpkHome';
+import { SpkDetail } from './SpkDetail';
+import { SpkList } from './SpkList';
 
 function useWiring() {
   const router = useRouter();
@@ -13,9 +14,13 @@ function useWiring() {
   return { api, navigate };
 }
 
-/** Create SPK wired to the API of the browser. */
-export function SpkHomePage() {
-  return <SpkHome api={useWiring().api} />;
+/** The SPK pages wired to the API of the browser. */
+export function SpkListPage() {
+  return <SpkList api={useWiring().api} />;
+}
+
+export function SpkDetailPage({ id }: { id: number }) {
+  return <SpkDetail api={useWiring().api} id={id} />;
 }
 
 export function NewSpkPage({ vehicleId }: { vehicleId: number | null }) {

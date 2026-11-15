@@ -45,7 +45,6 @@ import {
 } from './http/planner-approval/planner-approval.controller.js';
 import { RolePermissionsController } from './http/role-permissions/role-permissions.controller.js';
 import { SpkErrorFilter, SpksController } from './http/spks/spks.controller.js';
-import { SpkListController } from './http/spks/spk-list.controller.js';
 import { SpkListService } from './core/spk/spk-list-service.js';
 import {
   VehicleClassErrorFilter,
@@ -105,7 +104,6 @@ const authHttpConfig = (): AuthHttpConfig => ({
     VehiclesController,
     NotificationsController,
     SpksController,
-    SpkListController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -219,10 +217,8 @@ const authHttpConfig = (): AuthHttpConfig => ({
     {
       provide: SpkListService,
       inject: [PG_POOL],
-      useFactory: (pool: pg.Pool) =>
-        new SpkListService(new DrizzleUnitOfWork(pool, spkGateways)),
+      useFactory: (pool: pg.Pool) => new SpkListService(new DrizzleUnitOfWork(pool, spkGateways)),
     },
-    SpkListController,
     SessionGuard,
   ],
   // Feature modules guard their routes with SessionGuard and @RequireCapability (2.4 L1).

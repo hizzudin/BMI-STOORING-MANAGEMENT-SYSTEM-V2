@@ -1,6 +1,6 @@
-import { SpkHomePage } from '../../../components/spk/SpkPages';
+import { SpkListPage } from '../../../components/spk/SpkPages';
 
-// DEC-126: the Surat Perintah Kerja page; SPKList comes with TASK-125.
+// REQ-SPK-010, DEC-127: SPKList.
 export default function SpkRoute() {
-  return <SpkHomePage />;
+  return <SpkListPage />;
 }

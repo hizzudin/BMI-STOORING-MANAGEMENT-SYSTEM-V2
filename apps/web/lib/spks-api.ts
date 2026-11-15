@@ -1,5 +1,5 @@
 import type { ApiClient } from '@bmi/api-client';
-import type { SpkListQuery, SpkListResponse, SpkRequest, SpkSubmitRequest, SpkUpdateRequest } from '@bmi/shared';
+import type { SpkListQuery, SpkRequest, SpkSubmitRequest, SpkUpdateRequest } from '@bmi/shared';
 import { browserApi, settle } from './auth-api';
 
 /** Create SPK (REQ-SPK-001, REQ-SPK-013, REQ-SPK-015, DEC-126) through the generated client. */
@@ -15,7 +15,7 @@ export function spksApi(given?: ApiClient) {
       settle(client().PATCH('/spks/{id}', { ...path(id), body })),
     submit: (id: number, body: SpkSubmitRequest) =>
       settle(client().POST('/spks/{id}/submit', { ...path(id), body })),
-    list: (query?: SpkListQuery) => settle(client().GET('/spks', { query })),
+    list: (query?: SpkListQuery) => settle(client().GET('/spks', { params: { query } })),
     getDetail: (id: number) => settle(client().GET('/spks/{id}/detail', path(id))),
   };
 }

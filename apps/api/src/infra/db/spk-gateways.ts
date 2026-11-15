@@ -2,13 +2,31 @@ import {
   formatDocumentNumber,
   NumberingConfigSchema,
   OPEN_SPK_STATUSES,
+  type ApprovalAction,
+  type ApprovalStage,
+  type AsgStatus,
+  type Role,
   type SpkCategory,
   type SpkSource,
   type SpkStatus,
+  type UnitKind,
   type VehicleStatus,
 } from '@bmi/shared';
-import type { Actor } from '@bmi/shared';
-import { and, asc, eq, inArray, isNull, ne, sql, type SQL } from 'drizzle-orm';
+import {
+  and,
+  arrayOverlaps,
+  asc,
+  desc,
+  eq,
+  exists,
+  ilike,
+  inArray,
+  isNull,
+  ne,
+  or,
+  sql,
+  type SQL,
+} from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import {
   NumberingConfigError,
@@ -17,17 +35,33 @@ import {
 } from '../../ports/numbering.js';
 import type {
   NewSpk,
+  PersonRow,
+  SpkApprovalRow,
+  SpkDetailRow,
   SpkFields,
   SpkGateway,
   SpkGateways,
+  SpkListFilter,
+  SpkListRow,
   SpkRow,
+  SpkStepRow,
   SpkVehicleRow,
 } from '../../ports/spks.js';
 import { DrizzleAuditGateway } from './account-gateways.js';
 import { DrizzleNotificationGateway } from './notification-gateways.js';
 import { updateWithVersion } from './optimistic-lock.js';
 import { DrizzlePlannerApprovalGateway } from './planner-approval-gateways.js';
-import { appSettings, spkApprovals, spks, vehicleClasses, vehicles } from './schema/index.js';
+import {
+  appSettings,
+  assignmentModules,
+  spkApprovals,
+  spkAssignments,
+  spks,
+  userRoles,
+  users,
+  vehicleClasses,
+  vehicles,
+} from './schema/index.js';
 import type { DbTransaction } from './unit-of-work.js';
 
 type Db = NodePgDatabase | DbTransaction;
@@ -56,6 +90,48 @@ export class DrizzleDocumentNumbers implements DocumentNumberGateway {
     if (!value) throw new Error(`${SEQUENCES[kind]} returned no value`);
     return formatDocumentNumber(kind, BigInt(value), createdAt, config.data);
   }
+}
+
+/** REQ-SPK-015: Urgent, then High, Normal and Low. */
+const URGENCY_ORDER = sql`CASE ${spks.priority} WHEN 'Urgent' THEN 0 WHEN 'High' THEN 1 WHEN 'Normal' THEN 2 ELSE 3 END`;
+/** A step that is done is no longer the current step. */
+const DONE_STEPS: readonly AsgStatus[] = ['Verified', 'Skipped'];
+const UNKNOWN_PERSON: PersonRow = { name: 'Unknown', role: null };
+
+/** The SpkRow part of a header row. */
+function toSpkRow(row: {
+  id: number;
+  spkNumber: string;
+  vehicleId: number;
+  licensePlate: string;
+  className: string;
+  title: string;
+  category: string;
+  requiresDowntime: boolean;
+  requestSource: string;
+  priority: string;
+  description: string;
+  status: string;
+  createdBy: number;
+  stepCount: number;
+  version: number;
+}): SpkRow {
+  return {
+    id: row.id,
+    spkNumber: row.spkNumber,
+    vehicleId: row.vehicleId,
+    vehicle: { id: row.vehicleId, licensePlate: row.licensePlate, className: row.className },
+    title: row.title,
+    category: row.category as SpkCategory,
+    requiresDowntime: row.requiresDowntime,
+    requestSource: row.requestSource as SpkSource,
+    priority: row.priority,
+    description: row.description,
+    status: row.status as SpkStatus,
+    createdBy: row.createdBy,
+    stepCount: row.stepCount,
+    version: row.version,
+  };
 }
 
 export class DrizzleSpkGateway implements SpkGateway {
@@ -87,40 +163,8 @@ export class DrizzleSpkGateway implements SpkGateway {
     if (options.forUpdate) {
       await this.db.select({ id: spks.id }).from(spks).where(eq(spks.id, id)).for('update');
     }
-    const [row] = await this.db
-      .select({
-        id: spks.id,
-        spkNumber: spks.spkNumber,
-        vehicleId: spks.vehicleId,
-        licensePlate: vehicles.licensePlate,
-        className: vehicleClasses.name,
-        title: spks.title,
-        category: spks.category,
-        requiresDowntime: spks.requiresDowntime,
-        requestSource: spks.requestSource,
-        priority: spks.priority,
-        description: spks.description,
-        status: spks.status,
-        createdBy: spks.createdBy,
-        // Written out in full: a subquery inside this select would leave its columns unqualified.
-        stepCount: sql<number>`(SELECT count(*)::int FROM spk_assignments a WHERE a.spk_id = spks.id)`,
-        version: spks.version,
-        // allowedActions will be computed by the service layer
-      })
-      .from(spks)
-      .innerJoin(vehicles, eq(vehicles.id, spks.vehicleId))
-      .innerJoin(vehicleClasses, eq(vehicleClasses.id, vehicles.vehicleClassId))
-      .where(and(eq(spks.id, id), isNull(spks.deletedAt)));
-    if (!row) return null;
-    const { licensePlate, className, ...rest } = row;
-    return {
-      ...rest,
-      vehicle: { id: row.vehicleId, licensePlate, className },
-      category: row.category as SpkCategory,
-      requestSource: row.requestSource as SpkSource,
-      status: row.status as SpkStatus,
-      allowedActions: [],
-    };
+    const [row] = await this.headers(and(eq(spks.id, id), isNull(spks.deletedAt)));
+    return row ? toSpkRow(row) : null;
   }
 
   update(id: number, version: number, fields: SpkFields): Promise<void> {
@@ -186,18 +230,99 @@ export class DrizzleSpkGateway implements SpkGateway {
     return open;
   }
 
-  // SPK List API (REQ-SPK-010)
-  async findList(
-    where: SQL,
-    pagination: { offset: number; limit: number }
-  ): Promise<SpkRow[]> {
-    const rows = await this.db
+  async listPage(
+    filter: SpkListFilter,
+    page: { offset: number; limit: number },
+  ): Promise<SpkListRow[]> {
+    const rows = await this.headers(this.listCondition(filter))
+      .orderBy(URGENCY_ORDER, desc(spks.createdAt), desc(spks.id))
+      .limit(page.limit)
+      .offset(page.offset);
+    const steps = await this.stepsOf(rows.map((row) => row.id));
+    const creators = await this.people(rows.map((row) => row.createdBy));
+    return rows.map((row) => ({
+      ...toSpkRow(row),
+      creator: creators.get(row.createdBy) ?? UNKNOWN_PERSON,
+      currentStep:
+        (steps.get(row.id) ?? []).find((step) => !DONE_STEPS.includes(step.status)) ?? null,
+    }));
+  }
+
+  async countMatching(filter: SpkListFilter): Promise<number> {
+    const [row] = await this.db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(spks)
+      .innerJoin(vehicles, eq(vehicles.id, spks.vehicleId))
+      .where(this.listCondition(filter));
+    return row?.count ?? 0;
+  }
+
+  vehiclesWithSpks(): Promise<{ id: number; licensePlate: string }[]> {
+    return this.db
+      .selectDistinct({ id: vehicles.id, licensePlate: vehicles.licensePlate })
+      .from(vehicles)
+      .innerJoin(spks, eq(spks.vehicleId, vehicles.id))
+      .where(isNull(spks.deletedAt))
+      .orderBy(asc(vehicles.licensePlate), asc(vehicles.id));
+  }
+
+  async detail(id: number): Promise<SpkDetailRow | null> {
+    const [row] = await this.headers(and(eq(spks.id, id), isNull(spks.deletedAt)));
+    if (!row) return null;
+    const steps = await this.stepsOf([id]);
+    const approvalRows = await this.db
+      .select({
+        stage: spkApprovals.stage,
+        action: spkApprovals.action,
+        actedBy: spkApprovals.actedBy,
+        approverRole: spkApprovals.approverRole,
+        actedAt: spkApprovals.actedAt,
+        note: spkApprovals.note,
+        selfApproved: spkApprovals.selfApproved,
+      })
+      .from(spkApprovals)
+      .where(eq(spkApprovals.spkId, id))
+      .orderBy(asc(spkApprovals.actedAt), asc(spkApprovals.id));
+    const people = await this.people([row.createdBy, ...approvalRows.map((a) => a.actedBy)]);
+    const approvals: SpkApprovalRow[] = approvalRows.map((approval) => ({
+      stage: approval.stage as ApprovalStage,
+      action: approval.action as ApprovalAction,
+      // The role the decision was taken in, as the approval stamp shows it.
+      by: {
+        name: people.get(approval.actedBy)?.name ?? UNKNOWN_PERSON.name,
+        role: approval.approverRole as Role,
+      },
+      actedAt: approval.actedAt,
+      note: approval.note,
+      selfApproved: approval.selfApproved,
+    }));
+    return {
+      ...toSpkRow(row),
+      vehicleUnitKind: row.unitKind as UnitKind,
+      vehicleOdometer: row.currentOdometer,
+      creator: people.get(row.createdBy) ?? UNKNOWN_PERSON,
+      steps: steps.get(id) ?? [],
+      approvals,
+      costs: {
+        labor: row.laborCost,
+        parts: row.partsCost,
+        document: row.documentCost,
+        stooring: row.stooringCost,
+      },
+    };
+  }
+
+  /** The header columns of SPKList and SPKDetail, with the vehicle and its class. */
+  private headers(condition: SQL | undefined) {
+    return this.db
       .select({
         id: spks.id,
         spkNumber: spks.spkNumber,
         vehicleId: spks.vehicleId,
         licensePlate: vehicles.licensePlate,
         className: vehicleClasses.name,
+        unitKind: vehicleClasses.unitKind,
+        currentOdometer: vehicles.currentOdometer,
         title: spks.title,
         category: spks.category,
         requiresDowntime: spks.requiresDowntime,
@@ -206,68 +331,120 @@ export class DrizzleSpkGateway implements SpkGateway {
         description: spks.description,
         status: spks.status,
         createdBy: spks.createdBy,
+        // Written out in full: a subquery inside this select would leave its columns unqualified.
         stepCount: sql<number>`(SELECT count(*)::int FROM spk_assignments a WHERE a.spk_id = spks.id)`,
+        laborCost: spks.laborCost,
+        partsCost: spks.partsCost,
+        documentCost: spks.documentCost,
+        stooringCost: spks.stooringCost,
         version: spks.version,
       })
       .from(spks)
       .innerJoin(vehicles, eq(vehicles.id, spks.vehicleId))
       .innerJoin(vehicleClasses, eq(vehicleClasses.id, vehicles.vehicleClassId))
-      .where(where)
-      .limit(pagination.limit)
-      .offset(pagination.offset)
-      .orderBy(sql`spks.id DESC`);
-    return rows.map((row) => {
-      const { licensePlate, className, ...rest } = row;
-      return {
-        ...rest,
-        vehicle: { id: row.vehicleId, licensePlate, className },
-        category: row.category as SpkCategory,
-        requestSource: row.requestSource as SpkSource,
-        status: row.status as SpkStatus,
-        allowedActions: [],
-      };
-    });
+      .where(condition)
+      .$dynamic();
   }
 
-  async countList(where: SQL): Promise<number> {
-    const [row] = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(spks)
-      .where(where);
-    return Number(row?.count ?? 0);
+  /** REQ-SPK-010: the tab, My steps, search, type and vehicle, among SPKs not soft-deleted. */
+  private listCondition(filter: SpkListFilter): SQL | undefined {
+    const conditions: (SQL | undefined)[] = [isNull(spks.deletedAt)];
+    if (filter.statuses) conditions.push(inArray(spks.status, [...filter.statuses]));
+    if (filter.category) conditions.push(eq(spks.category, filter.category));
+    if (filter.vehicleId !== undefined) conditions.push(eq(spks.vehicleId, filter.vehicleId));
+    if (filter.search) {
+      const pattern = `%${filter.search.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+      conditions.push(
+        or(
+          ilike(spks.spkNumber, pattern),
+          ilike(spks.title, pattern),
+          ilike(vehicles.licensePlate, pattern),
+        ),
+      );
+    }
+    if (filter.mineOf) {
+      const { userId, roles } = filter.mineOf;
+      conditions.push(
+        exists(
+          this.db
+            .select({ one: sql`1` })
+            .from(spkAssignments)
+            .where(
+              and(
+                eq(spkAssignments.spkId, spks.id),
+                inArray(spkAssignments.status, ['Open', 'In_Progress']),
+                or(
+                  eq(spkAssignments.assignedTo, userId),
+                  roles.length === 0
+                    ? undefined
+                    : and(
+                        isNull(spkAssignments.assignedTo),
+                        arrayOverlaps(spkAssignments.executorRoles, [...roles]),
+                      ),
+                ),
+              ),
+            ),
+        ),
+      );
+    }
+    return and(...conditions);
   }
 
-  async countByStatuses(statuses: string[]): Promise<number> {
-    if (statuses.length === 0) return 0;
-    const [row] = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(spks)
-      .where(and(inArray(spks.status, statuses as SpkStatus[]), isNull(spks.deletedAt)));
-    return Number(row?.count ?? 0);
-  }
-
-  async countMine(actor: Actor): Promise<number> {
-    const { rows } = await this.db.execute<{ count: string }>(
-      sql`SELECT count(*)::text AS count FROM spks s
-          WHERE s.deleted_at IS NULL
-          AND EXISTS (
-            SELECT 1 FROM spk_assignments a
-            WHERE a.spk_id = s.id
-            AND (
-              ${actor.user.id} = ANY(a.executor_roles)
-              OR a.assigned_to = ${actor.user.id}
-            )
-          )`
+  /** The steps of these SPKs in order, with their module name and the people on them. */
+  private async stepsOf(spkIds: readonly number[]): Promise<Map<number, SpkStepRow[]>> {
+    const bySpk = new Map<number, SpkStepRow[]>();
+    if (spkIds.length === 0) return bySpk;
+    const rows = await this.db
+      .select({
+        id: spkAssignments.id,
+        spkId: spkAssignments.spkId,
+        sequenceNo: spkAssignments.sequenceNo,
+        name: assignmentModules.name,
+        status: spkAssignments.status,
+        executorRoles: spkAssignments.executorRoles,
+        verifierRole: spkAssignments.verifierRole,
+        assignedTo: spkAssignments.assignedTo,
+        openedAt: spkAssignments.openedAt,
+        submittedAt: spkAssignments.submittedAt,
+        verifiedAt: spkAssignments.verifiedAt,
+        verifiedBy: spkAssignments.verifiedBy,
+      })
+      .from(spkAssignments)
+      .innerJoin(assignmentModules, eq(assignmentModules.code, spkAssignments.module))
+      .where(inArray(spkAssignments.spkId, [...spkIds]))
+      .orderBy(asc(spkAssignments.spkId), asc(spkAssignments.sequenceNo));
+    const people = await this.people(
+      rows.flatMap((row) => [row.assignedTo, row.verifiedBy]).filter((id) => id !== null),
     );
-    return Number(rows[0]?.count ?? 0);
+    for (const row of rows) {
+      const step: SpkStepRow = {
+        id: row.id,
+        sequenceNo: row.sequenceNo,
+        name: row.name,
+        status: row.status as AsgStatus,
+        executorRoles: row.executorRoles as Role[],
+        verifierRole: row.verifierRole as Role,
+        assignee: row.assignedTo === null ? null : (people.get(row.assignedTo) ?? null),
+        openedAt: row.openedAt,
+        submittedAt: row.submittedAt,
+        verifiedAt: row.verifiedAt,
+        verifiedBy: row.verifiedBy === null ? null : (people.get(row.verifiedBy) ?? null),
+      };
+      bySpk.set(row.spkId, [...(bySpk.get(row.spkId) ?? []), step]);
+    }
+    return bySpk;
   }
 
-  async countAllNonDeleted(): Promise<number> {
-    const [row] = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(spks)
-      .where(isNull(spks.deletedAt));
-    return Number(row?.count ?? 0);
+  /** Names and roles of these users (RL-1: one role each). */
+  private async people(userIds: readonly number[]): Promise<Map<number, PersonRow>> {
+    const unique = [...new Set(userIds)];
+    if (unique.length === 0) return new Map();
+    const rows = await this.db
+      .select({ id: users.id, name: users.name, role: userRoles.role })
+      .from(users)
+      .leftJoin(userRoles, eq(userRoles.userId, users.id))
+      .where(inArray(users.id, unique));
+    return new Map(rows.map((row) => [row.id, { name: row.name, role: row.role as Role | null }]));
   }
 }
 

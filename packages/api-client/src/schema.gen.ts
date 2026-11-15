@@ -521,6 +521,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/spks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** SPKList: one page of a tab, with every tab count (DEC-127) */
+        get: operations["listSpks"];
+        put?: never;
+        /** Save a new SPK as Draft (T1) */
+        post: operations["createSpk"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/spks/{id}/detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** SPKDetail: steps, approval rows and costs (read only) */
+        get: operations["getSpkDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/spks/options": {
         parameters: {
             query?: never;
@@ -532,23 +567,6 @@ export interface paths {
         get: operations["spkFormOptions"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/spks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Save a new SPK as Draft (T1) */
-        post: operations["createSpk"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1042,6 +1060,137 @@ export interface components {
         };
         UnreadCountResponse: {
             unread: number;
+        };
+        SpkListResponse: {
+            items: {
+                id: number;
+                spkNumber: string;
+                vehicle: {
+                    id: number;
+                    licensePlate: string;
+                    className: string;
+                };
+                title: string;
+                /** @enum {string} */
+                category: "PM" | "Corrective" | "Tyre" | "Document" | "Other";
+                /** @enum {string} */
+                priority: "Low" | "Normal" | "High" | "Urgent";
+                requiresDowntime: boolean;
+                description: string;
+                /** @enum {string} */
+                requestSource: "System_PM" | "Tyre_Alert" | "Part_Item_Alert" | "Document_Alert" | "Breakdown_Report" | "Part_Check" | "Manual_Planner" | "Manual_Admin";
+                /** @enum {string} */
+                status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
+                stepCount: number;
+                version: number;
+                allowedActions: ("edit" | "submit")[];
+                currentStep: {
+                    sequenceNo: number;
+                    name: string;
+                    /** @enum {string} */
+                    status: "Locked" | "Open" | "In_Progress" | "Submitted" | "Verified" | "Skipped";
+                } | null;
+                waitingOn: string | null;
+            }[];
+            tabCounts: {
+                active: number;
+                mine: number;
+                draft: number;
+                pending: number;
+                rejected: number;
+                completed: number;
+                cancelled: number;
+                all: number;
+            };
+            pagination: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+            };
+            vehicles: {
+                id: number;
+                licensePlate: string;
+            }[];
+            allowedActions: "create"[];
+        };
+        SpkDetailResponse: {
+            detail: {
+                spk: {
+                    id: number;
+                    spkNumber: string;
+                    vehicle: {
+                        id: number;
+                        licensePlate: string;
+                        className: string;
+                    };
+                    title: string;
+                    /** @enum {string} */
+                    category: "PM" | "Corrective" | "Tyre" | "Document" | "Other";
+                    /** @enum {string} */
+                    priority: "Low" | "Normal" | "High" | "Urgent";
+                    requiresDowntime: boolean;
+                    description: string;
+                    /** @enum {string} */
+                    requestSource: "System_PM" | "Tyre_Alert" | "Part_Item_Alert" | "Document_Alert" | "Breakdown_Report" | "Part_Check" | "Manual_Planner" | "Manual_Admin";
+                    /** @enum {string} */
+                    status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
+                    stepCount: number;
+                    version: number;
+                    allowedActions: ("edit" | "submit")[];
+                };
+                vehicle: {
+                    id: number;
+                    licensePlate: string;
+                    className: string;
+                    /** @enum {string} */
+                    unitKind: "Powered" | "Towed";
+                    currentOdometer: number;
+                };
+                createdBy: {
+                    name: string;
+                    role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                };
+                steps: {
+                    id: number;
+                    sequenceNo: number;
+                    name: string;
+                    /** @enum {string} */
+                    status: "Locked" | "Open" | "In_Progress" | "Submitted" | "Verified" | "Skipped";
+                    executorRoles: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting")[];
+                    assignee: {
+                        name: string;
+                        role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                    } | null;
+                    openedAt: string | null;
+                    submittedAt: string | null;
+                    verifiedAt: string | null;
+                    verifiedBy: {
+                        name: string;
+                        role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                    } | null;
+                }[];
+                approvals: {
+                    /** @enum {string} */
+                    stage: "Creation" | "Completion" | "Amendment";
+                    /** @enum {string} */
+                    action: "Submit" | "Approve" | "Reject" | "Cancel" | "Request_Completion";
+                    by: {
+                        name: string;
+                        role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                    };
+                    actedAt: string;
+                    note: string | null;
+                    selfApproved: boolean;
+                }[];
+                costs: {
+                    labor: string;
+                    parts: string;
+                    document: string;
+                    stooring: string;
+                    total: string;
+                };
+            };
         };
         SpkFormOptionsResponse: {
             vehicles: {
@@ -1947,22 +2096,29 @@ export interface operations {
             };
         };
     };
-    spkFormOptions: {
+    listSpks: {
         parameters: {
-            query?: never;
+            query?: {
+                tab?: "active" | "mine" | "draft" | "pending" | "rejected" | "completed" | "cancelled" | "all";
+                search?: string;
+                type?: "PM" | "Corrective" | "Tyre" | "Document" | "Other";
+                vehicleId?: number;
+                page?: number;
+                pageSize?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description The vehicles Create SPK offers (never an Inactive one) */
+            /** @description SPKList: one page of a tab, with every tab count (DEC-127) */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SpkFormOptionsResponse"];
+                    "application/json": components["schemas"]["SpkListResponse"];
                 };
             };
         };
@@ -1987,6 +2143,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SpkResponse"];
+                };
+            };
+        };
+    };
+    getSpkDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SPKDetail: steps, approval rows and costs (read only) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpkDetailResponse"];
+                };
+            };
+        };
+    };
+    spkFormOptions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The vehicles Create SPK offers (never an Inactive one) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpkFormOptionsResponse"];
                 };
             };
         };

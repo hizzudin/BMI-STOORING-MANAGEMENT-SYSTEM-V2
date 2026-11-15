@@ -6,7 +6,7 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-121 done on branch `feat/phase1-task121-create-spk`. Next task: **TASK-125** (SPK list and detail), then TASK-122 (trial first, DEC-113) |
+| Active task | TASK-125 done on branch `feat/phase1-task125-spk-list-detail-v2`. Next task: **TASK-122** (approvals inbox and stamps; trial first, DEC-113) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 38 | 2026-11-16 | TASK-125: DEC-127 (v2.39; SPKList server-side pages of 20, the urgency pill beside the number with Urgent and High first, what later tasks build hidden on SPKDetail and in Open); the v2 branch fixed in place: plain-filter port and Drizzle queries in infra, one SPK controller, strict allowedActions, the OpenAPI query parameters and the client query; SPKList and SPKDetail (StepTracker, StepCard, ApprovalBlock, History); FLW-PLN-01 to the Draft tab and spk-list e2e; SPKList artboard pills and pager | apps/, packages/shared, packages/api-client, specs/, Design Artifact/spk, PRD.md |
 | 37 | 2026-11-12 | TASK-121: DEC-126 (v2.38; the common fields, Save draft and Submit with its notices, steps and presets hidden until TASK-207 and TASK-208, Submit refused without a step, PartPicker moved to TASK-306, Create SPK from the menu and the vehicle page); SPK service and routes (T1, T2, T5); CreateSPK; Create SPK on VehicleOverview; FLW-PLN-01 e2e; the workshop flag added to the CreateSPK artboard | apps/, packages/shared, packages/api-client, specs/, Design Artifact/spk, PRD.md |
 | 36 | 2026-11-11 | TASK-130: DEC-125 (v2.37; notifications.dedupe_key, the Planner approval switch notice as kind Approval with no link, the bell badge every 60 seconds); migration 0010; notification outbox gateway, service and routes; the four switch notices to Supervisors and GMs; NotificationCenter panel and bell badge | apps/, packages/shared, packages/api-client, specs/, PRD.md |
 | 35 | 2026-11-11 | TASK-120: DEC-124 (v2.36; references to tables of later tasks start as plain columns that the owning tasks constrain, the module registry starts empty, an open SPK is the REQ-SCH-001 list); migration 0009 (six SPK tables, spk_number_seq, numbering_formats seed); SPK gateway and document numbers from the stored formats; open SPKs now lock the vehicle class and refuse its deactivation | apps/api, packages/shared, specs/, PRD.md |

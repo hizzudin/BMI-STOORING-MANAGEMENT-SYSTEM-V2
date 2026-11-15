@@ -1,231 +1,266 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { spksApi } from '@/lib/spks-api';
-import { DataTable } from '@/components/kit/DataTable';
-import { Button } from '@/components/kit/Button';
-import { Input } from '@/components/kit/Input';
-import { Select } from '@/components/kit/Select';
-import { StatusPill } from '@/components/kit/StatusPill';
-import { Icon } from '@/components/kit/Icon';
-import { SpkListItem, SpkListQuery, SpkListResponse } from '@bmi/shared';
+import {
+  SPK_CATEGORIES,
+  SPK_PAGE_SIZES,
+  type SpkCategory,
+  type SpkListItem,
+  type SpkListQuery,
+  type SpkListResponse,
+  type SpkTab,
+} from '@bmi/shared';
+import { useEffect, useState } from 'react';
+import type { SpksApi } from '../../lib/spks-api';
+import { Icon } from '../kit/Icon';
+import { StatusPill } from '../kit/StatusPill';
+import { PageHead } from '../shell/AppShell';
+import { PRIORITY_TONES, STATUS_TONES, statusText } from './spk-format';
 
-interface SpkListProps {
-  api: ReturnType<typeof spksApi>;
+const TABS: { key: SpkTab; label: string }[] = [
+  { key: 'active', label: 'Active' },
+  { key: 'mine', label: 'My steps' },
+  { key: 'draft', label: 'Draft' },
+  { key: 'pending', label: 'Pending approval' },
+  { key: 'rejected', label: 'Rejected' },
+  { key: 'completed', label: 'Completed' },
+  { key: 'cancelled', label: 'Cancelled' },
+  { key: 'all', label: 'All' },
+];
+
+const FIRST: SpkListQuery = { tab: 'active', page: 1, pageSize: 20 };
+
+/** The query string of the list request: only what is set. */
+function queryOf(query: SpkListQuery) {
+  return {
+    tab: query.tab,
+    page: query.page,
+    pageSize: query.pageSize,
+    ...(query.search ? { search: query.search } : {}),
+    ...(query.type ? { type: query.type } : {}),
+    ...(query.vehicleId !== undefined ? { vehicleId: query.vehicleId } : {}),
+  };
 }
 
-export function SpkList({ api }: SpkListProps) {
-  const router = useRouter();
+/**
+ * SPKList (REQ-SPK-010, REQ-SPK-015, DEC-127): tabs with counts, search, type and vehicle, one page
+ * from the server. Open goes to Create SPK when the row allows `edit`; every other row offers View.
+ */
+export function SpkList({ api }: { api: SpksApi }) {
+  const [query, setQuery] = useState<SpkListQuery>(FIRST);
+  const [searchText, setSearchText] = useState('');
   const [data, setData] = useState<SpkListResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState<SpkListQuery>({
-    tab: 'active',
-    page: 1,
-    pageSize: 20,
-  });
-
-  const fetchList = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await api.list(query);
-      setData(response);
-    } catch (error) {
-      console.error('Failed to fetch SPK list:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [api, query]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  const handleTabChange = (tab: SpkListQuery['tab']) => {
-    setQuery((prev) => ({ ...prev, tab: tab ?? 'active', page: 1 }));
-  };
-
-  const handleSearch = (search: string) => {
-    setQuery((prev) => ({ ...prev, search: search || undefined, page: 1 }));
-  };
-
-  const handleTypeChange = (type: SpkListQuery['type']) => {
-    setQuery((prev) => ({ ...prev, type: type ?? undefined, page: 1 }));
-  };
-
-  const handlePageChange = (page: number) => {
-    setQuery((prev) => ({ ...prev, page }));
-  };
-
-  const handlePageSizeChange = (pageSize: number) => {
-    setQuery((prev) => ({ ...prev, pageSize, page: 1 }));
-  };
-
-  const tabs = [
-    { key: 'active', label: 'Active' },
-    { key: 'mine', label: 'My steps' },
-    { key: 'draft', label: 'Draft' },
-    { key: 'pending', label: 'Pending approval' },
-    { key: 'rejected', label: 'Rejected' },
-    { key: 'completed', label: 'Completed' },
-    { key: 'cancelled', label: 'Cancelled' },
-    { key: 'all', label: 'All' },
-  ];
-
-  const getTabCount = (tab: SpkListQuery['tab']) => {
-    if (!data?.tabCounts) return 0;
-    return data.tabCounts[tab ?? 'active'] ?? 0;
-  };
-
-  const statusPillVariant = (status: string) => {
-    const variantMap: Record<string, 'success' | 'warning' | 'danger' | 'info' | 'neutral'> = {
-      Active: 'success',
-      In_Progress: 'info',
-      Pending_Verification: 'warning',
-      Pending_Amendment: 'warning',
-      Pending_Approval: 'warning',
-      Draft: 'neutral',
-      Rejected: 'danger',
-      Completed: 'success',
-      Cancelled: 'neutral',
+    let current = true;
+    void api.list(queryOf(query)).then((outcome) => {
+      if (!current) return;
+      if (outcome.ok) {
+        setData(outcome.data);
+        setError(null);
+      } else setError(outcome.message);
+    });
+    return () => {
+      current = false;
     };
-    return variantMap[status] || 'neutral';
-  };
+  }, [api, query]);
+
+  // C-33: the search runs once typing pauses.
+  useEffect(() => {
+    const search = searchText.trim();
+    const timer = setTimeout(() => {
+      setQuery((q) =>
+        (q.search ?? '') === search ? q : { ...q, page: 1, search: search || undefined },
+      );
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchText]);
+
+  const change = (next: Partial<SpkListQuery>) => setQuery((q) => ({ ...q, page: 1, ...next }));
+  const pagination = data?.pagination;
 
   return (
-    <div className="spk-list">
-      <div className="spk-list-header">
-        <h1>Surat Perintah Kerja</h1>
-        <div className="spk-list-actions">
-          <Button variant="primary" onClick={() => router.push('/spk/new')}>
-            <Icon name="plus" size={16} /> Create SPK
-          </Button>
-        </div>
+    <>
+      <PageHead
+        title="Surat Perintah Kerja"
+        actions={
+          <>
+            <input
+              type="search"
+              className="input search head-search"
+              placeholder="Search SPK, plate, title"
+              aria-label="Search SPK, plate, title"
+              value={searchText}
+              onChange={(event) => setSearchText(event.target.value)}
+            />
+            {data?.allowedActions.includes('create') && (
+              <a className="btn btn-primary" href="/spk/new">
+                <Icon name="plus" size={16} />
+                Create SPK
+              </a>
+            )}
+          </>
+        }
+      />
+      <div className="tabs" role="tablist" aria-label="SPK tabs">
+        {TABS.map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            role="tab"
+            aria-selected={tab.key === query.tab}
+            className={tab.key === query.tab ? 'tab on' : 'tab'}
+            onClick={() => change({ tab: tab.key })}
+          >
+            {tab.label}
+            {data && data.tabCounts[tab.key] > 0 && (
+              <span className="tab-count">{data.tabCounts[tab.key]}</span>
+            )}
+          </button>
+        ))}
       </div>
-
-      <div className="spk-list-toolbar">
-        <nav className="spk-tabs" role="tablist">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              role="tab"
-              aria-selected={query.tab === tab.key}
-              className={`spk-tab ${query.tab === tab.key ? 'active' : ''}`}
-              onClick={() => handleTabChange(tab.key)}
-            >
-              {tab.label}
-              <span className="tab-count">{getTabCount(tab.key)}</span>
-            </button>
+      <div className="bar bar-start list-filters">
+        <select
+          className="input auto"
+          aria-label="Type"
+          value={query.type ?? ''}
+          onChange={(event) =>
+            change({ type: (event.target.value || undefined) as SpkCategory | undefined })
+          }
+        >
+          <option value="">All types</option>
+          {SPK_CATEGORIES.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
           ))}
-        </nav>
-
-        <div className="spk-filters">
-          <Input
-            placeholder="Search SPK, vehicle, title..."
-            value={query.search ?? ''}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="search-input"
-          />
-          <Select
-            value={query.type ?? ''}
-            onChange={(e) => handleTypeChange(e.target.value)}
-            options={[
-              { value: '', label: 'All types' },
-              { value: 'PM', label: 'PM' },
-              { value: 'Corrective', label: 'Corrective' },
-              { value: 'Tyre', label: 'Tyre' },
-              { value: 'Document', label: 'Document' },
-              { value: 'Other', label: 'Other' },
-            ]}
-            className="type-select"
-          />
-        </div>
+        </select>
+        <select
+          className="input auto"
+          aria-label="Vehicle"
+          value={query.vehicleId ?? ''}
+          onChange={(event) =>
+            change({ vehicleId: event.target.value ? Number(event.target.value) : undefined })
+          }
+        >
+          <option value="">All vehicles</option>
+          {data?.vehicles.map((vehicle) => (
+            <option key={vehicle.id} value={vehicle.id}>
+              {vehicle.licensePlate}
+            </option>
+          ))}
+        </select>
       </div>
-
-      {loading ? (
-        <div className="spk-list-loading">Loading...</div>
-      ) : (
-        <DataTable<SpkListItem>
-          columns={[
-            {
-              key: 'spkNumber',
-              header: 'SPK',
-              render: (item) => (
-                <a href={`/spk/${item.id}`} className="spk-link">
-                  {item.spkNumber}
-                </a>
-              ),
-            },
-            {
-              key: 'vehicle.licensePlate',
-              header: 'Vehicle',
-              render: (item) => (
-                <a href={`/vehicle/${item.vehicle.id}`} className="vehicle-link">
-                  {item.vehicle.licensePlate}
-                </a>
-              ),
-            },
-            {
-              key: 'category',
-              header: 'Type',
-            },
-            {
-              key: 'status',
-              header: 'Status',
-              render: (item) => (
-                <StatusPill variant={statusPillVariant(item.status)}>
-                  {item.status.replace(/_/g, ' ')}
-                </StatusPill>
-              ),
-            },
-            {
-              key: 'currentStep',
-              header: 'Current step',
-              render: (item) => item.currentStep ?? '—',
-            },
-            {
-              key: 'waitingOn',
-              header: 'Waiting on',
-              render: (item) => item.waitingOn ?? '—',
-            },
-            {
-              key: 'actions',
-              header: '',
-              render: (item) => (
-                <div className="action-buttons">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => router.push(`/spk/${item.id}`)}
-                  >
-                    View
-                  </Button>
-                  {item.allowedActions.includes('edit') && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => router.push(`/spk/${item.id}/edit`)}
-                    >
-                      Edit
-                    </Button>
-                  )}
-                </div>
-              ),
-            },
-          ]}
-          data={data?.items ?? []}
-          pagination={{
-            page: data?.pagination.page ?? 1,
-            pageSize: data?.pagination.pageSize ?? 20,
-            total: data?.pagination.total ?? 0,
-            totalPages: data?.pagination.totalPages ?? 0,
-            onPageChange: handlePageChange,
-            onPageSizeChange: handlePageSizeChange,
-          }}
-          loading={loading}
-          emptyMessage="No SPKs found"
-        />
+      {error && (
+        <p className="refusal" role="alert">
+          {error}
+        </p>
       )}
-    </div>
+      {!data && !error && <p className="muted">Loading…</p>}
+      {data && (
+        <>
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>SPK</th>
+                  <th>Vehicle</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Current step</th>
+                  <th>Waiting on</th>
+                  <th>
+                    <span className="sr-only">Action</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.items.map((item) => (
+                  <Row key={item.id} item={item} />
+                ))}
+                {data.items.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="muted">
+                      No SPK matches.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {pagination && (
+            <div className="bar pager">
+              <span className="small muted">
+                Page {pagination.page} of {pagination.totalPages} ({pagination.total} total)
+              </span>
+              <span className="grow" />
+              <select
+                className="input auto"
+                aria-label="Rows per page"
+                value={query.pageSize}
+                onChange={(event) => change({ pageSize: Number(event.target.value) })}
+              >
+                {SPK_PAGE_SIZES.map((size) => (
+                  <option key={size} value={size}>
+                    {size} per page
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                disabled={query.page <= 1}
+                onClick={() => setQuery((q) => ({ ...q, page: q.page - 1 }))}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                disabled={query.page >= pagination.totalPages}
+                onClick={() => setQuery((q) => ({ ...q, page: q.page + 1 }))}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </>
+  );
+}
+
+function Row({ item }: { item: SpkListItem }) {
+  // DEC-127: Open edits a Draft or Rejected SPK of its creator; every other row is View.
+  const opens = item.allowedActions.includes('edit');
+  const href = opens ? `/spk/${item.id}/edit` : `/spk/${item.id}`;
+  const step = item.currentStep;
+  return (
+    <tr>
+      <td>
+        <span className="nowrap">
+          <a className="b" href={href}>
+            {item.spkNumber}
+          </a>{' '}
+          <StatusPill tone={PRIORITY_TONES[item.priority]}>{item.priority}</StatusPill>
+        </span>
+      </td>
+      <td>
+        <a className="b nowrap" href={`/vehicles/${item.vehicle.id}`}>
+          {item.vehicle.licensePlate}
+        </a>
+      </td>
+      <td>{item.category}</td>
+      <td>
+        <StatusPill tone={STATUS_TONES[item.status]}>{statusText(item.status)}</StatusPill>
+      </td>
+      <td>{step ? `Step ${step.sequenceNo} ${step.name}` : '—'}</td>
+      <td>{item.waitingOn ?? '—'}</td>
+      <td>
+        <a className="btn" href={href}>
+          {opens ? 'Open' : 'View'}
+        </a>
+      </td>
+    </tr>
   );
 }

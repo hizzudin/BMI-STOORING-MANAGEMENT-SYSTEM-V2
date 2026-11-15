@@ -957,25 +957,100 @@
         }
       }
     },
-    "/spks/options": {
+    "/spks": {
       "get": {
-        "operationId": "spkFormOptions",
-        "summary": "The vehicles Create SPK offers (never an Inactive one)",
+        "operationId": "listSpks",
+        "summary": "SPKList: one page of a tab, with every tab count (DEC-127)",
+        "parameters": [
+          {
+            "name": "tab",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": "active",
+              "type": "string",
+              "enum": [
+                "active",
+                "mine",
+                "draft",
+                "pending",
+                "rejected",
+                "completed",
+                "cancelled",
+                "all"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PM",
+                "Corrective",
+                "Tyre",
+                "Document",
+                "Other"
+              ]
+            }
+          },
+          {
+            "name": "vehicleId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "The vehicles Create SPK offers (never an Inactive one)",
+            "description": "SPKList: one page of a tab, with every tab count (DEC-127)",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SpkFormOptionsResponse"
+                  "$ref": "#/components/schemas/SpkListResponse"
                 }
               }
             }
           }
         }
-      }
-    },
-    "/spks": {
+      },
       "post": {
         "operationId": "createSpk",
         "summary": "Save a new SPK as Draft (T1)",
@@ -996,6 +1071,52 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SpkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/spks/{id}/detail": {
+      "get": {
+        "operationId": "getSpkDetail",
+        "summary": "SPKDetail: steps, approval rows and costs (read only)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SPKDetail: steps, approval rows and costs (read only)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkDetailResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/spks/options": {
+      "get": {
+        "operationId": "spkFormOptions",
+        "summary": "The vehicles Create SPK offers (never an Inactive one)",
+        "responses": {
+          "200": {
+            "description": "The vehicles Create SPK offers (never an Inactive one)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkFormOptionsResponse"
                 }
               }
             }
@@ -3883,6 +4004,806 @@
         },
         "required": [
           "unread"
+        ],
+        "additionalProperties": false
+      },
+      "SpkListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "spkNumber": {
+                  "type": "string"
+                },
+                "vehicle": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "licensePlate": {
+                      "type": "string"
+                    },
+                    "className": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "licensePlate",
+                    "className"
+                  ],
+                  "additionalProperties": false
+                },
+                "title": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "PM",
+                    "Corrective",
+                    "Tyre",
+                    "Document",
+                    "Other"
+                  ]
+                },
+                "priority": {
+                  "type": "string",
+                  "enum": [
+                    "Low",
+                    "Normal",
+                    "High",
+                    "Urgent"
+                  ]
+                },
+                "requiresDowntime": {
+                  "type": "boolean"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "requestSource": {
+                  "type": "string",
+                  "enum": [
+                    "System_PM",
+                    "Tyre_Alert",
+                    "Part_Item_Alert",
+                    "Document_Alert",
+                    "Breakdown_Report",
+                    "Part_Check",
+                    "Manual_Planner",
+                    "Manual_Admin"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "Draft",
+                    "Pending_Approval",
+                    "Rejected",
+                    "Active",
+                    "In_Progress",
+                    "Pending_Verification",
+                    "Pending_Amendment",
+                    "Completed",
+                    "Cancelled"
+                  ]
+                },
+                "stepCount": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "allowedActions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "edit",
+                      "submit"
+                    ]
+                  }
+                },
+                "currentStep": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "sequenceNo": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "Locked",
+                            "Open",
+                            "In_Progress",
+                            "Submitted",
+                            "Verified",
+                            "Skipped"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "sequenceNo",
+                        "name",
+                        "status"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "waitingOn": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "spkNumber",
+                "vehicle",
+                "title",
+                "category",
+                "priority",
+                "requiresDowntime",
+                "description",
+                "requestSource",
+                "status",
+                "stepCount",
+                "version",
+                "allowedActions",
+                "currentStep",
+                "waitingOn"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "tabCounts": {
+            "type": "object",
+            "properties": {
+              "active": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "mine": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "draft": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "pending": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "rejected": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "completed": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "cancelled": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "all": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "active",
+              "mine",
+              "draft",
+              "pending",
+              "rejected",
+              "completed",
+              "cancelled",
+              "all"
+            ],
+            "additionalProperties": false
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "total": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "totalPages": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "page",
+              "pageSize",
+              "total",
+              "totalPages"
+            ],
+            "additionalProperties": false
+          },
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "licensePlate": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "licensePlate"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "create"
+              ]
+            }
+          }
+        },
+        "required": [
+          "items",
+          "tabCounts",
+          "pagination",
+          "vehicles",
+          "allowedActions"
+        ],
+        "additionalProperties": false
+      },
+      "SpkDetailResponse": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "object",
+            "properties": {
+              "spk": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "spkNumber": {
+                    "type": "string"
+                  },
+                  "vehicle": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "licensePlate": {
+                        "type": "string"
+                      },
+                      "className": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "licensePlate",
+                      "className"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "PM",
+                      "Corrective",
+                      "Tyre",
+                      "Document",
+                      "Other"
+                    ]
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": [
+                      "Low",
+                      "Normal",
+                      "High",
+                      "Urgent"
+                    ]
+                  },
+                  "requiresDowntime": {
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "requestSource": {
+                    "type": "string",
+                    "enum": [
+                      "System_PM",
+                      "Tyre_Alert",
+                      "Part_Item_Alert",
+                      "Document_Alert",
+                      "Breakdown_Report",
+                      "Part_Check",
+                      "Manual_Planner",
+                      "Manual_Admin"
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "Draft",
+                      "Pending_Approval",
+                      "Rejected",
+                      "Active",
+                      "In_Progress",
+                      "Pending_Verification",
+                      "Pending_Amendment",
+                      "Completed",
+                      "Cancelled"
+                    ]
+                  },
+                  "stepCount": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "version": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "allowedActions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "edit",
+                        "submit"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "spkNumber",
+                  "vehicle",
+                  "title",
+                  "category",
+                  "priority",
+                  "requiresDowntime",
+                  "description",
+                  "requestSource",
+                  "status",
+                  "stepCount",
+                  "version",
+                  "allowedActions"
+                ],
+                "additionalProperties": false
+              },
+              "vehicle": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "licensePlate": {
+                    "type": "string"
+                  },
+                  "className": {
+                    "type": "string"
+                  },
+                  "unitKind": {
+                    "type": "string",
+                    "enum": [
+                      "Powered",
+                      "Towed"
+                    ]
+                  },
+                  "currentOdometer": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "id",
+                  "licensePlate",
+                  "className",
+                  "unitKind",
+                  "currentOdometer"
+                ],
+                "additionalProperties": false
+              },
+              "createdBy": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "Planner",
+                          "Mechanic",
+                          "Warehouse_Manager",
+                          "Supervisor",
+                          "GM",
+                          "System_Admin",
+                          "Access_Manager",
+                          "Driver",
+                          "Field_Coordinator",
+                          "Accounting"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "role"
+                ],
+                "additionalProperties": false
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "sequenceNo": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "Locked",
+                        "Open",
+                        "In_Progress",
+                        "Submitted",
+                        "Verified",
+                        "Skipped"
+                      ]
+                    },
+                    "executorRoles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Planner",
+                          "Mechanic",
+                          "Warehouse_Manager",
+                          "Supervisor",
+                          "GM",
+                          "System_Admin",
+                          "Access_Manager",
+                          "Driver",
+                          "Field_Coordinator",
+                          "Accounting"
+                        ]
+                      }
+                    },
+                    "assignee": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "role": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "Planner",
+                                    "Mechanic",
+                                    "Warehouse_Manager",
+                                    "Supervisor",
+                                    "GM",
+                                    "System_Admin",
+                                    "Access_Manager",
+                                    "Driver",
+                                    "Field_Coordinator",
+                                    "Accounting"
+                                  ]
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "role"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "openedAt": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "submittedAt": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "verifiedAt": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "verifiedBy": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "role": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "Planner",
+                                    "Mechanic",
+                                    "Warehouse_Manager",
+                                    "Supervisor",
+                                    "GM",
+                                    "System_Admin",
+                                    "Access_Manager",
+                                    "Driver",
+                                    "Field_Coordinator",
+                                    "Accounting"
+                                  ]
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "role"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "sequenceNo",
+                    "name",
+                    "status",
+                    "executorRoles",
+                    "assignee",
+                    "openedAt",
+                    "submittedAt",
+                    "verifiedAt",
+                    "verifiedBy"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "approvals": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "stage": {
+                      "type": "string",
+                      "enum": [
+                        "Creation",
+                        "Completion",
+                        "Amendment"
+                      ]
+                    },
+                    "action": {
+                      "type": "string",
+                      "enum": [
+                        "Submit",
+                        "Approve",
+                        "Reject",
+                        "Cancel",
+                        "Request_Completion"
+                      ]
+                    },
+                    "by": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "role": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "Planner",
+                                "Mechanic",
+                                "Warehouse_Manager",
+                                "Supervisor",
+                                "GM",
+                                "System_Admin",
+                                "Access_Manager",
+                                "Driver",
+                                "Field_Coordinator",
+                                "Accounting"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "actedAt": {
+                      "type": "string"
+                    },
+                    "note": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "selfApproved": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "stage",
+                    "action",
+                    "by",
+                    "actedAt",
+                    "note",
+                    "selfApproved"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "costs": {
+                "type": "object",
+                "properties": {
+                  "labor": {
+                    "type": "string"
+                  },
+                  "parts": {
+                    "type": "string"
+                  },
+                  "document": {
+                    "type": "string"
+                  },
+                  "stooring": {
+                    "type": "string"
+                  },
+                  "total": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "labor",
+                  "parts",
+                  "document",
+                  "stooring",
+                  "total"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "spk",
+              "vehicle",
+              "createdBy",
+              "steps",
+              "approvals",
+              "costs"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "detail"
         ],
         "additionalProperties": false
       },

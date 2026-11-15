@@ -6,7 +6,6 @@ export * from './numbering/index.js';
 export * from './permissions/groups.js';
 export * from './permissions/index.js';
 export * from './schemas/accounts.js';
-export * from './schemas/actor.js';
 export * from './schemas/auth.js';
 export * from './schemas/chassis-layout.js';
 export * from './schemas/document-types.js';

@@ -83,12 +83,17 @@ export function buildOpenApiDocument(rootModule: object): OpenApiDocument {
       const status =
         (Reflect.getMetadata(HTTP_CODE_METADATA, handler) as number | undefined) ??
         (requestMethod === RequestMethod.POST ? HttpStatus.CREATED : HttpStatus.OK);
-      const parameters = [...path.matchAll(/\{(\w+)\}/g)].map(([, name]) => ({
-        name,
-        in: 'path',
-        required: true,
-        schema: { type: 'string' },
-      }));
+      const parameters: Record<string, unknown>[] = [...path.matchAll(/\{(\w+)\}/g)].map(
+        ([, name]) => ({ name, in: 'path', required: true, schema: { type: 'string' } }),
+      );
+      // The query string of the route: every field is optional, its schema as the client sends it.
+      if (contract.query) {
+        const shape = (contract.query.schema as z.ZodObject).shape as Record<string, z.ZodType>;
+        for (const [name, field] of Object.entries(shape)) {
+          const { $schema, ...schema } = z.toJSONSchema(field, { io: 'input' });
+          parameters.push({ name, in: 'query', required: false, schema });
+        }
+      }
 
       paths[path] = {
         ...paths[path],

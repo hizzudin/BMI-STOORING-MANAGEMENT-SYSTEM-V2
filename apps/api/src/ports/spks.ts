@@ -1,18 +1,18 @@
 import type {
-  Actor,
   ApprovalAction,
   ApprovalStage,
+  AsgStatus,
   Role,
   SpkCategory,
   SpkSource,
   SpkStatus,
+  UnitKind,
   VehicleStatus,
 } from '@bmi/shared';
 import type { AuditGateway } from './accounts.js';
 import type { NotificationGateway } from './notifications.js';
 import type { DocumentNumberGateway } from './numbering.js';
 import type { PlannerApprovalState } from './planner-approval.js';
-import { sql, type SQL } from 'drizzle-orm';
 
 /** The fields a new SPK row is written with (§9.6); later tasks add the steps, parts and sources. */
 export interface NewSpk {
@@ -55,7 +55,6 @@ export interface SpkRow {
   createdBy: number;
   stepCount: number;
   version: number;
-  allowedActions: string[];
 }
 
 /** A vehicle Create SPK may offer, with its status (REQ-SPK-013). */
@@ -89,17 +88,72 @@ export interface SpkGateway {
   /** Not Inactive and not soft-deleted, by plate. */
   vehiclesForNewSpk(): Promise<SpkVehicleRow[]>;
 
-  // SPK List API (REQ-SPK-010)
-  /** Find paginated list of SPKs matching filters. */
-  findList(where: SQL, pagination: { offset: number; limit: number }): Promise<SpkRow[]>;
-  /** Count SPKs matching filters. */
-  countList(where: SQL): Promise<number>;
-  /** Count SPKs by statuses. */
-  countByStatuses(statuses: string[]): Promise<number>;
-  /** Count SPKs where the actor is executor or assignee of a step. */
-  countMine(actor: Actor): Promise<number>;
-  /** Count all non-deleted SPKs. */
-  countAllNonDeleted(): Promise<number>;
+  /** REQ-SPK-010, REQ-SPK-015, DEC-127: one page, Urgent and High first, then newest first. */
+  listPage(filter: SpkListFilter, page: { offset: number; limit: number }): Promise<SpkListRow[]>;
+  countMatching(filter: SpkListFilter): Promise<number>;
+  /** The vehicles that have an SPK that is not soft-deleted: the vehicle filter. */
+  vehiclesWithSpks(): Promise<{ id: number; licensePlate: string }[]>;
+  /** REQ-SPK-011: the steps, approval rows, vehicle and creator of one SPK. */
+  detail(id: number): Promise<SpkDetailRow | null>;
+}
+
+/** Plain filters for SPKList (no SQL here: the gateway turns them into a query). */
+export interface SpkListFilter {
+  /** The statuses of the tab; absent for All and My steps. */
+  statuses?: readonly SpkStatus[];
+  /** My steps: an Open or In_Progress step assigned to the user, or unassigned for one of its roles. */
+  mineOf?: { userId: number; roles: readonly Role[] };
+  /** Contains, any case, in the SPK number, the title or the plate. */
+  search?: string;
+  category?: SpkCategory;
+  vehicleId?: number;
+}
+
+/** A person as the SPK pages name them (users.name and the role of user_roles). */
+export interface PersonRow {
+  name: string;
+  role: Role | null;
+}
+
+/** One step as SPKList and SPKDetail need it. */
+export interface SpkStepRow {
+  id: number;
+  sequenceNo: number;
+  name: string;
+  status: AsgStatus;
+  executorRoles: Role[];
+  verifierRole: Role;
+  assignee: PersonRow | null;
+  openedAt: Date | null;
+  submittedAt: Date | null;
+  verifiedAt: Date | null;
+  verifiedBy: PersonRow | null;
+}
+
+/** SPKList: the SPK, its creator and its current step (the first not Verified or Skipped). */
+export interface SpkListRow extends SpkRow {
+  creator: PersonRow;
+  currentStep: SpkStepRow | null;
+}
+
+export interface SpkApprovalRow {
+  stage: ApprovalStage;
+  action: ApprovalAction;
+  by: PersonRow;
+  actedAt: Date;
+  note: string | null;
+  selfApproved: boolean;
+}
+
+/** SPKDetail: the SPK with everything phase 1 shows (DEC-127). */
+export interface SpkDetailRow extends SpkRow {
+  vehicleUnitKind: UnitKind;
+  vehicleOdometer: number;
+  creator: PersonRow;
+  steps: SpkStepRow[];
+  approvals: SpkApprovalRow[];
+  /** NUMERIC(14,2) as decimal strings. */
+  costs: { labor: string; parts: string; document: string; stooring: string };
 }
 
 export interface SpkGateways {

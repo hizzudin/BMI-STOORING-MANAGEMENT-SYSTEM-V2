@@ -36,7 +36,8 @@ describe('Approvals inbox (REQ-APR-002, REQ-APR-004, REQ-APR-006, DEC-128)', () 
     expect(first.getByText('Brake pads front')).toBeTruthy();
     expect(first.getByText('Creation')).toBeTruthy();
     expect(first.getByText('Planner Sari')).toBeTruthy();
-    expect(first.getByText('2026-11-04 08:12:00')).toBeTruthy();
+    expect(first.getByText('2026-11-04')).toBeTruthy();
+    expect(first.getByText('08:12:00')).toBeTruthy();
     expect(first.getByText('00:42:10')).toBeTruthy();
     expect(first.getByRole('link', { name: 'Open review' }).getAttribute('href')).toBe(
       '/approvals/spk/42',

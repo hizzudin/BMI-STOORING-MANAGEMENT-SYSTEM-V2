@@ -1277,3 +1277,12 @@ textarea:focus-visible {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+.table td.wrap {
+  min-width: 96px;
+  white-space: normal;
+}
+.cell-pills {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}

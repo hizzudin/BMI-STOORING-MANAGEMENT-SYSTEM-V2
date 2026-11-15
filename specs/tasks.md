@@ -336,7 +336,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-121
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-PLN-01`; `qa` SPKList, SPKDetail against their artboards
-- [ ] **TASK-122** Approvals inbox, ApprovalReview, canApprove policy, stamps, Self-approved [REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007]
+- [x] **TASK-122** Approvals inbox, ApprovalReview, canApprove policy, stamps, Self-approved [REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, REQ-APR-001, REQ-APR-002, REQ-APR-004, REQ-APR-005, REQ-APR-006, REQ-APR-007]
   - _Scope_: One canApprove for every approval kind (§8.3); the stamp is the one authored motion (DEC-83). DEC-128: the inbox columns with the urgency pill, Urgent and High first, a preview panel, History of every Approver, the badge every 60 seconds, the rejection reason in SPKList and SPKDetail, and what later tasks build hidden.
   - _Acceptance_: AC-SPK-001, AC-SPK-005, AC-SPK-006, AC-APR-001, AC-APR-002, AC-APR-003, AC-APR-004, AC-IAM-005 (here because it needs the Approvals inbox)
   - _Rules_: BR-04, BR-05, BR-03, DEC-128, C-24, C-25, DEC-02, DEC-03, DEC-83

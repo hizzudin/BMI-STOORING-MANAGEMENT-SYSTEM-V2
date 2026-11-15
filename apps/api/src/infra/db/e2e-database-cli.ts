@@ -59,7 +59,68 @@ try {
       account.role,
     ]);
   }
+  await seedApprovalFixtures(client);
   console.log(`E2E database ready with ${accounts.length} accounts`);
 } finally {
   await client.end();
+}
+
+/**
+ * DEC-126: until the step composer (TASK-207) no screen adds steps, so the approval journeys
+ * (FLW-APR-01, FLW-APR-06 of TASK-122) start from SPKs the Planner submitted, with their steps,
+ * written here. One vehicle; each SPK waits for creation approval.
+ */
+async function seedApprovalFixtures(db: pg.Client): Promise<void> {
+  const { rows: planner } = await db.query<{ id: string }>(
+    `SELECT id FROM users WHERE email = 'planner@e2e.test'`,
+  );
+  const plannerId = planner[0]?.id;
+  if (!plannerId) return;
+  await db.query(
+    `INSERT INTO assignment_modules (code, name, ui_component, executor_roles, scope_rules, completion_section, cost_kind)
+     VALUES ('E2e_Stock', 'Stock', 'StockStep', '{Warehouse_Manager}', '{}', '{}', 'None'),
+            ('E2e_Mechanic', 'Mechanic Action', 'MechanicStep', '{Mechanic}', '{}', '{}', 'None')`,
+  );
+  const { rows: layout } = await db.query<{ id: string }>(
+    `INSERT INTO chassis_layouts (code, name, definition, axle_count, tyre_count)
+     VALUES ('E2e_Apr', 'E2E approvals', '{"frontDrawing":"None","spareCount":0,"axles":[{"role":"Steer","tyresPerSide":1}]}', 1, 2)
+     RETURNING id`,
+  );
+  const { rows: klass } = await db.query<{ id: string }>(
+    `INSERT INTO vehicle_classes (code, name, default_chassis_layout_id) VALUES ('E2e_Apr', 'E2E head', $1) RETURNING id`,
+    [layout[0]?.id],
+  );
+  const { rows: vehicle } = await db.query<{ id: string }>(
+    `INSERT INTO vehicles (license_plate, vehicle_class_id, chassis_layout_id, current_odometer)
+     VALUES ('B 1234 APR', $1, $2, 48210) RETURNING id`,
+    [klass[0]?.id, layout[0]?.id],
+  );
+  const fixtures = [
+    { number: 'SPK-E2E-APR-01', title: 'Approve me', priority: 'Urgent' },
+    { number: 'SPK-E2E-APR-02', title: 'Reject me', priority: 'High' },
+    { number: 'SPK-E2E-APR-06', title: 'Look back at me', priority: 'Normal' },
+  ];
+  for (const fixture of fixtures) {
+    const { rows } = await db.query<{ id: string }>(
+      `INSERT INTO spks (spk_number, vehicle_id, title, category, request_source, description, status,
+         priority, created_by, created_at)
+       VALUES ($1, $2, $3, 'Corrective', 'Manual_Planner', 'Brake pedal feels soft.', 'Pending_Approval', $4, $5,
+         (now() AT TIME ZONE 'UTC') - interval '50 minutes')
+       RETURNING id`,
+      [fixture.number, vehicle[0]?.id, fixture.title, fixture.priority, plannerId],
+    );
+    const spkId = rows[0]?.id;
+    await db.query(
+      `INSERT INTO spk_assignments (spk_id, sequence_no, module, executor_roles, verifier_role, status)
+       VALUES ($1, 1, 'E2e_Stock', '{Warehouse_Manager}', 'Planner', 'Locked'),
+              ($1, 2, 'E2e_Mechanic', '{Mechanic}', 'Planner', 'Locked')`,
+      [spkId],
+    );
+    // UTC wall time whatever the session time zone (NFR-14): the columns hold UTC.
+    await db.query(
+      `INSERT INTO spk_approvals (spk_id, stage, action, acted_by, approver_role, acted_at)
+       VALUES ($1, 'Creation', 'Submit', $2, 'Planner', (now() AT TIME ZONE 'UTC') - interval '42 minutes')`,
+      [spkId, plannerId],
+    );
+  }
 }

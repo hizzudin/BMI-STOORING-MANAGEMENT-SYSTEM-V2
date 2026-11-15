@@ -1,7 +1,8 @@
 'use client';
 
 import {
-  formatDateTimeWib,
+  formatDateWib,
+  formatTimeWib,
   type ApprovalInboxItem,
   type ApprovalInboxQuery,
   type InboxKind,
@@ -124,33 +125,31 @@ export function ApprovalsInbox({ api }: { api: ApprovalsApi }) {
                     }}
                   >
                     <td>
-                      <span className="nowrap">
-                        <a className="b" href={`/spk/${item.spkId}`}>
-                          {item.spkNumber}
-                        </a>{' '}
+                      <a className="b" href={`/spk/${item.spkId}`}>
+                        {item.spkNumber}
+                      </a>
+                      <div className="cell-pills">
                         <StatusPill tone={PRIORITY_TONES[item.priority]}>
                           {item.priority}
                         </StatusPill>
-                        {item.yours && (
-                          <>
-                            {' '}
-                            <StatusPill tone="neutral">Yours</StatusPill>
-                          </>
-                        )}
-                      </span>
+                        {item.yours && <StatusPill tone="neutral">Yours</StatusPill>}
+                      </div>
                     </td>
                     <td>
                       <a className="nowrap" href={`/vehicles/${item.vehicle.id}`}>
                         {item.vehicle.licensePlate}
                       </a>
                     </td>
-                    <td>{item.title}</td>
+                    <td className="wrap">{item.title}</td>
                     <td>{item.category}</td>
                     <td>
                       <StatusPill tone="warning">{item.kind}</StatusPill>
                     </td>
-                    <td>{personText(item.requestedBy)}</td>
-                    <td className="nowrap">{formatDateTimeWib(new Date(item.submittedAt))}</td>
+                    <td className="wrap">{personText(item.requestedBy)}</td>
+                    <td>
+                      {formatDateWib(new Date(item.submittedAt))}
+                      <div className="small muted">{formatTimeWib(new Date(item.submittedAt))}</div>
+                    </td>
                     <td className="nowrap">{waitingText(item.waitingSeconds)}</td>
                     <td>
                       <a className="btn" href={`/approvals/spk/${item.spkId}`}>

@@ -9,7 +9,8 @@ export interface E2eAccount {
     | 'accessManager'
     | 'systemAdmin'
     | 'driver'
-    | 'accounting';
+    | 'accounting'
+    | 'supervisor';
   name: string;
   email: string;
   password: string;

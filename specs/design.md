@@ -209,6 +209,67 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - `/spk/:id`: SPKDetail read only, with the Steps tab (`StepTracker`, `StepCard`, the context card with odometer and cost so far, `ApprovalBlock`) and the History tab (the `spk_approvals` rows, newest first).
   - What later tasks build stays hidden (DEC-127).
 
+### 5.12 Approvals (REQ-SPK-005 to REQ-SPK-007, REQ-APR-001 to REQ-APR-007, BR-03, BR-04, DEC-128)
+
+- `core/approvals/can-approve.ts`: one policy table (`APPROVAL_POLICIES`) for every approval kind (§8.3). An `ApprovalItem` carries:
+  - the kind;
+  - the owner (the creator, or the counter, BR-03);
+  - whether it still waits;
+  - the kinds the Planner switch covers now.
+
+  Its rules:
+  - the kind's capability (`spk.approve` for the SPK kinds, `count.approve` for the counts);
+  - a Planner decides only the ticked kinds while the switch is on;
+  - the item must still wait;
+  - `notOwnWork`, with the System Admin as the one exception, marked Self-approved.
+
+  The inbox lists the items the user may decide now (`inInbox`). The other kinds reuse the table when their tasks come.
+- `core/approvals/approval-service.ts` behind `ApprovalGateways` (the SPK gateways plus `approvals` and `idempotency`). The Planner switch is read inside the transaction of each request.
+  - Approve (T3, TX-02):
+    - lock the SPK;
+    - set Active at the version on screen;
+    - `openFirstStep`: step 1 Open with `opened_at`, the rest Locked;
+    - write the Approve row (`self_approved`) and `audit_logs.self_decision`;
+    - notify the users of step 1's executor roles.
+  - Reject (T4):
+    - a reason is required ("Give a reason to reject.");
+    - set Rejected;
+    - write the Reject row with the reason;
+    - notify the creator.
+  - Both run under `runIdempotent` with the `Idempotency-Key` (NFR-01, TX-22).
+- Inbox order: Urgent, High, Normal, Low, then the longest waiting. The waiting time runs from the last Submit row.
+- History lists the Approve and Reject rows of every Approver, newest first. "Decided by" shows the role the decision was taken in.
+- Routes:
+
+  | Route | Needs |
+  | --- | --- |
+  | `GET /approvals/count` | spk.approve or count.approve |
+  | `GET /approvals/history` | spk.approve or count.approve |
+  | `GET /approvals/spk` | spk.approve |
+  | `GET /approvals/spk/:id` | spk.approve |
+  | `POST /approvals/spk/:id/approve` | spk.approve and an Idempotency-Key |
+  | `POST /approvals/spk/:id/reject` | spk.approve and an Idempotency-Key |
+
+  An unknown SPK is 404; a stale version is 409.
+- SPKList: a Rejected SPK waits on "Rejected: <reason>" until SPKRejected comes (TASK-123).
+- Web:
+  - `/approvals` (Surat Perintah Kerja tab):
+    - the chips All and Creation, and the search;
+    - the DEC-128 columns, with the urgency pill and Yours;
+    - a preview panel of the selected row; Open review on each row and in the preview.
+  - `/approvals/history`:
+    - the chips All, Approved and Rejected;
+    - the PRD columns;
+    - a preview with the stamp, the reason and Open SPK.
+  - `/approvals/spk/:id` (ApprovalReview):
+    - the SPK, its title, description and steps;
+    - the decision card: Reject is enabled once the reason has text (C-25); Approve commits at once (C-24);
+    - the stamp plays a short scale-in, none under reduced motion (DEC-83);
+    - a retry of the same decision keeps its key.
+  - The Approvals menu item shows the waiting count, read when a page loads and every 60 seconds (as DEC-125).
+  - Hidden until their tasks: the Warehouse tab, the Amendment and Completion chips, the report reference and part age, and Needs my action.
+- E2E: until TASK-207, the e2e database command seeds three SPKs waiting for approval, with their steps (DEC-126). The web still never touches the database (DEC-66).
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

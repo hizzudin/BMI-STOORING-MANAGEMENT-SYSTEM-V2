@@ -50,9 +50,10 @@ Follow **WORKFLOW_STANDARDS.md §1 (Session Start Protocol)** and **§2A (Plan-D
 ☐ 2. Read EVERY file listed on the task's _Read_ line
 ☐ 3. Read the FULL PRD text of EVERY ID on the checkbox line, _Acceptance_, _Rules_
 ☐ 4. Open the artboard(s) on _Screens built here_ in Design Artifact/
-☐ 5. Load ALL skills on the task's _Skill_ line + always-on skills
-☐ 6. PLAN FIRST (superpowers:writing-plans):
-     a) Load skill: `Skill("writing-plans")` or read `references/superpowers/writing-plans.md`
+☐ 5. Load the always-on skills + the area skills of each part of the code the task touches (WORKFLOW_STANDARDS §7)
+☐ 5a. Ask the product owner what the spec leaves open; write each answer as a DEC and commit the spec before code
+☐ 6. PLAN FIRST (WORKFLOW_STANDARDS §2A):
+     a) Load superpowers:writing-plans if installed; otherwise write the plan by hand in the same format
      b) Create plan: Goal, Architecture, File Structure, Task Decomposition, Interfaces, Review Focus
      c) Plan MUST define: clear goal, success criteria (goal-driven execution), exact interfaces, test assertions
      d) Save to `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
@@ -63,6 +64,9 @@ Follow **WORKFLOW_STANDARDS.md §1 (Session Start Protocol)** and **§2A (Plan-D
      b) Every FLW on _Journey_ (specs/tdd-user-journeys.md)
      c) Every rule/transition on _Rules_
 ```
+
+A branch whose code already exists follows WORKFLOW_STANDARDS §2B. Before asking for the PR, run the
+workflow audit (§1 step 20) and tell the owner every step skipped or done differently.
 
 ### While Implementing
 - **Build all of it** — no feature/field/control/rule reduced without PO approval

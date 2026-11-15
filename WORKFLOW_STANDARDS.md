@@ -17,22 +17,29 @@
 ☐ 6. Open the task's artboard(s) in Design Artifact/ (visual target)
 ☐ 7. Read EVERY file listed on the task's _Read_ line
 ☐ 8. Read FULL PRD text of EVERY ID on: checkbox line, _Acceptance_, _Rules_
-☐ 9. Load ALL skills on the task's _Skill_ line + always-on skills
-☐ 10. PLAN FIRST (superpowers:writing-plans) — see §2A below
-☐ 11. WRITE E2E TESTS FIRST (Playwright) — specs/tdd-user-journeys.md for every FLW of the task
-☐ 12. Write unit/integration tests FIRST (RED) from three sources:
+☐ 9. Load the always-on skills + the area skills for each part of the code the task touches (§7)
+☐ 10. ASK THE PRODUCT OWNER what the spec leaves open — one message, in Indonesian, two or three
+      options each, recommendation first. Each answer becomes a DEC (number from next-numbers.mjs),
+      written into PRD.md, docs/prd/history.md, design.md and tasks.source.mjs, then committed as
+      `docs(spec): ... [TASK-nnn]` BEFORE any code
+☐ 11. PLAN FIRST — see §2A below; wait for the owner's approval
+☐ 12. WRITE E2E TESTS FIRST (Playwright) — specs/tdd-user-journeys.md for every FLW of the task
+      (exception for a branch whose code already exists: §2B)
+☐ 13. Write unit/integration tests FIRST (RED) from three sources:
       a) Every AC on _Acceptance_ → specs/acceptance-tests.md
       b) Every FLW on _Journey_ → specs/tdd-user-journeys.md
       c) Every rule/transition on _Rules_
-☐ 13. Implement (GREEN) → Refactor
-☐ 14. Verify: run _Verify_ commands + `node specs/tools/check-coverage.mjs --tests` + artboard compare
-☐ 15. Write specs/evidence/TASK-nnn.tdd.md
-☐ 16. Update specs/tools/tasks.source.mjs → regenerate tasks.md → check-coverage.mjs
-☐ 17. Update CONTEXT.md session log + Append to AGENT_LOG.md
-☐ 18. QA UI COMPARISON (Mandatory) — compare EVERY screen with Design Artifact side-by-side (ecc:browser-qa) as FINAL step before marking task done
+☐ 14. Implement (GREEN) → Refactor
+☐ 15. Verify: run _Verify_ commands + `node specs/tools/check-coverage.mjs --tests` + artboard compare
+☐ 16. Write specs/evidence/TASK-nnn.tdd.md
+☐ 17. Update specs/tools/tasks.source.mjs → regenerate tasks.md → check-coverage.mjs
+☐ 18. Update CONTEXT.md session log + Append to AGENT_LOG.md
+☐ 19. QA UI COMPARISON (Mandatory) — compare EVERY screen with Design Artifact side-by-side (ecc:browser-qa) as FINAL step before marking task done
+☐ 20. WORKFLOW AUDIT before asking for the PR — go through this checklist, and tell the owner
+      plainly every step that was skipped or done differently; record it in AGENT_LOG.md
 ```
 
-**Do not write code until steps 1-12 are complete.**
+**Do not write code until steps 1-13 are complete.**
 
 ---
 
@@ -51,16 +58,18 @@
 
 ---
 
-## 2A. Plan-Driven Implementation (superpowers:writing-plans)
+## 2A. Plan-Driven Implementation
 
 **Every task MUST have an implementation plan before any code is written.**
 
 ```
-☐ 1. Load superpowers:writing-plans skill (`Skill("writing-plans")` or read `references/superpowers/writing-plans.md`)
-☐ 2. Create plan with: Goal, Architecture, File Structure, Task Decomposition, Interfaces, Review Focus
+☐ 1. If the superpowers:writing-plans skill is installed, load it; otherwise write the plan by hand
+     in the same format (the skill and references/superpowers/ are not installed on every machine)
+☐ 2. Create plan with: Goal, Architecture, File Structure, Task Decomposition, Interfaces, Tests, Review Focus
 ☐ 3. Plan MUST define: clear goal, success criteria (goal-driven execution), exact interfaces, test assertions
-☐ 4. Save to `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
-☐ 5. Present plan for human review: confirm goal captured, select execution method (Native/Subagent)
+☐ 4. Save to `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md` and commit it with the task
+☐ 5. Present plan for human review in Indonesian: confirm goal captured (execution method only if
+     subagents are proposed)
 ☐ 6. ONLY after plan approval → proceed to implementation
 ```
 
@@ -70,6 +79,24 @@
 - [ ] Type consistency: Types, signatures, property names match across tasks
 - [ ] Review Focus: Five uncovered input classes/failure modes listed with test ownership
 - [ ] Proportion: Plan is concise, not a transcript (replace bodies with signatures)
+
+---
+
+## 2B. Fixing a Branch Whose Code Already Exists
+
+When a task branch was started by another session or agent and does not meet the spec:
+
+```
+☐ 1. Read the branch: build, typecheck, check:layers, tests; list what is wrong against the PRD,
+     design.md and the artboards
+☐ 2. Ask the owner: fix the branch in place, or start again from main
+☐ 3. Ask the open spec questions (§1 step 10) and write the DEC before code
+☐ 4. Plan the fix (§2A), named `YYYY-MM-DD-taskNNN-fix.md`, and wait for approval
+☐ 5. Write the failing tests for each part before fixing it (RED → GREEN). The E2E specs may be
+     written or rewritten together with the fix instead of before it; say so in the evidence
+☐ 6. Evidence: a "What was wrong on the branch and is fixed" section; AGENT_LOG: say that the
+     earlier entry described an unfinished branch
+```
 
 ---
 
@@ -84,7 +111,13 @@
 **Test Commands:**
 - Unit: `pnpm --filter @bmi/shared test -t "SM-SPK|AC-SPK-003"`
 - Integration: `pnpm --filter @bmi/api test:int -t "REQ-SPK-010"`
-- E2E: `pnpm --filter @bmi/web e2e flows/FLW-PLN-01.spec.ts`
+- E2E, full run: `TEST_DATABASE_URL=postgres://bmi:bmi_local_dev@localhost:5432/bmi_dev pnpm e2e`
+- E2E, one spec: `pnpm --filter @bmi/web build`, then in `apps/web`: `npx playwright test e2e/<name>.spec.ts`
+  (same `TEST_DATABASE_URL`)
+- After an API contract change: `pnpm gen:client && pnpm --filter @bmi/api-client build`
+
+**Mocked web tests never replace the E2E run.** A web test with a mocked API cannot see a request
+that the real API reads differently (TASK-125: the list query); run the E2E before marking `[x]`.
 
 ---
 
@@ -93,8 +126,13 @@
 ```
 ☐ Run EVERY _Verify_ command on the task line (exact commands listed)
 ☐ Run `node specs/tools/check-coverage.mjs --tests` → MUST print "Coverage OK"
-☐ Compare EACH screen with its artboard side-by-side (ecc:browser-qa skill)
-☐ Write specs/evidence/TASK-nnn.tdd.md with: test results, artboard comparison, any deviations
+☐ Compare EACH screen with its artboard side-by-side (ecc:browser-qa skill), at 1440 x 900, with
+  data typed for the QA (local accounts from .data/local-accounts.md, or the e2e database);
+  never paste credentials in chat, specs, commits or tests
+☐ Write specs/evidence/TASK-nnn.tdd.md with: test results (counts per suite, and a checklist per
+  test when the owner asks), artboard comparison, any deviations
+☐ A test that fails for a reason outside the task (local environment) is listed separately with
+  its cause; it never counts as passed, and the task's own tests must all pass
 ☐ Update specs/tools/tasks.source.mjs (mark task done, add any new tasks discovered)
 ☐ Run `node specs/tools/build-tasks.mjs` → regenerates tasks.md
 ☐ Run `node specs/tools/check-coverage.mjs` → MUST print "Coverage OK"
@@ -111,6 +149,7 @@
 | Implementation differs from design.md | **STOP** → Describe conflict in CONTEXT.md Divergences → Wait for PO approval → Update design.md FIRST → Then continue |
 | PRD unclear or contradicts itself | **STOP** → Document in CONTEXT.md Open Questions → Ask PO → Wait for answer |
 | Artboard has control/field not in PRD | **STOP** → Ask PO (don't build, don't ignore) — PRD §0.1 row 3 |
+| Built screen kept different from its artboard on purpose | Ask PO before the PR → record the answer in CONTEXT.md Divergences, design.md and the evidence |
 | Must add requirement not in PRD | **STOP** → Ask PO → If approved, update PRD first, then tasks.source.mjs, then implement |
 
 **Never:**
@@ -129,7 +168,7 @@
 ☐ Verify branch: `git branch` shows * on new branch
 ```
 
-### 6.2 Plan-Driven Implementation (superpowers:writing-plans)
+### 6.2 Plan-Driven Implementation (§2A)
 ```
 ☐ Create implementation plan per §2A
 ☐ Human review: confirm goal captured, select execution method (Native/Subagent)
@@ -202,7 +241,11 @@
 3. Hexagonal Architecture (data seam tasks): ecc:hexagonal-architecture
 ```
 
-**Load ALL skills listed before writing code.** If ECC plugin not installed, skip `ecc:*` skills and note in report.
+**Load the always-on skills, plus the area skills of each part of the code the task touches**
+(an API change loads the API group, a gateway or port change the hexagonal skill, a screen the Web
+group), before writing that part. A group the task does not touch is not loaded, even if it is on
+the _Skill_ line. Write in the evidence which skills were loaded. If a skill or the ECC plugin is
+not installed, skip it and say so in the report.
 
 ---
 
@@ -268,7 +311,9 @@ IamService           →  IamGateway              →  IamGatewayPg
    - Date, Agent/Session, Task, Action, Files Changed, Outcome, Notes
 ☐ Commit all changes (if any) with proper message
 ☐ Push branch to origin
-☐ If task complete: create PR, request review
+☐ If task complete: run the workflow audit (§1 step 20), then ask the owner whether to create the
+  PR (§6.4); create it only on their yes
+☐ Leave untracked files you did not create alone: do not commit or delete them
 ```
 
 ---
@@ -300,4 +345,4 @@ IamService           →  IamGateway              →  IamGatewayPg
 ---
 
 *This workflow is the contract. Every agent, every session, every task — identical.*
-*Last updated: 2026-11-14 | Based on specs/tasks.md §6 + CLAUDE.md + PRD §8.3*
+*Last updated: 2026-11-16 (owner questions and DEC before code, §2B, skills per part touched, workflow audit, from TASK-125) | Based on specs/tasks.md §6 + CLAUDE.md + PRD §8.3*

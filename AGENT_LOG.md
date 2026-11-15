@@ -1,0 +1,61 @@
+# Agent Action Log — BMI Stooring System v2
+
+> **Append-only log** — Every agent appends one entry per completed task.
+> Enables handoff continuity across sessions and agents.
+
+---
+
+## Log Format
+
+| Date | Agent/Session | Task | Action | Files Changed | Outcome | Notes |
+|------|---------------|------|--------|---------------|---------|-------|
+| YYYY-MM-DD | [Agent name/session ID] | TASK-NNN | [Created/Modified/Deleted/Refactored/Tested] | [Relative paths] | [Passed/Failed/Blocked/Partial] | [Key decisions, blockers, deviations, PRD updates] |
+
+---
+
+## Entries
+
+| Date | Agent/Session | Task | Action | Files Changed | Outcome | Notes |
+|------|---------------|------|--------|---------------|---------|-------|
+| 2026-11-14 | Claude Code (this session) | AGENT-ONBOARDING | Created AGENT_GUIDE.md, AGENT_LOG.md | AGENT_GUIDE.md, AGENT_LOG.md | Completed | Initial onboarding files for agent consistency |
+| 2026-11-13 | Claude Code (feat/task-125-spk-list-detail) | TASK-125 | Implemented SPK List tabs + SPK Detail with step cards and stamps | apps/web/components/spk/SpkList.tsx, apps/web/components/spk/SpkDetail.tsx, apps/web/lib/spks-api.ts, apps/api/src/http/spks/spks.controller.ts, packages/api-client/... | Completed | FLW-PLN-01 E2E passes; artboard comparison passed |
+| 2026-11-13 | Claude Code | TASK-130 | In-app notifications foundation: outbox, recipient matrix, notification center, bell | apps/api/src/core/notifications/, apps/api/src/http/notifications/, apps/web/components/shell/NotificationCenter.tsx, apps/web/components/shell/Bell.tsx, packages/shared/src/schemas/notification.ts | Completed | DEC-125: dedupe_key, Planner approval switch notices to Supervisors/GMs |
+| 2026-11-12 | Claude Code | TASK-121 | Create SPK header + Submit for approval; SPK sources and priorities; scope lock policy | apps/api/src/core/spk/, apps/api/src/http/spks/, apps/web/app/(app)/spk/new/, apps/web/components/spk/CreateSPK.tsx, Design Artifact/spk/CreateSPK.html | Completed | DEC-126: Steps/palette hidden until TASK-207; Submit refused without step |
+| 2026-11-11 | Claude Code | TASK-120 | SPK migrations and gateway, SPK numbering | apps/api/src/infra/db/migrations/0009_..., apps/api/src/core/spk/SpkGateway.ts, apps/api/src/ports/spks.ts | Completed | DEC-124: Refs to later tables as plain columns; assignment_modules empty |
+| 2026-11-11 | Claude Code | TASK-119 | Vehicles: master-detail list, add, edit, deactivate, class change rule | apps/api/src/http/vehicles/, apps/web/app/(app)/vehicles/, apps/web/components/fleet/, Design Artifact/fleet/ | Completed | DEC-122, DEC-123: customer_id plain column; first docs in TASK-601 |
+| 2026-11-11 | Claude Code | TASK-118 | Document types master | apps/api/src/http/document-types/, apps/web/app/(app)/settings/document-types/, Design Artifact/settings/DocumentTypes.html | Completed | DEC-121: Four launch types seeded; non-compliance count in TASK-119 |
+| 2026-11-11 | Claude Code | TASK-117 | @bmi/chassis-map library with snapshot tests | packages/chassis-map/, Design Artifact/steps/Placement.html, Design Artifact/steps/PlacementTrailer.html | Completed | DEC-119: 116 SVG image snapshots; plain tyres with colour guide |
+| 2026-11-11 | Claude Code | TASK-116 | Vehicle classes and chassis layouts with position generation | apps/api/src/http/vehicle-classes/, apps/web/app/(app)/settings/chassis-layouts/, Design Artifact/settings/ChassisLayouts.html | Completed | DEC-120: New class with typed code; layout versions |
+| 2026-11-11 | Claude Code | TASK-109 | Planner approval switch with kinds, end time, audit and notice | apps/api/src/http/planner-approval/, apps/web/components/settings/PlannerApprovalSwitch.tsx | Completed | DEC-118: Card, side panel, Change/Switch off with reason |
+| 2026-11-11 | Claude Code | TASK-108 | Roles and permissions matrix with locked cells | apps/api/src/http/role-permissions/, apps/web/app/(app)/access/am-roles-permissions/, Design Artifact/access/AMRolesPermissions.html | Completed | DEC-117: Ten role columns, staged save, one audit record |
+| 2026-11-10 | Claude Code | TASK-107 | Access Manager area: accounts, lock/unlock, deactivate, move System Admin | apps/api/src/http/accounts/, apps/web/app/(app)/access/users-roles/, Design Artifact/access/UsersRoles.html, Design Artifact/access/AMAccountForm.html | Completed | DEC-116: FLW-AM-01, FLW-AM-03, FLW-AM-04 E2E pass |
+| 2026-11-10 | Claude Code | TASK-106 | allowedActions framework and per-record contract test; menu table from capabilities | apps/api/src/core/iam/, apps/web/lib/allowed-actions.ts, apps/web/components/shell/AppShell.tsx | Completed | BR-02, BR-03, NAV-9: buttons never from role name |
+| 2026-11-10 | Claude Code | TASK-105 | Permission catalogue, role_permissions seed, effective capabilities, guard decorator, GET /me | apps/api/src/core/iam/, apps/api/src/ports/iam.ts, packages/shared/src/enums/permissions.ts | Completed | DEC-93, DEC-115: 44 permission codes, three-layer model |
+| 2026-11-09 | Claude Code | TASK-104 | Sign-in, password rules and reset, first sign-in change, lockout, sessions | apps/api/src/http/auth/, apps/web/app/(app)/auth/, Design Artifact/shell/WebLogin.html, Design Artifact/shell/ChangePassword.html | Completed | DEC-114: REQ-IAM-009 follows DEC-102; console email adapter locally |
+| 2026-11-09 | Claude Code | TASK-126 | Web shell and design kit: floating rail, main sheet, pill tabs, header, Settings home | apps/web/app/(app)/, apps/web/components/shell/, apps/web/components/settings/, Design Artifact/shell/, Design Artifact/_kit/ | Completed | DEC-96: Re-created from DESIGN.md + artboards; 22 web tests |
+| 2026-11-09 | Claude Code | TASK-103 | Migrations: identity, access, audit, settings, platform tables | apps/api/src/infra/db/migrations/0002_..., apps/api/src/infra/db/iam-gateways.ts | Completed | BR-14: uq_one_role_per_user, uq_one_system_admin |
+| 2026-11-09 | Claude Code | TASK-102 | State machine tables and transition() for every machine; derived vehicle status | packages/shared/src/machines/, packages/shared/src/schemas/vehicle-status.ts | Completed | 162 SM tests, 100% coverage of @bmi/shared |
+| 2026-11-09 | Claude Code | TASK-101 | Shared enums (§9.1), decimal money, WIB time, Indonesian format, numbering formats | packages/shared/src/enums/, packages/shared/src/utils/numbering.ts, packages/shared/src/utils/money.ts | Completed | NFR-09, NFR-14, NFR-15, NFR-16: 71 tests, 100% coverage |
+| 2026-11-06 | Claude Code | TASK-101 review | All fixes approved by owner (DEC-111, v2.22) | packages/shared/, PRD.md, specs/ | Completed | Numbering formats validated; roundHalfUp refuses invalid decimals |
+| 2026-11-05 | Claude Code | TASK-101 | Enums, decimal money, Indonesian format, WIB, numbering configuration | packages/shared/, specs/ | Completed | 71 tests, 100% coverage of @bmi/shared |
+| 2026-11-05 | Product Owner | — | Decision: Every running code follows CODE-yymmddNNNN (DEC-110, v2.21) | PRD.md, docs/prd/, Design Artifact/, specs/ | Approved | Tyre codes TY-yymmddNNNN; invoices keep NNNN/BMI/dd-mm-yy |
+| 2026-11-05 | Product Owner | — | Decision: Report Breakdown replaces field draft SPK (DEC-109, v2.20) | PRD.md, docs/prd/, Design Artifact/, specs/ | Approved | New area BRK, SM-BRK, TX-23, TX-24, RB-yymmddNNNN |
+| 2026-11-04 | Claude Code | TASK-008 | CI: lint, typecheck, unit, integration, Playwright, layer rules, secret scan, PRD coverage | .github/workflows/ci.yml, specs/tools/check-coverage.mjs | Completed | GitHub Actions run 41806304702 green |
+| 2026-11-04 | Product Owner | — | Approved first push: main pushed, CI green, TASK-008 closed | specs/ | Approved | Phase 0 done |
+
+---
+
+## How to Append
+
+After completing a task, add a row to the table above with:
+1. **Date** — today (YYYY-MM-DD)
+2. **Agent/Session** — your agent identifier (e.g., "Claude Code (feat/phase1-task122-approvals)")
+3. **Task** — the TASK-NNN ID
+4. **Action** — one of: Created, Modified, Deleted, Refactored, Tested, Verified
+5. **Files Changed** — comma-separated relative paths from project root
+6. **Outcome** — Passed / Failed / Blocked / Partial
+7. **Notes** — key decisions, blockers, deviations from spec, PRD version updates, artboard comparison result
+
+---
+
+*This log is the cross-session memory. Keep it accurate and complete.*

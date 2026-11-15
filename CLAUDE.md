@@ -171,19 +171,28 @@ GIT CONTROL DISCIPLINE (every task — Mandatory Sequence):
   3. Verify branch: `git branch` shows * on new branch
   4. ONLY THEN begin implementation (Session Start Protocol steps 1-9)
 
-**6.2 Implementation: Commit & Push**
+**6.2 Plan-Driven Implementation (superpowers:writing-plans)**
+  5. **BEFORE ANY CODE**: Create implementation plan per superpowers:writing-plans skill
+     - Read the skill: `references/superpowers/writing-plans.md` (or invoke `Skill("writing-plans")`)
+     - Plan goal, architecture, file structure, task decomposition, interfaces, review focus
+     - Save to `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
+     - Plan MUST define: clear goal, success criteria (goal-driven execution), exact interfaces, test assertions
+  6. **Human review**: Present plan, confirm it captures the goal, select execution method (Native/Subagent)
+  7. ONLY after plan approval → proceed to implementation
+
+**6.4 Implementation: Commit & Push**
   5. Implement task (TDD: RED → GREEN → Refactor)
   6. Run ALL verification gates (Verification Gate in WORKFLOW_STANDARDS.md §4)
   7. Stage specific files: `git add <exact-files>` — NEVER `git add -A`
   8. Commit with Conventional Commits: `git commit -m "type(scope): message [TASK-NNN, REQ-XXX, AC-YYY]"`
   9. Push to origin: `git push origin feat/phaseN-taskNNN-slug`
 
-**6.3 User Confirmation Gate (Mandatory)**
+**6.5 User Confirmation Gate (Mandatory)**
   10. Report to user: "Implementation complete. Verification passed. Artboard matched. Ready for your review."
   11. WAIT for explicit user confirmation: "Implementation is correct, proceed to PR"
   12. DO NOT create PR without user confirmation
 
-**6.4 PR Creation & Merge (User-Initiated)**
+**6.6 PR Creation & Merge (User-Initiated)**
   13. User says "create PR" → `gh pr create --base main --head <branch> --title "..." --body "..."`
   14. User reviews PR (or assigns reviewer)
   15. User says "merge PR" → `gh pr merge --squash --delete-branch` (or user merges via GitHub UI)
@@ -218,7 +227,7 @@ AFTER COMPLETING A TASK:
   3. Mark the task [x], add a session row + next task to CONTEXT.md
   4. Append entry to AGENT_LOG.md (date, agent/session, task, action, files, outcome, notes)
   5. Report what was done and which REQ/NFR/AC it satisfies
-  6. Follow Git Control Discipline §6.3–6.4: user confirmation → create PR → merge
+  6. Follow Git Control Discipline §6.5–6.6: user confirmation → create PR → merge
 
 DIVERGENCE PROTOCOL:
   If work must deviate from the PRD, the artboards or specs/design.md:

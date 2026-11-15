@@ -48,6 +48,28 @@
 
 ---
 
+## 2A. Plan-Driven Implementation (superpowers:writing-plans)
+
+**Every task MUST have an implementation plan before any code is written.**
+
+```
+☐ 1. Load superpowers:writing-plans skill (`Skill("writing-plans")` or read `references/superpowers/writing-plans.md`)
+☐ 2. Create plan with: Goal, Architecture, File Structure, Task Decomposition, Interfaces, Review Focus
+☐ 3. Plan MUST define: clear goal, success criteria (goal-driven execution), exact interfaces, test assertions
+☐ 4. Save to `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
+☐ 5. Present plan for human review: confirm goal captured, select execution method (Native/Subagent)
+☐ 6. ONLY after plan approval → proceed to implementation
+```
+
+**Plan Quality Checklist (self-review before presenting):**
+- [ ] Spec coverage: Every requirement in spec has a task implementing it
+- [ ] Step scan: Every step lets implementer write exactly one reasonable thing
+- [ ] Type consistency: Types, signatures, property names match across tasks
+- [ ] Review Focus: Five uncovered input classes/failure modes listed with test ownership
+- [ ] Proportion: Plan is concise, not a transcript (replace bodies with signatures)
+
+---
+
 ## 3. TDD Enforcement (Three Test Sources — All Required)
 
 | Source | File | Naming | Coverage |

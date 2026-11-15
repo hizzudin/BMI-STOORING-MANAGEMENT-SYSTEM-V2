@@ -15,8 +15,9 @@
 | 4 | Read architecture + file structure | `specs/design.md` |
 | 5 | Pick next task from plan | `specs/tasks.md` |
 | 6 | Read the task's `_Read_` files + PRD IDs | (varies per task) |
+| 7 | **PLAN FIRST** — create plan, human review, approval | `docs/superpowers/plans/...` |
 
-**Do not write code until you have done all 6 steps.**
+**Do not write code until you have done all 7 steps.** See WORKFLOW_STANDARDS.md §1 for complete protocol.
 
 ---
 
@@ -40,23 +41,25 @@
 ## 3. How to Work a Task (Non-Negotiable)
 
 ### Before Writing ANY Code
+Follow **WORKFLOW_STANDARDS.md §1 (Session Start Protocol)** and **§2A (Plan-Driven Implementation)**:
+
 ```
 ☐ 1. Open specs/tasks.md, find the next [ ] task
 ☐ 2. Read EVERY file listed on the task's _Read_ line
 ☐ 3. Read the FULL PRD text of EVERY ID on the checkbox line, _Acceptance_, _Rules_
 ☐ 4. Open the artboard(s) on _Screens built here_ in Design Artifact/
-☐ 5. **PLAN FIRST (superpowers:writing-plans)**:
+☐ 5. Load ALL skills on the task's _Skill_ line + always-on skills
+☐ 6. PLAN FIRST (superpowers:writing-plans):
      a) Load skill: `Skill("writing-plans")` or read `references/superpowers/writing-plans.md`
      b) Create plan: Goal, Architecture, File Structure, Task Decomposition, Interfaces, Review Focus
      c) Plan MUST define: clear goal, success criteria (goal-driven execution), exact interfaces, test assertions
      d) Save to `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
      e) **Human review**: Present plan, confirm goal captured, select execution method (Native/Subagent)
      f) ONLY after plan approval → proceed
-☐ 6. Write tests FIRST from three sources:
+☐ 7. Write tests FIRST from three sources:
      a) Every AC on _Acceptance_ (specs/acceptance-tests.md)
      b) Every FLW on _Journey_ (specs/tdd-user-journeys.md)
      c) Every rule/transition on _Rules_
-☐ 7. Load ALL skills on the task's _Skill_ line + always-on skills
 ```
 
 ### While Implementing
@@ -202,6 +205,7 @@ ecc:architecture-decision-records  # Before any divergence
 ☐ Open the task's artboard(s) in Design Artifact/
 ☐ Read every _Read_ file + PRD IDs for that task
 ☐ Load all skills on _Skill_ line
+☐ PLAN FIRST (superpowers:writing-plans) — create plan, human review, approval
 ☐ Write tests first (RED)
 ☐ Implement (GREEN)
 ☐ Verify + artboard compare + evidence

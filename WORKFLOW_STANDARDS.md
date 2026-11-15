@@ -10,7 +10,7 @@
 
 ```
 ☐ 1. Read AGENT_GUIDE.md completely
-☐ 2. Read specs/CONTEXT.md — note: active task, blockers, last session summary, PRD version
+☐ 2. Read specs/CONTEXT.md — active task, blockers, last session, PRD version
 ☐ 3. Read specs/requirements.md — refresh requirement index for current phase
 ☐ 4. Read specs/design.md — refresh architecture, file structure, skill map
 ☐ 5. Read specs/tasks.md — find next [ ] task (never skip, never reorder)
@@ -18,18 +18,19 @@
 ☐ 7. Read EVERY file listed on the task's _Read_ line
 ☐ 8. Read FULL PRD text of EVERY ID on: checkbox line, _Acceptance_, _Rules_
 ☐ 9. Load ALL skills on the task's _Skill_ line + always-on skills
-☐ 10. Write tests FIRST (RED) from three sources:
+☐ 10. PLAN FIRST (superpowers:writing-plans) — see §2A below
+☐ 11. Write tests FIRST (RED) from three sources:
       a) Every AC on _Acceptance_ → specs/acceptance-tests.md
       b) Every FLW on _Journey_ → specs/tdd-user-journeys.md
       c) Every rule/transition on _Rules_
-☐ 11. Implement (GREEN) → Refactor
-☐ 12. Verify: run _Verify_ commands + `node specs/tools/check-coverage.mjs --tests` + artboard compare
-☐ 13. Write specs/evidence/TASK-nnn.tdd.md
-☐ 14. Update specs/tools/tasks.source.mjs → regenerate tasks.md → check-coverage.mjs
-☐ 15. Update CONTEXT.md session log + Append to AGENT_LOG.md
+☐ 12. Implement (GREEN) → Refactor
+☐ 13. Verify: run _Verify_ commands + `node specs/tools/check-coverage.mjs --tests` + artboard compare
+☐ 14. Write specs/evidence/TASK-nnn.tdd.md
+☐ 15. Update specs/tools/tasks.source.mjs → regenerate tasks.md → check-coverage.mjs
+☐ 16. Update CONTEXT.md session log + Append to AGENT_LOG.md
 ```
 
-**Do not write code until steps 1-9 are complete.**
+**Do not write code until steps 1-10 are complete.**
 
 ---
 
@@ -121,13 +122,19 @@
 
 ### 6.1 Task Start: Branch & Checkout
 ```
-☐ Run `node specs/tools/next-numbers.mjs` — get next task number, DEC, PRD version, migration, CONTEXT row
+☐ Run `node specs/tools/next-numbers.mjs` — get task number, DEC, PRD version, migration, CONTEXT row
 ☐ Create branch from `main`: `git checkout -b feat/phaseN-taskNNN-slug main`
 ☐ Verify branch: `git branch` shows * on new branch
-☐ ONLY THEN begin implementation (Session Start Protocol steps 1-9)
 ```
 
-### 6.2 Implementation: Commit & Push
+### 6.2 Plan-Driven Implementation (superpowers:writing-plans)
+```
+☐ Create implementation plan per §2A
+☐ Human review: confirm goal captured, select execution method (Native/Subagent)
+☐ ONLY after plan approval → proceed to implementation
+```
+
+### 6.3 Implementation: Commit & Push
 ```
 ☐ Implement task (TDD: RED → GREEN → Refactor)
 ☐ Run ALL verification gates (Verification Gate §4)
@@ -136,14 +143,14 @@
 ☐ Push to origin: `git push origin feat/phaseN-taskNNN-slug`
 ```
 
-### 6.3 User Confirmation Gate (Mandatory)
+### 6.4 User Confirmation Gate (Mandatory)
 ```
 ☐ Report to user: "Implementation complete. Verification passed. Artboard matched. Ready for your review."
 ☐ WAIT for explicit user confirmation: "Implementation is correct, proceed to PR"
 ☐ DO NOT create PR without user confirmation
 ```
 
-### 6.4 PR Creation & Merge (User-Initiated)
+### 6.5 PR Creation & Merge (User-Initiated)
 ```
 ☐ User says "create PR" → `gh pr create --base main --head <branch> --title "..." --body "..."`
 ☐ User reviews PR (or assigns reviewer)
@@ -152,7 +159,7 @@
 ☐ Clean up local branch: `git branch -d feat/phaseN-taskNNN-slug`
 ```
 
-### 6.5 Git Rules Summary
+### 6.6 Git Rules Summary
 
 | Rule | Example |
 |------|---------|

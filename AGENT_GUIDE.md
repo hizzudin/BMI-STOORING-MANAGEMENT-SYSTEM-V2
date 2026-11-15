@@ -16,8 +16,10 @@
 | 5 | Pick next task from plan | `specs/tasks.md` |
 | 6 | Read the task's `_Read_` files + PRD IDs | (varies per task) |
 | 7 | **PLAN FIRST** — create plan, human review, approval | `docs/superpowers/plans/...` |
+| 8 | **WRITE E2E TESTS FIRST** — Playwright specs for every FLW | `specs/tdd-user-journeys.md` |
+| 9 | **QA UI COMPARISON (Mandatory)** — compare with Design Artifact | `ecc:browser-qa` skill |
 
-**Do not write code until you have done all 7 steps.** See WORKFLOW_STANDARDS.md §1 for complete protocol.
+**Do not write code until you have done all 9 steps.** See WORKFLOW_STANDARDS.md §1 for complete protocol.
 
 ---
 
@@ -74,6 +76,7 @@ Follow **WORKFLOW_STANDARDS.md §1 (Session Start Protocol)** and **§2A (Plan-D
 ☐ Run every _Verify_ command on the task line
 ☐ Run `node specs/tools/check-coverage.mjs --tests` (must print "Coverage OK")
 ☐ Compare screen with artboard side-by-side (ecc:browser-qa)
+☐ **QA UI COMPARISON (Mandatory)** — compare EVERY screen with Design Artifact side-by-side (ecc:browser-qa) as FINAL step
 ☐ Write specs/evidence/TASK-nnn.tdd.md
 ☐ Update specs/tools/tasks.source.mjs → regenerate tasks.md → check-coverage.mjs
 ```
@@ -206,9 +209,11 @@ ecc:architecture-decision-records  # Before any divergence
 ☐ Read every _Read_ file + PRD IDs for that task
 ☐ Load all skills on _Skill_ line
 ☐ PLAN FIRST (superpowers:writing-plans) — create plan, human review, approval
-☐ Write tests first (RED)
+☐ WRITE E2E TESTS FIRST (Playwright) — specs/tdd-user-journeys.md for every FLW
+☐ Write unit/integration tests FIRST (RED) from 3 sources
 ☐ Implement (GREEN)
 ☐ Verify + artboard compare + evidence
+☐ QA UI COMPARISON (Mandatory) — compare with Design Artifact side-by-side
 ☐ Update CONTEXT.md session log at end
 ☐ Append to AGENT_LOG.md
 ```

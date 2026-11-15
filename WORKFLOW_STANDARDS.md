@@ -19,18 +19,20 @@
 ☐ 8. Read FULL PRD text of EVERY ID on: checkbox line, _Acceptance_, _Rules_
 ☐ 9. Load ALL skills on the task's _Skill_ line + always-on skills
 ☐ 10. PLAN FIRST (superpowers:writing-plans) — see §2A below
-☐ 11. Write tests FIRST (RED) from three sources:
+☐ 11. WRITE E2E TESTS FIRST (Playwright) — specs/tdd-user-journeys.md for every FLW of the task
+☐ 12. Write unit/integration tests FIRST (RED) from three sources:
       a) Every AC on _Acceptance_ → specs/acceptance-tests.md
       b) Every FLW on _Journey_ → specs/tdd-user-journeys.md
       c) Every rule/transition on _Rules_
-☐ 12. Implement (GREEN) → Refactor
-☐ 13. Verify: run _Verify_ commands + `node specs/tools/check-coverage.mjs --tests` + artboard compare
-☐ 14. Write specs/evidence/TASK-nnn.tdd.md
-☐ 15. Update specs/tools/tasks.source.mjs → regenerate tasks.md → check-coverage.mjs
-☐ 16. Update CONTEXT.md session log + Append to AGENT_LOG.md
+☐ 13. Implement (GREEN) → Refactor
+☐ 14. Verify: run _Verify_ commands + `node specs/tools/check-coverage.mjs --tests` + artboard compare
+☐ 15. Write specs/evidence/TASK-nnn.tdd.md
+☐ 16. Update specs/tools/tasks.source.mjs → regenerate tasks.md → check-coverage.mjs
+☐ 17. Update CONTEXT.md session log + Append to AGENT_LOG.md
+☐ 18. QA UI COMPARISON (Mandatory) — compare EVERY screen with Design Artifact side-by-side (ecc:browser-qa) as FINAL step before marking task done
 ```
 
-**Do not write code until steps 1-10 are complete.**
+**Do not write code until steps 1-12 are complete.**
 
 ---
 

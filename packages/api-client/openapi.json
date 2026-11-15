@@ -1225,6 +1225,200 @@
           }
         }
       }
+    },
+    "/approvals/count": {
+      "get": {
+        "operationId": "countApprovals",
+        "summary": "The count beside the Approvals menu item (REQ-APR-001)",
+        "responses": {
+          "200": {
+            "description": "The count beside the Approvals menu item (REQ-APR-001)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalCountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals/history": {
+      "get": {
+        "operationId": "listApprovalHistory",
+        "summary": "History: every Approver’s past decisions, newest first (DEC-128)",
+        "parameters": [
+          {
+            "name": "decision",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Approve",
+                "Reject"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "History: every Approver’s past decisions, newest first (DEC-128)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalHistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals/spk": {
+      "get": {
+        "operationId": "listSpkApprovals",
+        "summary": "The Surat Perintah Kerja tab: SPKs waiting for a decision (REQ-APR-002)",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Creation"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Surat Perintah Kerja tab: SPKs waiting for a decision (REQ-APR-002)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalInboxResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals/spk/{id}": {
+      "get": {
+        "operationId": "getSpkApproval",
+        "summary": "ApprovalReview",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ApprovalReview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals/spk/{id}/approve": {
+      "post": {
+        "operationId": "approveSpk",
+        "summary": "Approve SPK creation (T3, C-24); needs an Idempotency-Key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Approve SPK creation (T3, C-24); needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals/spk/{id}/reject": {
+      "post": {
+        "operationId": "rejectSpk",
+        "summary": "Reject SPK creation with a reason (T4, C-25); needs an Idempotency-Key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reject SPK creation with a reason (T4, C-25); needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5110,6 +5304,666 @@
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "ApprovalCountResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "additionalProperties": false
+      },
+      "ApprovalHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "spkId": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "spkNumber": {
+                  "type": "string"
+                },
+                "vehicle": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "licensePlate": {
+                      "type": "string"
+                    },
+                    "className": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "licensePlate",
+                    "className"
+                  ],
+                  "additionalProperties": false
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "Creation"
+                  ]
+                },
+                "decision": {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "type": "string",
+                      "enum": [
+                        "Approve",
+                        "Reject"
+                      ]
+                    },
+                    "by": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "role": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "Planner",
+                                "Mechanic",
+                                "Warehouse_Manager",
+                                "Supervisor",
+                                "GM",
+                                "System_Admin",
+                                "Access_Manager",
+                                "Driver",
+                                "Field_Coordinator",
+                                "Accounting"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "at": {
+                      "type": "string"
+                    },
+                    "selfApproved": {
+                      "type": "boolean"
+                    },
+                    "reason": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action",
+                    "by",
+                    "at",
+                    "selfApproved",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                },
+                "requestedBy": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "Planner",
+                            "Mechanic",
+                            "Warehouse_Manager",
+                            "Supervisor",
+                            "GM",
+                            "System_Admin",
+                            "Access_Manager",
+                            "Driver",
+                            "Field_Coordinator",
+                            "Accounting"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "spkId",
+                "spkNumber",
+                "vehicle",
+                "kind",
+                "decision",
+                "requestedBy"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ApprovalInboxResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "spkId": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "spkNumber": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "string",
+                  "enum": [
+                    "Low",
+                    "Normal",
+                    "High",
+                    "Urgent"
+                  ]
+                },
+                "vehicle": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "licensePlate": {
+                      "type": "string"
+                    },
+                    "className": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "licensePlate",
+                    "className"
+                  ],
+                  "additionalProperties": false
+                },
+                "title": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "PM",
+                    "Corrective",
+                    "Tyre",
+                    "Document",
+                    "Other"
+                  ]
+                },
+                "description": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "Creation"
+                  ]
+                },
+                "requestedBy": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "Planner",
+                            "Mechanic",
+                            "Warehouse_Manager",
+                            "Supervisor",
+                            "GM",
+                            "System_Admin",
+                            "Access_Manager",
+                            "Driver",
+                            "Field_Coordinator",
+                            "Accounting"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "role"
+                  ],
+                  "additionalProperties": false
+                },
+                "submittedAt": {
+                  "type": "string"
+                },
+                "waitingSeconds": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "yours": {
+                  "type": "boolean"
+                },
+                "steps": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sequenceNo": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "executorRoles": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "Planner",
+                            "Mechanic",
+                            "Warehouse_Manager",
+                            "Supervisor",
+                            "GM",
+                            "System_Admin",
+                            "Access_Manager",
+                            "Driver",
+                            "Field_Coordinator",
+                            "Accounting"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "sequenceNo",
+                      "name",
+                      "executorRoles"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "spkId",
+                "spkNumber",
+                "priority",
+                "vehicle",
+                "title",
+                "category",
+                "description",
+                "kind",
+                "requestedBy",
+                "submittedAt",
+                "waitingSeconds",
+                "yours",
+                "steps"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ApprovalReviewResponse": {
+        "type": "object",
+        "properties": {
+          "review": {
+            "type": "object",
+            "properties": {
+              "spkId": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "spkNumber": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "Low",
+                  "Normal",
+                  "High",
+                  "Urgent"
+                ]
+              },
+              "vehicle": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "licensePlate": {
+                    "type": "string"
+                  },
+                  "className": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "licensePlate",
+                  "className"
+                ],
+                "additionalProperties": false
+              },
+              "title": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "PM",
+                  "Corrective",
+                  "Tyre",
+                  "Document",
+                  "Other"
+                ]
+              },
+              "description": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "Creation"
+                ]
+              },
+              "requestedBy": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "Planner",
+                          "Mechanic",
+                          "Warehouse_Manager",
+                          "Supervisor",
+                          "GM",
+                          "System_Admin",
+                          "Access_Manager",
+                          "Driver",
+                          "Field_Coordinator",
+                          "Accounting"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "role"
+                ],
+                "additionalProperties": false
+              },
+              "submittedAt": {
+                "type": "string"
+              },
+              "waitingSeconds": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "yours": {
+                "type": "boolean"
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "sequenceNo": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "executorRoles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Planner",
+                          "Mechanic",
+                          "Warehouse_Manager",
+                          "Supervisor",
+                          "GM",
+                          "System_Admin",
+                          "Access_Manager",
+                          "Driver",
+                          "Field_Coordinator",
+                          "Accounting"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "sequenceNo",
+                    "name",
+                    "executorRoles"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Draft",
+                  "Pending_Approval",
+                  "Rejected",
+                  "Active",
+                  "In_Progress",
+                  "Pending_Verification",
+                  "Pending_Amendment",
+                  "Completed",
+                  "Cancelled"
+                ]
+              },
+              "version": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "decision": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "enum": [
+                          "Approve",
+                          "Reject"
+                        ]
+                      },
+                      "by": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "role": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "Planner",
+                                  "Mechanic",
+                                  "Warehouse_Manager",
+                                  "Supervisor",
+                                  "GM",
+                                  "System_Admin",
+                                  "Access_Manager",
+                                  "Driver",
+                                  "Field_Coordinator",
+                                  "Accounting"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "role"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "at": {
+                        "type": "string"
+                      },
+                      "selfApproved": {
+                        "type": "boolean"
+                      },
+                      "reason": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "by",
+                      "at",
+                      "selfApproved",
+                      "reason"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "allowedActions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "approve",
+                    "reject"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "spkId",
+              "spkNumber",
+              "priority",
+              "vehicle",
+              "title",
+              "category",
+              "description",
+              "kind",
+              "requestedBy",
+              "submittedAt",
+              "waitingSeconds",
+              "yours",
+              "steps",
+              "status",
+              "version",
+              "decision",
+              "allowedActions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "review"
+        ],
+        "additionalProperties": false
+      },
+      "ApprovalDecisionRequest": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500
           }
         },
         "required": [

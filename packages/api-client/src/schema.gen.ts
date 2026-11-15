@@ -608,6 +608,108 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/approvals/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The count beside the Approvals menu item (REQ-APR-001) */
+        get: operations["countApprovals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** History: every Approver’s past decisions, newest first (DEC-128) */
+        get: operations["listApprovalHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/spk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The Surat Perintah Kerja tab: SPKs waiting for a decision (REQ-APR-002) */
+        get: operations["listSpkApprovals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/spk/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ApprovalReview */
+        get: operations["getSpkApproval"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/spk/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve SPK creation (T3, C-24); needs an Idempotency-Key */
+        post: operations["approveSpk"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/spk/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject SPK creation with a reason (T4, C-25); needs an Idempotency-Key */
+        post: operations["rejectSpk"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1250,6 +1352,118 @@ export interface components {
         };
         SpkSubmitRequest: {
             version: number;
+        };
+        ApprovalCountResponse: {
+            count: number;
+        };
+        ApprovalHistoryResponse: {
+            items: {
+                spkId: number;
+                spkNumber: string;
+                vehicle: {
+                    id: number;
+                    licensePlate: string;
+                    className: string;
+                };
+                /** @enum {string} */
+                kind: "Creation";
+                decision: {
+                    /** @enum {string} */
+                    action: "Approve" | "Reject";
+                    by: {
+                        name: string;
+                        role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                    };
+                    at: string;
+                    selfApproved: boolean;
+                    reason: string | null;
+                };
+                requestedBy: {
+                    name: string;
+                    role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                };
+            }[];
+        };
+        ApprovalInboxResponse: {
+            items: {
+                spkId: number;
+                spkNumber: string;
+                /** @enum {string} */
+                priority: "Low" | "Normal" | "High" | "Urgent";
+                vehicle: {
+                    id: number;
+                    licensePlate: string;
+                    className: string;
+                };
+                title: string;
+                /** @enum {string} */
+                category: "PM" | "Corrective" | "Tyre" | "Document" | "Other";
+                description: string;
+                /** @enum {string} */
+                kind: "Creation";
+                requestedBy: {
+                    name: string;
+                    role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                };
+                submittedAt: string;
+                waitingSeconds: number;
+                yours: boolean;
+                steps: {
+                    sequenceNo: number;
+                    name: string;
+                    executorRoles: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting")[];
+                }[];
+            }[];
+        };
+        ApprovalReviewResponse: {
+            review: {
+                spkId: number;
+                spkNumber: string;
+                /** @enum {string} */
+                priority: "Low" | "Normal" | "High" | "Urgent";
+                vehicle: {
+                    id: number;
+                    licensePlate: string;
+                    className: string;
+                };
+                title: string;
+                /** @enum {string} */
+                category: "PM" | "Corrective" | "Tyre" | "Document" | "Other";
+                description: string;
+                /** @enum {string} */
+                kind: "Creation";
+                requestedBy: {
+                    name: string;
+                    role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                };
+                submittedAt: string;
+                waitingSeconds: number;
+                yours: boolean;
+                steps: {
+                    sequenceNo: number;
+                    name: string;
+                    executorRoles: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting")[];
+                }[];
+                /** @enum {string} */
+                status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
+                version: number;
+                decision: {
+                    /** @enum {string} */
+                    action: "Approve" | "Reject";
+                    by: {
+                        name: string;
+                        role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                    };
+                    at: string;
+                    selfApproved: boolean;
+                    reason: string | null;
+                } | null;
+                allowedActions: ("approve" | "reject")[];
+            };
+        };
+        ApprovalDecisionRequest: {
+            version: number;
+            reason?: string;
         };
     };
     responses: never;
@@ -2259,6 +2473,145 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SpkResponse"];
+                };
+            };
+        };
+    };
+    countApprovals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The count beside the Approvals menu item (REQ-APR-001) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalCountResponse"];
+                };
+            };
+        };
+    };
+    listApprovalHistory: {
+        parameters: {
+            query?: {
+                decision?: "Approve" | "Reject";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description History: every Approver’s past decisions, newest first (DEC-128) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalHistoryResponse"];
+                };
+            };
+        };
+    };
+    listSpkApprovals: {
+        parameters: {
+            query?: {
+                kind?: "Creation";
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The Surat Perintah Kerja tab: SPKs waiting for a decision (REQ-APR-002) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalInboxResponse"];
+                };
+            };
+        };
+    };
+    getSpkApproval: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ApprovalReview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalReviewResponse"];
+                };
+            };
+        };
+    };
+    approveSpk: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovalDecisionRequest"];
+            };
+        };
+        responses: {
+            /** @description Approve SPK creation (T3, C-24); needs an Idempotency-Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalReviewResponse"];
+                };
+            };
+        };
+    };
+    rejectSpk: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovalDecisionRequest"];
+            };
+        };
+        responses: {
+            /** @description Reject SPK creation with a reason (T4, C-25); needs an Idempotency-Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalReviewResponse"];
                 };
             };
         };

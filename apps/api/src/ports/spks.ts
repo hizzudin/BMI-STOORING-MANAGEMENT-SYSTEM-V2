@@ -83,7 +83,15 @@ export interface SpkGateway {
     actedBy: number;
     approverRole: Role;
     note?: string | null;
+    /** BR-03: the System Admin deciding its own work. */
+    selfApproved?: boolean;
+    /** Defaults to now; a decision takes the clock of the service. */
+    actedAt?: Date;
   }): Promise<void>;
+  /** TX-02, T3: step 1 Open from `at`, every other step Locked. */
+  openFirstStep(spkId: number, at: Date): Promise<void>;
+  /** DEC-128: the reason of the latest creation rejection of each of these SPKs. */
+  rejectionReasons(spkIds: readonly number[]): Promise<Map<number, string>>;
   vehicle(id: number): Promise<SpkVehicleRow | null>;
   /** Not Inactive and not soft-deleted, by plate. */
   vehiclesForNewSpk(): Promise<SpkVehicleRow[]>;

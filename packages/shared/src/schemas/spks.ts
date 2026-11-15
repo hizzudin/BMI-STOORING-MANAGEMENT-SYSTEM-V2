@@ -153,7 +153,7 @@ export const SpkSubmitRequestSchema = z.object({ version: z.number().int() });
 export type SpkSubmitRequest = z.infer<typeof SpkSubmitRequestSchema>;
 
 /** A person as SPKDetail names them: "Planner Sari". */
-const PersonSchema = z.object({ name: z.string(), role: z.enum(ROLES).nullable() });
+export const PersonSchema = z.object({ name: z.string(), role: z.enum(ROLES).nullable() });
 
 /** REQ-SPK-011, ui.md 7.5 StepCard: one step of the SPK. */
 export const SpkDetailStepSchema = z.object({

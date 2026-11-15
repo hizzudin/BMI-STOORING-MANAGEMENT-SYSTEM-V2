@@ -35,6 +35,8 @@ export interface AuditEntry {
   before?: unknown;
   after?: unknown;
   reason?: string;
+  /** BR-03: a Self-approved or Self-verified decision (audit_logs.self_decision). */
+  selfDecision?: boolean;
   /** Null when the system itself acts, e.g. a switch that ends at its end time (DEC-118). */
   userId: number | null;
   userRole: Role | null;

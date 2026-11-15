@@ -129,6 +129,7 @@ export class DrizzleAuditGateway implements AuditGateway {
       before: entry.before ?? null,
       after: entry.after ?? null,
       reason: entry.reason ?? null,
+      selfDecision: entry.selfDecision ?? false,
       userId: entry.userId,
       userRole: entry.userRole,
     });

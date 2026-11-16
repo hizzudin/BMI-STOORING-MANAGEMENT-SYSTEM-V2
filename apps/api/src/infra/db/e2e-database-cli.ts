@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import { formatDocumentNumber, NumberingConfigSchema } from '@bmi/shared';
 import pg from 'pg';
 import { ScryptPasswordHasher } from '../crypto/scrypt-password-hasher.js';
 import { runMigrations } from './migrate.js';
@@ -95,19 +96,42 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
      VALUES ('B 1234 APR', $1, $2, 48210) RETURNING id`,
     [klass[0]?.id, layout[0]?.id],
   );
+  // NFR-15, DEC-104: numbered as the API numbers them, SPK-yymmddNNNN from spk_number_seq.
+  const { rows: formats } = await db.query<{ value: unknown }>(
+    `SELECT setting_value AS value FROM app_settings WHERE setting_key = 'numbering_formats'`,
+  );
+  const numbering = NumberingConfigSchema.parse(formats[0]?.value);
+  const createdAt = new Date(Date.now() - 50 * 60_000);
+  // The journeys find each SPK by its title, never by a made-up number.
   const fixtures = [
-    { number: 'SPK-E2E-APR-01', title: 'Approve me', priority: 'Urgent' },
-    { number: 'SPK-E2E-APR-02', title: 'Reject me', priority: 'High' },
-    { number: 'SPK-E2E-APR-06', title: 'Look back at me', priority: 'Normal' },
+    { title: 'Approve me', priority: 'Urgent' },
+    { title: 'Reject me', priority: 'High' },
+    { title: 'Look back at me', priority: 'Normal' },
   ];
   for (const fixture of fixtures) {
+    const { rows: next } = await db.query<{ value: string }>(
+      `SELECT nextval('spk_number_seq')::text AS value`,
+    );
+    const spkNumber = formatDocumentNumber(
+      'SPK',
+      BigInt(next[0]?.value ?? '0'),
+      createdAt,
+      numbering,
+    );
     const { rows } = await db.query<{ id: string }>(
       `INSERT INTO spks (spk_number, vehicle_id, title, category, request_source, description, status,
          priority, created_by, created_at)
        VALUES ($1, $2, $3, 'Corrective', 'Manual_Planner', 'Brake pedal feels soft.', 'Pending_Approval', $4, $5,
-         (now() AT TIME ZONE 'UTC') - interval '50 minutes')
+         $6::timestamptz AT TIME ZONE 'UTC')
        RETURNING id`,
-      [fixture.number, vehicle[0]?.id, fixture.title, fixture.priority, plannerId],
+      [
+        spkNumber,
+        vehicle[0]?.id,
+        fixture.title,
+        fixture.priority,
+        plannerId,
+        createdAt.toISOString(),
+      ],
     );
     const spkId = rows[0]?.id;
     await db.query(

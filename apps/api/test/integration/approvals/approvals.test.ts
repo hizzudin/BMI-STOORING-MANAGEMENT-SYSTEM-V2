@@ -109,7 +109,8 @@ async function waitingSpk(
        $4, $5, $6::timestamp)
      RETURNING id`,
     [
-      `SPK-A-${sequence}`,
+      // NFR-15: shaped as the API numbers them (SPK-yymmddNNNN, the WIB date of the clock).
+      `SPK-261116${String(sequence).padStart(4, '0')}`,
       vehicleId,
       values.title ?? `Work ${sequence}`,
       values.priority ?? 'Normal',

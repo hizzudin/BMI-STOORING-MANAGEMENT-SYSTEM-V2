@@ -8,9 +8,14 @@ test.describe.configure({ mode: 'serial' });
 
 /** Opens the Planner's rejected SPK with this title from the Rejected tab of SPKList. */
 async function openRejected(page: Page, title: string): Promise<string> {
-  await page.goto('/spk');
-  await page.getByRole('tab', { name: /^Rejected/ }).click();
+  await page.goto('/spk?tab=rejected');
+  await expect(page.getByRole('tab', { name: /^Rejected/ })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
   await page.getByLabel('Search SPK, plate, title').fill(title);
+  // Wait for the server's answer to this search, not a row of an earlier list.
+  await expect(page.getByText('Page 1 of 1 (1 total)')).toBeVisible();
   const row = page.getByRole('row', { name: /SPK-\d{10}/ });
   await expect(row).toHaveCount(1);
   // DEC-129: SPKRejected shows the reason, so Waiting on names the creator again.

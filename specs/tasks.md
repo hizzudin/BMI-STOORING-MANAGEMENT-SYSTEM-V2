@@ -348,7 +348,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-121, TASK-109, TASK-125
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, security-reviewer, ecc:security-review, ecc:production-audit, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-SPK-001|AC-SPK-005|AC-SPK-006|AC-APR-001|AC-APR-002|AC-APR-003|AC-APR-004|AC-IAM-005"`; `e2e FLW-APR-01`; `e2e FLW-APR-06`; `qa` ApprovalReview, Approvals, ApprovalsHistory against their artboards; regression check of SPKList
-- [ ] **TASK-123** Rejected SPK, Edit and resubmit, creator cancel [REQ-SPK-007]
+- [x] **TASK-123** Rejected SPK, Edit and resubmit, creator cancel [REQ-SPK-007]
   - _Scope_: DEC-129: SPKDetail shows SPKRejected while Rejected; CreateSPK shows the rejection note and gains Cancel SPK; Cancel SPK asks for a reason and goes to the Cancelled tab. DEC-128: SPKRejected replaces the rejection reason shown in the Waiting on column of SPKList. T5 (edit and resubmit) and T6 (creator cancels a Draft or Rejected SPK with a reason) of SM-SPK, as DEC-101 confirms; the rejector cannot revert a rejection.
   - _Acceptance_: AC-SPK-005
   - _Rules_: DEC-129, DQ-06, DEC-101

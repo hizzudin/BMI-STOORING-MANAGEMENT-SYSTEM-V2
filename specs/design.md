@@ -251,7 +251,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   | `POST /approvals/spk/:id/reject` | spk.approve and an Idempotency-Key |
 
   An unknown SPK is 404; a stale version is 409.
-- SPKList: a Rejected SPK waits on "Rejected: <reason>" until SPKRejected comes (TASK-123).
+- SPKList: a Rejected SPK waited on "Rejected: <reason>" until SPKRejected came in TASK-123 (5.13). It now waits on its creator again.
 - Web:
   - `/approvals` (Surat Perintah Kerja tab):
     - the chips All and Creation, and the search;
@@ -269,6 +269,31 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - The Approvals menu item shows the waiting count, read when a page loads and every 60 seconds (as DEC-125).
   - Hidden until their tasks: the Warehouse tab, the Amendment and Completion chips, the report reference and part age, and Needs my action.
 - E2E: until TASK-207, the e2e database command seeds three SPKs waiting for approval, with their steps (DEC-126). The web still never touches the database (DEC-66).
+
+### 5.13 Rejected SPK and the creator's cancel (REQ-SPK-007, T5, T6, DQ-06, DEC-101, DEC-129)
+
+- **T5:** built in TASK-121. `SPK_POLICIES.edit` and `submit` allow a creator's Draft or Rejected SPK. Submit writes a new Submit row and notifies the Approvers again.
+- **T6:** `SPK_POLICIES.cancel` needs spk.create, a Draft or Rejected SPK, and its creator.
+  - The rejector holds no spk.create, so a rejection cannot be reverted (DQ-06).
+  - `SpkService.cancel` runs under the Idempotency-Key (`SpkGateways.idempotency`):
+    - lock the SPK and assert `cancel`;
+    - `spks.cancel` sets Cancelled, `cancel_reason` and `cancelled_by` at the version on screen;
+    - write one audit record `cancel` with the reason (its time is the cancel time; §9.6 has no `cancelled_at`);
+    - notify nobody.
+  - Route: `POST /spks/:id/cancel`, which needs spk.create and an Idempotency-Key. A missing reason is 400; a refusal is 403; a stale version is 409.
+  - Cancelling a system-made Draft as a Planner or the System Admin (TX-24) comes with the Report Breakdown tasks.
+- **Web:**
+  - **`SpkDetail`** renders **`SpkRejected`** while the SPK is Rejected. It shows:
+    - the crumb, the title and the Rejected pill, and the subline;
+    - the latest Reject row as a `.note.bad` ("Rejected by <role> <name> · <time WIB>" and the reason);
+    - the SPK card and the Steps card, with each step's real status;
+    - for the creator only, Edit and resubmit (`/spk/:id/edit`) and Cancel SPK.
+
+    SPK document stays hidden.
+  - **`CancelSpkDialog`:** a required reason; Keep SPK, Escape and the scrim close it (C-14); a retry keeps its key. On success the page goes to `/spk?tab=cancelled`.
+  - **`CreateSpk`:** shows the rejection note above the form for a Rejected SPK, and Cancel SPK when the SPK allows `cancel`. Cancel still leaves without saving (C-12).
+  - **SPKList:** reads `?tab=`, and a Rejected row opens `/spk/:id`.
+- **E2E seed:** two SPKs ("Resubmit me", "Cancel me") already rejected by the e2e Supervisor, numbered from `spk_number_seq`.
 
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 

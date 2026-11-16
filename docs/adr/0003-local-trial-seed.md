@@ -13,7 +13,8 @@ The product owner wants to try the system on a local computer with dummy data as
 - Its values are typed by hand. Artboard files are never imported, parsed or copied, as in ADR-0001.
 - The seed refuses to run unless the database is local (`localhost` or `127.0.0.1`). It is never loaded into staging or production, and tests never use it.
 - `pnpm trial` migrates, seeds and starts the API and web app; `pnpm trial:reset` empties the local database and seeds it again.
-- The passwords of the dummy users are local development values, kept in the seed and `docs/dev-setup.md`, never real ones.
+- The passwords of the dummy users are local development values, never real ones. Amended by DEC-130 (2026-11-16): the repository is public, so the seed makes a random password per account on each run and writes them to `.data/trial-accounts.md` (gitignored); `docs/dev-setup.md` names each role's email and that file, never a password.
+- Amended by DEC-130: the trial uses its own local database `bmi_trial`, which `pnpm trial` creates when missing and `pnpm trial:reset` drops and recreates; the developer's `bmi_dev` is never touched.
 
 ## Consequences
 

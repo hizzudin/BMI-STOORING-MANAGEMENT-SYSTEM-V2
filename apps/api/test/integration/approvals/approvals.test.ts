@@ -245,13 +245,22 @@ describe('FLW-APR-01 ApprovalReview (REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, C-24
     expect(notices[0]?.n).toBe('1');
   });
 
-  it("AC-SPK-005 AC-APR-004 T4 rejection needs a reason; then Rejected, in the creator's tab with it", async () => {
+  it('AC-APR-004 C-25 a rejection without a reason, or with spaces only, is refused', async () => {
     const spkId = await waitingSpk('rina');
     const { version } = await review('budi', spkId);
+    for (const body of [{ version }, { version, reason: '   ' }]) {
+      const blank = await decide('budi', spkId, 'reject', body);
+      expect(blank.status).toBe(400);
+      expect(((await blank.json()) as { message: string }).message).toBe(
+        'Give a reason to reject.',
+      );
+    }
+    expect((await review('budi', spkId)).status).toBe('Pending_Approval');
+  });
 
-    const blank = await decide('budi', spkId, 'reject', { version, reason: '   ' });
-    expect(blank.status).toBe(400);
-    expect(((await blank.json()) as { message: string }).message).toBe('Give a reason to reject.');
+  it("AC-SPK-005 T4 a rejection with a reason: Rejected, in the creator's tab with it, creator notified", async () => {
+    const spkId = await waitingSpk('rina');
+    const { version } = await review('budi', spkId);
 
     const rejected = await decide('budi', spkId, 'reject', { version, reason: 'Wrong vehicle' });
     expect(rejected.status).toBe(200);

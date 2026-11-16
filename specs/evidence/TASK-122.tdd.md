@@ -82,13 +82,14 @@ The Approvals and ApprovalsHistory artboards gained the columns, the chips and t
 
 ### GREEN
 
-**API integration `approvals.test.ts`: 14 of 14**
+**API integration `approvals.test.ts`: 15 of 15**
 
 | Test | Covers |
 | --- | --- |
 | The creating Planner is refused; a Supervisor approves | AC-SPK-001 |
 | Approval sets Active, step 1 Open with `opened_at`, the rest Locked; one stamp; step 1 executors notified | AC-SPK-002, T3, TX-02 |
-| A reason of spaces is refused (400); with a reason the SPK is Rejected, shows "Rejected: Wrong vehicle" in the creator's tab, and the creator is notified | AC-SPK-005, AC-APR-004 |
+| A rejection without a reason, or with spaces only, is refused (400) and the SPK still waits | AC-APR-004, C-25 |
+| With a reason the SPK is Rejected, shows "Rejected: Wrong vehicle" in the creator's tab, and the creator is notified | AC-SPK-005, T4 |
 | The System Admin's own SPK gets `self_approved` and `audit_logs.self_decision` | AC-SPK-006 |
 | The same key replays the same answer with one stamp | NFR-01 |
 | A stale version gives 409; an item already decided gives 403 | NFR-03 |

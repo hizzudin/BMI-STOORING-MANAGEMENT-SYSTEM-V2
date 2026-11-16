@@ -18,6 +18,7 @@ export const AREA_OF: Readonly<Record<string, AuditArea>> = {
   vehicle: 'Vehicles',
   vehicle_class: 'Vehicles',
   document_type: 'Settings',
+  system_mode: 'Settings',
 };
 
 /** The entities of one area: the Area filter as the database reads it. */
@@ -30,6 +31,7 @@ export const entitiesOf = (area: AuditArea): string[] =>
 const RECORD_NAMES: Readonly<Record<string, string>> = {
   planner_approval: 'Planner approval',
   role_permissions: 'Roles and permissions',
+  system_mode: 'System mode',
 };
 
 /** REQ-IAM-007 Record: the record's own name (SPK number, plate, account name, code), else its id. */

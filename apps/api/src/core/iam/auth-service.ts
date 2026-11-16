@@ -1,9 +1,16 @@
 import { createHash, randomBytes, randomInt } from 'node:crypto';
-import type { ChangePasswordRequest, Client, SessionUser, SignInRequest } from '@bmi/shared';
+import {
+  SETUP_SIGN_IN_ROLES,
+  type ChangePasswordRequest,
+  type Client,
+  type SessionUser,
+  type SignInRequest,
+} from '@bmi/shared';
 import type { ClockPort } from '../../ports/clock.js';
 import type {
   AccessTokenSigner,
   AuthUser,
+  CapabilityGateway,
   EmailPort,
   IamGateways,
   PasswordHasher,
@@ -64,6 +71,15 @@ function toSessionUser(user: AuthUser): SessionUser {
   };
 }
 
+/** DEC-56, DEC-132: in Setup mode only the System Admin and Access Managers sign in or stay in. */
+async function blockedBySetupMode(
+  capabilities: CapabilityGateway,
+  user: AuthUser,
+): Promise<boolean> {
+  if (user.role && SETUP_SIGN_IN_ROLES.includes(user.role)) return false;
+  return (await capabilities.systemMode()) === 'Setup';
+}
+
 /** REQ-IAM-001, REQ-IAM-009, NFR-05, DEC-102, DEC-114 (design.md 5.1). */
 export class AuthService {
   constructor(
@@ -77,28 +93,31 @@ export class AuthService {
 
   async signIn({ email, password, client }: SignInRequest): Promise<IssuedSession> {
     const now = this.clock.now();
-    const outcome = await this.unitOfWork.run<SignInOutcome>(async ({ users, sessions }) => {
-      const user = await users.findByEmail(email);
-      if (!user || user.deleted || !user.isActive) {
-        // Same work and the same answer as a wrong password, so accounts cannot be discovered.
-        await this.hasher.verify('', password);
-        return { refusal: 'wrongCredentials' as const };
-      }
-      if (user.lockedUntil && user.lockedUntil > now) return { refusal: 'locked' as const };
-      if (!(await this.hasher.verify(user.passwordHash, password))) {
-        const failedLogins = (user.lockedUntil ? 0 : user.failedLogins) + 1;
-        const locks = failedLogins >= MAX_FAILED_SIGN_INS;
-        await users.saveSignInState(user.id, {
-          failedLogins: locks ? 0 : failedLogins,
-          lockedUntil: locks ? minutesAfter(now, LOCK_MINUTES) : null,
-        });
-        return { refusal: locks ? ('locked' as const) : ('wrongCredentials' as const) };
-      }
-      if (user.failedLogins > 0 || user.lockedUntil) {
-        await users.saveSignInState(user.id, { failedLogins: 0, lockedUntil: null });
-      }
-      return { session: await this.openSession(sessions, user, client, now) };
-    });
+    const outcome = await this.unitOfWork.run<SignInOutcome>(
+      async ({ users, sessions, capabilities }) => {
+        const user = await users.findByEmail(email);
+        if (!user || user.deleted || !user.isActive) {
+          // Same work and the same answer as a wrong password, so accounts cannot be discovered.
+          await this.hasher.verify('', password);
+          return { refusal: 'wrongCredentials' as const };
+        }
+        if (user.lockedUntil && user.lockedUntil > now) return { refusal: 'locked' as const };
+        if (!(await this.hasher.verify(user.passwordHash, password))) {
+          const failedLogins = (user.lockedUntil ? 0 : user.failedLogins) + 1;
+          const locks = failedLogins >= MAX_FAILED_SIGN_INS;
+          await users.saveSignInState(user.id, {
+            failedLogins: locks ? 0 : failedLogins,
+            lockedUntil: locks ? minutesAfter(now, LOCK_MINUTES) : null,
+          });
+          return { refusal: locks ? ('locked' as const) : ('wrongCredentials' as const) };
+        }
+        if (user.failedLogins > 0 || user.lockedUntil) {
+          await users.saveSignInState(user.id, { failedLogins: 0, lockedUntil: null });
+        }
+        if (await blockedBySetupMode(capabilities, user)) return { refusal: 'setupMode' as const };
+        return { session: await this.openSession(sessions, user, client, now) };
+      },
+    );
     // The failure count is committed even though the answer is a refusal.
     if ('refusal' in outcome) throw new AuthRefusedError(outcome.refusal);
     return outcome.session;
@@ -109,9 +128,13 @@ export class AuthService {
     const now = this.clock.now();
     const claims = this.tokens.verify(accessToken, now);
     if (!claims) throw new AuthRefusedError('sessionEnded');
-    return this.unitOfWork.run(async ({ users, sessions }) => {
+    return this.unitOfWork.run(async ({ users, sessions, capabilities }) => {
       const session = await sessions.findById(claims.sessionId);
       const user = session ? await users.findById(session.userId) : null;
+      // DEC-132: a session Back to Setup ended answers "being set up" while the system is in Setup.
+      if (user && (await blockedBySetupMode(capabilities, user))) {
+        throw new AuthRefusedError('setupMode');
+      }
       if (!session || !user || !isOpen(session, now) || !user.isActive || user.deleted) {
         throw new AuthRefusedError('sessionEnded');
       }
@@ -124,9 +147,12 @@ export class AuthService {
 
   async refresh(refreshToken: string): Promise<IssuedSession> {
     const now = this.clock.now();
-    return this.unitOfWork.run(async ({ users, sessions }) => {
+    return this.unitOfWork.run(async ({ users, sessions, capabilities }) => {
       const session = await sessions.findByRefreshHash(sha256(refreshToken));
       const user = session ? await users.findById(session.userId) : null;
+      if (user && (await blockedBySetupMode(capabilities, user))) {
+        throw new AuthRefusedError('setupMode');
+      }
       if (!session || !user || !isOpen(session, now) || !user.isActive || user.deleted) {
         throw new AuthRefusedError('sessionEnded');
       }

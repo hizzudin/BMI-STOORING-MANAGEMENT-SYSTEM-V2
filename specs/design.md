@@ -361,6 +361,39 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - **`/users/history` (`AccessHistory`):** When, Who, What, the pager, and "Full trail in Audit log" (`/audit-log?area=Access`).
 - **E2E seed:** "Self approval check", an SPK submitted by the System Admin, waits for creation approval (FLW-SA-06).
 
+### 5.16 Setup mode and Go live, both ways (REQ-IAM-010, AC-IAM-006, DEC-56, DEC-132)
+
+- **Shared (`schemas/system-mode.ts`):**
+  - `SETUP_SIGN_IN_ROLES` (System_Admin, Access_Manager);
+  - `GO_LIVE_PHRASE` and `BACK_TO_SETUP_PHRASE`;
+  - `SystemModeSwitchRequestSchema` (`reason`, `confirmation`);
+  - `SystemModeResponseSchema` (`mode`, `wentLiveAt`, `checklist`, `allowedActions`);
+  - `SYSTEM_MODE_MESSAGES`.
+- **Menu:** the Setup and go live item shows in both modes (`setupModeOnly` is no longer set on it).
+- **Auth gate (`AuthService`):** `signIn`, `authenticate` and `refresh` refuse `setupMode` (403, "The system is being set up.") while the mode is Setup and the account's role is not in `SETUP_SIGN_IN_ROLES`.
+  - The check runs before the session-open check, so a session that Back to Setup revoked answers "being set up" while in Setup, and "session ended" once Live again.
+- **Service (`core/iam/system-mode-service.ts`), `setup.golive` only:**
+  - `status`: the mode, the latest Go live, and the checklist counts (active accounts; active vehicle classes plus document types; vehicles).
+  - `goLive` and `backToSetup`:
+    - the trimmed reason is required, and the phrase must match exactly;
+    - the current mode must be the other one ("The system is already Live." / "already in Setup mode");
+    - each runs under an Idempotency-Key in one transaction, and writes `system_mode` (and `went_live_at` on Go live);
+    - Back to Setup revokes every open session of the other roles;
+    - each writes one audit record (entity `system_mode`, action `go_live` or `back_to_setup`, before and after mode, the reason; area Settings).
+- **Gateway (`infra/db/system-mode-gateways.ts`):**
+  - `app_settings` upserts;
+  - the counts;
+  - `revokeSessionsExceptRoles`: an `UPDATE auth_sessions` of the users not in `user_roles` for those roles.
+- **Routes:** `GET /system-mode`, `POST /system-mode/go-live` and `POST /system-mode/back-to-setup`. Refusals answer 400 (`SystemModeErrorFilter`).
+- **Web:**
+  - **`/setup` (`SetupGoLive`):**
+    - in Setup: the crumb "Setup mode", the checklist (`ol.steps`, ticked when the count is above 0), the lock note and Go live;
+    - in Live: the crumb "Live since …", the note and Back to Setup;
+    - the dialogs GoLiveConfirm and BackToSetupConfirm ask for the reason and the typed phrase, with one Idempotency-Key per dialog;
+    - after a switch the page loads again, so `/me` and the menu follow.
+  - **Landing:** in Setup the holder of `setup.golive` lands on `/setup` (WebLogin row).
+- **Tests run Live unless they test Setup:** `auth.test.ts` now sets Live, as the other suites do.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

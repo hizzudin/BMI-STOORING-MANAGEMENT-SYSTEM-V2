@@ -451,7 +451,8 @@ export const MENU: readonly MenuEntry[] = [
   },
   { key: 'users', label: 'Users and roles', anyOf: ['accounts.manage'] },
   { key: 'audit', label: 'Audit log', anyOf: ['audit.view'] },
-  { key: 'setup', label: 'Setup and go live', anyOf: ['setup.golive'], setupModeOnly: true },
+  // DEC-132: in both modes, since the System Admin may go back to Setup from Live.
+  { key: 'setup', label: 'Setup and go live', anyOf: ['setup.golive'] },
 ];
 
 export type SystemMode = 'Setup' | 'Live';

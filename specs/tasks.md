@@ -377,7 +377,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-106, TASK-126, TASK-107
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-SA-06`; `e2e FLW-AM-05`; `qa` AuditLog, AMAccessHistory against their artboards
-- [ ] **TASK-111** Setup mode and Go live [REQ-IAM-010]
+- [x] **TASK-111** Setup mode and Go live [REQ-IAM-010]
   - _Scope_: DEC-132: the switch is reversible. Go live needs a reason and GO LIVE typed; in Live the System Admin goes back to Setup with a reason and BACK TO SETUP typed, which ends the sessions of every role but the System Admin and Access Managers. Each switch is audited. The menu item shows in both modes; the checklist shows counts for accounts, master data and vehicles, and later tasks add their items.
   - _Acceptance_: AC-IAM-006
   - _Rules_: BR-04, BR-12, DEC-55, DEC-56, DEC-132

@@ -133,6 +133,15 @@ export function SignedInShell({
     if (!me) return;
     const menu = menuFor(new Set(me.capabilities), me.systemMode);
     const home = homeOf(menu);
+    // ui-action-map WebLogin: in Setup mode the holder of setup.golive starts on Setup and go live.
+    if (
+      pathname === '/' &&
+      me.systemMode === 'Setup' &&
+      menu.some((item) => item.key === 'setup')
+    ) {
+      navigate(ROUTES.setup.href);
+      return;
+    }
     if (pathname === '/' && !menu.some((item) => item.key === 'dashboard') && home !== '/') {
       navigate(home);
     }

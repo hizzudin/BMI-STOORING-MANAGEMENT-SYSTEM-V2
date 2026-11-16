@@ -1692,6 +1692,80 @@
           }
         }
       }
+    },
+    "/system-mode": {
+      "get": {
+        "operationId": "getSystemMode",
+        "summary": "The mode, the latest Go live, the checklist counts and the allowed switch",
+        "responses": {
+          "200": {
+            "description": "The mode, the latest Go live, the checklist counts and the allowed switch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemModeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system-mode/go-live": {
+      "post": {
+        "operationId": "goLive",
+        "summary": "Setup → Live with a reason and GO LIVE typed; needs an Idempotency-Key",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SystemModeSwitchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Setup → Live with a reason and GO LIVE typed; needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemModeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system-mode/back-to-setup": {
+      "post": {
+        "operationId": "backToSetup",
+        "summary": "Live → Setup with a reason and BACK TO SETUP typed; ends the other sessions",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SystemModeSwitchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Live → Setup with a reason and BACK TO SETUP typed; ends the other sessions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemModeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6669,6 +6743,84 @@
         "required": [
           "items",
           "pagination"
+        ],
+        "additionalProperties": false
+      },
+      "SystemModeResponse": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "Setup",
+              "Live"
+            ]
+          },
+          "wentLiveAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "checklist": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "key",
+                "label",
+                "count"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "go_live",
+                "back_to_setup"
+              ]
+            }
+          }
+        },
+        "required": [
+          "mode",
+          "wentLiveAt",
+          "checklist",
+          "allowedActions"
+        ],
+        "additionalProperties": false
+      },
+      "SystemModeSwitchRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "confirmation": {
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "reason",
+          "confirmation"
         ],
         "additionalProperties": false
       }

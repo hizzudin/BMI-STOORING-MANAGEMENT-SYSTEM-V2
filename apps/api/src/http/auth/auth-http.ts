@@ -142,6 +142,7 @@ const STATUS: Record<AuthRefusalKind, number> = {
   currentPasswordWrong: HttpStatus.BAD_REQUEST,
   resetLinkInvalid: HttpStatus.BAD_REQUEST,
   passwordChangeFirst: HttpStatus.FORBIDDEN,
+  setupMode: HttpStatus.FORBIDDEN,
 };
 
 @Catch(AuthRefusedError)

@@ -176,7 +176,7 @@ describe('2.4 permission catalogue and 2.2 default matrix', () => {
 });
 
 describe('NAV-9 the 2.4 menu table', () => {
-  it('NAV-9 the System Admin sees every Live item; Setup and go live only in Setup mode', () => {
+  it('NAV-9 DEC-132 the System Admin sees every Live item, Setup and go live in both modes', () => {
     expect(menu('System_Admin')).toEqual([
       'Dashboard',
       'Surat Perintah Kerja',
@@ -191,6 +191,7 @@ describe('NAV-9 the 2.4 menu table', () => {
       'Reports',
       'Settings',
       'Audit log',
+      'Setup and go live',
     ]);
     expect(menu('System_Admin', 'Setup')).toContain('Setup and go live');
   });

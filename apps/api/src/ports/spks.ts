@@ -10,6 +10,7 @@ import type {
   VehicleStatus,
 } from '@bmi/shared';
 import type { AuditGateway } from './accounts.js';
+import type { IdempotencyGateway } from './idempotency.js';
 import type { NotificationGateway } from './notifications.js';
 import type { DocumentNumberGateway } from './numbering.js';
 import type { PlannerApprovalState } from './planner-approval.js';
@@ -90,8 +91,8 @@ export interface SpkGateway {
   }): Promise<void>;
   /** TX-02, T3: step 1 Open from `at`, every other step Locked. */
   openFirstStep(spkId: number, at: Date): Promise<void>;
-  /** DEC-128: the reason of the latest creation rejection of each of these SPKs. */
-  rejectionReasons(spkIds: readonly number[]): Promise<Map<number, string>>;
+  /** T6, DEC-129: Cancelled with who and why, at the version on screen (NFR-03). */
+  cancel(id: number, version: number, cancelled: { reason: string; by: number }): Promise<void>;
   vehicle(id: number): Promise<SpkVehicleRow | null>;
   /** Not Inactive and not soft-deleted, by plate. */
   vehiclesForNewSpk(): Promise<SpkVehicleRow[]>;
@@ -171,4 +172,6 @@ export interface SpkGateways {
   notifications: NotificationGateway;
   /** REQ-NTF-005: Planners hear of a submitted SPK only while the switch covers its kind. */
   plannerApproval: { read(): Promise<PlannerApprovalState> };
+  /** NFR-01, TX-22: a retried cancel replays its answer. */
+  idempotency: IdempotencyGateway;
 }

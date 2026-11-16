@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.41 (2026-11-16) adds DEC-129, product owner decision on the Rejected SPK and the creator's cancel in phase 1: DEC-101 holds (the SPKRejected action map row and artboard text corrected), SPKDetail shows SPKRejected while Rejected, CreateSPK shows the rejection note and gains Cancel SPK, Cancel SPK asks for a reason and goes to the Cancelled tab.
+
 v2.40 (2026-11-16) adds DEC-128, product owner decision on Approvals in phase 1: the inbox columns of REQ-APR-002 with the urgency pill, Urgent and High first then the longest waiting, a preview panel with Open review, History with the decisions of every Approver (REQ-APR-007 changed from the user's own), the badge read every 60 seconds, the rejection reason in SPKList and SPKDetail until TASK-123, and what later tasks build hidden.
 
 v2.39 (2026-11-16) adds DEC-127, product owner decision on the SPK list and detail in phase 1: server-side pages of 20 rows (10, 20, 50 or 100), the urgency pill beside the SPK number with Urgent and High first, and what later tasks build hidden on SPKDetail and in the Open action.

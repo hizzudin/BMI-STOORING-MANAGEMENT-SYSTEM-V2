@@ -72,11 +72,13 @@ test.describe('FLW-APR-01 Approve SPK creation', () => {
 
     const planner = await browser.newPage();
     await signIn(planner, 'planner');
-    await planner.goto('/spk');
-    await planner.getByRole('tab', { name: /^Rejected/ }).click();
-    await expect(planner.getByRole('row', { name: new RegExp(spkNumber) })).toContainText(
-      'Rejected: Wrong vehicle',
-    );
+    // DEC-129: the creator finds it in the Rejected tab, and SPKRejected shows the reason.
+    await planner.goto('/spk?tab=rejected');
+    const row = planner.getByRole('row', { name: new RegExp(spkNumber) });
+    await expect(row).toContainText('Rejected');
+    await row.getByRole('link', { name: 'Open' }).click();
+    await expect(planner.getByText(/^Rejected by Supervisor Budi E2E · /)).toBeVisible();
+    await expect(planner.getByText('Wrong vehicle')).toBeVisible();
     await planner.close();
   });
 });

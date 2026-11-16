@@ -23,4 +23,18 @@ describe('REQ-SPK-010 SPKList asks the API through the generated client', () => 
       vehicleId: '7',
     });
   });
+
+  it('NFR-01 T6 Cancel SPK carries its Idempotency-Key, the version and the reason', async () => {
+    const fetchStub = vi.fn<typeof fetch>(() =>
+      Promise.resolve(
+        new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } }),
+      ),
+    );
+    const api = spksApi(createApiClient('http://web.test/api', { fetch: fetchStub }));
+    await api.cancel(25, { version: 4, reason: 'Raised twice' }, 'key-9');
+    const request = fetchStub.mock.calls[0]?.[0] as Request;
+    expect(new URL(request.url).pathname).toBe('/api/spks/25/cancel');
+    expect(request.headers.get('Idempotency-Key')).toBe('key-9');
+    expect(await request.json()).toEqual({ version: 4, reason: 'Raised twice' });
+  });
 });

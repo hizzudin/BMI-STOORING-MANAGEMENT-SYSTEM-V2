@@ -1286,3 +1286,10 @@ textarea:focus-visible {
   gap: 4px;
   margin-top: 4px;
 }
+
+/* DEC-129: the rejection note on SPKRejected and on CreateSPK of a Rejected SPK. */
+.note.bad {
+  margin: 12px 0;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}

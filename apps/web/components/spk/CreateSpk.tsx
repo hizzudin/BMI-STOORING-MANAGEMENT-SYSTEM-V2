@@ -6,6 +6,7 @@ import {
   SpkRequestSchema,
   type Spk,
   type SpkCategory,
+  type SpkDetailApproval,
   type SpkFormOptionsResponse,
   type SpkPriority,
 } from '@bmi/shared';
@@ -17,7 +18,9 @@ import { Field, Refusal } from '../kit/SidePanel';
 import { StatusPill } from '../kit/StatusPill';
 import { useLeaveGuard } from '../kit/useLeaveGuard';
 import { PageHead } from '../shell/AppShell';
+import { CancelSpkDialog } from './CancelSpkDialog';
 import { PRIORITY_TONES, STATUS_TONES, statusText } from './spk-format';
+import { latestRejection, RejectionNote } from './SpkRejected';
 
 interface Draft {
   vehicleId: string;
@@ -72,6 +75,8 @@ export function CreateSpk({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(mode.kind === 'edit' && mode.saved === true);
   const [busy, setBusy] = useState(false);
+  const [rejection, setRejection] = useState<SpkDetailApproval | null>(null);
+  const [cancelling, setCancelling] = useState(false);
   const guard = useLeaveGuard();
   const { dirty, setDirty, leave } = guard;
   const editId = mode.kind === 'edit' ? mode.id : null;
@@ -86,6 +91,11 @@ export function CreateSpk({
       if (!one.ok) return setLoadError(one.message);
       setSpk(one.data.spk);
       setDraft(draftOf(one.data.spk));
+      // DEC-129: a Rejected SPK shows the latest rejection note above the form.
+      if (one.data.spk.status === 'Rejected') {
+        const detail = await api.getDetail(editId);
+        if (detail.ok) setRejection(latestRejection(detail.data.detail.approvals) ?? null);
+      }
       return undefined;
     })();
   }, [api, editId]);
@@ -185,6 +195,7 @@ export function CreateSpk({
   return (
     <>
       {head}
+      {spk?.status === 'Rejected' && rejection && <RejectionNote rejection={rejection} />}
       {spk && !editable && (
         <div className="note vehicle-body">
           <Icon name="lock" size={18} />
@@ -303,6 +314,11 @@ export function CreateSpk({
         <Button disabled={busy} onClick={() => leave(() => navigate('/spk'))}>
           Cancel
         </Button>
+        {spk?.allowedActions.includes('cancel') && (
+          <Button variant="danger" disabled={busy} onClick={() => setCancelling(true)}>
+            Cancel SPK
+          </Button>
+        )}
         {editable && (
           <Button disabled={busy} onClick={() => void saveDraft()}>
             Save draft
@@ -315,6 +331,17 @@ export function CreateSpk({
         )}
       </div>
       {guard.dialog}
+      {cancelling && spk && (
+        <CancelSpkDialog
+          api={api}
+          spk={spk}
+          onClose={() => setCancelling(false)}
+          onCancelled={() => {
+            setDirty(false);
+            navigate('/spk?tab=cancelled');
+          }}
+        />
+      )}
     </>
   );
 }

@@ -6,7 +6,6 @@ import type {
   DecisionRow,
   WaitingSpkRow,
 } from '../../ports/approvals.js';
-import { DrizzleIdempotencyGateway } from './idempotency-gateway.js';
 import { DrizzleSpkGateway, spkGateways, toSpkRow, UNKNOWN_PERSON } from './spk-gateways.js';
 import { spkApprovals, spks, vehicleClasses, vehicles } from './schema/index.js';
 import type { DbTransaction } from './unit-of-work.js';
@@ -129,5 +128,4 @@ export class DrizzleApprovalGateway implements ApprovalGateway {
 export const approvalGateways = (tx: DbTransaction): ApprovalGateways => ({
   ...spkGateways(tx),
   approvals: new DrizzleApprovalGateway(tx),
-  idempotency: new DrizzleIdempotencyGateway(tx),
 });

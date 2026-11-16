@@ -1226,6 +1226,44 @@
         }
       }
     },
+    "/spks/{id}/cancel": {
+      "post": {
+        "operationId": "cancelSpk",
+        "summary": "The creator cancels its Draft or Rejected SPK with a reason (T6, DEC-129); needs an Idempotency-Key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpkCancelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The creator cancels its Draft or Rejected SPK with a reason (T6, DEC-129); needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/approvals/count": {
       "get": {
         "operationId": "countApprovals",
@@ -4310,7 +4348,8 @@
                     "type": "string",
                     "enum": [
                       "edit",
-                      "submit"
+                      "submit",
+                      "cancel"
                     ]
                   }
                 },
@@ -4616,7 +4655,8 @@
                       "type": "string",
                       "enum": [
                         "edit",
-                        "submit"
+                        "submit",
+                        "cancel"
                       ]
                     }
                   }
@@ -5163,7 +5203,8 @@
                   "type": "string",
                   "enum": [
                     "edit",
-                    "submit"
+                    "submit",
+                    "cancel"
                   ]
                 }
               }
@@ -5308,6 +5349,26 @@
         },
         "required": [
           "version"
+        ],
+        "additionalProperties": false
+      },
+      "SpkCancelRequest": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "version",
+          "reason"
         ],
         "additionalProperties": false
       },

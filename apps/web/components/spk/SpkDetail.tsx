@@ -14,6 +14,7 @@ import { Tabs } from '../kit/Tabs';
 import { PageHead } from '../shell/AppShell';
 import { ApprovalBlock, approvalOf } from './ApprovalBlock';
 import { personText, PRIORITY_TONES, STATUS_TONES, statusText } from './spk-format';
+import { SpkRejected } from './SpkRejected';
 import { StepCard, StepTracker } from './StepTracker';
 
 const CRUMB = 'Surat Perintah Kerja';
@@ -40,7 +41,15 @@ function whatOf(row: SpkDetailApproval): string {
  * SPKDetail read only (REQ-SPK-011, DEC-127): header, subline, the Steps tab (tracker, step cards,
  * context and approvals) and the History tab. What later tasks build is not shown.
  */
-export function SpkDetail({ api, id }: { api: SpksApi; id: number }) {
+export function SpkDetail({
+  api,
+  id,
+  navigate,
+}: {
+  api: SpksApi;
+  id: number;
+  navigate: (path: string) => void;
+}) {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,6 +78,11 @@ export function SpkDetail({ api, id }: { api: SpksApi; id: number }) {
         )}
       </>
     );
+  }
+
+  // DEC-129: while Rejected, SPKDetail is SPKRejected (the Rejected tab and the notice open it).
+  if (detail.spk.status === 'Rejected') {
+    return <SpkRejected api={api} detail={detail} navigate={navigate} />;
   }
 
   const { spk, vehicle, createdBy, steps, approvals, costs } = detail;

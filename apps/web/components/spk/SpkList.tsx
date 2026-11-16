@@ -45,8 +45,8 @@ function queryOf(query: SpkListQuery) {
  * SPKList (REQ-SPK-010, REQ-SPK-015, DEC-127): tabs with counts, search, type and vehicle, one page
  * from the server. Open goes to Create SPK when the row allows `edit`; every other row offers View.
  */
-export function SpkList({ api }: { api: SpksApi }) {
-  const [query, setQuery] = useState<SpkListQuery>(FIRST);
+export function SpkList({ api, initialTab }: { api: SpksApi; initialTab?: SpkTab }) {
+  const [query, setQuery] = useState<SpkListQuery>({ ...FIRST, tab: initialTab ?? FIRST.tab });
   const [searchText, setSearchText] = useState('');
   const [data, setData] = useState<SpkListResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -231,9 +231,10 @@ export function SpkList({ api }: { api: SpksApi }) {
 }
 
 function Row({ item }: { item: SpkListItem }) {
-  // DEC-127: Open edits a Draft or Rejected SPK of its creator; every other row is View.
+  // DEC-127: Open edits a Draft of its creator; every other row is View. DEC-129: a Rejected SPK
+  // opens SPKRejected, where its creator chooses Edit and resubmit or Cancel SPK.
   const opens = item.allowedActions.includes('edit');
-  const href = opens ? `/spk/${item.id}/edit` : `/spk/${item.id}`;
+  const href = opens && item.status !== 'Rejected' ? `/spk/${item.id}/edit` : `/spk/${item.id}`;
   const step = item.currentStep;
   return (
     <tr>

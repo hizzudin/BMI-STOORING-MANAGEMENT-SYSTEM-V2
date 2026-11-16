@@ -1,4 +1,5 @@
 import {
+  SpkCancelRequestSchema,
   SpkDetailResponseSchema,
   SpkFormOptionsResponseSchema,
   SpkListQuerySchema,
@@ -7,6 +8,7 @@ import {
   SpkResponseSchema,
   SpkSubmitRequestSchema,
   SpkUpdateRequestSchema,
+  type SpkCancelRequest,
   type SpkDetailResponse,
   type SpkFormOptionsResponse,
   type SpkListQuery,
@@ -27,11 +29,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Req,
   UseGuards,
   type ArgumentsHost,
   type ExceptionFilter,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { SpkListService } from '../../core/spk/spk-list-service.js';
 import { SpkInvalidError, SpkNotFoundError, SpkService } from '../../core/spk/spk-service.js';
 import {
@@ -42,6 +45,7 @@ import {
   type SignedIn,
 } from '../auth/auth-http.js';
 import { ApiContract, ValidBody, ValidQuery } from '../contract.js';
+import { hashRequest, IdempotencyKey } from '../idempotency-key.decorator.js';
 
 const One = { name: 'SpkResponse', schema: SpkResponseSchema };
 
@@ -150,6 +154,30 @@ export class SpksController {
     @ValidBody() body: SpkSubmitRequest,
   ): Promise<SpkResponse> {
     return { spk: await this.spks.submit(actorOf(session), id, body) };
+  }
+
+  @Post(':id/cancel')
+  @HttpCode(200)
+  @RequireCapability('spk.create')
+  @ApiContract({
+    operationId: 'cancelSpk',
+    summary:
+      'The creator cancels its Draft or Rejected SPK with a reason (T6, DEC-129); needs an Idempotency-Key',
+    body: { name: 'SpkCancelRequest', schema: SpkCancelRequestSchema },
+    response: One,
+  })
+  async cancel(
+    @CurrentSession() session: SignedIn,
+    @Param('id', ParseIntPipe) id: number,
+    @ValidBody() body: SpkCancelRequest,
+    @IdempotencyKey() key: string,
+    @Req() request: Request,
+  ): Promise<SpkResponse> {
+    const outcome = await this.spks.cancel(actorOf(session), id, body, {
+      key,
+      requestHash: hashRequest('POST', request.path, body),
+    });
+    return outcome.body as SpkResponse;
   }
 }
 

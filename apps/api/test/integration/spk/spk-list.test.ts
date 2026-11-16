@@ -323,6 +323,7 @@ describe('SPKList (REQ-SPK-010, REQ-SPK-015, DEC-127)', () => {
     expect(rina.items.find((i) => i.spkNumber === 'SPK-T-DRAFT')?.allowedActions).toEqual([
       'edit',
       'submit',
+      'cancel',
     ]);
     expect(rina.items.find((i) => i.spkNumber === 'SPK-T-REJECTED')?.allowedActions).toEqual([]);
     const andi = await list('andi', { tab: 'all' });

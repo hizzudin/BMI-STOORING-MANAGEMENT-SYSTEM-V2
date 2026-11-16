@@ -149,6 +149,66 @@ describe('CreateSPK (REQ-SPK-001, REQ-SPK-013, REQ-SPK-015, DEC-126)', () => {
     expect(screen.getByRole('status').textContent).toBe('Saved.');
   });
 
+  it('DEC-129 a Rejected SPK in edit mode shows the latest rejection note above the form', async () => {
+    const rejectedSpk: Spk = {
+      ...draft,
+      status: 'Rejected',
+      allowedActions: ['edit', 'submit', 'cancel'],
+    };
+    const api = apiWith({
+      get: vi.fn(() => ok({ spk: rejectedSpk })),
+      getDetail: vi.fn(() =>
+        ok({
+          detail: {
+            approvals: [
+              {
+                stage: 'Creation',
+                action: 'Reject',
+                by: { name: 'Hendra', role: 'GM' },
+                actedAt: '2026-11-02T09:40:12Z',
+                note: 'Wrong vehicle',
+                selfApproved: false,
+              },
+            ],
+          },
+        }),
+      ),
+    });
+    await show(api, { kind: 'edit', id: 41 });
+    expect(screen.getByText('Rejected by GM Hendra · 2026-11-02 16:40:12')).toBeTruthy();
+    expect(screen.getByText('Wrong vehicle')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Submit for approval' })).toBeTruthy();
+  });
+
+  it("T6 DEC-129 Cancel SPK cancels the creator's draft with a reason; Cancel still only leaves", async () => {
+    const cancel = vi.fn(() =>
+      ok({ spk: { ...draft, status: 'Cancelled' as const, allowedActions: [] } }),
+    );
+    const api = apiWith({
+      get: vi.fn(() => ok({ spk: { ...draft, allowedActions: ['edit', 'submit', 'cancel'] } })),
+      cancel,
+    });
+    const navigate = await show(api, { kind: 'edit', id: 41 });
+    await click('Cancel SPK');
+    fireEvent.change(screen.getByLabelText('Reason'), { target: { value: 'Not needed' } });
+    const dialog = screen.getByRole('dialog', { name: 'Cancel SPK-2611120001?' });
+    await act(async () => {
+      fireEvent.click(dialog.querySelector('.btn-danger') as HTMLButtonElement);
+    });
+    expect(cancel).toHaveBeenCalledWith(
+      41,
+      { version: 1, reason: 'Not needed' },
+      expect.any(String),
+    );
+    expect(navigate).toHaveBeenCalledWith('/spk?tab=cancelled');
+  });
+
+  it('T6 a draft the user may not cancel shows no Cancel SPK', async () => {
+    await show(apiWith(), { kind: 'edit', id: 41 });
+    expect(screen.queryByRole('button', { name: 'Cancel SPK' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeTruthy();
+  });
+
   it('C-34 a refused page shows its sentence', async () => {
     await show(
       apiWith({ options: vi.fn(() => refused('You do not have permission to do this.')) }),

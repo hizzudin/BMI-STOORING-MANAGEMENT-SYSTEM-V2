@@ -1,5 +1,4 @@
 import type { ApprovalDecisionAction, ApprovalStage } from '@bmi/shared';
-import type { IdempotencyGateway } from './idempotency.js';
 import type { PersonRow, SpkGateways, SpkRow, SpkStepRow } from './spks.js';
 
 /** REQ-APR-002, DEC-128: an SPK waiting for creation approval, with its last Submit. */
@@ -37,5 +36,4 @@ export interface ApprovalGateway {
 
 export interface ApprovalGateways extends SpkGateways {
   approvals: ApprovalGateway;
-  idempotency: IdempotencyGateway;
 }

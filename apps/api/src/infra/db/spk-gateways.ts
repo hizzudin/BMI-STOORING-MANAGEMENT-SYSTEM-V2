@@ -48,6 +48,7 @@ import type {
   SpkVehicleRow,
 } from '../../ports/spks.js';
 import { DrizzleAuditGateway } from './account-gateways.js';
+import { DrizzleIdempotencyGateway } from './idempotency-gateway.js';
 import { DrizzleNotificationGateway } from './notification-gateways.js';
 import { updateWithVersion } from './optimistic-lock.js';
 import { DrizzlePlannerApprovalGateway } from './planner-approval-gateways.js';
@@ -198,23 +199,12 @@ export class DrizzleSpkGateway implements SpkGateway {
       .where(eq(spkAssignments.spkId, spkId));
   }
 
-  async rejectionReasons(spkIds: readonly number[]): Promise<Map<number, string>> {
-    if (spkIds.length === 0) return new Map();
-    const rows = await this.db
-      .selectDistinctOn([spkApprovals.spkId], {
-        spkId: spkApprovals.spkId,
-        note: spkApprovals.note,
-      })
-      .from(spkApprovals)
-      .where(
-        and(
-          inArray(spkApprovals.spkId, [...spkIds]),
-          eq(spkApprovals.stage, 'Creation'),
-          eq(spkApprovals.action, 'Reject'),
-        ),
-      )
-      .orderBy(spkApprovals.spkId, desc(spkApprovals.actedAt), desc(spkApprovals.id));
-    return new Map(rows.map((row) => [row.spkId, row.note ?? '']));
+  cancel(id: number, version: number, cancelled: { reason: string; by: number }): Promise<void> {
+    return updateWithVersion(this.db, spks, id, version, {
+      status: 'Cancelled',
+      cancelReason: cancelled.reason,
+      cancelledBy: cancelled.by,
+    });
   }
 
   async vehicle(id: number): Promise<SpkVehicleRow | null> {
@@ -486,4 +476,5 @@ export const spkGateways = (tx: DbTransaction): SpkGateways => ({
   audit: new DrizzleAuditGateway(tx),
   notifications: new DrizzleNotificationGateway(tx),
   plannerApproval: new DrizzlePlannerApprovalGateway(tx),
+  idempotency: new DrizzleIdempotencyGateway(tx),
 });

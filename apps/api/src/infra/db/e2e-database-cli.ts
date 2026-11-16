@@ -103,10 +103,16 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
   const numbering = NumberingConfigSchema.parse(formats[0]?.value);
   const createdAt = new Date(Date.now() - 50 * 60_000);
   // The journeys find each SPK by its title, never by a made-up number.
+  // FLW-PLN-03 (TASK-123): two more, already rejected by the Supervisor with a reason (T4).
+  const { rows: supervisor } = await db.query<{ id: string }>(
+    `SELECT id FROM users WHERE email = 'budi@e2e.test'`,
+  );
   const fixtures = [
-    { title: 'Approve me', priority: 'Urgent' },
-    { title: 'Reject me', priority: 'High' },
-    { title: 'Look back at me', priority: 'Normal' },
+    { title: 'Approve me', priority: 'Urgent', rejected: false },
+    { title: 'Reject me', priority: 'High', rejected: false },
+    { title: 'Look back at me', priority: 'Normal', rejected: false },
+    { title: 'Resubmit me', priority: 'Normal', rejected: true },
+    { title: 'Cancel me', priority: 'Low', rejected: true },
   ];
   for (const fixture of fixtures) {
     const { rows: next } = await db.query<{ value: string }>(
@@ -121,7 +127,7 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
     const { rows } = await db.query<{ id: string }>(
       `INSERT INTO spks (spk_number, vehicle_id, title, category, request_source, description, status,
          priority, created_by, created_at)
-       VALUES ($1, $2, $3, 'Corrective', 'Manual_Planner', 'Brake pedal feels soft.', 'Pending_Approval', $4, $5,
+       VALUES ($1, $2, $3, 'Corrective', 'Manual_Planner', 'Brake pedal feels soft.', $7, $4, $5,
          $6::timestamptz AT TIME ZONE 'UTC')
        RETURNING id`,
       [
@@ -131,6 +137,7 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
         fixture.priority,
         plannerId,
         createdAt.toISOString(),
+        fixture.rejected ? 'Rejected' : 'Pending_Approval',
       ],
     );
     const spkId = rows[0]?.id;
@@ -146,5 +153,13 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
        VALUES ($1, 'Creation', 'Submit', $2, 'Planner', (now() AT TIME ZONE 'UTC') - interval '42 minutes')`,
       [spkId, plannerId],
     );
+    if (fixture.rejected && supervisor[0]?.id) {
+      await db.query(
+        `INSERT INTO spk_approvals (spk_id, stage, action, acted_by, approver_role, acted_at, note)
+         VALUES ($1, 'Creation', 'Reject', $2, 'Supervisor', (now() AT TIME ZONE 'UTC') - interval '20 minutes',
+           'Wrong vehicle: use the trailer head')`,
+        [spkId, supervisor[0].id],
+      );
+    }
   }
 }

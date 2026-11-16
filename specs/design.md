@@ -295,6 +295,24 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - **SPKList:** reads `?tab=`, and a Rejected row opens `/spk/:id`.
 - **E2E seed:** two SPKs ("Resubmit me", "Cancel me") already rejected by the e2e Supervisor, numbered from `spk_number_seq`.
 
+### 5.14 Local trial (DEC-113, DEC-130, ADR-0003)
+
+- **`apps/api/src/infra/db/trial/`** (ADR-0003 first named `apps/api/seeds/local/`, outside the API build):
+  - **`trial-target.ts`:** the trial URL. `TRIAL_DATABASE_URL` overrides the default; only `bmi_trial` on `localhost` or `127.0.0.1` is accepted.
+  - **`trial-seed.ts`:** `seedTrial(db, {now, password})`, typed by hand (ADR-0001), in one transaction. It refuses a database that already holds `@trial.test` accounts. It writes:
+    - one account per role;
+    - Live mode;
+    - two layouts and two classes (Powered, Towed) and four vehicles;
+    - the modules Stock, Part_Purchase and Mechanic_Action (`ON CONFLICT DO NOTHING`);
+    - one SPK per status, numbered from `spk_number_seq`, with steps and approval rows that agree.
+
+    Times are written as UTC text (NFR-14). Without stored numbering formats it uses `NUMBERING_CONFIG`.
+  - **`trial-cli.ts`:** creates `bmi_trial` when it is missing (`--reset` drops it first), migrates, and seeds once. It writes `.data/trial-accounts.md` and prints emails only.
+- **`scripts/trial.mjs`:** builds the shared package and the API, runs the CLI, then starts the API on `bmi_trial` and `next dev` with `[api]`/`[web]` prefixes; Ctrl+C stops both. `pnpm trial` and `pnpm trial:reset` (database only).
+- **CI:** "Local trial seed follows the migrations" runs the CLI with `--reset` after the tests.
+- **`.claude/launch.json`:** `api-trial` runs the API on `bmi_trial` for the preview tools.
+- **Later tasks:** each adds its dummy data to `seedTrial`.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

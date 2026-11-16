@@ -20,6 +20,13 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["apps/api/dist/main.js"],
       "port": 3001
+    },
+    {
+      "name": "api-trial",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["apps/api/dist/main.js"],
+      "env": { "DATABASE_URL": "postgres://bmi:bmi_local_dev@localhost:5432/bmi_trial" },
+      "port": 3001
     }
   ]
 }

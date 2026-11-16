@@ -6,11 +6,11 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-123 done on branch `feat/phase1-task123-rejected-spk`. Next task: **TASK-131** (local trial: one command, dummy data, every role signs in) |
+| Active task | TASK-131 done on branch `feat/phase1-task131-local-trial`. Next task: **TASK-110** (audit writer, Audit log page, access history) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.41 |
+| Spec version | PRD v2.42 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0 selesai dan `main` sudah di GitHub; CI hijau. Tersisa untuk Anda: mengaktifkan branch protection di `main`. Berikutnya TASK-101. Masa simpan Idempotency-Key 30 hari masih asumsi [A].
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 41 | 2026-11-16 | TASK-131: DEC-130 (v2.42; bmi_trial database, random passwords in .data/trial-accounts.md, ADR-0003 amended, vehicles without documents until TASK-601, nine SPK statuses, Verify adjusted until TASK-207); trial-target, trial-seed, trial-cli; scripts/trial.mjs with pnpm trial and trial:reset; CI seed step; dev-setup Local trial section; api-trial launch configuration | apps/api/src/infra/db/trial, scripts/, package.json, .github/workflows/ci.yml, .claude/launch.json, docs/, specs/, PRD.md |
 | 40 | 2026-11-16 | TASK-123: DEC-129 (v2.41; DEC-101 holds, the SPKRejected action map row and artboard corrected, SPKDetail shows SPKRejected while Rejected, CreateSPK shows the rejection note and Cancel SPK, Cancel SPK asks for a reason and lands on the Cancelled tab); T6 cancel policy and POST /spks/:id/cancel under an Idempotency-Key; SPKRejected and CancelSpkDialog; SPKList reads ?tab= and opens Rejected rows on SPKRejected; e2e seed of two rejected SPKs; FLW-PLN-03 e2e | apps/, packages/shared, packages/api-client, specs/, Design Artifact/spk, PRD.md, docs/prd |
 | 39 | 2026-11-16 | TASK-122: DEC-128 (v2.40; the inbox columns with the urgency pill, Urgent and High first then the longest waiting, a preview panel, History of every Approver with REQ-APR-007 changed, the badge every 60 seconds, the rejection reason in SPKList until TASK-123, later tasks hidden); one canApprove policy table (BR-03, BR-04); Approve (T3, TX-02) and Reject (T4) under an Idempotency-Key; Approvals, ApprovalReview, History and the menu badge; e2e seed of waiting SPKs with steps (DEC-126); Approvals and ApprovalsHistory artboards | apps/, packages/shared, packages/api-client, specs/, Design Artifact/approvals, PRD.md, docs/prd |
 | 38 | 2026-11-16 | TASK-125: DEC-127 (v2.39; SPKList server-side pages of 20, the urgency pill beside the number with Urgent and High first, what later tasks build hidden on SPKDetail and in Open); the v2 branch fixed in place: plain-filter port and Drizzle queries in infra, one SPK controller, strict allowedActions, the OpenAPI query parameters and the client query; SPKList and SPKDetail (StepTracker, StepCard, ApprovalBlock, History); FLW-PLN-01 to the Draft tab and spk-list e2e; SPKList artboard pills and pager | apps/, packages/shared, packages/api-client, specs/, Design Artifact/spk, PRD.md |

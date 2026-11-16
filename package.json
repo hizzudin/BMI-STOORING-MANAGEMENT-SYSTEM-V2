@@ -19,7 +19,9 @@
     "check:secrets": "secretlint --secretlintignore .secretlintignore \"apps/**/*\" \"packages/**/*\" \"docs/**/*\" \"specs/**/*\" \".github/**/*\" \"*.json\" \"*.yaml\" \"*.md\" \".env.example\"",
     "check:coverage": "node specs/tools/check-coverage.mjs --tests",
     "gen:client": "turbo run build --filter=@bmi/api && pnpm --filter @bmi/api openapi:emit && pnpm --filter @bmi/api-client generate",
-    "check:client": "pnpm gen:client && git diff --exit-code -- packages/api-client/openapi.json packages/api-client/src/schema.gen.ts"
+    "check:client": "pnpm gen:client && git diff --exit-code -- packages/api-client/openapi.json packages/api-client/src/schema.gen.ts",
+    "trial": "node scripts/trial.mjs",
+    "trial:reset": "node scripts/trial.mjs --reset"
   },
   "devDependencies": {
     "@bmi/config": "workspace:*",

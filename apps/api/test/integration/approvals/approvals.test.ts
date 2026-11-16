@@ -270,7 +270,9 @@ describe('FLW-APR-01 ApprovalReview (REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, C-24
 
     const tab = await json<SpkListResponse>(await get('rina', '/spks', { tab: 'rejected' }));
     const row = tab.items.find((item) => item.id === spkId);
-    expect(row?.waitingOn).toBe('Rejected: Wrong vehicle');
+    // DEC-129: SPKRejected shows the reason; Waiting on is the creator again.
+    expect(row?.status).toBe('Rejected');
+    expect(row?.waitingOn).toMatch(/^Planner /);
     // REQ-SPK-007: the creator is notified.
     const { rows } = await testPool().query<{ body: string }>(
       `SELECT body FROM notifications WHERE user_id = $1 AND link_record = $2`,

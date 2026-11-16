@@ -16,7 +16,7 @@ export const SPK_PRIORITIES = ['Low', 'Normal', 'High', 'Urgent'] as const;
 export type SpkPriority = (typeof SPK_PRIORITIES)[number];
 
 /** REQ-SPK-001, REQ-SPK-017, DEC-126: what may be done on one SPK (its `allowedActions`). */
-export const SPK_ACTIONS = ['edit', 'submit'] as const;
+export const SPK_ACTIONS = ['edit', 'submit', 'cancel'] as const;
 export type SpkAction = (typeof SPK_ACTIONS)[number];
 
 export const SPKS_PAGE_ACTIONS = ['create'] as const;
@@ -151,6 +151,13 @@ export type SpkListResponse = z.infer<typeof SpkListResponseSchema>;
 /** T2 and T5: Submit for approval at the version on screen. */
 export const SpkSubmitRequestSchema = z.object({ version: z.number().int() });
 export type SpkSubmitRequest = z.infer<typeof SpkSubmitRequestSchema>;
+
+/** T6, DEC-129: the creator cancels its Draft or Rejected SPK with a reason, at the version on screen. */
+export const SpkCancelRequestSchema = z.object({
+  version: z.number().int(),
+  reason: z.string().trim().min(1, 'Give a reason to cancel.').max(500),
+});
+export type SpkCancelRequest = z.infer<typeof SpkCancelRequestSchema>;
 
 /** A person as SPKDetail names them: "Planner Sari". */
 export const PersonSchema = z.object({ name: z.string(), role: z.enum(ROLES).nullable() });

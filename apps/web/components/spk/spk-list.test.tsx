@@ -92,6 +92,27 @@ describe('SPKList (REQ-SPK-010, REQ-SPK-015, DEC-127)', () => {
     expect(screen.getByRole('link', { name: 'Open' }).getAttribute('href')).toBe('/spk/2/edit');
   });
 
+  it('DEC-129 a Rejected row opens SPKRejected, also for its creator; it waits on the creator', async () => {
+    const rejected: SpkListItem = {
+      ...draft,
+      id: 3,
+      spkNumber: 'SPK-2611040125',
+      status: 'Rejected',
+      waitingOn: 'Planner Sari',
+    };
+    await show(apiWith(vi.fn(() => ok(response({ items: [rejected] })))).api);
+    expect(screen.getByRole('link', { name: 'Open' }).getAttribute('href')).toBe('/spk/3');
+    expect(screen.getByText('Planner Sari')).toBeTruthy();
+  });
+
+  it('DEC-129 the first tab may come from the address (Cancel SPK lands on Cancelled)', async () => {
+    const { api, list } = apiWith();
+    await act(async () => {
+      render(<SpkList api={api} initialTab="cancelled" />);
+    });
+    expect(lastQuery(list)).toEqual({ tab: 'cancelled', page: 1, pageSize: 20 });
+  });
+
   it('REQ-IAM-014 Create SPK shows only when the page allows create', async () => {
     await show(apiWith().api);
     expect(screen.getByRole('link', { name: 'Create SPK' }).getAttribute('href')).toBe('/spk/new');

@@ -1,5 +1,6 @@
 'use client';
 
+import type { SpkTab } from '@bmi/shared';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { spksApi } from '../../lib/spks-api';
@@ -15,12 +16,12 @@ function useWiring() {
 }
 
 /** The SPK pages wired to the API of the browser. */
-export function SpkListPage() {
-  return <SpkList api={useWiring().api} />;
+export function SpkListPage({ tab }: { tab?: SpkTab }) {
+  return <SpkList api={useWiring().api} {...(tab ? { initialTab: tab } : {})} />;
 }
 
 export function SpkDetailPage({ id }: { id: number }) {
-  return <SpkDetail api={useWiring().api} id={id} />;
+  return <SpkDetail {...useWiring()} id={id} />;
 }
 
 export function NewSpkPage({ vehicleId }: { vehicleId: number | null }) {

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  SPK_ACTIONS,
   SPK_PRIORITIES,
   SPK_TABS,
+  SpkCancelRequestSchema,
   SpkListQuerySchema,
   SpkRequestSchema,
   SpkUpdateRequestSchema,
@@ -69,5 +71,24 @@ describe('REQ-SPK-010 DEC-127 the SPK list query', () => {
       'cancelled',
       'all',
     ]);
+  });
+});
+
+describe('T6 DEC-129 the creator cancels a Draft or Rejected SPK', () => {
+  it('T6 cancel is one of the SPK actions', () => {
+    expect(SPK_ACTIONS).toEqual(['edit', 'submit', 'cancel']);
+  });
+
+  it('T6 the reason is required, trimmed and at most 500 characters', () => {
+    expect(SpkCancelRequestSchema.parse({ version: 2, reason: '  Raised twice  ' })).toEqual({
+      version: 2,
+      reason: 'Raised twice',
+    });
+    for (const reason of ['', '   ', 'x'.repeat(501)]) {
+      expect(SpkCancelRequestSchema.safeParse({ version: 2, reason }).success).toBe(false);
+    }
+    expect(
+      SpkCancelRequestSchema.safeParse({ version: 2, reason: ' ' }).error?.issues[0]?.message,
+    ).toBe('Give a reason to cancel.');
   });
 });

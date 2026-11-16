@@ -99,7 +99,7 @@ const ok = <T,>(data: T) => Promise.resolve({ ok: true as const, data });
 
 async function show(getDetail = vi.fn(() => ok({ detail }))) {
   await act(async () => {
-    render(<SpkDetail api={{ getDetail } as unknown as SpksApi} id={9} />);
+    render(<SpkDetail api={{ getDetail } as unknown as SpksApi} id={9} navigate={vi.fn()} />);
   });
   return getDetail;
 }

@@ -1,6 +1,8 @@
 import type {
   Role,
   Spk,
+  SpkAction,
+  SpkCancelRequest,
   SpkFormOptionsResponse,
   SpkPriority,
   SpkRequest,
@@ -8,6 +10,8 @@ import type {
   SpkUpdateRequest,
 } from '@bmi/shared';
 import type { ClockPort } from '../../ports/clock.js';
+import type { IdempotentRequest } from '../../ports/idempotency.js';
+import { runIdempotent, type IdempotentResponse } from '../idempotency/run-idempotent.js';
 import type { SpkGateways, SpkRow } from '../../ports/spks.js';
 import type { UnitOfWork } from '../../ports/unit-of-work.js';
 import {
@@ -32,6 +36,9 @@ export const SPK_MESSAGES = {
   onlyCreator: 'Only the creator of this SPK can change or submit it.',
   /** DEC-126: until the step composer (TASK-207). */
   noStep: 'Add at least one step before submitting.',
+  /** T6, DEC-129. */
+  notCancellable: 'Only a Draft or Rejected SPK can be cancelled by its creator.',
+  onlyCreatorCancels: 'Only the creator of this SPK can cancel it.',
 } as const;
 
 /** 404: no SPK with this id. */
@@ -50,8 +57,11 @@ export class SpkInvalidError extends Error {
   }
 }
 
-/** T2, T5: the creator edits and submits a Draft or Rejected SPK (DEC-126). */
-export const SPK_POLICIES: Policies<SpkRow, 'edit' | 'submit'> = {
+/**
+ * T2, T5: the creator edits and submits a Draft or Rejected SPK (DEC-126); T6: it cancels one with a
+ * reason (DEC-101, DEC-129). The rejector holds no spk.create, so it cannot revert a rejection (DQ-06).
+ */
+export const SPK_POLICIES: Policies<SpkRow, SpkAction> = {
   edit: {
     anyOf: ['spk.create'],
     rules: [
@@ -64,6 +74,13 @@ export const SPK_POLICIES: Policies<SpkRow, 'edit' | 'submit'> = {
     rules: [
       inState((spk: SpkRow) => spk.status, ['Draft', 'Rejected'], SPK_MESSAGES.notDraft),
       onlyOwner((spk: SpkRow) => spk.createdBy, SPK_MESSAGES.onlyCreator),
+    ],
+  },
+  cancel: {
+    anyOf: ['spk.create'],
+    rules: [
+      inState((spk: SpkRow) => spk.status, ['Draft', 'Rejected'], SPK_MESSAGES.notCancellable),
+      onlyOwner((spk: SpkRow) => spk.createdBy, SPK_MESSAGES.onlyCreatorCancels),
     ],
   },
 };
@@ -155,6 +172,35 @@ export class SpkService {
       await this.audit(gateways, actor, id, 'submit', before, after);
       await this.notifyApprovers(gateways, after, request.version);
       return this.view(actor, after);
+    });
+  }
+
+  /** T6, DEC-129: Cancelled with the reason and one audit record; nobody is notified. */
+  cancel(
+    actor: Actor,
+    id: number,
+    request: SpkCancelRequest,
+    key: Omit<IdempotentRequest, 'userId'>,
+  ): Promise<IdempotentResponse> {
+    return runIdempotent(this.unitOfWork, { ...key, userId: actor.user.id }, async (gateways) => {
+      const before = await this.load(gateways, id, true);
+      assertAllowed(SPK_POLICIES, actor, before, 'cancel');
+      await gateways.spks.cancel(id, request.version, {
+        reason: request.reason,
+        by: actor.user.id,
+      });
+      const after = await this.load(gateways, id);
+      await gateways.audit.write({
+        entity: 'spk',
+        entityId: id,
+        action: 'cancel',
+        before,
+        after,
+        reason: request.reason,
+        userId: actor.user.id,
+        userRole: actor.user.role,
+      });
+      return { status: 200, body: { spk: this.view(actor, after) } };
     });
   }
 

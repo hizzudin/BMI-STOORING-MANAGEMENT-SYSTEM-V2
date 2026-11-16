@@ -1,5 +1,11 @@
 import type { ApiClient } from '@bmi/api-client';
-import type { SpkListQuery, SpkRequest, SpkSubmitRequest, SpkUpdateRequest } from '@bmi/shared';
+import type {
+  SpkCancelRequest,
+  SpkListQuery,
+  SpkRequest,
+  SpkSubmitRequest,
+  SpkUpdateRequest,
+} from '@bmi/shared';
 import { browserApi, settle } from './auth-api';
 
 /** Create SPK (REQ-SPK-001, REQ-SPK-013, REQ-SPK-015, DEC-126) through the generated client. */
@@ -17,6 +23,15 @@ export function spksApi(given?: ApiClient) {
       settle(client().POST('/spks/{id}/submit', { ...path(id), body })),
     list: (query?: SpkListQuery) => settle(client().GET('/spks', { params: { query } })),
     getDetail: (id: number) => settle(client().GET('/spks/{id}/detail', path(id))),
+    /** T6, DEC-129; NFR-01: a retry of the same cancel sends the same key. */
+    cancel: (id: number, body: SpkCancelRequest, key: string) =>
+      settle(
+        client().POST('/spks/{id}/cancel', {
+          ...path(id),
+          body,
+          headers: { 'Idempotency-Key': key },
+        }),
+      ),
   };
 }
 

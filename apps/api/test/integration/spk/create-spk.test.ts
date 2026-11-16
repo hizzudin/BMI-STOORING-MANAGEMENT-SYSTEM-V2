@@ -190,7 +190,8 @@ describe('Create SPK (REQ-SPK-001, REQ-SPK-002, REQ-SPK-013, REQ-SPK-015, DEC-12
       status: 'Draft',
       stepCount: 0,
       version: 1,
-      allowedActions: ['edit', 'submit'],
+      // T6, DEC-129: its creator may also cancel it.
+      allowedActions: ['edit', 'submit', 'cancel'],
     });
     expect(spk.spkNumber).toMatch(/^SPK-261112\d{4,}$/);
     expect(await audits(spk.id)).toEqual(['create']);

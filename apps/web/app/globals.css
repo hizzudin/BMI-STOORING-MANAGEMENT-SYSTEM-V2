@@ -1196,3 +1196,93 @@ textarea:focus-visible {
   color: var(--brand-red);
   font-weight: 700;
 }
+
+/* Approvals (REQ-APR-002, REQ-APR-004, REQ-APR-007, DEC-128). */
+.chip {
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--border);
+  color: var(--neutral-pill-text);
+  font: 600 12px var(--font);
+  cursor: pointer;
+}
+.chip.on {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+.master-detail.wide {
+  grid-template-columns: minmax(0, 2.8fr) minmax(260px, 1fr);
+}
+.master-detail .preview {
+  width: auto;
+  gap: 8px;
+}
+.preview h2,
+.decision h2 {
+  margin: 0;
+}
+.table tr.selectable {
+  cursor: pointer;
+}
+.kv-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 14px;
+  margin: 4px 0;
+}
+.kv-list dt {
+  color: var(--text-subtle);
+  font-size: 12px;
+}
+.kv-list dd {
+  margin: 0;
+}
+.review-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+.decision {
+  display: grid;
+  gap: 10px;
+}
+.stamp.done.rejected {
+  border-color: var(--danger-text);
+  color: var(--danger-text);
+}
+/* DEC-83: the approval stamp is the one authored moment. */
+.stamp-in {
+  animation: stamp-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes stamp-in {
+  from {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp-in {
+    animation: none;
+  }
+}
+@media (max-width: 900px) {
+  .master-detail.wide,
+  .review-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.table td.wrap {
+  min-width: 96px;
+  white-space: normal;
+}
+.cell-pills {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}

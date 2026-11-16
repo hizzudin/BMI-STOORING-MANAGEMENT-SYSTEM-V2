@@ -96,10 +96,10 @@ export class DrizzleDocumentNumbers implements DocumentNumberGateway {
 const URGENCY_ORDER = sql`CASE ${spks.priority} WHEN 'Urgent' THEN 0 WHEN 'High' THEN 1 WHEN 'Normal' THEN 2 ELSE 3 END`;
 /** A step that is done is no longer the current step. */
 const DONE_STEPS: readonly AsgStatus[] = ['Verified', 'Skipped'];
-const UNKNOWN_PERSON: PersonRow = { name: 'Unknown', role: null };
+export const UNKNOWN_PERSON: PersonRow = { name: 'Unknown', role: null };
 
 /** The SpkRow part of a header row. */
-function toSpkRow(row: {
+export function toSpkRow(row: {
   id: number;
   spkNumber: string;
   vehicleId: number;
@@ -183,7 +183,38 @@ export class DrizzleSpkGateway implements SpkGateway {
       actedBy: row.actedBy,
       approverRole: row.approverRole,
       note: row.note ?? null,
+      selfApproved: row.selfApproved ?? false,
+      ...(row.actedAt ? { actedAt: row.actedAt } : {}),
     });
+  }
+
+  async openFirstStep(spkId: number, at: Date): Promise<void> {
+    await this.db
+      .update(spkAssignments)
+      .set({
+        status: sql`CASE WHEN ${spkAssignments.sequenceNo} = 1 THEN 'Open' ELSE 'Locked' END::asg_status_t`,
+        openedAt: sql`CASE WHEN ${spkAssignments.sequenceNo} = 1 THEN ${at.toISOString()}::timestamptz END`,
+      })
+      .where(eq(spkAssignments.spkId, spkId));
+  }
+
+  async rejectionReasons(spkIds: readonly number[]): Promise<Map<number, string>> {
+    if (spkIds.length === 0) return new Map();
+    const rows = await this.db
+      .selectDistinctOn([spkApprovals.spkId], {
+        spkId: spkApprovals.spkId,
+        note: spkApprovals.note,
+      })
+      .from(spkApprovals)
+      .where(
+        and(
+          inArray(spkApprovals.spkId, [...spkIds]),
+          eq(spkApprovals.stage, 'Creation'),
+          eq(spkApprovals.action, 'Reject'),
+        ),
+      )
+      .orderBy(spkApprovals.spkId, desc(spkApprovals.actedAt), desc(spkApprovals.id));
+    return new Map(rows.map((row) => [row.spkId, row.note ?? '']));
   }
 
   async vehicle(id: number): Promise<SpkVehicleRow | null> {
@@ -313,7 +344,8 @@ export class DrizzleSpkGateway implements SpkGateway {
   }
 
   /** The header columns of SPKList and SPKDetail, with the vehicle and its class. */
-  private headers(condition: SQL | undefined) {
+  /** Also read by the approval gateway (not part of the port). */
+  headers(condition: SQL | undefined) {
     return this.db
       .select({
         id: spks.id,
@@ -391,7 +423,7 @@ export class DrizzleSpkGateway implements SpkGateway {
   }
 
   /** The steps of these SPKs in order, with their module name and the people on them. */
-  private async stepsOf(spkIds: readonly number[]): Promise<Map<number, SpkStepRow[]>> {
+  async stepsOf(spkIds: readonly number[]): Promise<Map<number, SpkStepRow[]>> {
     const bySpk = new Map<number, SpkStepRow[]>();
     if (spkIds.length === 0) return bySpk;
     const rows = await this.db
@@ -436,7 +468,7 @@ export class DrizzleSpkGateway implements SpkGateway {
   }
 
   /** Names and roles of these users (RL-1: one role each). */
-  private async people(userIds: readonly number[]): Promise<Map<number, PersonRow>> {
+  async people(userIds: readonly number[]): Promise<Map<number, PersonRow>> {
     const unique = [...new Set(userIds)];
     if (unique.length === 0) return new Map();
     const rows = await this.db

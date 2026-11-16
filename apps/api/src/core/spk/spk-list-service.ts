@@ -67,8 +67,12 @@ export class SpkListService {
         offset: (query.page - 1) * query.pageSize,
         limit: query.pageSize,
       });
+      // DEC-128: a Rejected SPK shows its reason until SPKRejected (TASK-123).
+      const reasons = await spks.rejectionReasons(
+        rows.filter((row) => row.status === 'Rejected').map((row) => row.id),
+      );
       return {
-        items: rows.map((row) => this.item(actor, row)),
+        items: rows.map((row) => this.item(actor, row, reasons.get(row.id))),
         tabCounts,
         pagination: {
           page: query.page,
@@ -120,14 +124,14 @@ export class SpkListService {
     return counts as SpkTabCounts;
   }
 
-  private item(actor: Actor, row: SpkListRow): SpkListItem {
+  private item(actor: Actor, row: SpkListRow, rejection?: string): SpkListItem {
     const current = row.currentStep;
     return {
       ...this.spk(actor, row),
       currentStep: current
         ? { sequenceNo: current.sequenceNo, name: current.name, status: current.status }
         : null,
-      waitingOn: waitingOn(row),
+      waitingOn: rejection === undefined ? waitingOn(row) : `Rejected: ${rejection}`,
     };
   }
 

@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo, type ReactNode } from 'react';
 import { authApi } from '../../lib/auth-api';
+import { approvalsApi } from '../../lib/approvals-api';
 import { notificationsApi } from '../../lib/notifications-api';
 import { SignedInShell } from './SignedInShell';
 
@@ -12,9 +13,16 @@ export function AppFrame({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const api = useMemo(() => authApi(), []);
   const notices = useMemo(() => notificationsApi(), []);
+  const approvals = useMemo(() => approvalsApi(), []);
   const navigate = useMemo(() => (path: string) => router.replace(path), [router]);
   return (
-    <SignedInShell api={api} navigate={navigate} pathname={pathname} notices={notices}>
+    <SignedInShell
+      api={api}
+      navigate={navigate}
+      pathname={pathname}
+      notices={notices}
+      approvals={approvals}
+    >
       {children}
     </SignedInShell>
   );

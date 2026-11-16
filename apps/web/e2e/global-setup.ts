@@ -65,6 +65,14 @@ export default function globalSetup(): void {
       role: 'Accounting',
       mustChangePassword: false,
     },
+    {
+      key: 'supervisor',
+      name: 'Budi E2E',
+      email: 'budi@e2e.test',
+      password: password(),
+      role: 'Supervisor',
+      mustChangePassword: false,
+    },
   ];
   const serialized = JSON.stringify(accounts);
   execFileSync('pnpm', ['--filter', '@bmi/api', 'e2e:db'], {

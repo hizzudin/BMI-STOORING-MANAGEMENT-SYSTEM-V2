@@ -61,6 +61,9 @@ import { notificationGateways } from './infra/db/notification-gateways.js';
 import { plannerApprovalGateways } from './infra/db/planner-approval-gateways.js';
 import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
 import { spkGateways } from './infra/db/spk-gateways.js';
+import { approvalGateways } from './infra/db/approval-gateways.js';
+import { ApprovalService } from './core/approvals/approval-service.js';
+import { ApprovalsController } from './http/approvals/approvals.controller.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
 import { DrizzleVehicleActivity, vehicleGateways } from './infra/db/vehicle-gateways.js';
@@ -104,6 +107,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     VehiclesController,
     NotificationsController,
     SpksController,
+    ApprovalsController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -218,6 +222,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
       provide: SpkListService,
       inject: [PG_POOL],
       useFactory: (pool: pg.Pool) => new SpkListService(new DrizzleUnitOfWork(pool, spkGateways)),
+    },
+    {
+      provide: ApprovalService,
+      inject: [PG_POOL, CLOCK],
+      useFactory: (pool: pg.Pool, clock: ClockPort) =>
+        new ApprovalService(new DrizzleUnitOfWork(pool, approvalGateways), clock),
     },
     SessionGuard,
   ],

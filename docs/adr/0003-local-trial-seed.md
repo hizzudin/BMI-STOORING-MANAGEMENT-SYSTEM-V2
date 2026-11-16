@@ -9,7 +9,7 @@ The product owner wants to try the system on a local computer with dummy data as
 
 ## Decision
 
-- A second seed, `apps/api/seeds/local/`, holds dummy data for a local trial: one user per role, vehicles with documents, and SPKs in each status. Later tasks add the data their feature needs.
+- A second seed, `apps/api/src/infra/db/trial/` (first named `apps/api/seeds/local/`, which the API build does not compile; moved by TASK-131), holds dummy data for a local trial: one user per role, vehicles with documents, and SPKs in each status. Later tasks add the data their feature needs.
 - Its values are typed by hand. Artboard files are never imported, parsed or copied, as in ADR-0001.
 - The seed refuses to run unless the database is local (`localhost` or `127.0.0.1`). It is never loaded into staging or production, and tests never use it.
 - `pnpm trial` migrates, seeds and starts the API and web app; `pnpm trial:reset` empties the local database and seeds it again.

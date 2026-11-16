@@ -68,6 +68,11 @@ jobs:
         run: pnpm check:layers
       - name: Unit and integration tests with coverage gates
         run: pnpm test:coverage
+      # ADR-0003, DEC-130: the local trial seed must follow every migration.
+      - name: Local trial seed follows the migrations
+        run: node apps/api/dist/infra/db/trial/trial-cli.js --reset
+        env:
+          TRIAL_DATABASE_URL: postgres://bmi:bmi_ci@localhost:5432/bmi_trial
       - name: Install the E2E browser
         run: pnpm --filter @bmi/web exec playwright install --with-deps chromium --only-shell
       - name: E2E

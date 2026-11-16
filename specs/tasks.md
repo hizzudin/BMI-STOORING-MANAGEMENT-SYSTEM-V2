@@ -360,7 +360,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-122
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-SPK-005"`; `e2e FLW-PLN-03`; `qa` SPKRejected against their artboards; regression check of SPKList
-- [ ] **TASK-131** Local trial: one command migrates a local database, seeds dummy data (one user per role, vehicles with documents, SPKs in every status) and starts the API and web app
+- [x] **TASK-131** Local trial: one command migrates a local database, seeds dummy data (one user per role, vehicles with documents, SPKs in every status) and starts the API and web app
   - _Scope_: Dummy data is re-typed by hand, never read from artboards (ADR-0001, ADR-0003). The seed refuses any database that is not local and is never used by tests. A reset command empties and reseeds. docs/dev-setup.md gets a Local trial section with the sign-in of each role. Every later task adds the dummy data its feature needs. DEC-130: its own database bmi_trial; random passwords in .data/trial-accounts.md (gitignored), never in the repository; vehicles without documents until TASK-601; one SPK in each of the nine statuses; API and next dev in one terminal.
   - _Rules_: DEC-113, DEC-130
   - _Read_: `PRD.md` for DEC-113, DEC-130 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)

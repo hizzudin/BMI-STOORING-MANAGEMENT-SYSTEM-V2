@@ -45,6 +45,9 @@ The Approvals and ApprovalsHistory artboards gained the columns, the chips and t
 - **`ApprovalsController`:** `GET /approvals/count`, `/history`, `/spk` and `/spk/:id`; `POST /approvals/spk/:id/approve` and `/reject`.
 - **SPKList:** a Rejected SPK waits on "Rejected: <reason>".
 - **E2E database command:** seeds three SPKs waiting for approval, with their steps (DEC-126, until TASK-207). The web still never touches the database (DEC-66).
+  - Their numbers come from `spk_number_seq` and `formatDocumentNumber`, as the API numbers SPKs (SPK-yymmddNNNN, NFR-15, DEC-104), after the owner noted that the first seed used made-up numbers.
+  - The journeys find each SPK by its title, read its number from the page, and check the format.
+  - The approvals integration test writes SPK-261116NNNN numbers.
 
 ### Web
 - **`/approvals`:**

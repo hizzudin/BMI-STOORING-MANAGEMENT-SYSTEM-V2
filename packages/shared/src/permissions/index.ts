@@ -386,25 +386,6 @@ export function defaultRolePermissions(): RolePermissionSeed[] {
   });
 }
 
-const BLOCKED_IN_SETUP: readonly PermissionCode[] = [
-  'stock.issue',
-  'purchase.line',
-  'changerequest.raise',
-  'schedule.manage',
-  'invoice.manage',
-  'count.approve',
-];
-
-/** 2.4: Setup mode blocks `spk.*`, `step.*`, `*.execute` and the codes above (REQ-IAM-010). */
-export function blockedInSetupMode(code: PermissionCode): boolean {
-  return (
-    code.startsWith('spk.') ||
-    code.startsWith('step.') ||
-    code.endsWith('.execute') ||
-    BLOCKED_IN_SETUP.includes(code)
-  );
-}
-
 export type MenuKey =
   | 'dashboard'
   | 'spk'
@@ -451,7 +432,8 @@ export const MENU: readonly MenuEntry[] = [
   },
   { key: 'users', label: 'Users and roles', anyOf: ['accounts.manage'] },
   { key: 'audit', label: 'Audit log', anyOf: ['audit.view'] },
-  { key: 'setup', label: 'Setup and go live', anyOf: ['setup.golive'], setupModeOnly: true },
+  // DEC-132: in both modes, since the System Admin may go back to Setup from Live.
+  { key: 'setup', label: 'Setup and go live', anyOf: ['setup.golive'] },
 ];
 
 export type SystemMode = 'Setup' | 'Live';

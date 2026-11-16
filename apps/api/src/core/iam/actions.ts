@@ -1,9 +1,11 @@
-import type { PermissionCode, SessionUser } from '@bmi/shared';
+import type { PermissionCode, SessionUser, SystemMode } from '@bmi/shared';
 
 /** Who asks: the signed-in account and its effective capability set (PRD 2.4). */
 export interface Actor {
   user: SessionUser;
   capabilities: ReadonlySet<PermissionCode>;
+  /** BR-03, DEC-133: one's own work may be decided only in Setup mode. */
+  systemMode: SystemMode;
 }
 
 /**
@@ -88,19 +90,19 @@ export function inState<Entity, State extends string>(
 }
 
 /**
- * BR-03: nobody decides on their own work (create and approve, execute and verify, count and approve).
- * The one exception the rule itself names is the System Admin, whose decision is marked as a self
- * decision; use `isSelfDecision` to set that mark.
+ * BR-03, DEC-133: while the system is Live nobody, the System Admin included, decides on their own
+ * work (create and approve, execute and verify, count and approve). In Setup mode anyone allowed to
+ * decide may decide their own work; use `isSelfDecision` to mark it Self-approved or Self-verified.
  */
 export function notOwnWork<Entity>(
   ownerOf: (record: Entity) => number | null,
   refusal: string,
 ): Rule<Entity> {
   return (actor, record) =>
-    ownerOf(record) === actor.user.id && actor.user.role !== 'System_Admin' ? refusal : null;
+    ownerOf(record) === actor.user.id && actor.systemMode !== 'Setup' ? refusal : null;
 }
 
-/** BR-03: true when the System Admin decides on its own work; stamp and audit log mark it. */
+/** BR-03: true when someone decides on its own work (Setup mode only); stamp and audit log mark it. */
 export function isSelfDecision(actor: Actor, ownerId: number | null): boolean {
   return ownerId === actor.user.id;
 }

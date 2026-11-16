@@ -281,12 +281,23 @@ describe('FLW-APR-01 ApprovalReview (REQ-SPK-005, REQ-SPK-006, REQ-SPK-007, C-24
     expect(rows.map((notice) => notice.body)).toEqual([expect.stringContaining('Wrong vehicle')]);
   });
 
-  it('AC-SPK-006 BR-03 the System Admin approving its own SPK: Self-approved stamp and audit flag', async () => {
+  it('AC-SPK-006 BR-03 DEC-133 the System Admin cannot approve its own SPK while Live; in Setup mode it can, Self-approved', async () => {
     const spkId = await waitingSpk('admin');
+    const { rows: current } = await testPool().query<{ version: number }>(
+      'SELECT version FROM spks WHERE id = $1',
+      [spkId],
+    );
+    const refused = await decide('admin', spkId, 'approve', { version: current[0]?.version });
+    expect(refused.status).toBe(403);
+    expect(((await refused.json()) as { message: string }).message).toBe(
+      'You cannot decide an item you created.',
+    );
+
+    await setting('system_mode', 'Setup');
     const before = await review('admin', spkId);
     expect(before.yours).toBe(true);
-
     const response = await decide('admin', spkId, 'approve', { version: before.version });
+    await setting('system_mode', 'Live');
     expect(response.status).toBe(200);
     expect((await json<ApprovalReviewResponse>(response)).review.decision?.selfApproved).toBe(true);
     const { rows: stamp } = await testPool().query<{ self_approved: boolean }>(
@@ -386,13 +397,19 @@ describe('FLW-APR-01 the Approvals inbox (REQ-APR-001, REQ-APR-002, REQ-APR-005,
     );
   });
 
-  it('AC-APR-003 REQ-APR-006 an SPK created by the viewer is not in its list, unless System Admin', async () => {
+  it('AC-APR-003 REQ-APR-006 DEC-133 the viewer never sees its own SPK while Live; in Setup mode it shows as Yours', async () => {
     await setting('planner_approval_kinds', ['spk_creation']);
     const byRina = await waitingSpk('rina');
     const byAdmin = await waitingSpk('admin');
     expect((await inbox('rina')).map((item) => item.spkId)).toEqual([byAdmin]);
-    const adminItems = await inbox('admin');
-    expect(adminItems.map((item) => [item.spkId, item.yours])).toEqual(
+    const live = (await inbox('admin')).map((item) => item.spkId);
+    expect(live).toContain(byRina);
+    expect(live).not.toContain(byAdmin);
+
+    await setting('system_mode', 'Setup');
+    const setupItems = await inbox('admin');
+    await setting('system_mode', 'Live');
+    expect(setupItems.map((item) => [item.spkId, item.yours])).toEqual(
       expect.arrayContaining([
         [byRina, false],
         [byAdmin, true],

@@ -1,3 +1,5 @@
+import { SYSTEM_MODE_MESSAGES } from '@bmi/shared';
+
 /** One sentence per refusal (C-34); HTTP maps each kind to its status. */
 export const AUTH_MESSAGES = {
   wrongCredentials: 'The email or password is not correct.',
@@ -7,6 +9,7 @@ export const AUTH_MESSAGES = {
   currentPasswordWrong: 'The current password is not correct.',
   resetLinkInvalid: 'This reset link is no longer valid. Ask for a new one.',
   passwordChangeFirst: 'Change your password before you continue.',
+  setupMode: SYSTEM_MODE_MESSAGES.beingSetUp,
 } as const;
 
 export type AuthRefusalKind =
@@ -15,7 +18,8 @@ export type AuthRefusalKind =
   | 'sessionEnded'
   | 'currentPasswordWrong'
   | 'resetLinkInvalid'
-  | 'passwordChangeFirst';
+  | 'passwordChangeFirst'
+  | 'setupMode';
 
 export class AuthRefusedError extends Error {
   constructor(readonly kind: AuthRefusalKind) {

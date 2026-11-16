@@ -19,6 +19,11 @@ let app: INestApplication;
 let baseUrl: string;
 
 beforeAll(async () => {
+  // These journeys run while the system is Live; Setup mode lets only two roles in (DEC-56).
+  await testPool().query(
+    `INSERT INTO app_settings (setting_key, setting_value) VALUES ('system_mode', '"Live"'::jsonb)
+     ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value`,
+  );
   ({ app, baseUrl } = await startAuthApp(clock, email));
 });
 

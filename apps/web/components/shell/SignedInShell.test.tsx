@@ -84,12 +84,20 @@ describe('NAV-9 the menu follows the capabilities of GET /me', () => {
     expect(menu()).toEqual(['Users and roles', 'Audit log']);
   });
 
-  it('REQ-IAM-010 Setup and go live shows only in Setup mode', async () => {
-    await show(meOf('System_Admin', { systemMode: 'Setup' }));
+  it('REQ-IAM-010 DEC-132 Setup and go live shows in Setup and in Live', async () => {
+    await show(meOf('System_Admin', { systemMode: 'Setup' }), '/setup');
     expect(menu()).toContain('Setup and go live');
     cleanup();
     await show(meOf('System_Admin'));
-    expect(menu()).not.toContain('Setup and go live');
+    expect(menu()).toContain('Setup and go live');
+  });
+
+  it('REQ-IAM-010 WebLogin: in Setup mode the holder of setup.golive lands on Setup and go live', async () => {
+    const { navigate } = await show(meOf('System_Admin', { systemMode: 'Setup' }), '/');
+    expect(navigate).toHaveBeenCalledWith('/setup');
+    cleanup();
+    const live = await show(meOf('System_Admin'), '/');
+    expect(live.navigate).not.toHaveBeenCalledWith('/setup');
   });
 
   it('C-01 the item of the open page is marked, and each item opens its area', async () => {

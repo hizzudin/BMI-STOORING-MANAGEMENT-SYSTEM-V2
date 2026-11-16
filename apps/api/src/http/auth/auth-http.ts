@@ -142,6 +142,7 @@ const STATUS: Record<AuthRefusalKind, number> = {
   currentPasswordWrong: HttpStatus.BAD_REQUEST,
   resetLinkInvalid: HttpStatus.BAD_REQUEST,
   passwordChangeFirst: HttpStatus.FORBIDDEN,
+  setupMode: HttpStatus.FORBIDDEN,
 };
 
 @Catch(AuthRefusedError)
@@ -160,6 +161,7 @@ export class AuthRefusedFilter implements ExceptionFilter<AuthRefusedError> {
 export const actorOf = (session: SignedIn): Actor => ({
   user: session.user,
   capabilities: session.capabilities,
+  systemMode: session.systemMode,
 });
 
 /** REQ-IAM-014: an action the record policies refuse is a 403 with the sentence that says why. */

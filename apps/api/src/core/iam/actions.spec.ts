@@ -1,4 +1,9 @@
-import { defaultRolePermissions, type PermissionCode, type Role } from '@bmi/shared';
+import {
+  defaultRolePermissions,
+  type PermissionCode,
+  type Role,
+  type SystemMode,
+} from '@bmi/shared';
 import { describe, expect, it } from 'vitest';
 import {
   ActionRefusedError,
@@ -18,7 +23,12 @@ import { effectiveCapabilities } from './capabilities.js';
 
 const NOW = new Date('2026-11-10T08:00:00+07:00');
 
-function actor(id: number, role: Role, plannerApproval = false): Actor {
+function actor(
+  id: number,
+  role: Role,
+  plannerApproval = false,
+  systemMode: SystemMode = 'Live',
+): Actor {
   const allowedCodes: PermissionCode[] = defaultRolePermissions()
     .filter((row) => row.role === role && row.allowed)
     .map((row) => row.permissionCode);
@@ -28,9 +38,10 @@ function actor(id: number, role: Role, plannerApproval = false): Actor {
       role,
       allowedCodes,
       plannerApproval: { kinds: plannerApproval ? ['spk_creation'] : [], until: null },
-      systemMode: 'Live',
+      systemMode,
       now: NOW,
     }),
+    systemMode,
   };
 }
 
@@ -122,11 +133,18 @@ describe('REQ-IAM-014 allowedActions', () => {
     expect(allowedActions(orderPolicies, actor(9, 'Planner'), pending)).not.toContain('approve');
   });
 
-  it('BR-03 the System Admin may approve its own SPK, and the decision is marked as self', () => {
+  it('BR-03 DEC-133 while Live nobody approves its own SPK, the System Admin included', () => {
     const admin = actor(1, 'System_Admin');
+    expect(allowedActions(orderPolicies, admin, pending)).not.toContain('approve');
+    expect(refusalOf(orderPolicies, admin, pending, 'approve')).toBe(OWN_ORDER);
+    expect(allowedActions(orderPolicies, actor(9, 'System_Admin'), pending)).toContain('approve');
+  });
+
+  it('BR-03 DEC-133 in Setup mode the creator may approve its own SPK, marked as self', () => {
+    const admin = actor(1, 'System_Admin', false, 'Setup');
     expect(allowedActions(orderPolicies, admin, pending)).toContain('approve');
     expect(isSelfDecision(admin, pending.createdBy)).toBe(true);
-    expect(isSelfDecision(actor(2, 'Supervisor'), pending.createdBy)).toBe(false);
+    expect(isSelfDecision(actor(2, 'Supervisor', false, 'Setup'), pending.createdBy)).toBe(false);
   });
 
   it('REQ-IAM-014 only the creator submits its draft', () => {

@@ -52,12 +52,14 @@ describe('REQ-IAM-012 effective capability set', () => {
     ).toBe(false);
   });
 
-  it('REQ-IAM-010 Setup mode removes the blocked operational codes', () => {
+  it('REQ-IAM-010 DEC-133 Setup mode removes no code: the System Admin keeps every operational one', () => {
     const setup = effectiveCapabilities(inputs('System_Admin', { systemMode: 'Setup' }));
-    expect(setup.has('spk.create')).toBe(false);
-    expect(setup.has('stock.issue')).toBe(false);
-    expect(setup.has('vehicle.manage')).toBe(true);
+    const live = effectiveCapabilities(inputs('System_Admin'));
+    expect(setup.has('spk.create')).toBe(true);
+    expect(setup.has('spk.approve')).toBe(true);
+    expect(setup.has('stock.issue')).toBe(true);
     expect(setup.has('setup.golive')).toBe(true);
+    expect([...setup].sort()).toEqual([...live].sort());
   });
 
   it('RL-4 the System Admin never holds accounts.manage, even if a row says so', () => {

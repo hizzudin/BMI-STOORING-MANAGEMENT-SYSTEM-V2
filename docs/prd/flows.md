@@ -346,7 +346,8 @@ Until the mobile app ships in R1 step 7, the System Admin enters inspections and
 
 1. First sign-in of the System Admin → [`SetupGoLive`](<../../Design Artifact/setup/SetupGoLive.html#SetupGoLive>) (Setup mode): checklist of what is in the system.
 2. Enter master data in [`Settings`](<../../Design Artifact/settings/Settings.html#Settings>), vehicles in [`AddVehicle`](<../../Design Artifact/fleet/AddVehicle.html#AddVehicle>), documents, tyres in [`ReceiveTyres`](<../../Design Artifact/inventory/ReceiveTyres.html#ReceiveTyres>) (source Existing), [`PartsBaseline`](<../../Design Artifact/fleet/PartsBaseline.html#PartsBaseline>) and [`OpeningBalance`](<../../Design Artifact/inventory/OpeningBalance.html#OpeningBalance>); nothing needs approval.
-3. Back on [`SetupGoLive`](<../../Design Artifact/setup/SetupGoLive.html#SetupGoLive>): type GO LIVE → Go live now. Every role can now sign in and every approval applies.
+3. Back on [`SetupGoLive`](<../../Design Artifact/setup/SetupGoLive.html#SetupGoLive>): Go live → [`GoLiveConfirm`](<../../Design Artifact/setup/GoLiveConfirm.html#GoLiveConfirm>): reason, type GO LIVE → Go live. Every role can now sign in and every approval applies.
+4. When setup work is needed again (DEC-132): Setup and go live → Back to Setup → [`BackToSetupConfirm`](<../../Design Artifact/setup/BackToSetupConfirm.html#BackToSetupConfirm>): reason, type BACK TO SETUP → Back to Setup. Every other role is signed out until the next Go live.
 
 **FLW-SA-09 Maintain vendors** (REQ-INV-014).
 

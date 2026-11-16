@@ -795,6 +795,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/system-mode": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The mode, the latest Go live, the checklist counts and the allowed switch */
+        get: operations["getSystemMode"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system-mode/go-live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Setup → Live with a reason and GO LIVE typed; needs an Idempotency-Key */
+        post: operations["goLive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system-mode/back-to-setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Live → Setup with a reason and BACK TO SETUP typed; ends the other sessions */
+        post: operations["backToSetup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1623,6 +1674,21 @@ export interface components {
                 total: number;
                 totalPages: number;
             };
+        };
+        SystemModeResponse: {
+            /** @enum {string} */
+            mode: "Setup" | "Live";
+            wentLiveAt: string | null;
+            checklist: {
+                key: string;
+                label: string;
+                count: number;
+            }[];
+            allowedActions: ("go_live" | "back_to_setup")[];
+        };
+        SystemModeSwitchRequest: {
+            reason: string;
+            confirmation: string;
         };
     };
     responses: never;
@@ -2896,6 +2962,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AccessHistoryResponse"];
+                };
+            };
+        };
+    };
+    getSystemMode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The mode, the latest Go live, the checklist counts and the allowed switch */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SystemModeResponse"];
+                };
+            };
+        };
+    };
+    goLive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SystemModeSwitchRequest"];
+            };
+        };
+        responses: {
+            /** @description Setup → Live with a reason and GO LIVE typed; needs an Idempotency-Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SystemModeResponse"];
+                };
+            };
+        };
+    };
+    backToSetup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SystemModeSwitchRequest"];
+            };
+        };
+        responses: {
+            /** @description Live → Setup with a reason and BACK TO SETUP typed; ends the other sessions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SystemModeResponse"];
                 };
             };
         };

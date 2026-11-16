@@ -71,6 +71,12 @@ import {
   AuditLogErrorFilter,
 } from './http/audit-log/audit-log.controller.js';
 import { auditLogGateways } from './infra/db/audit-log-gateways.js';
+import { SystemModeService } from './core/iam/system-mode-service.js';
+import {
+  SystemModeController,
+  SystemModeErrorFilter,
+} from './http/system-mode/system-mode.controller.js';
+import { systemModeGateways } from './infra/db/system-mode-gateways.js';
 import { ExcelJsSpreadsheetWriter } from './infra/files/exceljs-spreadsheet-writer.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
@@ -118,6 +124,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     ApprovalsController,
     AuditLogController,
     AccessHistoryController,
+    SystemModeController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -131,6 +138,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: NotificationErrorFilter },
     { provide: APP_FILTER, useClass: SpkErrorFilter },
     { provide: APP_FILTER, useClass: AuditLogErrorFilter },
+    { provide: APP_FILTER, useClass: SystemModeErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -249,6 +257,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
           clock,
           new ExcelJsSpreadsheetWriter(),
         ),
+    },
+    {
+      provide: SystemModeService,
+      inject: [PG_POOL, CLOCK],
+      useFactory: (pool: pg.Pool, clock: ClockPort) =>
+        new SystemModeService(new DrizzleUnitOfWork(pool, systemModeGateways), clock),
     },
     SessionGuard,
   ],

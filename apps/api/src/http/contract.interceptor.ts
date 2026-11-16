@@ -13,7 +13,7 @@ export class ContractInterceptor implements NestInterceptor {
     const contract = contractOf(context.getHandler());
     return next.handle().pipe(
       map((value: unknown) => {
-        if (!contract) return value;
+        if (!contract || 'file' in contract) return value;
         const result = contract.response.schema.safeParse(value);
         if (result.success) return result.data;
         throw new InternalServerErrorException(

@@ -313,6 +313,54 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - **`.claude/launch.json`:** `api-trial` runs the API on `bmi_trial` for the preview tools.
 - **Later tasks:** each adds its dummy data to `seedTrial`.
 
+### 5.15 Audit log, export and Access history (REQ-IAM-007, NFR-02, DEC-74, DEC-131)
+
+- **Writer:** every service already writes through `AuditGateway.write` in its own transaction. `core/audit/audit-format.ts` `AREA_OF` maps each written entity to an area:
+
+  | Entity | Area |
+  | --- | --- |
+  | spk | SPK |
+  | user, role_permissions, planner_approval | Access |
+  | vehicle, vehicle_class | Vehicles |
+  | document_type | Settings |
+
+  A unit test reads every `entity: '…'` that `src/` writes and fails while one has no area; a later task adds its entity there and its area to `AUDIT_AREAS` (`@bmi/shared`).
+- **Shared (`schemas/audit.ts`):**
+  - `AuditLogQuerySchema`: `userId`, `area`, `from`, `to` (WIB days, From ≤ To), `page`, and `pageSize` of 10, 20, 50 or 100.
+  - `AuditLogExportQuerySchema`: the same filters and `format` (csv or xlsx).
+  - `AccessHistoryQuerySchema`: the page only.
+  - `selfLabel`: Self-approved, or Self-verified for a verify action.
+- **Port (`ports/audit-log.ts`):**
+  - `AuditLogGateway`: `page`, `count`, `one`, `users`, `userNames`;
+  - `ExportLogGateway.write` into `export_logs`;
+  - `SpreadsheetWriter.xlsx`, implemented by `infra/files/exceljs-spreadsheet-writer.ts` (the one library DEC-131 allows), so the core never imports it.
+- **Gateway (`infra/db/audit-log-gateways.ts`):** newest first (`at`, then `id`). The record name comes from left joins on the entity: SPK number, plate, account name, class code or document type code.
+- **Service (`core/audit/audit-log-service.ts`):**
+  - **Range:** without dates, the last 7 WIB days up to today. The dates become UTC instants with an exclusive end.
+  - **Summary:** the status when it changes; otherwise the changed top-level fields, at most 3, cut at 120 characters.
+  - **Export:** refused above 10,000 rows ("Narrow the filters to export at most 10,000 rows."). CSV is RFC 4180 with CRLF and a UTF-8 BOM. A cell that starts with `=`, `+`, `-`, `@`, a tab or a carriage return is prefixed with `'`. xlsx cells are text. Each export writes `export_logs` (`audit_log`, the format, the effective filters) in the same transaction.
+  - **Access history:** the Access-area rows, all time, in words (`accessChange`).
+- **Routes:**
+
+  | Route | Needs | Answers |
+  | --- | --- | --- |
+  | `GET /audit-logs` | `audit.view` | a page of rows |
+  | `GET /audit-logs/export` | `audit.view` | a file, `audit-log-<WIB day>.<format>` |
+  | `GET /audit-logs/:id` | `audit.view` | one row with its full JSON |
+  | `GET /access-history` | `accounts.manage` | a page of access changes |
+
+  A file route carries `@ApiFileContract` (its media types in the OpenAPI document; the interceptor passes the bytes through).
+- **Migration 0011:** `export_logs` as §9.12, append-only by trigger.
+- **Web:**
+  - **`/audit-log` (`AuditLog`):**
+    - the filters: User, Area, From and To; `?area=` opens it on one area;
+    - the table: Time (WIB), User, Role, Area, Record, Before, After, Self;
+    - the pager (`kit/Pager`);
+    - the Record button opens the "Audit record" panel: the full JSON and the reason;
+    - Export opens the C-26 dialog (xlsx or csv, then a download).
+  - **`/users/history` (`AccessHistory`):** When, Who, What, the pager, and "Full trail in Audit log" (`/audit-log?area=Access`).
+- **E2E seed:** "Self approval check", an SPK submitted by the System Admin, waits for creation approval (FLW-SA-06).
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

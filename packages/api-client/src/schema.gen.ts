@@ -727,6 +727,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/audit-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One page of audit records, newest first, under the User, Area and date filters */
+        get: operations["listAuditLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit-logs/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The filtered audit records as a CSV or xlsx file, at most 10,000 rows; logged */
+        get: operations["exportAuditLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit-logs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One audit record with its full before, after and reason */
+        get: operations["getAuditLog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/access-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The access changes, newest first, in words */
+        get: operations["listAccessHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1485,6 +1553,76 @@ export interface components {
         ApprovalDecisionRequest: {
             version: number;
             reason?: string;
+        };
+        AuditLogResponse: {
+            items: {
+                id: number;
+                at: string;
+                user: {
+                    id: number;
+                    name: string;
+                    role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                } | null;
+                area: string;
+                entity: string;
+                entityId: number;
+                record: string;
+                action: string;
+                before: string | null;
+                after: string | null;
+                self: string | null;
+                reason: string | null;
+            }[];
+            pagination: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+            };
+            range: {
+                from: string;
+                to: string;
+            };
+            users: {
+                id: number;
+                name: string;
+            }[];
+        };
+        AuditLogDetail: {
+            item: {
+                id: number;
+                at: string;
+                user: {
+                    id: number;
+                    name: string;
+                    role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
+                } | null;
+                area: string;
+                entity: string;
+                entityId: number;
+                record: string;
+                action: string;
+                before: string | null;
+                after: string | null;
+                self: string | null;
+                reason: string | null;
+            };
+            before: unknown;
+            after: unknown;
+        };
+        AccessHistoryResponse: {
+            items: {
+                id: number;
+                at: string;
+                who: string | null;
+                what: string;
+            }[];
+            pagination: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+            };
         };
     };
     responses: never;
@@ -2659,6 +2797,105 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApprovalReviewResponse"];
+                };
+            };
+        };
+    };
+    listAuditLogs: {
+        parameters: {
+            query?: {
+                userId?: number;
+                area?: "SPK" | "Access" | "Vehicles" | "Settings";
+                from?: string;
+                to?: string;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description One page of audit records, newest first, under the User, Area and date filters */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditLogResponse"];
+                };
+            };
+        };
+    };
+    exportAuditLogs: {
+        parameters: {
+            query?: {
+                userId?: number;
+                area?: "SPK" | "Access" | "Vehicles" | "Settings";
+                from?: string;
+                to?: string;
+                format?: "csv" | "xlsx";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The filtered audit records as a CSV or xlsx file, at most 10,000 rows; logged */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+        };
+    };
+    getAuditLog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description One audit record with its full before, after and reason */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditLogDetail"];
+                };
+            };
+        };
+    };
+    listAccessHistory: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The access changes, newest first, in words */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccessHistoryResponse"];
                 };
             };
         };

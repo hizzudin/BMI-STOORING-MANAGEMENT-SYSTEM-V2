@@ -107,14 +107,21 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
   const { rows: supervisor } = await db.query<{ id: string }>(
     `SELECT id FROM users WHERE email = 'budi@e2e.test'`,
   );
+  // FLW-SA-06 (TASK-110): one more submitted by the System Admin, which approves it itself (BR-03).
+  const { rows: admin } = await db.query<{ id: string }>(
+    `SELECT id FROM users WHERE email = 'yusuf@e2e.test'`,
+  );
   const fixtures = [
     { title: 'Approve me', priority: 'Urgent', rejected: false },
     { title: 'Reject me', priority: 'High', rejected: false },
     { title: 'Look back at me', priority: 'Normal', rejected: false },
     { title: 'Resubmit me', priority: 'Normal', rejected: true },
     { title: 'Cancel me', priority: 'Low', rejected: true },
+    { title: 'Self approval check', priority: 'Normal', rejected: false, byAdmin: true },
   ];
   for (const fixture of fixtures) {
+    const creator = fixture.byAdmin && admin[0]?.id ? admin[0].id : plannerId;
+    const creatorRole = fixture.byAdmin && admin[0]?.id ? 'System_Admin' : 'Planner';
     const { rows: next } = await db.query<{ value: string }>(
       `SELECT nextval('spk_number_seq')::text AS value`,
     );
@@ -135,7 +142,7 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
         vehicle[0]?.id,
         fixture.title,
         fixture.priority,
-        plannerId,
+        creator,
         createdAt.toISOString(),
         fixture.rejected ? 'Rejected' : 'Pending_Approval',
       ],
@@ -150,8 +157,8 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
     // UTC wall time whatever the session time zone (NFR-14): the columns hold UTC.
     await db.query(
       `INSERT INTO spk_approvals (spk_id, stage, action, acted_by, approver_role, acted_at)
-       VALUES ($1, 'Creation', 'Submit', $2, 'Planner', (now() AT TIME ZONE 'UTC') - interval '42 minutes')`,
-      [spkId, plannerId],
+       VALUES ($1, 'Creation', 'Submit', $2, $3, (now() AT TIME ZONE 'UTC') - interval '42 minutes')`,
+      [spkId, creator, creatorRole],
     );
     if (fixture.rejected && supervisor[0]?.id) {
       await db.query(

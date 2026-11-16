@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.43 (2026-11-16) adds DEC-131, product owner decision on the Audit log in phase 1: the monthly audit archive moves to TASK-132 after the storage port, server-side pages like SPKList, a short before/after summary with a detail panel, and export in CSV and xlsx.
+
 v2.42 (2026-11-16) adds DEC-130, product owner decision on the local trial in phase 1: `pnpm trial` and `pnpm trial:reset` on a dedicated `bmi_trial` database, random dummy passwords written to `.data/trial-accounts.md` instead of the public repository (ADR-0003 amended), vehicles without documents until TASK-601, one SPK in each of the nine statuses, and the Verify adjusted until TASK-207.
 
 v2.41 (2026-11-16) adds DEC-129, product owner decision on the Rejected SPK and the creator's cancel in phase 1: DEC-101 holds (the SPKRejected action map row and artboard text corrected), SPKDetail shows SPKRejected while Rejected, CreateSPK shows the rejection note and gains Cancel SPK, Cancel SPK asks for a reason and goes to the Cancelled tab.

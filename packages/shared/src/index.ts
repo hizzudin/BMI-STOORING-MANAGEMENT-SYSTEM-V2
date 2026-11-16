@@ -17,4 +17,5 @@ export * from './schemas/notifications.js';
 export * from './schemas/spks.js';
 export * from './schemas/planner-approval.js';
 export * from './schemas/approvals.js';
+export * from './schemas/audit.js';
 export * from './time/wib.js';

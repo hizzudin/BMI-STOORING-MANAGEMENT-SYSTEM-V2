@@ -116,6 +116,17 @@ export const auditLogs = pgTable('audit_logs', {
 });
 
 // §9.12 Platform tables used in R1 step 1
+export const exportLogs = pgTable('export_logs', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  userId: bigint('user_id', { mode: 'number' }).notNull(),
+  exportType: varchar('export_type', { length: 40 }).notNull(),
+  parameters: jsonb('parameters').notNull(),
+  fileFormat: varchar('file_format', { length: 5 }).notNull(),
+  at: timestamp('at').notNull().defaultNow(),
+});
+
 export const appSettings = pgTable('app_settings', {
   id: id(),
   createdAt: createdAt(),
@@ -472,6 +483,7 @@ export const allTables: readonly PgTable[] = [
   userRoles,
   rolePermissions,
   auditLogs,
+  exportLogs,
   appSettings,
   storedFiles,
   userTablePreferences,

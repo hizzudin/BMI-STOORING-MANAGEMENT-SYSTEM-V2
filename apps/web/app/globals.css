@@ -1066,6 +1066,35 @@ textarea:focus-visible {
   margin-top: 10px;
 }
 
+/* AuditLog (REQ-IAM-007, DEC-131): date filters, the record that opens its panel, the full JSON. */
+.date-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--petrol);
+  font: 600 13px var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.link-button:hover {
+  text-decoration: underline;
+}
+.json {
+  margin: 4px 0 12px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  border-radius: var(--radius-field);
+  background: var(--mist-light);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* SPKDetail (REQ-SPK-011): StepTracker, StepCard, the context card and ApprovalBlock (ui.md 7.5). */
 .steps {
   display: flex;

@@ -367,15 +367,15 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-123, TASK-125, TASK-119, TASK-109
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa, spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
   - _Verify_: `pnpm trial` on an empty local database: every role signs in and sees its menu; a Planner creates an SPK with Save draft and submits a seeded draft that has steps (DEC-126, until TASK-207), and a Supervisor approves it in the browser; `pnpm trial:reset` brings the same data back; the seed refuses a non-local database
-- [ ] **TASK-110** Audit writer, Audit log page with export, access history, monthly audit archive [REQ-IAM-007]
-  - _Scope_: Every later state change writes through this writer with before, after and the self-decision flag.
-  - _Rules_: NFR-02, NFR-17, DEC-57, DEC-74
+- [ ] **TASK-110** Audit writer, Audit log page with export, access history [REQ-IAM-007]
+  - _Scope_: Every later state change writes through this writer with before, after and the self-decision flag. DEC-131: server-side pages like SPKList, a short before/after summary with a detail panel, export in CSV and xlsx to export_logs; the monthly archive moves to TASK-132.
+  - _Rules_: NFR-02, DEC-74, DEC-131
   - _Screens built here (visual target)_: [`AuditLog`](<../Design Artifact/access/AuditLog.html#AuditLog>), [`AMAccessHistory`](<../Design Artifact/access/AMAccessHistory.html#AMAccessHistory>)
   - _Data_: `audit_logs` (§9.2), `export_logs` (§9.12)
   - _Journey_: FLW-SA-06 Oversight; FLW-AM-05 Review access changes
-  - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-007); `docs/prd/data-model.md` §9.12, §9.2 (audit_logs, export_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-02, NFR-17, DEC-57, DEC-74 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AuditLog, AMAccessHistory; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-06, FLW-AM-05 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-007); `docs/prd/data-model.md` §9.12, §9.2 (audit_logs, export_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-02, DEC-74, DEC-131 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for AuditLog, AMAccessHistory; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-06, FLW-AM-05 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-106, TASK-126, TASK-107
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:redis-patterns, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-SA-06`; `e2e FLW-AM-05`; `qa` AuditLog, AMAccessHistory against their artboards
 - [ ] **TASK-111** Setup mode and Go live [REQ-IAM-010]
   - _Scope_: One-way switch; only the System Admin and Access Managers sign in during Setup.
@@ -404,6 +404,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-009, TASK-103
   - _Skill_: ecc:hexagonal-architecture, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "storage contract"` (R2 run in TASK-128)
+- [ ] **TASK-132** Monthly audit archive: records older than one year exported to object storage, then deleted
+  - _Scope_: DEC-131: moved out of TASK-110. Each month a job writes the audit records older than one year to a read-only CSV archive file in storage, logs its checksum, and only then deletes them; the one exception to append-only BR-10 (DEC-57). Idempotent like every daily job (NFR-12).
+  - _Rules_: NFR-17, DEC-57, DEC-131
+  - _Read_: `PRD.md` for NFR-17, DEC-57, DEC-131 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Depends_: TASK-110, TASK-113
+  - _Skill_: ecc:redis-patterns, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "audit archive"`: records older than one year are archived with a checksum and deleted, newer ones stay, and a rerun of the same month changes nothing
 - [ ] **TASK-114** Upload pipeline, server: profiles, type sniffing, worker compression, thumbnails, cleanup, retries, limits [REQ-FUP-001, REQ-FUP-002, REQ-FUP-003, REQ-FUP-005, REQ-FUP-009, REQ-FUP-010, REQ-FUP-013]
   - _Scope_: PRD 8.1 upload profiles and file rules.
   - _Acceptance_: AC-FUP-001, AC-FUP-002, AC-FUP-003, AC-FUP-005, AC-FUP-006, AC-FUP-008

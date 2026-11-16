@@ -40,8 +40,24 @@ export function ApiContract<Response extends z.ZodType>(contract: RouteContract<
   };
 }
 
-export function contractOf(handler: object): RouteContract | undefined {
-  return Reflect.getMetadata(CONTRACT, handler) as RouteContract | undefined;
+/** A route that answers with a file (DEC-74 exports): its media types instead of a JSON schema. */
+export interface FileRouteContract {
+  operationId: string;
+  summary: string;
+  file: readonly string[];
+  body?: never;
+  query?: NamedSchema;
+}
+
+/** PRD §8.2 for a file route: the OpenAPI document names its media types; nothing checks the bytes. */
+export function ApiFileContract(contract: FileRouteContract) {
+  return (_target: object, _key: string | symbol, descriptor: PropertyDescriptor): void => {
+    Reflect.defineMetadata(CONTRACT, contract, descriptor.value as object);
+  };
+}
+
+export function contractOf(handler: object): RouteContract | FileRouteContract | undefined {
+  return Reflect.getMetadata(CONTRACT, handler) as RouteContract | FileRouteContract | undefined;
 }
 
 /** NFR-04: the request body of the route, parsed with the schema of its contract. */

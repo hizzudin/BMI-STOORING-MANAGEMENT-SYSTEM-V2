@@ -78,7 +78,14 @@ export function buildOpenApiDocument(rootModule: object): OpenApiDocument {
       const contract = contractOf(handler);
       if (!contract) throw new Error(`${method.toUpperCase()} ${path} has no @ApiContract`);
 
-      register(contract.response);
+      // A file route (DEC-74) answers with bytes in one of its media types, not with JSON.
+      const content =
+        'file' in contract
+          ? Object.fromEntries(
+              contract.file.map((type) => [type, { schema: { type: 'string', format: 'binary' } }]),
+            )
+          : { 'application/json': { schema: ref(contract.response) } };
+      if (!('file' in contract)) register(contract.response);
       if (contract.body) register(contract.body);
       const status =
         (Reflect.getMetadata(HTTP_CODE_METADATA, handler) as number | undefined) ??
@@ -110,10 +117,7 @@ export function buildOpenApiDocument(rootModule: object): OpenApiDocument {
               }
             : {}),
           responses: {
-            [status]: {
-              description: contract.summary,
-              content: { 'application/json': { schema: ref(contract.response) } },
-            },
+            [status]: { description: contract.summary, content },
           },
         },
       };

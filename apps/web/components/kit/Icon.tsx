@@ -30,6 +30,7 @@ const PATHS = {
   alert: 'M12 3l9 16H3zM12 9v5M12 17v.5',
   route: 'M6 19a2 2 0 1 0 0-.1M18 7a2 2 0 1 0 0-.1M8 19h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7',
   cart: 'M3 4h2l2 11h11l2-8H6M9 20a1 1 0 1 0 0-.1M17 20a1 1 0 1 0 0-.1',
+  download: 'M12 3v12M7 10l5 5 5-5M5 20h14',
 } as const;
 
 export type IconName = keyof typeof PATHS;

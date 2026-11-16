@@ -64,6 +64,14 @@ import { spkGateways } from './infra/db/spk-gateways.js';
 import { approvalGateways } from './infra/db/approval-gateways.js';
 import { ApprovalService } from './core/approvals/approval-service.js';
 import { ApprovalsController } from './http/approvals/approvals.controller.js';
+import { AuditLogService } from './core/audit/audit-log-service.js';
+import {
+  AccessHistoryController,
+  AuditLogController,
+  AuditLogErrorFilter,
+} from './http/audit-log/audit-log.controller.js';
+import { auditLogGateways } from './infra/db/audit-log-gateways.js';
+import { ExcelJsSpreadsheetWriter } from './infra/files/exceljs-spreadsheet-writer.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
 import { DrizzleVehicleActivity, vehicleGateways } from './infra/db/vehicle-gateways.js';
@@ -108,6 +116,8 @@ const authHttpConfig = (): AuthHttpConfig => ({
     NotificationsController,
     SpksController,
     ApprovalsController,
+    AuditLogController,
+    AccessHistoryController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -120,6 +130,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: VehicleErrorFilter },
     { provide: APP_FILTER, useClass: NotificationErrorFilter },
     { provide: APP_FILTER, useClass: SpkErrorFilter },
+    { provide: APP_FILTER, useClass: AuditLogErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -228,6 +239,16 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, CLOCK],
       useFactory: (pool: pg.Pool, clock: ClockPort) =>
         new ApprovalService(new DrizzleUnitOfWork(pool, approvalGateways), clock),
+    },
+    {
+      provide: AuditLogService,
+      inject: [PG_POOL, CLOCK],
+      useFactory: (pool: pg.Pool, clock: ClockPort) =>
+        new AuditLogService(
+          new DrizzleUnitOfWork(pool, auditLogGateways),
+          clock,
+          new ExcelJsSpreadsheetWriter(),
+        ),
     },
     SessionGuard,
   ],

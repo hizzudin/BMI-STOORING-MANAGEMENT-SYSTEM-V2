@@ -367,7 +367,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-123, TASK-125, TASK-119, TASK-109
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa, spec-driven-development, code-documenter, ecc:living-docs-governance, ecc:architecture-decision-records
   - _Verify_: `pnpm trial` on an empty local database: every role signs in and sees its menu; a Planner creates an SPK with Save draft and submits a seeded draft that has steps (DEC-126, until TASK-207), and a Supervisor approves it in the browser; `pnpm trial:reset` brings the same data back; the seed refuses a non-local database
-- [ ] **TASK-110** Audit writer, Audit log page with export, access history [REQ-IAM-007]
+- [x] **TASK-110** Audit writer, Audit log page with export, access history [REQ-IAM-007]
   - _Scope_: Every later state change writes through this writer with before, after and the self-decision flag. DEC-131: server-side pages like SPKList, a short before/after summary with a detail panel, export in CSV and xlsx to export_logs; the monthly archive moves to TASK-132.
   - _Rules_: NFR-02, DEC-74, DEC-131
   - _Screens built here (visual target)_: [`AuditLog`](<../Design Artifact/access/AuditLog.html#AuditLog>), [`AMAccessHistory`](<../Design Artifact/access/AMAccessHistory.html#AMAccessHistory>)

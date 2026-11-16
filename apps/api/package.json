@@ -24,6 +24,7 @@
     "@nestjs/platform-express": "^12.3.2",
     "bullmq": "^6.5.4",
     "drizzle-orm": "^0.45.4",
+    "exceljs": "4.4.0",
     "ioredis": "^6.0.0",
     "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",

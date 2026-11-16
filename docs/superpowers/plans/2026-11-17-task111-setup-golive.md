@@ -87,3 +87,28 @@ Branch `feat/phase1-task111-setup-golive`. Spec: REQ-IAM-010, AC-IAM-006, DEC-55
 ## Execution
 - **Skills:** the always-on skills, the API and Web groups, hexagonal-architecture, and e2e-testing with browser-qa.
 - **Order:** shared, API (RED, then GREEN), `gen:client`, the E2E spec, web (RED, then GREEN), QA, gates, bookkeeping.
+
+## Addendum: DEC-133 (PRD v2.45), Setup mode and self-decisions
+
+The owner's later instruction, decided before code: in Setup the System Admin holds every operational capability, and BR-03's ban on self-decisions holds while Live for everyone (the System Admin included) and is lifted only in Setup, where each self-decision is still marked Self-approved or Self-verified.
+
+### Changes
+- **Capabilities (`core/iam/capabilities.ts`):** Setup mode removes no code. `blockedInSetupMode` and its list leave `@bmi/shared`, and their tests follow DEC-133.
+- **Actor (`core/iam/actions.ts`):** gains `systemMode`, taken from the signed-in snapshot by `actorOf`. `notOwnWork` refuses one's own work while Live, whatever the role, and allows it in Setup. `isSelfDecision` still marks it.
+- **Approvals:** the inbox (REQ-APR-006) and `allowedActions` follow the same policy, so in Live one's own SPK is hidden and refused, and in Setup it is shown as Yours and may be approved (Self-approved).
+- **E2E FLW-SA-06 (TASK-110):** the System Admin can no longer approve its own SPK while Live. The spec goes back to Setup, approves the seeded "Self approval check" SPK (Self-approved), and goes live again.
+
+### Tests (RED first)
+- **Unit `actions.spec.ts`:** BR-03 refuses one's own SPK while Live for the System Admin and a Planner, and allows it in Setup.
+- **`capabilities.spec.ts`:** Setup keeps `spk.create` and `spk.approve`.
+- **Integration `approvals.test.ts`:**
+  - AC-SPK-006: refused while Live, then allowed in Setup with the Self-approved stamp and audit flag;
+  - AC-APR-003: one's own SPK is hidden while Live and shown as Yours in Setup.
+- **Integration `allowed-actions.test.ts`:** the System Admin case follows DEC-133.
+- **Integration `system-mode.test.ts`:** AC-IAM-006 now expects the System Admin to hold `spk.create` in Setup.
+
+### Review focus
+1. A self-approval slips through while Live.
+2. The inbox shows one's own items while Live.
+3. Setup still blocks the System Admin somewhere.
+4. An Actor built without the mode defaults to the permissive side.

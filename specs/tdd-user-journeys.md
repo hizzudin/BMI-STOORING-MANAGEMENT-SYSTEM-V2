@@ -150,7 +150,7 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | Test | Layer | Ref |
 | --- | --- | --- |
 | "To verify" opens SPKDetailVerify → StepVerify with evidence, lines and executor stamp | E | REQ-ENG-005 |
-| verify adds the verifier stamp; the System Admin on its own step is Self-verified | I | SM-STEP, BR-03 |
+| verify adds the verifier stamp; verifying one's own step is refused while Live and Self-verified in Setup mode | I | SM-STEP, BR-03, DEC-133 |
 | return without a note is refused; with a note the executor sees it on StepReturned | I+E | AC-ENG-005 |
 | the executor of a step cannot verify it | I | AC-ENG-004 |
 | a stock reversal waits for verification, then stock and cost return | I | AC-STK-005, REQ-STK-008 |
@@ -338,7 +338,7 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | Test | Layer | Ref |
 | --- | --- | --- |
 | a variance row without a reason code blocks submit with an error under the sheet | I+E | AC-INV-003 |
-| the counter cannot approve; a System Admin counter can, Self-approved | I | AC-INV-004, BR-03 |
+| the counter cannot approve while Live, the System Admin included; in Setup mode it can, Self-approved | I | AC-INV-004, BR-03, DEC-133 |
 | reject → Draft marked Returned with the reason → fix → submit again | E | SM-SA |
 
 ### FLW-WHM-06 Receive tyres
@@ -383,7 +383,7 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | Approvals › Surat Perintah Kerja › Creation → ApprovalReview → Approve: stamp, Active, step 1 Open | E | T3, AC-SPK-002 |
 | the creator's approval is refused; a Supervisor's is accepted | I | AC-SPK-001, BR-03 |
 | an SPK created by the viewer is not in their list, unless System Admin | I | AC-APR-003 |
-| the System Admin approving its own SPK → Self-approved stamp and audit flag | I | AC-SPK-006 |
+| the System Admin approving its own SPK in Setup mode → Self-approved stamp and audit flag; refused while Live | I | AC-SPK-006, DEC-133 |
 | reject without a reason is refused; with one → Rejected, creator notified | I | AC-APR-004, T4 |
 | once a Supervisor approves, the item leaves the GM's list | I | AC-APR-002, BR-04 |
 | a Mechanic, and a Planner while the switch is off, do not see Approvals; the System Admin does | I+E | AC-APR-001 |

@@ -17,6 +17,7 @@ import {
   users,
   vehicleClasses,
   vehicles,
+  vendors,
 } from './schema/index.js';
 import type { DbTransaction } from './unit-of-work.js';
 
@@ -42,7 +43,7 @@ function selectRows(tx: DbTransaction, condition: SQL | undefined) {
       userRole: auditLogs.userRole,
       recordName: sql<
         string | null
-      >`coalesce(${spks.spkNumber}, ${vehicles.licensePlate}, ${subject.name}, ${vehicleClasses.code}, ${documentTypes.code})`,
+      >`coalesce(${spks.spkNumber}, ${vehicles.licensePlate}, ${subject.name}, ${vehicleClasses.code}, ${documentTypes.code}, ${vendors.code})`,
     })
     .from(auditLogs)
     .leftJoin(users, eq(users.id, auditLogs.userId))
@@ -51,6 +52,7 @@ function selectRows(tx: DbTransaction, condition: SQL | undefined) {
     .leftJoin(subject, and(of('user'), eq(subject.id, auditLogs.entityId)))
     .leftJoin(vehicleClasses, and(of('vehicle_class'), eq(vehicleClasses.id, auditLogs.entityId)))
     .leftJoin(documentTypes, and(of('document_type'), eq(documentTypes.id, auditLogs.entityId)))
+    .leftJoin(vendors, and(of('vendor'), eq(vendors.id, auditLogs.entityId)))
     .where(condition);
 }
 

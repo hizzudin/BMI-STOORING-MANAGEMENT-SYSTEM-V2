@@ -1766,6 +1766,178 @@
           }
         }
       }
+    },
+    "/vendors": {
+      "get": {
+        "operationId": "listVendors",
+        "summary": "Every vendor, the inactive marked (DEC-134)",
+        "responses": {
+          "200": {
+            "description": "Every vendor, the inactive marked (DEC-134)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createVendor",
+        "summary": "New vendor with a typed code (C-31)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New vendor with a typed code (C-31)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendors/options": {
+      "get": {
+        "operationId": "vendorOptions",
+        "summary": "The active vendors to pick from, of one kind when asked",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Supplier",
+                "Workshop",
+                "Retread",
+                "Shop"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The active vendors to pick from, of one kind when asked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorOptionsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendors/{id}": {
+      "patch": {
+        "operationId": "updateVendor",
+        "summary": "Save a vendor; the code is fixed once saved (C-17)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Save a vendor; the code is fixed once saved (C-17)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendors/{id}/deactivate": {
+      "post": {
+        "operationId": "deactivateVendor",
+        "summary": "Deactivate a vendor (C-32)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deactivate a vendor (C-32)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendors/{id}/activate": {
+      "post": {
+        "operationId": "activateVendor",
+        "summary": "Activate a vendor again (DEC-134)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activate a vendor again (DEC-134)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6821,6 +6993,287 @@
         "required": [
           "reason",
           "confirmation"
+        ],
+        "additionalProperties": false
+      },
+      "VendorListResponse": {
+        "type": "object",
+        "properties": {
+          "vendors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "code": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "Supplier",
+                    "Workshop",
+                    "Retread",
+                    "Shop"
+                  ]
+                },
+                "phone": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "isActive": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "code",
+                "name",
+                "kind",
+                "phone",
+                "address",
+                "isActive"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "create",
+                "edit",
+                "deactivate",
+                "activate"
+              ]
+            }
+          }
+        },
+        "required": [
+          "vendors",
+          "allowedActions"
+        ],
+        "additionalProperties": false
+      },
+      "VendorOptionsResponse": {
+        "type": "object",
+        "properties": {
+          "vendors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "code": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "Supplier",
+                    "Workshop",
+                    "Retread",
+                    "Shop"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "code",
+                "name",
+                "kind"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "vendors"
+        ],
+        "additionalProperties": false
+      },
+      "VendorResponse": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "Supplier",
+                  "Workshop",
+                  "Retread",
+                  "Shop"
+                ]
+              },
+              "phone": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "isActive": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "code",
+              "name",
+              "kind",
+              "phone",
+              "address",
+              "isActive"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "vendor"
+        ],
+        "additionalProperties": false
+      },
+      "VendorRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20,
+            "pattern": "^[A-Za-z0-9_]+$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "Supplier",
+              "Workshop",
+              "Retread",
+              "Shop"
+            ]
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "kind",
+          "phone",
+          "address"
+        ],
+        "additionalProperties": false
+      },
+      "VendorUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "Supplier",
+              "Workshop",
+              "Retread",
+              "Shop"
+            ]
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "phone",
+          "address"
         ],
         "additionalProperties": false
       }

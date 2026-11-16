@@ -388,7 +388,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-105
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-IAM-006"`; `e2e FLW-SA-08`; `qa` SetupGoLive, GoLiveConfirm, BackToSetupConfirm against their artboards
-- [ ] **TASK-112** Vendor master [REQ-INV-014]
+- [x] **TASK-112** Vendor master [REQ-INV-014]
   - _Scope_: Used later by GR, Part Purchase, external services and retread dispatch. DEC-134: every REQ-INV-014 field with a typed code fixed once saved; deactivated vendors stay listed and can be activated again; System Admin only; TASK-112 gives the active vendors to pick from, and each screen that picks is tested by its own task.
   - _Rules_: DEC-134
   - _Screens built here (visual target)_: [`SettingsVendors`](<../Design Artifact/settings/SettingsVendors.html#SettingsVendors>)

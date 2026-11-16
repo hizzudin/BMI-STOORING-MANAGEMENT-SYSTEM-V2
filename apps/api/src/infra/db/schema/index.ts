@@ -232,6 +232,20 @@ export const partPositions = pgTable(
 );
 
 // §9.4 document types (DEC-121); preset_id comes with the SPK presets in TASK-208.
+// §9.7 the vendor master (REQ-INV-014, DEC-134)
+export const vendors = pgTable('vendors', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  deletedAt: timestamp('deleted_at'),
+  code: varchar('code', { length: 20 }).notNull().unique(),
+  name: varchar('name', { length: 150 }).notNull(),
+  vendorType: varchar('vendor_type', { length: 10 }).notNull(),
+  phone: varchar('phone', { length: 30 }),
+  address: text('address'),
+  isActive: boolean('is_active').notNull().default(true),
+});
+
 export const documentTypes = pgTable('document_types', {
   id: id(),
   createdAt: createdAt(),
@@ -492,6 +506,7 @@ export const allTables: readonly PgTable[] = [
   partPositions,
   documentTypes,
   documentTypeClasses,
+  vendors,
   vehicles,
   assignmentModules,
   spks,

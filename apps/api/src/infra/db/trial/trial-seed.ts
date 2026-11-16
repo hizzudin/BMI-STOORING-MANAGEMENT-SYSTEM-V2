@@ -194,6 +194,14 @@ export async function seedTrial(
       await vehicle('B 7710 TR', trailer, trailerLayout),
     ];
 
+    // TASK-112, DEC-134: dummy vendors of three kinds for the vendor master.
+    await db.query(
+      `INSERT INTO vendors (code, name, vendor_type, phone, address)
+       VALUES ('TRIAL_FILTER', 'PT Sumber Filter (dummy)', 'Supplier', '021-555-0101', 'Jl. Industri 12, Cikarang'),
+              ('TRIAL_BENGKEL', 'Bengkel Jaya (dummy)', 'Workshop', '021-555-0122', NULL),
+              ('TRIAL_VULKAN', 'Vulkanisir Jaya (dummy)', 'Retread', '021-555-0144', NULL)`,
+    );
+
     // Step modules with their PRD codes (9.6); the registry of TASK-207 wins when it exists.
     await db.query(
       `INSERT INTO assignment_modules (code, name, ui_component, executor_roles, scope_rules, completion_section, cost_kind)

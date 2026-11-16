@@ -195,13 +195,13 @@ describe('capability matrix', () => {
     await testPool().query(`UPDATE role_permissions SET allowed = true WHERE ${vehicleView}`);
   });
 
-  it('REQ-IAM-010 Setup mode removes the operational codes from every set', async () => {
+  it('REQ-IAM-010 DEC-133 Setup mode removes no code: the System Admin keeps every operational one', async () => {
+    const live = await me('System_Admin');
     await setting('system_mode', 'Setup');
     const admin = await me('System_Admin');
-    expect(admin.systemMode).toBe('Setup');
-    expect(admin.capabilities).not.toContain('spk.create');
-    expect(admin.capabilities).toContain('setup.golive');
-    expect(admin.capabilities).toContain('vehicle.manage');
     await setting('system_mode', 'Live');
+    expect(admin.systemMode).toBe('Setup');
+    expect(admin.capabilities).toEqual(expect.arrayContaining(['spk.create', 'spk.approve']));
+    expect([...admin.capabilities].sort()).toEqual([...live.capabilities].sort());
   });
 });

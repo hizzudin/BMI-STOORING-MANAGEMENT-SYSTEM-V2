@@ -100,3 +100,43 @@ A throwaway `zz-qa.spec.ts` took screenshots, then was deleted and never committ
 
 ### Local environment
 - Windows PostgreSQL 18 on port 5432. WSL Redis is not reachable from Windows, so the queue tests fail here and pass in CI.
+
+## Addendum: DEC-133 (PRD v2.45), Setup mode and self-decisions
+
+The owner's later instruction, asked and decided before code:
+- In Setup mode the System Admin may do all its functions without restriction.
+- The ban on self-approval is lifted only in Setup: there, the one who asked for an approval may approve it, still marked Self-approved.
+- While Live, nobody, the System Admin included, may decide its own work.
+
+The spec came first (commit cda7db7):
+- BR-03, RL-3, the 2.4 capability set and the glossary;
+- REQ-IAM-010, REQ-IAM-012 and AC-IAM-006;
+- REQ-SPK-006 and AC-SPK-006, REQ-ENG-007, REQ-APR-006 and AC-APR-003, and AC-INV-004;
+- the test journeys.
+
+The plan addendum was approved ("Ya, setujui").
+
+### What changed
+- **Capabilities:** Setup mode removes no capability (`blockedInSetupMode` was removed from `@bmi/shared`, with its test).
+- **`Actor`:** carries `systemMode` (from `actorOf`).
+- **`notOwnWork`:** refuses one's own work while Live for every role, and allows it in Setup. `isSelfDecision` still marks it.
+- **Approvals:** the inbox and `allowedActions` follow the same policy.
+- **E2E FLW-SA-06:** the System Admin's own SPK is absent from its inbox while Live. It goes back to Setup, approves it (Self-approved), checks the Audit log and goes live again.
+
+### Evidence
+- **RED:**
+  - `actions.spec.ts`: 2 failed;
+  - `capabilities.spec.ts`: 1 failed;
+  - `approvals.test.ts`: AC-SPK-006 and AC-APR-003 failed;
+  - `allowed-actions.test.ts`: the System Admin case failed;
+  - `system-mode.test.ts`: AC-IAM-006 failed.
+- **GREEN:**
+  - API unit 30 of 30;
+  - API integration `approvals`, `iam` and `spk`: 137 of 137, after `capability-matrix.test.ts`, which still asserted the old Setup block, was updated to DEC-133;
+  - shared 320 of 320;
+  - web 194 of 194.
+- **Gates:** lint and typecheck 9 of 9; check:layers (390 modules) clean; check:secrets clean; Coverage OK.
+- **E2E:**
+  - full run 26 of 27. The failure was FLW-AM-05, the first spec, timing out at the login page before any step of this change;
+  - rerun alone with FLW-SA-06 and FLW-SA-08: 4 of 4;
+  - the second full run (`npx playwright test`): 27 of 27 in 2.0 min.

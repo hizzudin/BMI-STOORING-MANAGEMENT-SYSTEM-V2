@@ -1,15 +1,39 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { signIn } from './spk-helpers';
 
-// FLW-SA-06 (TASK-110): the System Admin approves an SPK it submitted itself (BR-03), then finds the
-// decision on the Audit log flagged Self-approved; the SPK comes from the e2e database seed.
+// FLW-SA-06 (TASK-110, DEC-133): while Live the System Admin may not approve an SPK it submitted
+// itself (BR-03), so it goes back to Setup, approves it there (Self-approved), finds the decision on
+// the Audit log and goes live again; the SPK comes from the e2e database seed.
 test.describe.configure({ mode: 'serial' });
 
+async function switchMode(page: Page, to: 'Back to Setup' | 'Go live') {
+  await page.goto('/setup');
+  await page.getByRole('button', { name: to }).click();
+  const live = to === 'Go live';
+  const dialog = page.getByRole('dialog', { name: live ? 'Go live?' : 'Back to Setup mode?' });
+  await dialog.getByLabel('Reason').fill('FLW-SA-06 oversight check');
+  await dialog
+    .getByLabel(live ? 'Type GO LIVE to confirm' : 'Type BACK TO SETUP to confirm')
+    .fill(live ? 'GO LIVE' : 'BACK TO SETUP');
+  await dialog.getByRole('button', { name: to }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: live ? 'Back to Setup' : 'Go live' }),
+  ).toBeVisible();
+}
+
 test.describe('FLW-SA-06 Oversight', () => {
-  test('REQ-IAM-007 NFR-02 a self-approval shows on the Audit log as Self-approved, with its detail', async ({
+  test('REQ-IAM-007 NFR-02 DEC-133 a self-approval is possible only in Setup and shows on the Audit log as Self-approved', async ({
     page,
   }) => {
     await signIn(page, 'systemAdmin');
+    // BR-03: while Live the System Admin's own SPK is not in its inbox.
+    await page.goto('/approvals');
+    await expect(page.getByRole('heading', { level: 1, name: 'Approvals' })).toBeVisible();
+    await expect(page.getByText('Loading…')).toHaveCount(0);
+    await expect(page.getByRole('row', { name: /Self approval check/ })).toHaveCount(0);
+
+    await switchMode(page, 'Back to Setup');
     await page.goto('/approvals');
     await page
       .getByRole('row', { name: /Self approval check/ })
@@ -41,6 +65,8 @@ test.describe('FLW-SA-06 Oversight', () => {
     await expect(panel).toContainText('"status": "Active"');
     await panel.getByRole('button', { name: 'Close' }).click();
     await expect(panel).toHaveCount(0);
+
+    await switchMode(page, 'Go live');
   });
 
   test('DEC-74 Export follows the filters and downloads a CSV or an xlsx file', async ({

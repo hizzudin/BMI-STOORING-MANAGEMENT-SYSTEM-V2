@@ -252,9 +252,15 @@ describe('allowedActions contract', () => {
     expect(await listed('Planner', 2)).toEqual([]);
   });
 
-  it('BR-03 the System Admin may approve the SPK it created', async () => {
-    expect(await listed('System_Admin', 4)).toContain('approve');
-    expect(await send('System_Admin', 4, 'approve')).toBe(200);
+  it('BR-03 DEC-133 the System Admin may approve the SPK it created only in Setup mode', async () => {
+    expect(await listed('System_Admin', 4)).not.toContain('approve');
+    expect(await send('System_Admin', 4, 'approve')).toBe(403);
+    await setting('system_mode', 'Setup');
+    const listedInSetup = await listed('System_Admin', 4);
+    const sentInSetup = await send('System_Admin', 4, 'approve');
+    await setting('system_mode', 'Live');
+    expect(listedInSetup).toContain('approve');
+    expect(sentInSetup).toBe(200);
   });
 
   it('BR-02 a listed action is still refused when its payload leaves the scope of the SPK', async () => {

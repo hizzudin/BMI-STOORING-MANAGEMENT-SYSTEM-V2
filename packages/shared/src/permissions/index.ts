@@ -386,25 +386,6 @@ export function defaultRolePermissions(): RolePermissionSeed[] {
   });
 }
 
-const BLOCKED_IN_SETUP: readonly PermissionCode[] = [
-  'stock.issue',
-  'purchase.line',
-  'changerequest.raise',
-  'schedule.manage',
-  'invoice.manage',
-  'count.approve',
-];
-
-/** 2.4: Setup mode blocks `spk.*`, `step.*`, `*.execute` and the codes above (REQ-IAM-010). */
-export function blockedInSetupMode(code: PermissionCode): boolean {
-  return (
-    code.startsWith('spk.') ||
-    code.startsWith('step.') ||
-    code.endsWith('.execute') ||
-    BLOCKED_IN_SETUP.includes(code)
-  );
-}
-
 export type MenuKey =
   | 'dashboard'
   | 'spk'

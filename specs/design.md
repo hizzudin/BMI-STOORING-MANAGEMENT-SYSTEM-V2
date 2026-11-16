@@ -393,6 +393,11 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
     - after a switch the page loads again, so `/me` and the menu follow.
   - **Landing:** in Setup the holder of `setup.golive` lands on `/setup` (WebLogin row).
 - **Tests run Live unless they test Setup:** `auth.test.ts` now sets Live, as the other suites do.
+- **DEC-133 (PRD v2.45):**
+  - **Setup mode removes no capability:** `blockedInSetupMode` is gone, and `effectiveCapabilities` ignores the mode.
+  - **`Actor` carries `systemMode`:** `actorOf` copies it from the signed-in snapshot.
+  - **`notOwnWork`:** refuses one's own work while Live, whatever the role (the System Admin included), and allows it in Setup. `isSelfDecision` still marks the stamp and the audit record.
+  - **Approvals:** the inbox (REQ-APR-006) and `allowedActions` use the same policy, so one's own SPK is hidden and refused while Live, and shown as Yours and decidable in Setup.
 
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 

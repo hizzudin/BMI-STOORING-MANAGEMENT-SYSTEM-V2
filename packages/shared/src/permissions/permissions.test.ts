@@ -1,12 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Role } from '../enums/index.js';
-import {
-  blockedInSetupMode,
-  defaultRolePermissions,
-  menuFor,
-  PERMISSION_CODES,
-  type PermissionCode,
-} from './index.js';
+import { defaultRolePermissions, menuFor, PERMISSION_CODES, type PermissionCode } from './index.js';
 import { isSwitchableCell, PERMISSION_GROUPS, PERMISSION_MEANINGS } from './groups.js';
 
 const rows = defaultRolePermissions();
@@ -217,29 +211,5 @@ describe('NAV-9 the 2.4 menu table', () => {
 
   it('NAV-9 the Access Manager has its own navigation: Users and roles, Audit log', () => {
     expect(menu('Access_Manager')).toEqual(['Users and roles', 'Audit log']);
-  });
-});
-
-describe('REQ-IAM-010 Setup mode', () => {
-  it('REQ-IAM-010 blocks spk.*, step.*, *.execute and the listed operational codes', () => {
-    const blocked = PERMISSION_CODES.filter(blockedInSetupMode);
-    expect(blocked).toEqual([
-      'spk.view',
-      'spk.create',
-      'spk.approve',
-      'spk.cancel',
-      'stock.issue',
-      'purchase.line',
-      'mechanic.execute',
-      'mobilisasi.execute',
-      'docstep.execute',
-      'step.verify',
-      'step.request_completion',
-      'step.assign',
-      'changerequest.raise',
-      'count.approve',
-      'schedule.manage',
-      'invoice.manage',
-    ]);
   });
 });

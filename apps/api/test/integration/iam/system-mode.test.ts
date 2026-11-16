@@ -121,12 +121,12 @@ afterAll(async () => {
 
 // The tests run in order: Setup → Live → Setup → Live.
 describe('Setup mode and Go live (REQ-IAM-010, DEC-56, DEC-132)', () => {
-  it('AC-IAM-006 in Setup a Planner sign-in is refused with The system is being set up, and Create SPK is unavailable', async () => {
+  it('AC-IAM-006 DEC-133 in Setup a Planner sign-in is refused with The system is being set up, and the System Admin holds Create SPK', async () => {
     const refused = await signIn('planner');
     expect(refused.status).toBe(403);
     expect(await message(refused)).toBe(BEING_SET_UP);
     const me = (await (await get('admin', '/me')).json()) as { capabilities: string[] };
-    expect(me.capabilities).not.toContain('spk.create');
+    expect(me.capabilities).toEqual(expect.arrayContaining(['spk.create', 'spk.approve']));
   });
 
   it('DEC-132 shows the mode, the checklist with counts and what the System Admin may do', async () => {

@@ -507,7 +507,7 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 | in Setup mode only the System Admin and Access Managers sign in; a Planner gets "The system is being set up" | I+E | AC-IAM-006, DEC-56 |
 | opening balance 420 L @ Rp 76.500 → one OB row, no approval; refused after Go live | I | AC-INV-006 |
 | a bulk import with 2 invalid rows imports nothing and lists them; fixed → 100 created; refused when Live | I | AC-IAM-007 |
-| typing GO LIVE switches to Live once, one way | I+E | REQ-IAM-010 |
+| a reason and GO LIVE switch to Live; a reason and BACK TO SETUP switch back and end the other roles' sessions; each switch is audited | I+E | REQ-IAM-010, DEC-132 |
 
 ### FLW-SA-09 Maintain vendors
 | Test | Layer | Ref |

@@ -378,16 +378,16 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-SA-06`; `e2e FLW-AM-05`; `qa` AuditLog, AMAccessHistory against their artboards
 - [ ] **TASK-111** Setup mode and Go live [REQ-IAM-010]
-  - _Scope_: One-way switch; only the System Admin and Access Managers sign in during Setup.
+  - _Scope_: DEC-132: the switch is reversible. Go live needs a reason and GO LIVE typed; in Live the System Admin goes back to Setup with a reason and BACK TO SETUP typed, which ends the sessions of every role but the System Admin and Access Managers. Each switch is audited. The menu item shows in both modes; the checklist shows counts for accounts, master data and vehicles, and later tasks add their items.
   - _Acceptance_: AC-IAM-006
-  - _Rules_: BR-04, BR-12, DEC-55, DEC-56
-  - _Screens built here (visual target)_: [`SetupGoLive`](<../Design Artifact/setup/SetupGoLive.html#SetupGoLive>), [`GoLiveConfirm`](<../Design Artifact/setup/GoLiveConfirm.html#GoLiveConfirm>)
+  - _Rules_: BR-04, BR-12, DEC-55, DEC-56, DEC-132
+  - _Screens built here (visual target)_: [`SetupGoLive`](<../Design Artifact/setup/SetupGoLive.html#SetupGoLive>), [`GoLiveConfirm`](<../Design Artifact/setup/GoLiveConfirm.html#GoLiveConfirm>), [`BackToSetupConfirm`](<../Design Artifact/setup/BackToSetupConfirm.html#BackToSetupConfirm>)
   - _Screens touched_: [`OpeningBalance`](<../Design Artifact/inventory/OpeningBalance.html#OpeningBalance>) (built later in TASK-311, which shows what this task provides)
   - _Journey_: FLW-SA-08 Set up and go live
-  - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-010); `PRD.md` for BR-04, BR-12, DEC-55, DEC-56 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for SetupGoLive, OpeningBalance; `docs/prd/ui-action-map.md`: every row of OpeningBalance and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-08 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Read_: `docs/prd/areas/4.18-iam.md` (REQ-IAM-010); `PRD.md` for BR-04, BR-12, DEC-55, DEC-56, DEC-132 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for SetupGoLive, OpeningBalance; `docs/prd/ui-action-map.md`: every row of OpeningBalance and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-SA-08 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-105
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-IAM-006"`; `e2e FLW-SA-08`; `qa` SetupGoLive, GoLiveConfirm against their artboards
+  - _Verify_: `int "AC-IAM-006"`; `e2e FLW-SA-08`; `qa` SetupGoLive, GoLiveConfirm, BackToSetupConfirm against their artboards
 - [ ] **TASK-112** Vendor master [REQ-INV-014]
   - _Scope_: Used later by GR, Part Purchase, external services and retread dispatch.
   - _Screens built here (visual target)_: [`SettingsVendors`](<../Design Artifact/settings/SettingsVendors.html#SettingsVendors>)

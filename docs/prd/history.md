@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.44 (2026-11-17) adds DEC-132, product owner decision on Setup mode and Go live: the switch is reversible with a reason and a typed confirmation, going back to Setup ends the other roles' sessions, opening balance and bulk import open again in Setup, the checklist shows counts and hides later items, and Backup restore test is removed from the artboard; REQ-IAM-010, AC-IAM-006, REQ-INV-013, FLW-SA-08 and the OpeningBalance action row are corrected, and BackToSetupConfirm is added.
+
 v2.43 (2026-11-16) adds DEC-131, product owner decision on the Audit log in phase 1: the monthly audit archive moves to TASK-132 after the storage port, server-side pages like SPKList, a short before/after summary with a detail panel, and export in CSV and xlsx.
 
 v2.42 (2026-11-16) adds DEC-130, product owner decision on the local trial in phase 1: `pnpm trial` and `pnpm trial:reset` on a dedicated `bmi_trial` database, random dummy passwords written to `.data/trial-accounts.md` instead of the public repository (ADR-0003 amended), vehicles without documents until TASK-601, one SPK in each of the nine statuses, and the Verify adjusted until TASK-207.

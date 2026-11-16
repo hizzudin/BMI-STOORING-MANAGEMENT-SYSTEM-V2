@@ -237,6 +237,7 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | [`VehicleChassis`](<../../Design Artifact/fleet/VehicleChassis.html#VehicleChassis>) | Vehicle: Chassis and parts | P0 | REQ-PLC-002, REQ-BSL-005 |
 | [`ChangeDriver`](<../../Design Artifact/fleet/ChangeDriver.html#ChangeDriver>) | Change driver (dialog) | P0 | REQ-VEH-010 |
 | [`GoLiveConfirm`](<../../Design Artifact/setup/GoLiveConfirm.html#GoLiveConfirm>) | Go live? (dialog) | P0 | REQ-IAM-010 |
+| [`BackToSetupConfirm`](<../../Design Artifact/setup/BackToSetupConfirm.html#BackToSetupConfirm>) | Back to Setup mode? (dialog) | P0 | REQ-IAM-010, DEC-132 |
 | [`MobilePauseSheet`](<../../Design Artifact/mobile/MobilePauseSheet.html#MobilePauseSheet>) | Mobile: why are you pausing? (sheet) | P0 | C-21, REQ-MOB-009 |
 
 The AI sidebar and its settings page have no artboard yet and are deferred to a later release (see 11.3); they follow the patterns of 7.2. `SettingsIntegrations` (DQ-05) also has no artboard yet. The design canvas screens are currently in English only; the Indonesian translation of the UI is deferred to a later release (see 11.3), with Indonesian as the default language once delivered.

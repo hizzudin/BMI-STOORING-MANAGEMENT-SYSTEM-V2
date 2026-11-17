@@ -9,6 +9,8 @@ import {
   PLANNER_APPROVAL_END,
   STORAGE,
   STORAGE_LINKS,
+  FILE_JOBS,
+  MEDIA,
   VEHICLE_ACTIVITY,
 } from './app.tokens.js';
 import { DocumentTypeService } from './core/fleet/document-type-service.js';
@@ -80,6 +82,14 @@ import {
 } from './http/system-mode/system-mode.controller.js';
 import { systemModeGateways } from './infra/db/system-mode-gateways.js';
 import { VendorService } from './core/inventory/vendor-service.js';
+import { FileCleanup, FileProcessor } from './core/files/file-jobs.js';
+import { FileService } from './core/files/file-service.js';
+import { FileErrorFilter, FilesController } from './http/files/files.controller.js';
+import { fileGateways } from './infra/db/file-gateways.js';
+import { SharpPdfjsMediaProcessor } from './infra/files/media-processor.js';
+import { FileCleanupQueue, FileProcessingQueue } from './infra/queue/file-queues.js';
+import type { FileJobs, MediaProcessor } from './ports/files.js';
+import type { StoragePort } from './ports/storage.js';
 import { VendorErrorFilter, VendorsController } from './http/vendors/vendors.controller.js';
 import { vendorGateways } from './infra/db/vendor-gateways.js';
 import { FsStorageController, StorageErrorFilter } from './http/storage/fs-storage.controller.js';
@@ -153,6 +163,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     AccessHistoryController,
     SystemModeController,
     VendorsController,
+    FilesController,
     ...(storageDriver() === 'fs' ? [FsStorageController] : []),
   ],
   providers: [
@@ -170,6 +181,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: SystemModeErrorFilter },
     { provide: APP_FILTER, useClass: VendorErrorFilter },
     { provide: APP_FILTER, useClass: StorageErrorFilter },
+    { provide: APP_FILTER, useClass: FileErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -321,6 +333,39 @@ const authHttpConfig = (): AuthHttpConfig => ({
     },
     // The fs routes are registered only with the fs driver, so this is the filesystem adapter.
     { provide: STORAGE_LINKS, useExisting: STORAGE },
+    {
+      provide: FILE_JOBS,
+      useFactory: () => new FileProcessingQueue(process.env.REDIS_URL ?? LOCAL_REDIS_URL),
+    },
+    { provide: MEDIA, useFactory: () => new SharpPdfjsMediaProcessor() },
+    {
+      provide: FileService,
+      inject: [PG_POOL, STORAGE, FILE_JOBS, CLOCK],
+      useFactory: (pool: pg.Pool, storage: StoragePort, jobs: FileJobs, clock: ClockPort) =>
+        new FileService(
+          new DrizzleUnitOfWork(pool, fileGateways),
+          storage,
+          jobs,
+          clock,
+          process.env.STORAGE_ENV ?? 'local',
+        ),
+    },
+    {
+      provide: FileProcessor,
+      inject: [PG_POOL, STORAGE, MEDIA],
+      useFactory: (pool: pg.Pool, storage: StoragePort, media: MediaProcessor) =>
+        new FileProcessor(new DrizzleUnitOfWork(pool, fileGateways), storage, media),
+    },
+    {
+      provide: FileCleanup,
+      inject: [PG_POOL, STORAGE, CLOCK],
+      useFactory: (pool: pg.Pool, storage: StoragePort, clock: ClockPort) =>
+        new FileCleanup(new DrizzleUnitOfWork(pool, fileGateways), storage, clock),
+    },
+    {
+      provide: FileCleanupQueue,
+      useFactory: () => new FileCleanupQueue(process.env.REDIS_URL ?? LOCAL_REDIS_URL),
+    },
     SessionGuard,
   ],
   // Feature modules guard their routes with SessionGuard and @RequireCapability (2.4 L1).

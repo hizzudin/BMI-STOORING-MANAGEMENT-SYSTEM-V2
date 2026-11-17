@@ -412,7 +412,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-110, TASK-113
   - _Skill_: ecc:redis-patterns, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "audit archive"`: records older than one year are archived with a checksum and deleted, newer ones stay, and a rerun of the same month changes nothing
-- [ ] **TASK-114** Upload pipeline, server: profiles, type sniffing, worker compression, thumbnails, cleanup, retries, limits [REQ-FUP-001, REQ-FUP-002, REQ-FUP-003, REQ-FUP-005, REQ-FUP-009, REQ-FUP-010, REQ-FUP-013]
+- [x] **TASK-114** Upload pipeline, server: profiles, type sniffing, worker compression, thumbnails, cleanup, retries, limits [REQ-FUP-001, REQ-FUP-002, REQ-FUP-003, REQ-FUP-005, REQ-FUP-009, REQ-FUP-010, REQ-FUP-013]
   - _Scope_: PRD 8.1 upload profiles and file rules. DEC-136: sharp with a WebAssembly HEIC decoder, pdf.js with @napi-rs/canvas; the upload link needs files.upload; the record, step and 10 photos / 5 documents checks are one shared check that each step task applies at attach time; an incoming key is removed after processing.
   - _Acceptance_: AC-FUP-001, AC-FUP-002, AC-FUP-003, AC-FUP-005, AC-FUP-006, AC-FUP-008
   - _Rules_: NFR-06, DEC-31, DEC-136

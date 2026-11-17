@@ -1,6 +1,7 @@
 import { STORAGE_LINK_SECONDS } from '@bmi/shared';
 import {
   CreateBucketCommand,
+  DeleteObjectCommand,
   GetObjectCommand,
   HeadBucketCommand,
   HeadObjectCommand,
@@ -116,6 +117,11 @@ export class S3StorageAdapter implements StoragePort {
       if (statusOf(error) === 412) throw new StorageOverwriteError();
       throw error;
     }
+  }
+
+  /** S3 answers a delete of a missing key with success. */
+  async remove(key: string): Promise<void> {
+    await this.client.send(new DeleteObjectCommand({ Bucket: this.settings.bucket, Key: key }));
   }
 
   async totalBytes(): Promise<number> {

@@ -18,8 +18,9 @@ export interface StoredObject {
 }
 
 /**
- * NFR-13, D-03, DEC-135: private object storage behind one port. Files are never deleted (BR-10)
- * and an existing key is never overwritten (REQ-FUP-008), so the port has no delete.
+ * NFR-13, D-03, DEC-135: private object storage behind one port. An existing key is never
+ * overwritten (REQ-FUP-008). A Ready or attached file is never removed (BR-10); `remove` exists only
+ * for incoming objects and files never attached (REQ-FUP-009, DEC-136).
  */
 export interface StoragePort {
   /** REQ-FUP-004: a link that accepts exactly this content type and size, for 15 minutes. */
@@ -30,6 +31,8 @@ export interface StoragePort {
   read(key: string): Promise<Uint8Array>;
   /** Refuses a key that exists (`StorageOverwriteError`). */
   write(key: string, bytes: Uint8Array, contentType: string): Promise<void>;
+  /** DEC-136: incoming objects and never-attached files only; a missing key is not an error. */
+  remove(key: string): Promise<void>;
   /** NFR-13: the bytes stored, for the daily budget check (TASK-133). */
   totalBytes(): Promise<number>;
 }

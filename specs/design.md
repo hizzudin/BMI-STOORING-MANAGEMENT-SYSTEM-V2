@@ -428,7 +428,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 
 - **Shared:** `STORAGE_LINK_SECONDS` (900) and `storageKey` (`{env}/{yyyy}/{mm}/{entity}/{id}.{ext}` by the UTC month; parts are letters, digits, `_` and `-`).
 - **Port (`ports/storage.ts`):**
-  - `StoragePort`: `signUpload` (an exact content type and size), `signDownload`, `head`, `read`, `write` (refuses an existing key) and `totalBytes`; there is no delete (BR-10);
+  - `StoragePort`: `signUpload` (an exact content type and size), `signDownload`, `head`, `read`, `write` (refuses an existing key), `remove` (DEC-136: incoming objects and never-attached files only, a missing key is not an error) and `totalBytes`; a Ready or attached file is never removed (BR-10);
   - `SignedLinkServer` for an adapter that serves its own links;
   - the errors `StorageOverwriteError` (409), `StorageLinkError` (403), `StorageMismatchError` (400) and `StorageMissingError` (404).
 - **`FsStorageAdapter`:**
@@ -446,6 +446,24 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - one `describe.each` for fs always, and for s3 when `R2_ENDPOINT` is set;
   - CI runs LocalStack (`localstack/localstack:4.0.3`, S3 only, signature validation on) and sets the `R2_*` names;
   - without them the s3 run is reported skipped.
+
+### 5.19 Upload pipeline, server (REQ-FUP-001, 002, 003, 005, 009, 010, 013, NFR-06, DEC-31, DEC-136)
+
+- **Shared (`files/index.ts`, `schemas/files.ts`):**
+  - `UPLOAD_PROFILES` (the 8.1 table), `sniffFileType` (JPEG, PNG, PDF and HEIC/HEIF by their first bytes; video and everything else is `unknown`), `checkUpload` and `checkStepFileLimits` (10 photos, 5 documents), with `FILE_MESSAGES`;
+  - `UploadLinkRequestSchema`, `UploadLinkResponseSchema` and `StoredFileResponseSchema`.
+- **Port (`ports/files.ts`):** `FileGateway` (insert, find, set Ready, set Rejected, list expirable, set Expired), `MediaProcessor` and `FileJobs`.
+- **Core (`core/files/`):**
+  - `FileService`: `requestUpload` (needs `files.upload`, checks the declared type and size, creates a Pending row and signs an upload to `incoming/{storage_key}`), `markUploaded` (enqueues one job per file) and `get` (only the uploader until the attach tasks; signed links only when Ready). Both POSTs take an Idempotency-Key;
+  - `FileProcessor`: reads the incoming object, sniffs it, runs `checkUpload`, compresses images or counts PDF pages, writes the output and the `-thumb.jpg` thumbnail, sets Ready with sha256, size, width, height or pages, then removes the incoming object. An earlier output found on a rerun is kept. An error is thrown for a retry; on the last attempt the file is Rejected with one sentence;
+  - `FileCleanup`: Pending or Rejected rows never attached and older than 24 hours lose their objects and become Expired; a rerun finds nothing.
+- **Infra:**
+  - `SharpPdfjsMediaProcessor` (`infra/files/media-processor.ts`): sharp (EXIF rotation, resize without upscaling, flatten on white, the quality ladder, no metadata written, `captured_at` from EXIF), `heic-decode` for HEIC, `pdfjs-dist` legacy build with `@napi-rs/canvas` for the first page. Image and PDF are one class because they serve one port;
+  - `DrizzleFileGateway` (`infra/db/file-gateways.ts`);
+  - `FileProcessingQueue` (job id `file-{id}`, 4 attempts, exponential backoff from 5 s) and `FileCleanupQueue` (an hourly job scheduler), both registered in `worker.ts`.
+- **Routes (`FilesController`, all `files.upload`):** `POST /files/upload-links`, `POST /files/:id/uploaded`, `GET /files/:id`; `FileErrorFilter` maps 400 and 404.
+- **Settings:** `STORAGE_ENV` is the first part of every storage key (default `local`).
+- **Tests:** `test/integration/files/upload-pipeline.test.ts` runs the worker job in the test (the queue is replaced by a recorder), with photos and PDFs generated in the test and one HEIC fixture (`test/fixtures/photo.heic`, an HEVC still made with ffmpeg and wrapped in HEIF).
 
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 

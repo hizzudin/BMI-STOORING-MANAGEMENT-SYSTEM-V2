@@ -1939,6 +1939,90 @@
         }
       }
     },
+    "/files/upload-links": {
+      "post": {
+        "operationId": "requestUploadLink",
+        "summary": "A Pending file and a signed upload link for one profile; needs an Idempotency-Key",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadLinkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A Pending file and a signed upload link for one profile; needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files/{id}/uploaded": {
+      "post": {
+        "operationId": "markFileUploaded",
+        "summary": "The bytes are in storage: the worker checks them; needs an Idempotency-Key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The bytes are in storage: the worker checks them; needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoredFileResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files/{id}": {
+      "get": {
+        "operationId": "getFile",
+        "summary": "The file detail: status, reason, sizes, and links when Ready",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The file detail: status, reason, sizes, and links when Ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoredFileResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/storage/fs/{token}": {
       "put": {
         "operationId": "putStoredFile",
@@ -7335,6 +7419,379 @@
           "kind",
           "phone",
           "address"
+        ],
+        "additionalProperties": false
+      },
+      "UploadLinkResponse": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "profile": {
+                "type": "string",
+                "enum": [
+                  "Photo",
+                  "Document",
+                  "PDF"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Pending",
+                  "Ready",
+                  "Rejected",
+                  "Expired"
+                ]
+              },
+              "rejectReason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "originalName": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "originalBytes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "storedBytes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "width": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "height": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pageCount": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "capturedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "thumbnailUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fileUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "profile",
+              "status",
+              "rejectReason",
+              "originalName",
+              "originalBytes",
+              "storedBytes",
+              "width",
+              "height",
+              "pageCount",
+              "capturedAt",
+              "thumbnailUrl",
+              "fileUrl"
+            ],
+            "additionalProperties": false
+          },
+          "upload": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string",
+                "const": "PUT"
+              },
+              "headers": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "expiresAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "method",
+              "headers",
+              "expiresAt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "file",
+          "upload"
+        ],
+        "additionalProperties": false
+      },
+      "UploadLinkRequest": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "type": "string",
+            "enum": [
+              "Photo",
+              "Document",
+              "PDF"
+            ]
+          },
+          "contentType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "bytes": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "originalName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "captureSource": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Camera",
+                  "Gallery",
+                  "File"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "profile",
+          "contentType",
+          "bytes",
+          "originalName",
+          "captureSource"
+        ],
+        "additionalProperties": false
+      },
+      "StoredFileResponse": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "profile": {
+                "type": "string",
+                "enum": [
+                  "Photo",
+                  "Document",
+                  "PDF"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Pending",
+                  "Ready",
+                  "Rejected",
+                  "Expired"
+                ]
+              },
+              "rejectReason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "originalName": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "originalBytes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "storedBytes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "width": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "height": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pageCount": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "capturedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "thumbnailUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fileUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "profile",
+              "status",
+              "rejectReason",
+              "originalName",
+              "originalBytes",
+              "storedBytes",
+              "width",
+              "height",
+              "pageCount",
+              "capturedAt",
+              "thumbnailUrl",
+              "fileUrl"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "file"
         ],
         "additionalProperties": false
       }

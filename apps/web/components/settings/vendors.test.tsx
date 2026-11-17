@@ -114,6 +114,40 @@ describe('SettingsVendors (REQ-INV-014, DEC-134)', () => {
     expect(within(panel()).getByRole('alert').textContent).toBe('This code is taken.');
   });
 
+  it('C-16 an unsaved edit asks before it is dropped: Keep editing keeps it, Discard drops it', async () => {
+    const api = apiWith();
+    await open(api);
+    fireEvent.change(within(panel()).getByLabelText('Phone'), { target: { value: '021-1' } });
+    fireEvent.change(within(panel()).getByLabelText('Address'), { target: { value: 'Jl. Baru' } });
+    fireEvent.change(within(panel()).getByLabelText('Kind'), { target: { value: 'Shop' } });
+    fireEvent.click(screen.getByRole('row', { name: /Vulkanisir Jaya/ }));
+    const ask = () => screen.getByRole('dialog', { name: 'Discard your changes?' });
+    fireEvent.click(within(ask()).getByRole('button', { name: 'Keep editing' }));
+    expect((within(panel()).getByLabelText('Phone') as HTMLInputElement).value).toBe('021-1');
+
+    fireEvent.click(within(panel()).getByRole('button', { name: 'Discard changes' }));
+    fireEvent.click(within(ask()).getByRole('button', { name: 'Discard' }));
+    expect((within(panel()).getByLabelText('Phone') as HTMLInputElement).value).toBe(
+      '021-555-0101',
+    );
+    expect((within(panel()).getByLabelText('Kind') as HTMLSelectElement).value).toBe('Supplier');
+  });
+
+  it('C-17 an edit saves the fields without the code', async () => {
+    const api = apiWith();
+    await open(api);
+    fireEvent.change(within(panel()).getByLabelText('Vendor'), {
+      target: { value: 'PT Sumber Filter Baru' },
+    });
+    await act(async () => fireEvent.click(within(panel()).getByRole('button', { name: 'Save' })));
+    expect(api.update).toHaveBeenCalledWith(1, {
+      name: 'PT Sumber Filter Baru',
+      kind: 'Supplier',
+      phone: '021-555-0101',
+      address: 'Jl. Industri 12, Cikarang',
+    });
+  });
+
   it('C-32 Deactivate asks first; an inactive vendor offers Activate', async () => {
     const api = apiWith();
     await open(api);

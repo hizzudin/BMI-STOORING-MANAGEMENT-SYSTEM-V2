@@ -4,10 +4,12 @@ import { AppModule } from './app.module.js';
 import { FILE_JOBS, PLANNER_APPROVAL_END } from './app.tokens.js';
 import { FileCleanup, FileProcessor } from './core/files/file-jobs.js';
 import { StorageUsageCheck } from './core/files/storage-usage.js';
+import { AuditArchiveJob } from './core/audit/audit-archive.js';
 import { PlannerApprovalService } from './core/iam/planner-approval-service.js';
 import {
   FileCleanupQueue,
   StorageUsageQueue,
+  AuditArchiveQueue,
   type FileProcessingQueue,
 } from './infra/queue/file-queues.js';
 import type { PlannerApprovalEndQueue } from './infra/queue/planner-approval-end-queue.js';
@@ -39,6 +41,21 @@ await worker.get(StorageUsageQueue).start(async () => {
     `used ${result.usedBytes} bytes, ${result.pct}% of ${result.budgetGb} GB, ` +
       `step ${result.step ?? 'none'}, notified ${result.notified}`,
   );
+});
+
+// NFR-17, DEC-138: on the 1st at 00:30 WIB, months older than a year go to storage; each month's
+// file, record count and SHA-256 are logged, and a month that fails is logged as an error.
+const auditArchive = worker.get(AuditArchiveJob);
+const archiveLog = new Logger('AuditArchive');
+await worker.get(AuditArchiveQueue).start(async () => {
+  for (const month of await auditArchive.run()) {
+    if ('error' in month) archiveLog.error(`${month.month}: ${month.error}`);
+    else {
+      archiveLog.log(
+        `${month.month}: ${month.records} records to ${month.file}, sha256 ${month.sha256}`,
+      );
+    }
+  }
 });
 
 process.on('SIGTERM', () => void worker.close());

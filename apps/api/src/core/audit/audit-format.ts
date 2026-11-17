@@ -20,6 +20,7 @@ export const AREA_OF: Readonly<Record<string, AuditArea>> = {
   document_type: 'Settings',
   system_mode: 'Settings',
   vendor: 'Settings',
+  audit_archive: 'Access',
 };
 
 /** The entities of one area: the Area filter as the database reads it. */

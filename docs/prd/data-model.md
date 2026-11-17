@@ -88,7 +88,7 @@ CREATE TABLE role_permissions (               -- [A] permission matrix of 2.2, e
   is_locked BOOLEAN NOT NULL DEFAULT false,   -- fixed by a business rule; cannot be changed
   PRIMARY KEY (role, permission_code)
 );
-CREATE TABLE audit_logs (                     -- AO
+CREATE TABLE audit_logs (                     -- AO; the one exception (DEC-57, DEC-138): the monthly archive job deletes rows older than one year, in a transaction with SET LOCAL bmi.audit_archive = 'on', after the month is written to storage
   entity VARCHAR(60) NOT NULL,
   entity_id BIGINT NOT NULL,
   action VARCHAR(40) NOT NULL,

@@ -16,7 +16,11 @@ import {
 } from '../../ports/storage.js';
 
 const SAFE_KEY = /^[A-Za-z0-9_-]+(\/[A-Za-z0-9_-]+)*\.[a-z0-9]+$/;
-const TYPES: Readonly<Record<string, string>> = { jpg: 'image/jpeg', pdf: 'application/pdf' };
+const TYPES: Readonly<Record<string, string>> = {
+  jpg: 'image/jpeg',
+  pdf: 'application/pdf',
+  csv: 'text/csv',
+};
 
 interface Claim {
   k: string;

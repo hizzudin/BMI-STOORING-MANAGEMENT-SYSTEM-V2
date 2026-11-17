@@ -14,7 +14,7 @@ export function storageKey(input: {
   at: Date;
   entity: string;
   id: string;
-  ext: 'jpg' | 'pdf';
+  ext: 'jpg' | 'pdf' | 'csv';
 }): string {
   const year = String(input.at.getUTCFullYear());
   const month = String(input.at.getUTCMonth() + 1).padStart(2, '0');

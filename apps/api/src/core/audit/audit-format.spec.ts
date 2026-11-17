@@ -23,7 +23,12 @@ describe('audit areas (DEC-131)', () => {
   });
 
   it('DEC-131 an area filter is the entities of that area', () => {
-    expect(entitiesOf('Access')).toEqual(['user', 'role_permissions', 'planner_approval']);
+    expect(entitiesOf('Access')).toEqual([
+      'user',
+      'role_permissions',
+      'planner_approval',
+      'audit_archive',
+    ]);
     expect(entitiesOf('Vehicles')).toEqual(['vehicle', 'vehicle_class']);
   });
 });

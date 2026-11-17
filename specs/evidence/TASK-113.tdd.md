@@ -69,3 +69,4 @@ None by the Skill tool in this session. This is in the workflow audit.
 - **First run:** red at the MinIO step: `minio/minio` can no longer be pulled from Docker Hub.
 - **Second run:** the official binary was tried instead; `dl.min.io` answers 410 Gone, so MinIO is no longer obtainable.
 - **The owner chose LocalStack** (`localstack/localstack:4.0.3`) as the S3 emulator in CI. It runs with `S3_SKIP_SIGNATURE_VALIDATION=0`, so the presigned links are really checked. The DEC-135 text and the design were corrected from MinIO to LocalStack.
+- **Third run:** green, but the S3 run was still skipped (6 tests, 1 skipped): Turbo passes only the env names listed in `turbo.json`, so the `R2_*` settings never reached the tests. They are now in `passThroughEnv` of `test:int` and `test:coverage`, and the run is only counted when the CI log shows the s3 tests executed.

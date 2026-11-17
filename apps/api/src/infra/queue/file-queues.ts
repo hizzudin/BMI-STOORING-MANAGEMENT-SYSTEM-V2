@@ -5,6 +5,9 @@ import type { FileJobs } from '../../ports/files.js';
 export const FILE_PROCESSING_QUEUE = 'file-processing';
 export const FILE_CLEANUP_QUEUE = 'file-cleanup';
 export const STORAGE_USAGE_QUEUE = 'storage-usage';
+export const AUDIT_ARCHIVE_QUEUE = 'audit-archive';
+/** DEC-138: the 1st of each month at 00:30 WIB. */
+const MONTHLY_AT_0030_WIB = { pattern: '30 0 1 * *', tz: 'Asia/Jakarta' };
 /** NFR-14: the daily job runs at 00:30 WIB. */
 const DAILY_AT_0030_WIB = { pattern: '30 0 * * *', tz: 'Asia/Jakarta' };
 /** REQ-FUP-013: the first run and up to 3 retries, with growing waits. */
@@ -101,6 +104,27 @@ export class StorageUsageQueue implements OnApplicationShutdown {
     this.queue = new Queue(STORAGE_USAGE_QUEUE, { connection: { url: this.redisUrl } });
     await this.queue.upsertJobScheduler('daily', DAILY_AT_0030_WIB);
     this.worker = new Worker(STORAGE_USAGE_QUEUE, () => run(), {
+      connection: workerConnection(this.redisUrl),
+    });
+  }
+
+  async onApplicationShutdown(): Promise<void> {
+    await this.worker?.close();
+    await this.queue?.close();
+  }
+}
+
+/** NFR-17, DEC-138: the monthly audit archive. Worker only. */
+export class AuditArchiveQueue implements OnApplicationShutdown {
+  private queue: Queue | undefined;
+  private worker: Worker | undefined;
+
+  constructor(private readonly redisUrl: string) {}
+
+  async start(run: () => Promise<unknown>): Promise<void> {
+    this.queue = new Queue(AUDIT_ARCHIVE_QUEUE, { connection: { url: this.redisUrl } });
+    await this.queue.upsertJobScheduler('monthly', MONTHLY_AT_0030_WIB);
+    this.worker = new Worker(AUDIT_ARCHIVE_QUEUE, () => run(), {
       connection: workerConnection(this.redisUrl),
     });
   }

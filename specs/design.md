@@ -475,6 +475,18 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - **Infra:** `DrizzleStorageUsageGateway` (`infra/db/storage-usage-gateways.ts`) and `StorageUsageQueue` (a BullMQ job scheduler, cron `30 0 * * *` in `Asia/Jakarta`), started in `worker.ts`, which logs every run.
 - **Tests:** `test/integration/files/storage-usage.test.ts` (a storage whose total the test sets, a 1 GB budget) and the unit spec `core/files/storage-usage.spec.ts`.
 
+### 5.21 Monthly audit archive (NFR-17, DEC-57, DEC-131, DEC-138)
+
+- **Migration 0013:** `audit_log_append_only()` replaces the shared append-only function on `audit_logs` only. A DELETE passes when the transaction set `bmi.audit_archive = on` and the row is older than one year by the database clock; every UPDATE and every other DELETE raises the BR-10 error.
+- **Port (`ports/audit-archive.ts`):** `monthsBefore(cutoff)` (the WIB months with rows before the cutoff), `rowsOf(from, to)` (every column) and `deleteRange(from, to)` (`SET LOCAL`, then DELETE, returning the count), plus `AuditGateway`.
+- **Core (`core/audit/audit-archive.ts`):**
+  - `archiveCutoff(wibToday)`: the WIB start of the run month minus 12 months; `wibMonthRange(month)`;
+  - `AuditArchiveJob.run()`: per month, the CSV of every column (`toCsv`), its SHA-256, the write at `{env}/{yyyy}/{mm}/audit-archive/audit-{yyyy}-{mm}.csv` (an existing file is kept only when it matches), the read-back check, then one transaction that deletes the month (the count must equal the rows written) and writes the `audit_archive` record (`after`: file, month, records, sha256; by the system). A failing month is reported and the others still run;
+  - `AREA_OF.audit_archive = Access`.
+- **Shared:** `storageKey` takes `csv`; the fs adapter serves it as `text/csv`.
+- **Infra:** `DrizzleAuditArchiveGateway` (`infra/db/audit-archive-gateways.ts`) and `AuditArchiveQueue` (cron `30 0 1 * *` in `Asia/Jakarta`), started in `worker.ts`, which logs each month's file, count and SHA-256, or its error.
+- **Tests:** `test/integration/audit/audit-archive.test.ts` (rows in 2025 with the clock at 2026-11-01, because the trigger checks the real age) and `core/audit/audit-archive.spec.ts`.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

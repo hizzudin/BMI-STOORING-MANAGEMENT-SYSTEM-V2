@@ -85,6 +85,8 @@ import { VendorService } from './core/inventory/vendor-service.js';
 import { FileCleanup, FileProcessor } from './core/files/file-jobs.js';
 import { FileService } from './core/files/file-service.js';
 import { StorageUsageCheck } from './core/files/storage-usage.js';
+import { AuditArchiveJob } from './core/audit/audit-archive.js';
+import { auditArchiveGateways } from './infra/db/audit-archive-gateways.js';
 import { storageUsageGateways } from './infra/db/storage-usage-gateways.js';
 import { FileErrorFilter, FilesController } from './http/files/files.controller.js';
 import { fileGateways } from './infra/db/file-gateways.js';
@@ -93,6 +95,7 @@ import {
   FileCleanupQueue,
   FileProcessingQueue,
   StorageUsageQueue,
+  AuditArchiveQueue,
 } from './infra/queue/file-queues.js';
 import type { FileJobs, MediaProcessor } from './ports/files.js';
 import type { StoragePort } from './ports/storage.js';
@@ -373,6 +376,21 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, STORAGE],
       useFactory: (pool: pg.Pool, storage: StoragePort) =>
         new StorageUsageCheck(new DrizzleUnitOfWork(pool, storageUsageGateways), storage),
+    },
+    {
+      provide: AuditArchiveJob,
+      inject: [PG_POOL, STORAGE, CLOCK],
+      useFactory: (pool: pg.Pool, storage: StoragePort, clock: ClockPort) =>
+        new AuditArchiveJob(
+          new DrizzleUnitOfWork(pool, auditArchiveGateways),
+          storage,
+          clock,
+          process.env.STORAGE_ENV ?? 'local',
+        ),
+    },
+    {
+      provide: AuditArchiveQueue,
+      useFactory: () => new AuditArchiveQueue(process.env.REDIS_URL ?? LOCAL_REDIS_URL),
     },
     {
       provide: StorageUsageQueue,

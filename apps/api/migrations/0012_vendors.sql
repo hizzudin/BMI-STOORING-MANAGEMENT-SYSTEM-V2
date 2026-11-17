@@ -6,10 +6,12 @@ CREATE TABLE vendors (                        -- SD
   created_at TIMESTAMP NOT NULL DEFAULT now(),
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP,
-  code VARCHAR(20) NOT NULL UNIQUE,
+  code VARCHAR(20) NOT NULL,
   name VARCHAR(150) NOT NULL,
   vendor_type VARCHAR(10) NOT NULL CHECK (vendor_type IN ('Supplier','Workshop','Retread','Shop')),
   phone VARCHAR(30),
   address TEXT,
   is_active BOOLEAN NOT NULL DEFAULT true
 );
+-- §9.0: on a soft-deleted table a unique index ignores the deleted rows.
+CREATE UNIQUE INDEX ux_vendors_code ON vendors (code) WHERE deleted_at IS NULL;

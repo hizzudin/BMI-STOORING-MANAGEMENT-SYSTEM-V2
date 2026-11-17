@@ -238,7 +238,7 @@ export const vendors = pgTable('vendors', {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
   deletedAt: timestamp('deleted_at'),
-  code: varchar('code', { length: 20 }).notNull().unique(),
+  code: varchar('code', { length: 20 }).notNull(),
   name: varchar('name', { length: 150 }).notNull(),
   vendorType: varchar('vendor_type', { length: 10 }).notNull(),
   phone: varchar('phone', { length: 30 }),

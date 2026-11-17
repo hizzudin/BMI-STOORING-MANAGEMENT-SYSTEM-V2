@@ -76,3 +76,9 @@ This is the third full run in a row whose first spec failed on a cold server rig
 
 ### QA at 1440 x 900
 A throwaway `zz-qa.spec.ts` took a screenshot, then was deleted and never committed. SettingsVendors matches the artboard: the table Vendor, Kind, Phone, and the panel with Code (fixed), Vendor, Kind, Phone, Address, Deactivate, Discard changes and Save. The search box and column filters come from the kit's DataTable, as on DocumentTypes.
+
+## Addendum: CI on PR #9
+- **First CI run:** red on the web coverage gate (functions 79.97%, below 80%). Two web tests were added for the C-16 discard flow and for an edit saved without the code; functions are now 80.69% (677/839), and the vendors web test is 7 of 7.
+- **Second CI run:** red on `test/integration/db/conventions.test.ts` (TX-18). On a soft-deleted table a unique index must ignore deleted rows (§9.0), and migration 0012 had a plain `UNIQUE` on `code`.
+  - **Fixed** as `vehicles` does: `CREATE UNIQUE INDEX ux_vendors_code ON vendors (code) WHERE deleted_at IS NULL`, with no `.unique()` in the Drizzle schema.
+  - **Why it slipped through:** the full integration suite had not been run locally for this task. That is a workflow gap, now closed: the full run is 244 passed, and only the 7 known local failures remain (5 Redis queue tests, BR-10, NFR-14).

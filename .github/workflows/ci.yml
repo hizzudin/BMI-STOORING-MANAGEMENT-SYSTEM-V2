@@ -72,15 +72,24 @@ jobs:
       - name: Layer rules
         run: pnpm check:layers
       - name: MinIO for the S3 storage contract (DEC-135)
+        # The official binary of one pinned release, checked against its published SHA-256; the
+        # Docker Hub image is no longer published.
         run: |
-          docker run -d --name minio -p 9000:9000 \
-            -e MINIO_ROOT_USER="$R2_ACCESS_KEY_ID" -e MINIO_ROOT_PASSWORD="$R2_SECRET_ACCESS_KEY" \
-            minio/minio:RELEASE.2025-04-22T22-12-26Z server /data
+          base=https://dl.min.io/server/minio/release/linux-amd64/archive
+          release=minio.RELEASE.2025-04-22T22-12-26Z
+          curl -sfL -o "$RUNNER_TEMP/$release" "$base/$release"
+          curl -sfL -o "$RUNNER_TEMP/$release.sha256sum" "$base/$release.sha256sum"
+          (cd "$RUNNER_TEMP" && sha256sum -c "$release.sha256sum")
+          chmod +x "$RUNNER_TEMP/$release"
+          mkdir -p "$RUNNER_TEMP/minio-data"
+          MINIO_ROOT_USER="$R2_ACCESS_KEY_ID" MINIO_ROOT_PASSWORD="$R2_SECRET_ACCESS_KEY" \
+            nohup "$RUNNER_TEMP/$release" server "$RUNNER_TEMP/minio-data" --address :9000 \
+            > "$RUNNER_TEMP/minio.log" 2>&1 &
           for i in $(seq 1 30); do
             curl -sf http://localhost:9000/minio/health/live && exit 0
             sleep 2
           done
-          docker logs minio
+          cat "$RUNNER_TEMP/minio.log"
           exit 1
       - name: Unit and integration tests with coverage gates
         run: pnpm test:coverage

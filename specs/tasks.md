@@ -452,11 +452,11 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Verify_: recorded device run; notes in specs/evidence/TASK-127.tdd.md
 - [ ] **TASK-133** Daily storage usage and the 80% budget alert
   - _Scope_: DEC-135: a daily job reads the total storage use through the StoragePort and alerts the System Admin when it reaches 80% of the budget in Settings (default 50 GB); idempotent like every daily job (NFR-12). The Infrequent Access move is an R2 lifecycle rule set in TASK-128.
-  - _Rules_: NFR-13, DEC-135
-  - _Read_: `PRD.md` for NFR-13, DEC-135 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Rules_: NFR-13, DEC-135, DEC-137
+  - _Read_: `PRD.md` for NFR-13, DEC-135, DEC-137 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-113, TASK-114
   - _Skill_: ecc:redis-patterns, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "storage usage"`: below 80% no alert; at 80% one alert to the System Admin; a rerun of the same day adds none
+  - _Verify_: `int "storage usage"`: below 80% no alert; at 80% one alert to the System Admin; at 84% none more; at 85% one more; a rerun of the same day adds none (DEC-137)
 - [ ] **TASK-128** Staging deploy (Cloud Run, Cloud SQL, Memorystore, R2, Cloudflare), R2 contract run, staging seed — BLOCKED Q-03
   - _Scope_: PRD §8.2 hosting; ADR-0001 seed.
   - _Rules_: DEC-67, NFR-13

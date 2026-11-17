@@ -398,10 +398,10 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-SA-09`; `qa` SettingsVendors against their artboards
 - [ ] **TASK-113** Storage port, filesystem and R2 adapters with one contract suite, signed links [REQ-FUP-004, REQ-FUP-008]
-  - _Scope_: Design D-03; files are never deleted while attached (BR-10).
-  - _Rules_: NFR-13, NFR-11, DEC-32
+  - _Scope_: Design D-03; files are never deleted while attached (BR-10). DEC-135: the filesystem adapter and the S3 adapter for R2 (AWS SDK v3) behind one port; one contract suite, run for the filesystem everywhere and for S3 against MinIO in CI (skipped, never passed, without R2_* settings); upload and download links expire after 15 minutes.
+  - _Rules_: NFR-13, NFR-11, DEC-32, DEC-135
   - _Data_: `stored_files` (§9.12)
-  - _Read_: `docs/prd/areas/8.1-fup.md` (REQ-FUP-004, REQ-FUP-008); `docs/prd/data-model.md` §9.12 (stored_files) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-13, NFR-11, DEC-32 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Read_: `docs/prd/areas/8.1-fup.md` (REQ-FUP-004, REQ-FUP-008); `docs/prd/data-model.md` §9.12 (stored_files) and §9.13 for the TX named in _Rules_; `PRD.md` for NFR-13, NFR-11, DEC-32, DEC-135 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-009, TASK-103
   - _Skill_: ecc:hexagonal-architecture, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "storage contract"` (R2 run in TASK-128)
@@ -450,6 +450,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-104
   - _Skill_: react-native-expert, ecc:react-native-patterns, ecc:accessibility, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: recorded device run; notes in specs/evidence/TASK-127.tdd.md
+- [ ] **TASK-133** Daily storage usage and the 80% budget alert
+  - _Scope_: DEC-135: a daily job reads the total storage use through the StoragePort and alerts the System Admin when it reaches 80% of the budget in Settings (default 50 GB); idempotent like every daily job (NFR-12). The Infrequent Access move is an R2 lifecycle rule set in TASK-128.
+  - _Rules_: NFR-13, DEC-135
+  - _Read_: `PRD.md` for NFR-13, DEC-135 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Depends_: TASK-113, TASK-114
+  - _Skill_: ecc:redis-patterns, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `int "storage usage"`: below 80% no alert; at 80% one alert to the System Admin; a rerun of the same day adds none
 - [ ] **TASK-128** Staging deploy (Cloud Run, Cloud SQL, Memorystore, R2, Cloudflare), R2 contract run, staging seed — BLOCKED Q-03
   - _Scope_: PRD §8.2 hosting; ADR-0001 seed.
   - _Rules_: DEC-67, NFR-13

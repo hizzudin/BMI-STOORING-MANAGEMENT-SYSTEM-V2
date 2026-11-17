@@ -450,7 +450,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-104
   - _Skill_: react-native-expert, ecc:react-native-patterns, ecc:accessibility, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: recorded device run; notes in specs/evidence/TASK-127.tdd.md
-- [ ] **TASK-133** Daily storage usage and the 80% budget alert
+- [x] **TASK-133** Daily storage usage and the 80% budget alert
   - _Scope_: DEC-135: a daily job reads the total storage use through the StoragePort and alerts the System Admin when it reaches 80% of the budget in Settings (default 50 GB); idempotent like every daily job (NFR-12). The Infrequent Access move is an R2 lifecycle rule set in TASK-128.
   - _Rules_: NFR-13, DEC-135, DEC-137
   - _Read_: `PRD.md` for NFR-13, DEC-135, DEC-137 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)

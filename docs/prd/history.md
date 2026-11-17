@@ -127,6 +127,8 @@ v2.49 (2026-11-17) adds DEC-137, product owner decision on the storage usage ale
 
 v2.50 (2026-11-18) adds DEC-138, product owner decision on the monthly audit archive: the 1st of each month at 00:30 WIB, one CSV per WIB month older than 12 months, the checksum in a new audit record and the worker log, and a narrow exception in the audit_logs append-only trigger for the archive job (migration 0013).
 
+v2.51 (2026-11-18) adds DEC-139, product owner decision on the web upload: browser-image-compression with the capture time read by exifr, HEIC sent unchanged, pdf.js in PhotoViewer, one upload queue in the web shell that submits when every file is Ready, and the failure notification left to the step submit (TASK-202).
+
 v2.46 (2026-11-17) adds DEC-134, product owner decision on the vendor master: every REQ-INV-014 field with a typed code fixed once saved, deactivated vendors stay listed and can be activated again, the page is the System Admin's only, and TASK-112 gives the active vendors to pick from; the SettingsVendors artboard gains Code, Phone and Address and loses its Planner viewer.
 
 v2.45 (2026-11-17) adds DEC-133, product owner decision on Setup mode and self-decisions: Setup mode removes no capability, so the System Admin may create, submit and approve in Setup; BR-03 now forbids every self-decision while Live, the System Admin included, and allows it, still marked Self-approved or Self-verified, while in Setup mode. BR-03, RL-3, the 2.4 capability set, the glossary, REQ-IAM-010, REQ-IAM-012, AC-IAM-006, REQ-SPK-006, AC-SPK-006, REQ-ENG-007, REQ-APR-006, AC-APR-003 and AC-INV-004 are corrected.

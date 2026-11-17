@@ -77,6 +77,9 @@ import {
   SystemModeErrorFilter,
 } from './http/system-mode/system-mode.controller.js';
 import { systemModeGateways } from './infra/db/system-mode-gateways.js';
+import { VendorService } from './core/inventory/vendor-service.js';
+import { VendorErrorFilter, VendorsController } from './http/vendors/vendors.controller.js';
+import { vendorGateways } from './infra/db/vendor-gateways.js';
 import { ExcelJsSpreadsheetWriter } from './infra/files/exceljs-spreadsheet-writer.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
@@ -125,6 +128,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     AuditLogController,
     AccessHistoryController,
     SystemModeController,
+    VendorsController,
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -139,6 +143,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: SpkErrorFilter },
     { provide: APP_FILTER, useClass: AuditLogErrorFilter },
     { provide: APP_FILTER, useClass: SystemModeErrorFilter },
+    { provide: APP_FILTER, useClass: VendorErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -263,6 +268,11 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, CLOCK],
       useFactory: (pool: pg.Pool, clock: ClockPort) =>
         new SystemModeService(new DrizzleUnitOfWork(pool, systemModeGateways), clock),
+    },
+    {
+      provide: VendorService,
+      inject: [PG_POOL],
+      useFactory: (pool: pg.Pool) => new VendorService(new DrizzleUnitOfWork(pool, vendorGateways)),
     },
     SessionGuard,
   ],

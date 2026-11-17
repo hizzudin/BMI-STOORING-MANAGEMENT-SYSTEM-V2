@@ -512,7 +512,8 @@ Side paths are tested in their own flow files: FLW-MEC-05 → FLW-PLN-06 → FLW
 ### FLW-SA-09 Maintain vendors
 | Test | Layer | Ref |
 | --- | --- | --- |
-| a saved vendor is pickable in GR, Part Purchase, external services and retread dispatch | I | REQ-INV-014 |
+| a vendor is created, edited, deactivated and activated again, with one audit record each; only active vendors are offered for picking, by kind | I+E | REQ-INV-014, DEC-134 |
+| a saved vendor is pickable in GR, Part Purchase, external services and retread dispatch (tested by the task that builds each screen) | I | REQ-INV-014 |
 
 ### FLW-SA-10 Set a vehicle's driver
 | Test | Layer | Ref |

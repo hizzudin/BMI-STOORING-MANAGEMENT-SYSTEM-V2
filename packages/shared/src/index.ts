@@ -19,4 +19,5 @@ export * from './schemas/planner-approval.js';
 export * from './schemas/approvals.js';
 export * from './schemas/audit.js';
 export * from './schemas/system-mode.js';
+export * from './schemas/vendors.js';
 export * from './time/wib.js';

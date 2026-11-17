@@ -399,6 +399,31 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - **`notOwnWork`:** refuses one's own work while Live, whatever the role (the System Admin included), and allows it in Setup. `isSelfDecision` still marks the stamp and the audit record.
   - **Approvals:** the inbox (REQ-APR-006) and `allowedActions` use the same policy, so one's own SPK is hidden and refused while Live, and shown as Yours and decidable in Setup.
 
+### 5.17 Vendor master (REQ-INV-014, DEC-134)
+
+- **Migration 0012:** `vendors` as §9.7 with the §9.0 columns (SD `deleted_at`). The code is unique; the service checks it without regard to case.
+- **Shared (`schemas/vendors.ts`):**
+  - `VENDOR_KINDS`;
+  - `VendorSchema` (with `isActive`);
+  - `VendorRequestSchema`: a code of 1 to 20 letters, digits and underscores; a name; the kind; phone and address, which may be null;
+  - `VendorUpdateRequestSchema`: without the code;
+  - the list, the options query and the options response.
+- **API:**
+  - `ports/vendors.ts`, `core/inventory/vendor-service.ts` and `infra/db/vendor-gateways.ts`;
+  - every save writes one audit record (entity `vendor`, area Settings); the Audit log names the record by its code.
+- **Routes:**
+
+  | Route | Needs |
+  | --- | --- |
+  | `GET /vendors`, `POST /vendors`, `PATCH /vendors/:id`, `POST /vendors/:id/deactivate`, `POST /vendors/:id/activate` | `masterdata.manage` |
+  | `GET /vendors/options?kind=` (active vendors by name) | any of `masterdata.manage`, `inventory.manage`, `tyre.manage`, `purchase.line`, `mechanic.execute` |
+
+- **Web `/settings/vendors` (`Vendors`), on the DocumentTypes pattern:**
+  - the table: Vendor (with an Inactive pill), Kind, Phone;
+  - the panel: Code (fixed once saved), Vendor, Kind, Phone, Address;
+  - Deactivate (with C-32) or Activate, Discard changes (C-16) and Save (C-17).
+- **Trial seed:** three dummy vendors (Supplier, Workshop, Retread).
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

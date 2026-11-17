@@ -119,6 +119,8 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
+v2.46 (2026-11-17) adds DEC-134, product owner decision on the vendor master: every REQ-INV-014 field with a typed code fixed once saved, deactivated vendors stay listed and can be activated again, the page is the System Admin's only, and TASK-112 gives the active vendors to pick from; the SettingsVendors artboard gains Code, Phone and Address and loses its Planner viewer.
+
 v2.45 (2026-11-17) adds DEC-133, product owner decision on Setup mode and self-decisions: Setup mode removes no capability, so the System Admin may create, submit and approve in Setup; BR-03 now forbids every self-decision while Live, the System Admin included, and allows it, still marked Self-approved or Self-verified, while in Setup mode. BR-03, RL-3, the 2.4 capability set, the glossary, REQ-IAM-010, REQ-IAM-012, AC-IAM-006, REQ-SPK-006, AC-SPK-006, REQ-ENG-007, REQ-APR-006, AC-APR-003 and AC-INV-004 are corrected.
 
 v2.44 (2026-11-17) adds DEC-132, product owner decision on Setup mode and Go live: the switch is reversible with a reason and a typed confirmation, going back to Setup ends the other roles' sessions, opening balance and bulk import open again in Setup, the checklist shows counts and hides later items, and Backup restore test is removed from the artboard; REQ-IAM-010, AC-IAM-006, REQ-INV-013, FLW-SA-08 and the OpeningBalance action row are corrected, and BackToSetupConfirm is added.

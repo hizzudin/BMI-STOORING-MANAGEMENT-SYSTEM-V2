@@ -846,6 +846,92 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/vendors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Every vendor, the inactive marked (DEC-134) */
+        get: operations["listVendors"];
+        put?: never;
+        /** New vendor with a typed code (C-31) */
+        post: operations["createVendor"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vendors/options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The active vendors to pick from, of one kind when asked */
+        get: operations["vendorOptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vendors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Save a vendor; the code is fixed once saved (C-17) */
+        patch: operations["updateVendor"];
+        trace?: never;
+    };
+    "/vendors/{id}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Deactivate a vendor (C-32) */
+        post: operations["deactivateVendor"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vendors/{id}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Activate a vendor again (DEC-134) */
+        post: operations["activateVendor"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1689,6 +1775,55 @@ export interface components {
         SystemModeSwitchRequest: {
             reason: string;
             confirmation: string;
+        };
+        VendorListResponse: {
+            vendors: {
+                id: number;
+                code: string;
+                name: string;
+                /** @enum {string} */
+                kind: "Supplier" | "Workshop" | "Retread" | "Shop";
+                phone: string | null;
+                address: string | null;
+                isActive: boolean;
+            }[];
+            allowedActions: ("create" | "edit" | "deactivate" | "activate")[];
+        };
+        VendorOptionsResponse: {
+            vendors: {
+                id: number;
+                code: string;
+                name: string;
+                /** @enum {string} */
+                kind: "Supplier" | "Workshop" | "Retread" | "Shop";
+            }[];
+        };
+        VendorResponse: {
+            vendor: {
+                id: number;
+                code: string;
+                name: string;
+                /** @enum {string} */
+                kind: "Supplier" | "Workshop" | "Retread" | "Shop";
+                phone: string | null;
+                address: string | null;
+                isActive: boolean;
+            };
+        };
+        VendorRequest: {
+            code: string;
+            name: string;
+            /** @enum {string} */
+            kind: "Supplier" | "Workshop" | "Retread" | "Shop";
+            phone: string | null;
+            address: string | null;
+        };
+        VendorUpdateRequest: {
+            name: string;
+            /** @enum {string} */
+            kind: "Supplier" | "Workshop" | "Retread" | "Shop";
+            phone: string | null;
+            address: string | null;
         };
     };
     responses: never;
@@ -3030,6 +3165,142 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SystemModeResponse"];
+                };
+            };
+        };
+    };
+    listVendors: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Every vendor, the inactive marked (DEC-134) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorListResponse"];
+                };
+            };
+        };
+    };
+    createVendor: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VendorRequest"];
+            };
+        };
+        responses: {
+            /** @description New vendor with a typed code (C-31) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorResponse"];
+                };
+            };
+        };
+    };
+    vendorOptions: {
+        parameters: {
+            query?: {
+                kind?: "Supplier" | "Workshop" | "Retread" | "Shop";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The active vendors to pick from, of one kind when asked */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOptionsResponse"];
+                };
+            };
+        };
+    };
+    updateVendor: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VendorUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Save a vendor; the code is fixed once saved (C-17) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorResponse"];
+                };
+            };
+        };
+    };
+    deactivateVendor: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deactivate a vendor (C-32) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+        };
+    };
+    activateVendor: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Activate a vendor again (DEC-134) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
                 };
             };
         };

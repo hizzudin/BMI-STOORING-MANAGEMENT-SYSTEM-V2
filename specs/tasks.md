@@ -407,8 +407,8 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Verify_: `int "storage contract"` (R2 run in TASK-128)
 - [ ] **TASK-132** Monthly audit archive: records older than one year exported to object storage, then deleted
   - _Scope_: DEC-131: moved out of TASK-110. Each month a job writes the audit records older than one year to a read-only CSV archive file in storage, logs its checksum, and only then deletes them; the one exception to append-only BR-10 (DEC-57). Idempotent like every daily job (NFR-12).
-  - _Rules_: NFR-17, DEC-57, DEC-131
-  - _Read_: `PRD.md` for NFR-17, DEC-57, DEC-131 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Rules_: NFR-17, DEC-57, DEC-131, DEC-138
+  - _Read_: `PRD.md` for NFR-17, DEC-57, DEC-131, DEC-138 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-110, TASK-113
   - _Skill_: ecc:redis-patterns, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "audit archive"`: records older than one year are archived with a checksum and deleted, newer ones stay, and a rerun of the same month changes nothing

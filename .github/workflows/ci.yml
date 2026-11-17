@@ -22,11 +22,11 @@ jobs:
       TEST_DATABASE_URL: postgres://bmi:bmi_ci@localhost:5432/bmi_dev
       REDIS_URL: redis://localhost:6379
       NEXT_TELEMETRY_DISABLED: 1
-      # DEC-135: the S3 run of the storage contract suite against MinIO (throwaway CI values).
-      R2_ENDPOINT: http://localhost:9000
+      # DEC-135: the S3 run of the storage contract suite against LocalStack (throwaway CI values).
+      R2_ENDPOINT: http://localhost:4566
       R2_BUCKET: bmi-ci
-      R2_ACCESS_KEY_ID: bmi-ci-minio
-      R2_SECRET_ACCESS_KEY: bmi-ci-minio-password
+      R2_ACCESS_KEY_ID: test
+      R2_SECRET_ACCESS_KEY: test
     services:
       postgres:
         image: postgres:16
@@ -41,6 +41,18 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 20
+      # DEC-135: S3 for the storage contract suite (MinIO is no longer downloadable).
+      localstack:
+        image: localstack/localstack:4.0.3
+        env:
+          SERVICES: s3
+          S3_SKIP_SIGNATURE_VALIDATION: '0'
+        ports: ['4566:4566']
+        options: >-
+          --health-cmd "curl -sf http://localhost:4566/_localstack/health"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
       redis:
         image: redis:7
         ports: ['6379:6379']
@@ -71,26 +83,6 @@ jobs:
         run: pnpm check:client
       - name: Layer rules
         run: pnpm check:layers
-      - name: MinIO for the S3 storage contract (DEC-135)
-        # The official binary of one pinned release, checked against its published SHA-256; the
-        # Docker Hub image is no longer published.
-        run: |
-          base=https://dl.min.io/server/minio/release/linux-amd64/archive
-          release=minio.RELEASE.2025-04-22T22-12-26Z
-          curl -sfL -o "$RUNNER_TEMP/$release" "$base/$release"
-          curl -sfL -o "$RUNNER_TEMP/$release.sha256sum" "$base/$release.sha256sum"
-          (cd "$RUNNER_TEMP" && sha256sum -c "$release.sha256sum")
-          chmod +x "$RUNNER_TEMP/$release"
-          mkdir -p "$RUNNER_TEMP/minio-data"
-          MINIO_ROOT_USER="$R2_ACCESS_KEY_ID" MINIO_ROOT_PASSWORD="$R2_SECRET_ACCESS_KEY" \
-            nohup "$RUNNER_TEMP/$release" server "$RUNNER_TEMP/minio-data" --address :9000 \
-            > "$RUNNER_TEMP/minio.log" 2>&1 &
-          for i in $(seq 1 30); do
-            curl -sf http://localhost:9000/minio/health/live && exit 0
-            sleep 2
-          done
-          cat "$RUNNER_TEMP/minio.log"
-          exit 1
       - name: Unit and integration tests with coverage gates
         run: pnpm test:coverage
       # ADR-0003, DEC-130: the local trial seed must follow every migration.

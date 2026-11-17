@@ -119,7 +119,7 @@ Decisions, requirements and transactions that no longer apply, and the assumptio
 
 ## Change history
 
-v2.47 (2026-11-17) adds DEC-135, product owner decision on the storage port: the filesystem and S3 (R2, AWS SDK v3) adapters behind one port, one contract suite run for the filesystem everywhere and for S3 against MinIO in CI, signed links of 15 minutes both ways, the daily usage alert in a new TASK-133 after TASK-114, and the Infrequent Access move as an R2 lifecycle rule with the deploy in TASK-128.
+v2.47 (2026-11-17) adds DEC-135, product owner decision on the storage port: the filesystem and S3 (R2, AWS SDK v3) adapters behind one port, one contract suite run for the filesystem everywhere and for S3 against LocalStack in CI, signed links of 15 minutes both ways, the daily usage alert in a new TASK-133 after TASK-114, and the Infrequent Access move as an R2 lifecycle rule with the deploy in TASK-128.
 
 v2.46 (2026-11-17) adds DEC-134, product owner decision on the vendor master: every REQ-INV-014 field with a typed code fixed once saved, deactivated vendors stay listed and can be activated again, the page is the System Admin's only, and TASK-112 gives the active vendors to pick from; the SettingsVendors artboard gains Code, Phone and Address and loses its Planner viewer.
 

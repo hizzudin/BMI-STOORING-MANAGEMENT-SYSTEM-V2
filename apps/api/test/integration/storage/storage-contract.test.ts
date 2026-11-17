@@ -50,7 +50,7 @@ afterAll(async () => {
   await app.close();
 });
 
-/** The S3 run needs the R2_* settings: MinIO in CI, real R2 in TASK-128 (DEC-135). */
+/** The S3 run needs the R2_* settings: LocalStack in CI, real R2 in TASK-128 (DEC-135). */
 const s3Settings = process.env.R2_ENDPOINT
   ? {
       endpoint: process.env.R2_ENDPOINT,
@@ -157,7 +157,7 @@ describe.each(adapters)(
 );
 
 describe.skipIf(s3Settings !== null)(
-  'storage contract: s3 adapter skipped here, no R2_* settings (runs on MinIO in CI, on R2 in TASK-128)',
+  'storage contract: s3 adapter skipped here, no R2_* settings (runs on LocalStack in CI, on R2 in TASK-128)',
   () => {
     it.skip('storage contract s3: needs R2_ENDPOINT', () => {});
   },

@@ -444,7 +444,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - **Composition:** `STORAGE_DRIVER` (`fs` or `s3`) picks the adapter; s3 needs `R2_ENDPOINT`, `R2_BUCKET`, `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY`.
 - **Contract suite (`test/integration/storage/storage-contract.test.ts`):**
   - one `describe.each` for fs always, and for s3 when `R2_ENDPOINT` is set;
-  - CI starts MinIO (`minio/minio:RELEASE.2025-04-22T22-12-26Z`) and sets the `R2_*` names;
+  - CI runs LocalStack (`localstack/localstack:4.0.3`, S3 only, signature validation on) and sets the `R2_*` names;
   - without them the s3 run is reported skipped.
 
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)

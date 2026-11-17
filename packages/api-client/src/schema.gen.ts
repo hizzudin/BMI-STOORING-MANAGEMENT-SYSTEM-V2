@@ -932,6 +932,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/files/upload-links": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A Pending file and a signed upload link for one profile; needs an Idempotency-Key */
+        post: operations["requestUploadLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{id}/uploaded": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The bytes are in storage: the worker checks them; needs an Idempotency-Key */
+        post: operations["markFileUploaded"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The file detail: status, reason, sizes, and links when Ready */
+        get: operations["getFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/storage/fs/{token}": {
         parameters: {
             query?: never;
@@ -1842,6 +1893,61 @@ export interface components {
             kind: "Supplier" | "Workshop" | "Retread" | "Shop";
             phone: string | null;
             address: string | null;
+        };
+        UploadLinkResponse: {
+            file: {
+                id: number;
+                /** @enum {string} */
+                profile: "Photo" | "Document" | "PDF";
+                /** @enum {string} */
+                status: "Pending" | "Ready" | "Rejected" | "Expired";
+                rejectReason: string | null;
+                originalName: string | null;
+                originalBytes: number | null;
+                storedBytes: number | null;
+                width: number | null;
+                height: number | null;
+                pageCount: number | null;
+                capturedAt: string | null;
+                thumbnailUrl: string | null;
+                fileUrl: string | null;
+            };
+            upload: {
+                url: string;
+                /** @constant */
+                method: "PUT";
+                headers: {
+                    [key: string]: string;
+                };
+                expiresAt: string;
+            };
+        };
+        UploadLinkRequest: {
+            /** @enum {string} */
+            profile: "Photo" | "Document" | "PDF";
+            contentType: string;
+            bytes: number;
+            originalName: string | null;
+            captureSource: ("Camera" | "Gallery" | "File") | null;
+        };
+        StoredFileResponse: {
+            file: {
+                id: number;
+                /** @enum {string} */
+                profile: "Photo" | "Document" | "PDF";
+                /** @enum {string} */
+                status: "Pending" | "Ready" | "Rejected" | "Expired";
+                rejectReason: string | null;
+                originalName: string | null;
+                originalBytes: number | null;
+                storedBytes: number | null;
+                width: number | null;
+                height: number | null;
+                pageCount: number | null;
+                capturedAt: string | null;
+                thumbnailUrl: string | null;
+                fileUrl: string | null;
+            };
         };
     };
     responses: never;
@@ -3319,6 +3425,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+        };
+    };
+    requestUploadLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadLinkRequest"];
+            };
+        };
+        responses: {
+            /** @description A Pending file and a signed upload link for one profile; needs an Idempotency-Key */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadLinkResponse"];
+                };
+            };
+        };
+    };
+    markFileUploaded: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bytes are in storage: the worker checks them; needs an Idempotency-Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredFileResponse"];
+                };
+            };
+        };
+    };
+    getFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The file detail: status, reason, sizes, and links when Ready */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredFileResponse"];
                 };
             };
         };

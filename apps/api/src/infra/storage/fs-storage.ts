@@ -1,6 +1,6 @@
 import { STORAGE_LINK_SECONDS } from '@bmi/shared';
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
 import type { ClockPort } from '../../ports/clock.js';
 import {
@@ -96,6 +96,10 @@ export class FsStorageAdapter implements StoragePort, SignedLinkServer {
       if ((error as NodeJS.ErrnoException).code === 'EEXIST') throw new StorageOverwriteError();
       throw error;
     }
+  }
+
+  async remove(key: string): Promise<void> {
+    await rm(this.path(key), { force: true });
   }
 
   async totalBytes(): Promise<number> {

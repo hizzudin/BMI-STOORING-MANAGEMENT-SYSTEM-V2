@@ -154,6 +154,16 @@ describe.each(adapters)(
       expect(await storage().totalBytes()).toBe(before + 10);
       expect(await storage().head(key())).toBeNull();
     });
+
+    it(`storage contract ${name}: remove takes an object away, and a missing key is not an error (DEC-136)`, async () => {
+      const at = key();
+      await storage().write(at, bytes('incoming'), 'image/jpeg');
+      await storage().remove(at);
+      expect(await storage().head(at)).toBeNull();
+      await expect(storage().remove(at)).resolves.toBeUndefined();
+      await storage().write(at, bytes('again'), 'image/jpeg');
+      expect(new TextDecoder().decode(await storage().read(at))).toBe('again');
+    });
   },
 );
 

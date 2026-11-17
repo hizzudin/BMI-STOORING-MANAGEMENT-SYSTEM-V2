@@ -11,3 +11,7 @@ export const VEHICLE_ACTIVITY = Symbol('VEHICLE_ACTIVITY');
 export const STORAGE = Symbol('STORAGE');
 /** D-03: the adapter that serves its own signed links (the filesystem adapter only). */
 export const STORAGE_LINKS = Symbol('STORAGE_LINKS');
+/** REQ-FUP-005, DEC-136: enqueues the worker check of an uploaded file; tests override it. */
+export const FILE_JOBS = Symbol('FILE_JOBS');
+/** DEC-136: sharp, the HEIC decoder and pdf.js. */
+export const MEDIA = Symbol('MEDIA');

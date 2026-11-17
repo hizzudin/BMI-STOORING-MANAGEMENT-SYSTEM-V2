@@ -1,5 +1,6 @@
 // State machines, permission catalogue, schemas and rule constants arrive from TASK-102 on.
 export * from './enums/index.js';
+export * from './files/index.js';
 export * from './format/index.js';
 export * from './money/index.js';
 export * from './numbering/index.js';
@@ -9,6 +10,7 @@ export * from './schemas/accounts.js';
 export * from './schemas/auth.js';
 export * from './schemas/chassis-layout.js';
 export * from './schemas/document-types.js';
+export * from './schemas/files.js';
 export * from './schemas/role-permissions.js';
 export * from './schemas/vehicle-classes.js';
 export * from './schemas/vehicles.js';

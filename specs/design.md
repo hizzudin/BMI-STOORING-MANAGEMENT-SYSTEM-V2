@@ -465,6 +465,16 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - **Settings:** `STORAGE_ENV` is the first part of every storage key (default `local`).
 - **Tests:** `test/integration/files/upload-pipeline.test.ts` runs the worker job in the test (the queue is replaced by a recorder), with photos and PDFs generated in the test and one HEIC fixture (`test/fixtures/photo.heic`, an HEVC still made with ffmpeg and wrapped in HEIF).
 
+### 5.20 Daily storage usage alert (NFR-13, NFR-12, NFR-14, DEC-137)
+
+- **Port (`ports/storage-usage.ts`):** `StorageUsageGateway.settings()` (`storage_budget_gb`, `storage_alert_pct` of app_settings, null when missing) and `highestStepSent(budgetGb)` (from the `storage-usage:{budget}:{step}` dedupe keys of notifications).
+- **Core (`core/files/storage-usage.ts`):**
+  - `usageStep(pct, alertPct)`: null below the alert percentage, otherwise the 5% step reached (80, 85, … beyond 100);
+  - `usageNotice`: "File storage is NN% full" and "X GB of the Y GB budget is used." (one decimal);
+  - `StorageUsageCheck.run()`: reads `StoragePort.totalBytes`, applies the defaults 50 GB and 80%, and in one transaction notifies the active System Admins (kind Alert, no link) only when the step is above the highest step sent for this budget. It returns `{ usedBytes, budgetGb, pct, step, notified }`.
+- **Infra:** `DrizzleStorageUsageGateway` (`infra/db/storage-usage-gateways.ts`) and `StorageUsageQueue` (a BullMQ job scheduler, cron `30 0 * * *` in `Asia/Jakarta`), started in `worker.ts`, which logs every run.
+- **Tests:** `test/integration/files/storage-usage.test.ts` (a storage whose total the test sets, a 1 GB budget) and the unit spec `core/files/storage-usage.spec.ts`.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

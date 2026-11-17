@@ -310,6 +310,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
               bucket: setting('R2_BUCKET'),
               accessKeyId: setting('R2_ACCESS_KEY_ID'),
               secretAccessKey: setting('R2_SECRET_ACCESS_KEY'),
+              region: process.env.R2_REGION,
             })
           : new FsStorageAdapter({
               root: process.env.STORAGE_FS_ROOT ?? '.data/storage',

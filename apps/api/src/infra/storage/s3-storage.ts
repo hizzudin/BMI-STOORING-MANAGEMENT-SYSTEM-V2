@@ -22,6 +22,8 @@ export interface S3StorageSettings {
   bucket: string;
   accessKeyId: string;
   secretAccessKey: string;
+  /** R2 takes 'auto'; an S3 emulator needs a real AWS region name. */
+  region?: string;
 }
 
 const statusOf = (error: unknown) =>
@@ -37,7 +39,7 @@ export class S3StorageAdapter implements StoragePort {
   constructor(private readonly settings: S3StorageSettings) {
     this.client = new S3Client({
       endpoint: settings.endpoint,
-      region: 'auto',
+      region: settings.region ?? 'auto',
       forcePathStyle: true,
       credentials: {
         accessKeyId: settings.accessKeyId,

@@ -27,6 +27,7 @@ jobs:
       R2_BUCKET: bmi-ci
       R2_ACCESS_KEY_ID: test
       R2_SECRET_ACCESS_KEY: test
+      R2_REGION: us-east-1
     services:
       postgres:
         image: postgres:16

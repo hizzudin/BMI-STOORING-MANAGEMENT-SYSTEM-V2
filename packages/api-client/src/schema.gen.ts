@@ -932,6 +932,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/storage/fs/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Open a file through a signed link of the filesystem adapter (15 minutes) */
+        get: operations["getStoredFile"];
+        /** Upload through a signed link of the filesystem adapter (15 minutes) */
+        put: operations["putStoredFile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3295,6 +3313,51 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Activate a vendor again (DEC-134) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OkResponse"];
+                };
+            };
+        };
+    };
+    getStoredFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Open a file through a signed link of the filesystem adapter (15 minutes) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    putStoredFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Upload through a signed link of the filesystem adapter (15 minutes) */
             200: {
                 headers: {
                     [name: string]: unknown;

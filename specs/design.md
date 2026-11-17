@@ -424,6 +424,29 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
   - Deactivate (with C-32) or Activate, Discard changes (C-16) and Save (C-17).
 - **Trial seed:** three dummy vendors (Supplier, Workshop, Retread).
 
+### 5.18 Storage port and adapters (REQ-FUP-004, REQ-FUP-008, NFR-13, D-03, DEC-135)
+
+- **Shared:** `STORAGE_LINK_SECONDS` (900) and `storageKey` (`{env}/{yyyy}/{mm}/{entity}/{id}.{ext}` by the UTC month; parts are letters, digits, `_` and `-`).
+- **Port (`ports/storage.ts`):**
+  - `StoragePort`: `signUpload` (an exact content type and size), `signDownload`, `head`, `read`, `write` (refuses an existing key) and `totalBytes`; there is no delete (BR-10);
+  - `SignedLinkServer` for an adapter that serves its own links;
+  - the errors `StorageOverwriteError` (409), `StorageLinkError` (403), `StorageMismatchError` (400) and `StorageMissingError` (404).
+- **`FsStorageAdapter`:**
+  - files under `STORAGE_FS_ROOT` (`.data/storage`), written with `wx`;
+  - an HMAC token (key, operation, expiry, type, size) with `STORAGE_SIGNING_SECRET` on the injected clock;
+  - links are `{STORAGE_PUBLIC_URL}/storage/fs/{token}`.
+- **`S3StorageAdapter` (AWS SDK v3):**
+  - path-style, region auto;
+  - uploads presigned with the content type, length and `If-None-Match: *` signed;
+  - writes are conditional (412 is an overwrite);
+  - `totalBytes` pages `ListObjectsV2`.
+- **Routes:** `FsStorageController` (`PUT`/`GET /storage/fs/:token`) is registered only when `STORAGE_DRIVER=fs`, injects `STORAGE_LINKS` (`useExisting: STORAGE`) and reads the raw body up to 25 MB.
+- **Composition:** `STORAGE_DRIVER` (`fs` or `s3`) picks the adapter; s3 needs `R2_ENDPOINT`, `R2_BUCKET`, `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY`.
+- **Contract suite (`test/integration/storage/storage-contract.test.ts`):**
+  - one `describe.each` for fs always, and for s3 when `R2_ENDPOINT` is set;
+  - CI starts MinIO (`minio/minio:RELEASE.2025-04-22T22-12-26Z`) and sets the `R2_*` names;
+  - without them the s3 run is reported skipped.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

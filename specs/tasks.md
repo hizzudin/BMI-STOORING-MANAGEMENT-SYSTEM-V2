@@ -397,7 +397,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-106, TASK-126
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-SA-09`; `qa` SettingsVendors against their artboards
-- [ ] **TASK-113** Storage port, filesystem and R2 adapters with one contract suite, signed links [REQ-FUP-004, REQ-FUP-008]
+- [x] **TASK-113** Storage port, filesystem and R2 adapters with one contract suite, signed links [REQ-FUP-004, REQ-FUP-008]
   - _Scope_: Design D-03; files are never deleted while attached (BR-10). DEC-135: the filesystem adapter and the S3 adapter for R2 (AWS SDK v3) behind one port; one contract suite, run for the filesystem everywhere and for S3 against MinIO in CI (skipped, never passed, without R2_* settings); upload and download links expire after 15 minutes.
   - _Rules_: NFR-13, NFR-11, DEC-32, DEC-135
   - _Data_: `stored_files` (§9.12)

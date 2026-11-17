@@ -7,6 +7,8 @@ import {
   PASSWORD_HASHER,
   PG_POOL,
   PLANNER_APPROVAL_END,
+  STORAGE,
+  STORAGE_LINKS,
   VEHICLE_ACTIVITY,
 } from './app.tokens.js';
 import { DocumentTypeService } from './core/fleet/document-type-service.js';
@@ -80,6 +82,9 @@ import { systemModeGateways } from './infra/db/system-mode-gateways.js';
 import { VendorService } from './core/inventory/vendor-service.js';
 import { VendorErrorFilter, VendorsController } from './http/vendors/vendors.controller.js';
 import { vendorGateways } from './infra/db/vendor-gateways.js';
+import { FsStorageController, StorageErrorFilter } from './http/storage/fs-storage.controller.js';
+import { FsStorageAdapter } from './infra/storage/fs-storage.js';
+import { S3StorageAdapter } from './infra/storage/s3-storage.js';
 import { ExcelJsSpreadsheetWriter } from './infra/files/exceljs-spreadsheet-writer.js';
 import { DrizzleUnitOfWork } from './infra/db/unit-of-work.js';
 import { vehicleClassGateways } from './infra/db/vehicle-class-gateways.js';
@@ -106,6 +111,25 @@ function tokenSecret(): string {
   return LOCAL_TOKEN_SECRET;
 }
 
+// Local development only; production refuses to start without STORAGE_SIGNING_SECRET (never committed).
+const LOCAL_STORAGE_SECRET = 'local-development-only-storage-0123456789';
+
+function storageSecret(): string {
+  const secret = process.env.STORAGE_SIGNING_SECRET;
+  if (secret) return secret;
+  if (production()) throw new Error('STORAGE_SIGNING_SECRET is required in production');
+  return LOCAL_STORAGE_SECRET;
+}
+
+/** D-03, DEC-135: the filesystem adapter locally and in tests, S3 (R2) in staging and production. */
+const storageDriver = () => (process.env.STORAGE_DRIVER === 's3' ? 's3' : 'fs');
+
+function setting(name: string): string {
+  const value = process.env[name];
+  if (!value) throw new Error(`${name} is required when STORAGE_DRIVER is s3`);
+  return value;
+}
+
 const authHttpConfig = (): AuthHttpConfig => ({
   webOrigin: process.env.WEB_ORIGIN ?? LOCAL_WEB_ORIGIN,
   secureCookies: production(),
@@ -129,6 +153,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     AccessHistoryController,
     SystemModeController,
     VendorsController,
+    ...(storageDriver() === 'fs' ? [FsStorageController] : []),
   ],
   providers: [
     { provide: APP_FILTER, useClass: ConcurrentUpdateFilter },
@@ -144,6 +169,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: AuditLogErrorFilter },
     { provide: APP_FILTER, useClass: SystemModeErrorFilter },
     { provide: APP_FILTER, useClass: VendorErrorFilter },
+    { provide: APP_FILTER, useClass: StorageErrorFilter },
     { provide: APP_INTERCEPTOR, useClass: ContractInterceptor },
     {
       provide: PG_POOL,
@@ -274,6 +300,26 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL],
       useFactory: (pool: pg.Pool) => new VendorService(new DrizzleUnitOfWork(pool, vendorGateways)),
     },
+    {
+      provide: STORAGE,
+      inject: [CLOCK],
+      useFactory: (clock: ClockPort) =>
+        storageDriver() === 's3'
+          ? new S3StorageAdapter({
+              endpoint: setting('R2_ENDPOINT'),
+              bucket: setting('R2_BUCKET'),
+              accessKeyId: setting('R2_ACCESS_KEY_ID'),
+              secretAccessKey: setting('R2_SECRET_ACCESS_KEY'),
+            })
+          : new FsStorageAdapter({
+              root: process.env.STORAGE_FS_ROOT ?? '.data/storage',
+              secret: storageSecret(),
+              clock,
+              baseUrl: () => process.env.STORAGE_PUBLIC_URL ?? 'http://localhost:3001',
+            }),
+    },
+    // The fs routes are registered only with the fs driver, so this is the filesystem adapter.
+    { provide: STORAGE_LINKS, useExisting: STORAGE },
     SessionGuard,
   ],
   // Feature modules guard their routes with SessionGuard and @RequireCapability (2.4 L1).

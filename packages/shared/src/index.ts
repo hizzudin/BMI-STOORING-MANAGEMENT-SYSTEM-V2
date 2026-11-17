@@ -20,4 +20,5 @@ export * from './schemas/approvals.js';
 export * from './schemas/audit.js';
 export * from './schemas/system-mode.js';
 export * from './schemas/vendors.js';
+export * from './storage/index.js';
 export * from './time/wib.js';

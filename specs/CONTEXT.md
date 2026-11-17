@@ -6,11 +6,11 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-112 done on branch `feat/phase1-task112-vendor-master`. Next task: **TASK-113** (Storage port, filesystem and R2 adapters) |
+| Active task | TASK-113 done on branch `feat/phase1-task113-storage-port`. Next task: **TASK-114** (Upload pipeline, server) |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.46 |
+| Spec version | PRD v2.47 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0 selesai dan `main` sudah di GitHub; CI hijau. Tersisa untuk Anda: mengaktifkan branch protection di `main`. Berikutnya TASK-101. Masa simpan Idempotency-Key 30 hari masih asumsi [A].
@@ -19,6 +19,7 @@
 
 | # | Date | Summary | Files |
 | --- | --- | --- | --- |
+| 45 | 2026-11-17 | TASK-113: DEC-135 (v2.47; fs and S3/R2 adapters on AWS SDK v3 behind one StoragePort, one contract suite with S3 on MinIO in CI and skipped locally, 15-minute links, new TASK-133 for the usage alert, IA by R2 lifecycle in TASK-128); StoragePort without delete, FsStorageAdapter with HMAC links and /storage/fs routes, S3StorageAdapter with conditional puts; CI MinIO step; .env.example names | apps/api, packages/shared, packages/api-client, .github/workflows/ci.yml, .env.example, specs/, PRD.md, docs/prd |
 | 44 | 2026-11-17 | TASK-112: DEC-134 (v2.46; every REQ-INV-014 field with a typed code fixed once saved, inactive vendors stay listed and can be activated again, System Admin only, the pick list of active vendors by kind, SettingsVendors artboard completed); migration 0012 vendors; VendorService, gateway and 6 routes with audit; /settings/vendors; trial dummy vendors; FLW-SA-09 e2e | apps/, packages/shared, packages/api-client, specs/, Design Artifact/settings, PRD.md, docs/prd |
 | 43 | 2026-11-17 | TASK-111: DEC-133 (v2.45; Setup mode removes no capability, BR-03 refuses every self-decision while Live, the System Admin included, and allows it marked in Setup); DEC-132 (v2.44; Setup and Live switch both ways with a reason and a typed phrase, Back to Setup ends the other roles' sessions, opening balance and bulk import open again in Setup, the menu item in both modes, the checklist with counts, Backup restore test removed, BackToSetupConfirm artboard); setupMode refusal at sign-in, request and refresh (DEC-56); SystemModeService with GET /system-mode and POST go-live and back-to-setup under an Idempotency-Key, each audited; /setup with GoLiveConfirm and BackToSetupConfirm; the System Admin lands on /setup in Setup; FLW-SA-08 e2e | apps/, packages/shared, packages/api-client, specs/, Design Artifact/setup, PRD.md, docs/prd |
 | 42 | 2026-11-17 | TASK-110: DEC-131 (v2.43; archive moved to TASK-132, server-side pages like SPKList, User/Area/date filters with the last 7 days by default, short before/after summary with a detail panel, CSV and xlsx export logged in export_logs); migration 0011 export_logs (§9.12, append-only); area map with a unit test over every written entity; AuditLogService, gateway and exceljs writer behind SpreadsheetWriter; GET /audit-logs, /audit-logs/:id, /audit-logs/export (ApiFileContract, 10,000-row cap, CSV injection guard) and /access-history; AuditLog page with the Audit record panel and the C-26 Export dialog; Access history tab; e2e seed "Self approval check"; FLW-SA-06 and FLW-AM-05 e2e | apps/, packages/shared, packages/api-client, specs/, pnpm-lock.yaml |

@@ -422,7 +422,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-113
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:redis-patterns, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-FUP-001|AC-FUP-002|AC-FUP-003|AC-FUP-005|AC-FUP-006|AC-FUP-008"`
-- [ ] **TASK-115** Web upload component (FileDrop), three thumbnail states, submit when ready, shared photo viewer [REQ-FUP-006, REQ-FUP-007, REQ-FUP-012, REQ-FUP-014, REQ-FUP-016]
+- [x] **TASK-115** Web upload component (FileDrop), three thumbnail states, submit when ready, shared photo viewer [REQ-FUP-006, REQ-FUP-007, REQ-FUP-012, REQ-FUP-014, REQ-FUP-016]
   - _Scope_: One FileDrop and one PhotoViewer used by every screen with a file slot (7.5).
   - _Acceptance_: AC-FUP-004, AC-FUP-009
   - _Rules_: C-29, DEC-33, DEC-139

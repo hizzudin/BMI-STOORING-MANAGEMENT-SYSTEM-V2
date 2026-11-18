@@ -109,6 +109,7 @@ interface Picked {
   bytes: Uint8Array;
   contentType: string;
   name: string;
+  capturedAt?: string | null;
 }
 
 /** 8.1 steps 4 and 5: a link, then the PUT straight to storage. */
@@ -119,6 +120,9 @@ async function sendToStorage(who: string, file: Picked): Promise<UploadLinkRespo
     bytes: file.bytes.byteLength,
     originalName: file.name,
     captureSource: 'Camera',
+    ...(file.capturedAt === undefined
+      ? {}
+      : { capturedAt: file.capturedAt, originalBytes: 3_000_000 }),
   });
   expect(response.status).toBe(201);
   const link = await json<UploadLinkResponse>(response);
@@ -421,6 +425,24 @@ describe('upload pipeline, server (8.1, REQ-FUP-001 to REQ-FUP-013)', () => {
       await call('mechanic', 'POST', '/files/upload-links', body, key),
     );
     expect(again.file.id).toBe(first.file.id);
+  });
+
+  it('DEC-139 the capture time sent by the browser is kept for a photo without EXIF, and the file names its uploader', async () => {
+    const { file } = await upload('mechanic', {
+      profile: 'Photo',
+      bytes: await photo(800, 600, { sigma: 30, quality: 80 }),
+      contentType: 'image/jpeg',
+      name: 'compressed-in-browser.jpg',
+      capturedAt: '2026-11-17T06:15:00.000Z',
+    });
+    expect(file).toMatchObject({
+      status: 'Ready',
+      capturedAt: '2026-11-17T06:15:00.000Z',
+      originalBytes: 3_000_000,
+      uploadedBy: { role: 'Mechanic' },
+    });
+    expect(file.uploadedBy.name.length).toBeGreaterThan(0);
+    expect(file.uploadedAt).toBe(clock.now().toISOString());
   });
 
   // Last: it moves the clock 25 hours, which ends the sessions above.

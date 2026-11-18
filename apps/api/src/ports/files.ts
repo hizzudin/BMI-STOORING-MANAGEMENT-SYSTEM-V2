@@ -25,6 +25,9 @@ export interface StoredFileRow {
   uploadedBy: number;
   attachedAt: Date | null;
   createdAt: Date;
+  /** The uploader's name and role, for the file details (DEC-139). */
+  uploaderName: string;
+  uploaderRole: string | null;
 }
 
 export type NewStoredFile = Pick<
@@ -35,6 +38,7 @@ export type NewStoredFile = Pick<
   | 'originalName'
   | 'originalBytes'
   | 'captureSource'
+  | 'capturedAt'
   | 'uploadedBy'
 > & { createdAt: Date };
 

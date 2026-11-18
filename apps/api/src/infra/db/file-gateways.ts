@@ -7,10 +7,16 @@ import type {
   StoredFileRow,
 } from '../../ports/files.js';
 import { DrizzleIdempotencyGateway } from './idempotency-gateway.js';
-import { storedFiles } from './schema/index.js';
+import { storedFiles, userRoles, users } from './schema/index.js';
 import type { DbTransaction } from './unit-of-work.js';
 
-const toRow = (row: typeof storedFiles.$inferSelect): StoredFileRow => ({
+interface Joined {
+  file: typeof storedFiles.$inferSelect;
+  uploaderName: string | null;
+  uploaderRole: string | null;
+}
+
+const toRow = ({ file: row, uploaderName, uploaderRole }: Joined): StoredFileRow => ({
   id: row.id,
   storageKey: row.storageKey,
   thumbKey: row.thumbKey,
@@ -30,6 +36,8 @@ const toRow = (row: typeof storedFiles.$inferSelect): StoredFileRow => ({
   uploadedBy: row.uploadedBy,
   attachedAt: row.attachedAt,
   createdAt: row.createdAt,
+  uploaderName: uploaderName ?? '',
+  uploaderRole,
 });
 
 /** §9.12 stored_files (8.1). */
@@ -46,8 +54,14 @@ export class DrizzleFileGateway implements FileGateway {
   }
 
   async findById(id: number, options?: { forUpdate?: boolean }): Promise<StoredFileRow | null> {
-    const query = this.tx.select().from(storedFiles).where(eq(storedFiles.id, id));
-    const [row] = options?.forUpdate ? await query.for('update') : await query;
+    if (options?.forUpdate) {
+      await this.tx
+        .select({ id: storedFiles.id })
+        .from(storedFiles)
+        .where(eq(storedFiles.id, id))
+        .for('update');
+    }
+    const [row] = await this.joined().where(eq(storedFiles.id, id)).limit(1);
     return row ? toRow(row) : null;
   }
 
@@ -66,9 +80,7 @@ export class DrizzleFileGateway implements FileGateway {
   }
 
   async listExpirable(before: Date): Promise<StoredFileRow[]> {
-    const rows = await this.tx
-      .select()
-      .from(storedFiles)
+    const rows = await this.joined()
       .where(
         and(
           inArray(storedFiles.status, ['Pending', 'Rejected']),
@@ -77,7 +89,19 @@ export class DrizzleFileGateway implements FileGateway {
         ),
       )
       .orderBy(storedFiles.id);
-    return rows.map(toRow);
+    // A user holds one role (2.2); keep one row per file in any case.
+    const seen = new Set<number>();
+    return rows.filter((row) => !seen.has(row.file.id) && seen.add(row.file.id)).map(toRow);
+  }
+
+  /** The file with its uploader's name and role. */
+  private joined() {
+    return this.tx
+      .select({ file: storedFiles, uploaderName: users.name, uploaderRole: userRoles.role })
+      .from(storedFiles)
+      .leftJoin(users, eq(users.id, storedFiles.uploadedBy))
+      .leftJoin(userRoles, eq(userRoles.userId, storedFiles.uploadedBy))
+      .$dynamic();
   }
 
   async setExpired(id: number): Promise<void> {

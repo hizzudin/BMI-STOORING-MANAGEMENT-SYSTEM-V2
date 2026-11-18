@@ -1911,6 +1911,11 @@ export interface components {
                 capturedAt: string | null;
                 thumbnailUrl: string | null;
                 fileUrl: string | null;
+                uploadedBy: {
+                    name: string;
+                    role: string | null;
+                };
+                uploadedAt: string;
             };
             upload: {
                 url: string;
@@ -1929,6 +1934,8 @@ export interface components {
             bytes: number;
             originalName: string | null;
             captureSource: ("Camera" | "Gallery" | "File") | null;
+            originalBytes?: number;
+            capturedAt?: string | null;
         };
         StoredFileResponse: {
             file: {
@@ -1947,6 +1954,11 @@ export interface components {
                 capturedAt: string | null;
                 thumbnailUrl: string | null;
                 fileUrl: string | null;
+                uploadedBy: {
+                    name: string;
+                    role: string | null;
+                };
+                uploadedAt: string;
             };
         };
     };

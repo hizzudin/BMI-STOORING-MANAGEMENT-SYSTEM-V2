@@ -86,8 +86,9 @@ export class FileService {
         profile: request.profile,
         mimeType: output,
         originalName: request.originalName,
-        originalBytes: request.bytes,
+        originalBytes: request.originalBytes ?? request.bytes,
         captureSource: request.captureSource,
+        capturedAt: request.capturedAt ? new Date(request.capturedAt) : null,
         uploadedBy: actor.user.id,
         createdAt: now,
       });
@@ -157,6 +158,8 @@ export class FileService {
       thumbnailUrl:
         ready && row.thumbKey ? (await this.storage.signDownload(row.thumbKey)).url : null,
       fileUrl: ready ? (await this.storage.signDownload(row.storageKey)).url : null,
+      uploadedBy: { name: row.uploaderName, role: row.uploaderRole },
+      uploadedAt: row.createdAt.toISOString(),
     };
   }
 }

@@ -31,6 +31,13 @@ const PATHS = {
   route: 'M6 19a2 2 0 1 0 0-.1M18 7a2 2 0 1 0 0-.1M8 19h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7',
   cart: 'M3 4h2l2 11h11l2-8H6M9 20a1 1 0 1 0 0-.1M17 20a1 1 0 1 0 0-.1',
   download: 'M12 3v12M7 10l5 5 5-5M5 20h14',
+  camera: 'M4 8h4l2-3h4l2 3h4v11H4zM12 17a3.5 3.5 0 1 0 0-.1',
+  check: 'M5 12l5 5 9-10',
+  upload: 'M12 16V4M7 9l5-5 5 5M5 20h14',
+  eye: 'M2 12c2.5-4.5 6-7 10-7s7.5 2.5 10 7c-2.5 4.5-6 7-10 7s-7.5-2.5-10-7zM12 15a3 3 0 1 0 0-.1',
+  previous: 'M15 6l-6 6 6 6',
+  next: 'M9 6l6 6-6 6',
+  minus: 'M5 12h14',
 } as const;
 
 export type IconName = keyof typeof PATHS;

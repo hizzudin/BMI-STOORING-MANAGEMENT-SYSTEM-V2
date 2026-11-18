@@ -487,6 +487,17 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - **Infra:** `DrizzleAuditArchiveGateway` (`infra/db/audit-archive-gateways.ts`) and `AuditArchiveQueue` (cron `30 0 1 * *` in `Asia/Jakarta`), started in `worker.ts`, which logs each month's file, count and SHA-256, or its error.
 - **Tests:** `test/integration/audit/audit-archive.test.ts` (rows in 2025 with the clock at 2026-11-01, because the trigger checks the real age) and `core/audit/audit-archive.spec.ts`.
 
+### 5.22 Web upload: FileDrop, upload queue, PhotoViewer (REQ-FUP-006, 007, 012, 014, 016, DEC-139)
+
+- **API follow-ups of TASK-114:** `UploadLinkRequest` takes `capturedAt` and `originalBytes` (the size before the browser compressed it, §9.12); `StoredFile` returns `uploadedBy { name, role }` and `uploadedAt`. The worker keeps the EXIF time when there is one, otherwise the time the browser sent.
+- **`lib/uploads/prepare.ts`:** the device check of 8.1 step 2 (`sniffFileType`, `checkUpload`, the PDF page count) and step 3. JPEG is compressed down the profile quality ladder; HEIC and PNG go unchanged (the server converts HEIC and flattens transparency on white). The browser parts (`lib/uploads/browser.ts`) are `browser-image-compression` on the page, without its web worker (that worker loads the library from a CDN), `exifr` for the capture time and pdf.js (`lib/uploads/pdf.ts`, worker served by the app).
+- **`lib/uploads/upload-queue.ts` (`UploadQueue`, framework free):** the items with the three user states, link, PUT and uploaded signal each done once with their Idempotency-Keys, 3 retries after 1, 2 and 4 s, a retry when the browser comes online, polling until Ready or Rejected, and `submitWhenReady(slots, submit)`, which runs the submit once when every file of the slots is done.
+- **`components/files/UploadProvider.tsx`:** one queue in the `(app)` layout, so uploads and a pending Submit go on across navigation; `useUploads` reads it with `useSyncExternalStore`.
+- **`components/files/FileDrop.tsx`:** the FileUploadStates artboard: the slot card, thumbnails with only the ring, check or red badge (the local copy until the server thumbnail is Ready), the drop area, the note, and the detail panel (Original, Stored, Profile, the sentence, Retry, Remove); `onUploadingChange` lets the screen ask once before leaving (REQ-FUP-014). `SubmitWhenReady` shows "Sending when photos finish…" (C-18) until the queue submits.
+- **`components/files/PhotoViewer.tsx`:** the PhotoViewer artboard: the photo with zoom (to 400%), 100% and drag to pan, a PDF page by page fitted to the stage, previous and next across the record (C-29), the details (Step, Slot, Taken at, Uploaded by and role, Uploaded at), Close and Esc (C-14), and Remove only when the screen passes `onRemove`.
+- **Kit gallery:** `components/dev/UploadsPreview.tsx` over an in-memory queue (development only).
+- **Local setting:** with the filesystem storage, `STORAGE_PUBLIC_URL` must point at an origin the browser can PUT to (the web proxy `/api` locally); with R2 the bucket needs a CORS rule for the web origin (TASK-128).
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

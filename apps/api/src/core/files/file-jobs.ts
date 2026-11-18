@@ -78,7 +78,7 @@ export class FileProcessor {
       ready: this.readyFields(row, stored, {
         width: image.width,
         height: image.height,
-        capturedAt: image.capturedAt,
+        capturedAt: image.capturedAt ?? row.capturedAt,
       }),
     };
   }
@@ -105,7 +105,7 @@ export class FileProcessor {
       width: null,
       height: null,
       pageCount: null,
-      capturedAt: null,
+      capturedAt: row.capturedAt,
       ...extra,
       sha256: createHash('sha256').update(stored).digest('hex'),
     };

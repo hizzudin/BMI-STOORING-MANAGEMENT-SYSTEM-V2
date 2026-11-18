@@ -16,7 +16,10 @@
     "@bmi/api-client": "workspace:*",
     "@bmi/chassis-map": "workspace:*",
     "@bmi/shared": "workspace:*",
+    "browser-image-compression": "2.0.2",
+    "exifr": "7.1.3",
     "next": "^16.4.4",
+    "pdfjs-dist": "4.10.38",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

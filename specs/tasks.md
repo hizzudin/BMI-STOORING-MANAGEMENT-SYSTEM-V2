@@ -422,13 +422,13 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-113
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:redis-patterns, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-FUP-001|AC-FUP-002|AC-FUP-003|AC-FUP-005|AC-FUP-006|AC-FUP-008"`
-- [ ] **TASK-115** Web upload component (FileDrop), three thumbnail states, submit when ready, shared photo viewer [REQ-FUP-006, REQ-FUP-007, REQ-FUP-012, REQ-FUP-014, REQ-FUP-016]
+- [x] **TASK-115** Web upload component (FileDrop), three thumbnail states, submit when ready, shared photo viewer [REQ-FUP-006, REQ-FUP-007, REQ-FUP-012, REQ-FUP-014, REQ-FUP-016]
   - _Scope_: One FileDrop and one PhotoViewer used by every screen with a file slot (7.5).
   - _Acceptance_: AC-FUP-004, AC-FUP-009
-  - _Rules_: C-29, DEC-33
+  - _Rules_: C-29, DEC-33, DEC-139
   - _Screens built here (visual target)_: [`FileUploadStates`](<../Design Artifact/components/FileUploadStates.html#FileUploadStates>), [`PhotoViewer`](<../Design Artifact/components/PhotoViewer.html#PhotoViewer>)
   - _Screens touched_: [`MechanicMobileUpload`](<../Design Artifact/mobile/MechanicMobileUpload.html#MechanicMobileUpload>) (built later in TASK-712, which shows what this task provides)
-  - _Read_: `docs/prd/areas/8.1-fup.md` (REQ-FUP-006, REQ-FUP-007, REQ-FUP-012, REQ-FUP-014, REQ-FUP-016); `PRD.md` for DEC-33 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for FileUploadStates, MechanicMobileUpload, PhotoViewer; `docs/prd/ui-action-map.md`: every row of FileUploadStates, PhotoViewer and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Read_: `docs/prd/areas/8.1-fup.md` (REQ-FUP-006, REQ-FUP-007, REQ-FUP-012, REQ-FUP-014, REQ-FUP-016); `PRD.md` for DEC-33, DEC-139 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for FileUploadStates, MechanicMobileUpload, PhotoViewer; `docs/prd/ui-action-map.md`: every row of FileUploadStates, PhotoViewer and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-114, TASK-126
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-FUP-004|AC-FUP-009"`; `qa` FileUploadStates, PhotoViewer against their artboards
@@ -487,7 +487,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "assignment migrations"`; migration drift test green
 - [ ] **TASK-202** Engine core on a dummy module: freeze at approval, Locked/Open, submit opens next, executor check [REQ-ENG-001, REQ-ENG-002, REQ-ENG-003]
-  - _Scope_: Critical tier (§8.4): design note reviewed first (ADR-0002); the engine imports no module (CI rule).
+  - _Scope_: Critical tier (§8.4): design note reviewed first (ADR-0002); the engine imports no module (CI rule). DEC-139: a submit whose file fails for good leaves the step a draft and sends the uploader one notification naming the file (REQ-FUP-006).
   - _Acceptance_: AC-ENG-001, AC-SPK-002 (here because it needs steps (engine))
   - _Rules_: BR-05, BR-03, TX-02, DEC-04, DEC-05, DEC-65
   - _Screens touched_: [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)

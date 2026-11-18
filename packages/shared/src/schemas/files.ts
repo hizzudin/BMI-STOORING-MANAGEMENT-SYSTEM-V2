@@ -14,6 +14,10 @@ export const UploadLinkRequestSchema = z.object({
   bytes: z.number().int().positive(),
   originalName: z.string().trim().max(255).nullable(),
   captureSource: z.enum(CAPTURE_SOURCES).nullable(),
+  /** §9.12 original_bytes: the size before the browser compressed it (DEC-139). */
+  originalBytes: z.number().int().positive().optional(),
+  /** DEC-139: read in the browser before compression drops the EXIF data. */
+  capturedAt: z.iso.datetime().nullable().optional(),
 });
 export type UploadLinkRequest = z.infer<typeof UploadLinkRequestSchema>;
 
@@ -32,6 +36,9 @@ export const StoredFileSchema = z.object({
   capturedAt: z.string().nullable(),
   thumbnailUrl: z.string().nullable(),
   fileUrl: z.string().nullable(),
+  /** REQ-FUP-016: the details of PhotoViewer (DEC-139). */
+  uploadedBy: z.object({ name: z.string(), role: z.string().nullable() }),
+  uploadedAt: z.string(),
 });
 export type StoredFile = z.infer<typeof StoredFileSchema>;
 

@@ -7,6 +7,7 @@ import { StatusPill } from '../kit/StatusPill';
 import { useLeaveGuard } from '../kit/useLeaveGuard';
 import { SettingsHome } from '../settings/SettingsHome';
 import { AppShell, PageHead, type NavItem } from '../shell/AppShell';
+import { UploadsPreview } from './UploadsPreview';
 
 /**
  * Development-only gallery of the TASK-126 shell and kit, used to compare them with their artboards.
@@ -59,6 +60,7 @@ export function KitPreview() {
           <Button variant="primary">Save</Button>
         </div>
       </section>
+      <UploadsPreview />
       {guard.dialog}
       {dialog === 'discard' && (
         <ConfirmDialog

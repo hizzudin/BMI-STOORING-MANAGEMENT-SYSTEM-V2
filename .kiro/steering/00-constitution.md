@@ -12,9 +12,10 @@ disagree, `CLAUDE.md` wins; when `CLAUDE.md` and `PRD.md` disagree, `PRD.md` win
 
 ## How the constitution maps onto Kiro
 
-- **Skills.** Kiro has no Skill tool. For each name on a task's _Skill_ line, read
-  `.claude/skills/<name>/SKILL.md`; for an `ecc:<name>` skill, read `.claude/skills/<name>/SKILL.md`.
-  When that folder does not exist, skip it and say so in the task report.
+- **Skills.** Kiro has no Skill tool. Every project skill is copied to `.kiro/skills/<name>/` (the
+  skills steering lists them all). For each name on a task's _Skill_ line, read
+  `.kiro/skills/<name>/SKILL.md`; a prefix such as `ecc:` or `superpowers:` is dropped. The folder
+  always exists: `pnpm check:kiro-skills` fails in CI when a named skill is missing.
 - **Asking the product owner.** The owner writes Indonesian; answer and ask in Indonesian. Ask only
   what the PRD, its decisions and the artboards leave open. One decision per question, two or
   three options, your recommendation first with "(Recommended)". Wait for the answer; never guess.

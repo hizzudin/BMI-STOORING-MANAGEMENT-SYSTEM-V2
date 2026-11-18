@@ -63,8 +63,8 @@
 **Every task MUST have an implementation plan before any code is written.**
 
 ```
-☐ 1. If the superpowers:writing-plans skill is installed, load it; otherwise write the plan by hand
-     in the same format (the skill and references/superpowers/ are not installed on every machine)
+☐ 1. Load the writing-plans skill (.claude/skills/writing-plans; Kiro: .kiro/skills/writing-plans)
+     and write the plan in its format
 ☐ 2. Create plan with: Goal, Architecture, File Structure, Task Decomposition, Interfaces, Tests, Review Focus
 ☐ 3. Plan MUST define: clear goal, success criteria (goal-driven execution), exact interfaces, test assertions
 ☐ 4. Save to `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md` and commit it with the task

@@ -3,6 +3,8 @@ Design Artifact/
 docs/
 specs/
 .claude/
+# A copy of .claude/skills for Kiro, kept identical by specs/tools/sync-kiro-skills.mjs.
+.kiro/skills/
 *.md
 pnpm-lock.yaml
 .next/

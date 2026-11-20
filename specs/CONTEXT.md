@@ -6,7 +6,7 @@
 
 | Item | Value |
 | --- | --- |
-| Active task | TASK-115 done on branch `feat/phase1-task115-web-upload`. Next task: **TASK-124** (Approver cancel with reason) |
+| Active task | **TASK-124** (Approver cancel with reason) claimed by Claude Code on `feat/phase1-task124-approver-cancel-v2` (taken over from Kiro on the owner's word, 2026-11-20); DEC-140 and the plan committed, waiting for the owner's plan approval. Kiro's empty branch `feat/phase1-task124-approver-cancel` is to be deleted |
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |

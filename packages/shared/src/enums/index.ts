@@ -55,6 +55,20 @@ export const OPEN_SPK_STATUSES = [
   'Pending_Amendment',
 ] as const satisfies readonly SpkStatus[];
 
+/**
+ * T15, DEC-140: the states an Approver may cancel from, every state that is not final (Rejected
+ * included, unlike OPEN_SPK_STATUSES); machines.test.ts keeps it equal to T15 of SM-SPK.
+ */
+export const APPROVER_CANCEL_STATUSES = [
+  'Draft',
+  'Pending_Approval',
+  'Rejected',
+  'Active',
+  'In_Progress',
+  'Pending_Verification',
+  'Pending_Amendment',
+] as const satisfies readonly SpkStatus[];
+
 export const SPK_SOURCES = [
   'System_PM',
   'Tyre_Alert',

@@ -1,3 +1,4 @@
+import { APPROVER_CANCEL_STATUSES } from '@bmi/shared';
 import type {
   Role,
   Spk,
@@ -39,6 +40,8 @@ export const SPK_MESSAGES = {
   /** T6, DEC-129. */
   notCancellable: 'Only a Draft or Rejected SPK can be cancelled by its creator.',
   onlyCreatorCancels: 'Only the creator of this SPK can cancel it.',
+  /** T15, DEC-140. */
+  alreadyFinal: 'This SPK is already Completed or Cancelled.',
 } as const;
 
 /** 404: no SPK with this id. */
@@ -81,6 +84,13 @@ export const SPK_POLICIES: Policies<SpkRow, SpkAction> = {
     rules: [
       inState((spk: SpkRow) => spk.status, ['Draft', 'Rejected'], SPK_MESSAGES.notCancellable),
       onlyOwner((spk: SpkRow) => spk.createdBy, SPK_MESSAGES.onlyCreatorCancels),
+    ],
+  },
+  /** T15, DEC-140: an Approver cancels in any open state; BR-03 covers approvals, not this. */
+  approverCancel: {
+    anyOf: ['spk.cancel'],
+    rules: [
+      inState((spk: SpkRow) => spk.status, APPROVER_CANCEL_STATUSES, SPK_MESSAGES.alreadyFinal),
     ],
   },
 };

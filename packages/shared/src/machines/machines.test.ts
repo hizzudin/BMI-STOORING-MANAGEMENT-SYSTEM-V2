@@ -20,6 +20,7 @@ import {
   TransitionRefused,
   TYRE_MACHINE,
 } from './index.js';
+import { APPROVER_CANCEL_STATUSES } from '../enums/index.js';
 
 type Row = readonly [from: string | null, event: string, to: string];
 
@@ -350,5 +351,12 @@ describe('SM-VEH derived status', () => {
     [{ inactive: true, off: true, blocked: true, repair: true }, 'Inactive'],
   ] as const)('SM-VEH shows the highest precedence: %o is %s', (holds, status) => {
     expect(deriveVehicleStatus(holds)).toBe(status);
+  });
+});
+
+describe('T15 DEC-140 approver cancel', () => {
+  it('T15 the policy states are the From states of T15 in SM-SPK', () => {
+    const t15 = SPK_MACHINE.transitions.find((row) => row.id === 'T15');
+    expect([...APPROVER_CANCEL_STATUSES]).toEqual(t15?.from);
   });
 });

@@ -65,6 +65,8 @@ const EXPECTED: Record<string, { machine: Machine<string, string>; rows: readonl
       ['Open', 'StartEarlier', 'In_Progress'],
       ['Open', 'FirstAction', 'In_Progress'],
       ['In_Progress', 'Submit', 'Submitted'],
+      // DEC-146: a submit from Open, while Start does not exist yet and for a module without work time.
+      ['Open', 'Submit', 'Submitted'],
       ['In_Progress', 'Pause', 'Paused'],
       ['Paused', 'Resume', 'In_Progress'],
       ['Submitted', 'Verify', 'Verified'],

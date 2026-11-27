@@ -129,6 +129,8 @@ export const STEP_MACHINE: Machine<StepState, string> = {
     t(['Open'], 'StartEarlier', 'In_Progress'),
     t(['Open'], 'FirstAction', 'In_Progress'),
     t(['In_Progress'], 'Submit', 'Submitted'),
+    // DEC-146: from Open while Start does not exist yet (TASK-204) and for a module without work time.
+    t(['Open'], 'Submit', 'Submitted'),
     t(['In_Progress'], 'Pause', 'Paused'),
     t(['Paused'], 'Resume', 'In_Progress'),
     t(['Submitted'], 'Verify', 'Verified'),

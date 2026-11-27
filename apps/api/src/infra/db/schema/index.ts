@@ -3,6 +3,7 @@ import {
   APPROVAL_STAGES,
   ASG_STATUSES,
   ATTACHMENT_TYPES,
+  CR_STATUSES,
   LOCATION_CAPTURES,
   PART_SOURCES,
   ROLES,
@@ -489,6 +490,122 @@ export const notificationDeliveries = pgTable('notification_deliveries', {
 });
 
 // One entry per table of §9 as its migration arrives. The drift test reads this list.
+// §9.6 engine tables (TASK-201, DEC-144); no foreign keys here, as above: the SQL migrations hold them.
+export const crStatusEnum = pgEnum('cr_status_t', CR_STATUSES);
+
+export const spkPresets = pgTable('spk_presets', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  deletedAt: timestamp('deleted_at'),
+  name: varchar('name', { length: 100 }).notNull(),
+  category: spkCategoryEnum('category').notNull(),
+  requiresDowntime: boolean('requires_downtime').notNull().default(true),
+  version: integer('version').notNull().default(1),
+  createdBy: bigint('created_by', { mode: 'number' }).notNull(),
+  isActive: boolean('is_active').notNull().default(true),
+});
+
+export const spkPresetSteps = pgTable(
+  'spk_preset_steps',
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    presetId: bigint('preset_id', { mode: 'number' }).notNull(),
+    sequenceNo: integer('sequence_no').notNull(),
+    module: varchar('module', { length: 40 }).notNull(),
+    stepConfig: jsonb('step_config').notNull().default({}),
+    isOptional: boolean('is_optional').notNull().default(false),
+    executorRoles: roleEnum('executor_roles').array().notNull(),
+    verifierRole: roleEnum('verifier_role').notNull(),
+  },
+  (table) => [unique().on(table.presetId, table.sequenceNo)],
+);
+
+export const stepTimeEvents = pgTable('step_time_events', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  assignmentId: bigint('assignment_id', { mode: 'number' }).notNull(),
+  attemptNo: smallint('attempt_no').notNull(),
+  event: varchar('event', { length: 8 }).notNull(),
+  at: timestamp('at').notNull(),
+  recordedAt: timestamp('recorded_at').notNull().defaultNow(),
+  pauseReason: varchar('pause_reason', { length: 22 }),
+  note: text('note'),
+  enteredLate: boolean('entered_late').notNull().default(false),
+  clockFlag: boolean('clock_flag').notNull().default(false),
+  actorId: bigint('actor_id', { mode: 'number' }),
+  onBehalfOf: varchar('on_behalf_of', { length: 150 }),
+});
+
+export const stepTimeCorrections = pgTable('step_time_corrections', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  eventId: bigint('event_id', { mode: 'number' }).notNull(),
+  oldAt: timestamp('old_at').notNull(),
+  newAt: timestamp('new_at').notNull(),
+  reason: text('reason').notNull(),
+  correctedBy: bigint('corrected_by', { mode: 'number' }).notNull(),
+  correctedAt: timestamp('corrected_at').notNull().defaultNow(),
+});
+
+export const mobilisationLocationTrail = pgTable('mobilisation_location_trail', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  assignmentId: bigint('assignment_id', { mode: 'number' }).notNull(),
+  attemptNo: smallint('attempt_no').notNull(),
+  lat: numeric('lat', { precision: 9, scale: 6 }).notNull(),
+  lng: numeric('lng', { precision: 9, scale: 6 }).notNull(),
+  accuracyM: integer('accuracy_m'),
+  recordedAt: timestamp('recorded_at').notNull(),
+  receivedAt: timestamp('received_at').notNull().defaultNow(),
+});
+
+export const spkChangeRequests = pgTable('spk_change_requests', {
+  id: id(),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  crNumber: varchar('cr_number', { length: 30 }).notNull().unique(),
+  spkId: bigint('spk_id', { mode: 'number' }).notNull(),
+  assignmentId: bigint('assignment_id', { mode: 'number' }).notNull(),
+  requestedBy: bigint('requested_by', { mode: 'number' }).notNull(),
+  reason: text('reason').notNull(),
+  requestedChange: jsonb('requested_change').notNull(),
+  revision: jsonb('revision'),
+  revisedBy: bigint('revised_by', { mode: 'number' }),
+  status: crStatusEnum('status').notNull().default('Submitted'),
+  decidedBy: bigint('decided_by', { mode: 'number' }),
+  decidedAt: timestamp('decided_at'),
+  decisionNote: text('decision_note'),
+  amendmentNoApplied: integer('amendment_no_applied'),
+});
+
+export const spkCheckItems = pgTable(
+  'spk_check_items',
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    assignmentId: bigint('assignment_id', { mode: 'number' }).notNull(),
+    lineNo: integer('line_no').notNull(),
+    sku: varchar('sku', { length: 40 }),
+    partItemTypeId: bigint('part_item_type_id', { mode: 'number' }),
+    tyrePosition: varchar('tyre_position', { length: 10 }),
+    label: varchar('label', { length: 150 }).notNull(),
+    whatToCheck: text('what_to_check'),
+    addedByExecutor: boolean('added_by_executor').notNull().default(false),
+    conditionNote: text('condition_note'),
+    decision: varchar('decision', { length: 7 }),
+    unsafeToDrive: boolean('unsafe_to_drive').notNull().default(false),
+    decidedBy: bigint('decided_by', { mode: 'number' }),
+  },
+  (table) => [unique().on(table.assignmentId, table.lineNo)],
+);
+
 export const allTables: readonly PgTable[] = [
   idempotencyKeys,
   users,
@@ -516,4 +633,11 @@ export const allTables: readonly PgTable[] = [
   spkAttachments,
   notifications,
   notificationDeliveries,
+  spkPresets,
+  spkPresetSteps,
+  stepTimeEvents,
+  stepTimeCorrections,
+  mobilisationLocationTrail,
+  spkChangeRequests,
+  spkCheckItems,
 ];

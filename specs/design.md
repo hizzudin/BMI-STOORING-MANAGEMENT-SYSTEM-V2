@@ -512,6 +512,14 @@ Written before code (WORKFLOW_STANDARDS §1 step 10); updated at the end of TASK
 - **Tests:** `spk-policies.spec.ts`, `approver-cancel.spec.ts` (TX-14 order with a recording fake), `test/integration/spk/spk-approver-cancel.test.ts`, `approver-cancel-dialog.test.tsx`, `spk-detail.test.tsx`, `spk-rejected.test.tsx`, `e2e/approvals-flw-apr-05.spec.ts` with the seeded SPK "Approver cancel me". `playwright.config.ts` reads `E2E_SERVER_START_MS` (default 120 s) for slow local machines.
 - **Moved out (DEC-140):** AssignStep to TASK-206, CorrectStepTime to TASK-204.
 
+### 5.24 Engine tables (DEC-95, DEC-124, DEC-144)
+
+Written before code (WORKFLOW_STANDARDS §1 step 10). Plan: `docs/superpowers/plans/2026-11-28-task201-engine-migrations.md`.
+
+- **Migration `0014_engine_tables.sql`:** `spk_presets` (SD; the `UNIQUE (name, version)` of §9.6 becomes a unique index `WHERE deleted_at IS NULL`, §9.0), `spk_preset_steps`, `step_time_events`, `step_time_corrections`, `mobilisation_location_trail` (the last three AO with `refuse_change_of_append_only()`), `cr_number_seq` and `spk_change_requests`, `spk_check_items` (`sku` and `part_item_type_id` plain columns until TASK-301 and the part item task, DEC-124); then the foreign keys of `spks.preset_id`, `spk_attachments.check_item_id` and `spk_approvals.change_request_id`. Every foreign key `ON DELETE RESTRICT`; the standard columns of §9.0.
+- **Drizzle:** the seven tables in `infra/db/schema/index.ts` and in `allTables`, so the D-12 drift check covers them.
+- **No gateway method and no module row** (DEC-144): TASK-202 registers the dummy module in its harness and adds the methods it uses.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

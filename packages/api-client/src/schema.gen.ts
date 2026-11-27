@@ -625,6 +625,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/spks/{id}/approver-cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** An Approver cancels an open SPK with a reason (T15, TX-14, DEC-140); needs an Idempotency-Key */
+        post: operations["approverCancelSpk"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/approvals/count": {
         parameters: {
             query?: never;
@@ -1476,7 +1493,7 @@ export interface components {
                 status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
                 stepCount: number;
                 version: number;
-                allowedActions: ("edit" | "submit" | "cancel")[];
+                allowedActions: ("edit" | "submit" | "cancel" | "approverCancel")[];
                 currentStep: {
                     sequenceNo: number;
                     name: string;
@@ -1530,7 +1547,7 @@ export interface components {
                     status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
                     stepCount: number;
                     version: number;
-                    allowedActions: ("edit" | "submit" | "cancel")[];
+                    allowedActions: ("edit" | "submit" | "cancel" | "approverCancel")[];
                 };
                 vehicle: {
                     id: number;
@@ -1617,7 +1634,7 @@ export interface components {
                 status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
                 stepCount: number;
                 version: number;
-                allowedActions: ("edit" | "submit" | "cancel")[];
+                allowedActions: ("edit" | "submit" | "cancel" | "approverCancel")[];
             };
         };
         SpkRequest: {
@@ -2989,6 +3006,32 @@ export interface operations {
         };
         responses: {
             /** @description The creator cancels its Draft or Rejected SPK with a reason (T6, DEC-129); needs an Idempotency-Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpkResponse"];
+                };
+            };
+        };
+    };
+    approverCancelSpk: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SpkCancelRequest"];
+            };
+        };
+        responses: {
+            /** @description An Approver cancels an open SPK with a reason (T15, TX-14, DEC-140); needs an Idempotency-Key */
             200: {
                 headers: {
                     [name: string]: unknown;

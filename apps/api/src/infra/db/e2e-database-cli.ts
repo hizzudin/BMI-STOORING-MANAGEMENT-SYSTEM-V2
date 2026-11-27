@@ -118,6 +118,8 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
     { title: 'Resubmit me', priority: 'Normal', rejected: true },
     { title: 'Cancel me', priority: 'Low', rejected: true },
     { title: 'Self approval check', priority: 'Normal', rejected: false, byAdmin: true },
+    // FLW-APR-05 (TASK-124): a waiting SPK that a Supervisor cancels with a reason (T15).
+    { title: 'Approver cancel me', priority: 'Normal', rejected: false },
   ];
   for (const fixture of fixtures) {
     const creator = fixture.byAdmin && admin[0]?.id ? admin[0].id : plannerId;

@@ -5,6 +5,8 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "eslint app src"
   },
@@ -23,6 +25,8 @@
   },
   "devDependencies": {
     "@bmi/config": "workspace:*",
-    "@types/react": "^19.3.0"
+    "@types/react": "^19.3.0",
+    "@vitest/coverage-v8": "^5.1.0",
+    "vitest": "^5.1.0"
   }
 }

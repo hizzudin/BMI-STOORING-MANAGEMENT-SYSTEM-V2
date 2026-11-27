@@ -489,10 +489,10 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-202** Engine core on a dummy module: freeze at approval, Locked/Open, submit opens next, executor check [REQ-ENG-001, REQ-ENG-002, REQ-ENG-003]
   - _Scope_: Critical tier (§8.4): design note reviewed first (ADR-0002); the engine imports no module (CI rule). DEC-139: a submit whose file fails for good leaves the step a draft and sends the uploader one notification naming the file (REQ-FUP-006). DEC-144: registers the dummy module in its test harness and adds the engine gateway methods it uses.
   - _Acceptance_: AC-ENG-001, AC-SPK-002 (here because it needs steps (engine))
-  - _Rules_: BR-05, BR-03, TX-02, DEC-04, DEC-05, DEC-65, DEC-144
+  - _Rules_: BR-05, BR-03, TX-02, DEC-04, DEC-05, DEC-65, DEC-144, DEC-145
   - _Screens touched_: [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
   - _Data_: `spk_assignments` (§9.6)
-  - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-001, REQ-ENG-002, REQ-ENG-003); `docs/prd/data-model.md` §9.6 (spk_assignments) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-05, BR-03, DEC-04, DEC-05, DEC-65, DEC-144 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKDetail; `docs/prd/ui-action-map.md`: every row of SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-001, REQ-ENG-002, REQ-ENG-003); `docs/prd/data-model.md` §9.6 (spk_assignments) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-05, BR-03, DEC-04, DEC-05, DEC-65, DEC-144, DEC-145 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKDetail; `docs/prd/ui-action-map.md`: every row of SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-201, TASK-122
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-ENG-001|AC-SPK-002"`; regression check of SPKDetail

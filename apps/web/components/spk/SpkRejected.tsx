@@ -6,7 +6,8 @@ import type { SpksApi } from '../../lib/spks-api';
 import { Icon } from '../kit/Icon';
 import { StatusPill } from '../kit/StatusPill';
 import { PageHead } from '../shell/AppShell';
-import { CancelSpkDialog } from './CancelSpkDialog';
+import { Button } from '../kit/Button';
+import { ApproverCancelDialog, CancelSpkDialog } from './CancelSpkDialog';
 import { personText, roleText, STATUS_TONES, STEP_TONES, statusText } from './spk-format';
 
 /** REQ-SPK-007: the latest creation rejection, the note the creator works from. */
@@ -36,14 +37,17 @@ export function SpkRejected({
   detail,
   navigate,
 }: {
-  api: Pick<SpksApi, 'cancel'>;
+  api: Pick<SpksApi, 'cancel' | 'approverCancel'>;
   detail: Detail;
   navigate: (path: string) => void;
 }) {
   const [cancelling, setCancelling] = useState(false);
   const { spk, vehicle, createdBy, steps, approvals } = detail;
   const rejection = latestRejection(approvals);
-  const may = (action: 'edit' | 'cancel') => spk.allowedActions.includes(action);
+  const may = (action: 'edit' | 'cancel' | 'approverCancel') => spk.allowedActions.includes(action);
+  // DEC-140: an Approver who is not the creator cancels through CancelSPK (T15); the creator keeps T6.
+  const approverOnly = may('approverCancel') && !may('cancel');
+  const [approverCancelling, setApproverCancelling] = useState(false);
 
   return (
     <>
@@ -51,6 +55,13 @@ export function SpkRejected({
         crumb={`Surat Perintah Kerja / ${spk.spkNumber}`}
         title={spk.title}
         status={<StatusPill tone={STATUS_TONES[spk.status]}>{statusText(spk.status)}</StatusPill>}
+        actions={
+          approverOnly && (
+            <Button variant="danger" onClick={() => setApproverCancelling(true)}>
+              Cancel SPK
+            </Button>
+          )
+        }
       />
       <p className="muted subline">
         <a className="nowrap" href={`/vehicles/${vehicle.id}`}>
@@ -124,6 +135,14 @@ export function SpkRejected({
           api={api}
           spk={spk}
           onClose={() => setCancelling(false)}
+          onCancelled={() => navigate('/spk?tab=cancelled')}
+        />
+      )}
+      {approverCancelling && (
+        <ApproverCancelDialog
+          api={api}
+          spk={spk}
+          onClose={() => setApproverCancelling(false)}
           onCancelled={() => navigate('/spk?tab=cancelled')}
         />
       )}

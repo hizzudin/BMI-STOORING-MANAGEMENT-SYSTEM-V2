@@ -37,4 +37,18 @@ describe('REQ-SPK-010 SPKList asks the API through the generated client', () => 
     expect(request.headers.get('Idempotency-Key')).toBe('key-9');
     expect(await request.json()).toEqual({ version: 4, reason: 'Raised twice' });
   });
+
+  it('NFR-01 T15 the approver cancel goes to its own route with the key, the version and the reason', async () => {
+    const fetchStub = vi.fn<typeof fetch>(() =>
+      Promise.resolve(
+        new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } }),
+      ),
+    );
+    const api = spksApi(createApiClient('http://web.test/api', { fetch: fetchStub }));
+    await api.approverCancel(41, { version: 3, reason: 'Vehicle sold' }, 'key-15');
+    const request = fetchStub.mock.calls[0]?.[0] as Request;
+    expect(new URL(request.url).pathname).toBe('/api/spks/41/approver-cancel');
+    expect(request.headers.get('Idempotency-Key')).toBe('key-15');
+    expect(await request.json()).toEqual({ version: 3, reason: 'Vehicle sold' });
+  });
 });

@@ -132,3 +132,52 @@ describe('SPKRejected (REQ-SPK-007, AC-SPK-005, DEC-101, DEC-129)', () => {
     expect(navigate).toHaveBeenCalledWith('/spk?tab=cancelled');
   });
 });
+
+describe('SPKRejected Cancel SPK for an Approver (T15, DEC-140)', () => {
+  const forApprover: Detail = {
+    ...rejected,
+    spk: { ...rejected.spk, allowedActions: ['approverCancel'] },
+  };
+
+  it('DEC-140 an Approver cancels a Rejected SPK through CancelSPK and lands on the Cancelled tab', async () => {
+    const approverCancel = vi.fn(() =>
+      Promise.resolve({
+        ok: true as const,
+        data: { spk: { ...forApprover.spk, status: 'Cancelled' as const, allowedActions: [] } },
+      }),
+    );
+    const navigate = await show(forApprover, { approverCancel });
+    expect(screen.queryByRole('link', { name: 'Edit and resubmit' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel SPK' }));
+    expect(
+      screen.getByText(
+        'Posted issues are reversed first; Issued tyres return to stock. The creator and the executors are notified.',
+      ),
+    ).toBeTruthy();
+    fireEvent.change(screen.getByLabelText('Reason'), { target: { value: 'Not needed' } });
+    const dialog = screen.getByRole('dialog');
+    const confirm = [...dialog.querySelectorAll('button')].find(
+      (button) => button.textContent === 'Cancel SPK',
+    );
+    await act(async () => {
+      if (confirm) fireEvent.click(confirm);
+    });
+    expect(approverCancel).toHaveBeenCalledWith(
+      25,
+      { version: 4, reason: 'Not needed' },
+      expect.any(String),
+    );
+    expect(navigate).toHaveBeenCalledWith('/spk?tab=cancelled');
+  });
+
+  it('DEC-129 the creator keeps its own cancel when it holds both (the System Admin): one Cancel SPK, the T6 dialog', async () => {
+    const both: Detail = {
+      ...rejected,
+      spk: { ...rejected.spk, allowedActions: ['edit', 'submit', 'cancel', 'approverCancel'] },
+    };
+    await show(both);
+    expect(screen.getAllByRole('button', { name: 'Cancel SPK' })).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel SPK' }));
+    expect(screen.getByRole('button', { name: 'Keep SPK' })).toBeTruthy();
+  });
+});

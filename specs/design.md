@@ -498,6 +498,19 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - **Kit gallery:** `components/dev/UploadsPreview.tsx` over an in-memory queue (development only).
 - **Local setting:** with the filesystem storage, `STORAGE_PUBLIC_URL` must point at an origin the browser can PUT to (the web proxy `/api` locally); with R2 the bucket needs a CORS rule for the web origin (TASK-128).
 
+### 5.23 Approver cancel (REQ-SPK-008, T15, TX-14, BR-06, DEC-140)
+
+Written before code (WORKFLOW_STANDARDS §1 step 10); updated at the end of TASK-124 if the build differs. Plan: `docs/superpowers/plans/2026-11-20-task124-approver-cancel.md`.
+
+- **Policy:** `SPK_POLICIES.approverCancel` needs spk.cancel (Supervisor, GM, System Admin) and an SPK in `OPEN_SPK_STATES` (every state but Completed and Cancelled, Draft and Rejected included). T6 (`cancel`, §5.13) is unchanged.
+- **Port `SpkCancelSteps`** (`SpkGateways.cancelSteps`): `reversePostedIssues`, `releaseIssuedTyres`, `listPurchasedItems`, `leaveOpenSchedule`, `reopenReportBreakdown`, called in that order. The adapter `NoCancelStepsYet` does nothing; TASK-308, TASK-502, TASK-313, TASK-612 and TASK-610 fill one method each.
+- **`SpkService.approverCancel`** under the Idempotency-Key, in one transaction: lock the SPK and assert `approverCancel`; the five steps; `spks.cancel` (Cancelled, `cancel_reason`, `cancelled_by`, at the version on screen); a `spk_approvals` row `Cancel` with the reason as note (stage Creation before Active, Amendment in Pending_Amendment, Completion otherwise); one audit record `approver_cancel` with the reason; a notice of kind Approval to the creator unless the creator cancels (executors from TASK-206).
+- **Route:** `POST /spks/:id/approver-cancel`, needs spk.cancel and an Idempotency-Key, body `SpkCancelRequest`. A missing reason is 400; a refusal is 403, a final SPK included ("This SPK is already Completed or Cancelled.", as every policy refusal, like T6); an unknown id 404; a stale version 409.
+- **Shared:** `APPROVER_CANCEL_STATUSES` (every state but Completed and Cancelled, Rejected included, unlike `OPEN_SPK_STATUSES`), kept equal to the From states of T15 by `machines.test.ts`; `approverCancel` in `SPK_ACTIONS`.
+- **Web:** SPKDetail shows Cancel SPK in its header when `allowedActions` holds `approverCancel`; `ApproverCancelDialog` (in `CancelSpkDialog.tsx`, sharing the dialog of T6) is the CancelSPK artboard (reason required, Keep the SPK, Cancel SPK; the SPK document link hidden until TASK-212); after the cancel SPKDetail reloads Cancelled with the History row. A Rejected SPK shows SPKRejected (DEC-129), so its header carries the same Cancel SPK for an Approver who is not its creator; the creator keeps T6.
+- **Tests:** `spk-policies.spec.ts`, `approver-cancel.spec.ts` (TX-14 order with a recording fake), `test/integration/spk/spk-approver-cancel.test.ts`, `approver-cancel-dialog.test.tsx`, `spk-detail.test.tsx`, `spk-rejected.test.tsx`, `e2e/approvals-flw-apr-05.spec.ts` with the seeded SPK "Approver cancel me". `playwright.config.ts` reads `E2E_SERVER_START_MS` (default 120 s) for slow local machines.
+- **Moved out (DEC-140):** AssignStep to TASK-206, CorrectStepTime to TASK-204.
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

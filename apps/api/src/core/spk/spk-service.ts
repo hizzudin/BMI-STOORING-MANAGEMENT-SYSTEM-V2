@@ -1,7 +1,11 @@
+import { APPROVER_CANCEL_STATUSES } from '@bmi/shared';
 import type {
+  ApprovalStage,
   Role,
   Spk,
   SpkAction,
+  SpkApproverCancelRequest,
+  SpkStatus,
   SpkCancelRequest,
   SpkFormOptionsResponse,
   SpkPriority,
@@ -39,6 +43,8 @@ export const SPK_MESSAGES = {
   /** T6, DEC-129. */
   notCancellable: 'Only a Draft or Rejected SPK can be cancelled by its creator.',
   onlyCreatorCancels: 'Only the creator of this SPK can cancel it.',
+  /** T15, DEC-140. */
+  alreadyFinal: 'This SPK is already Completed or Cancelled.',
 } as const;
 
 /** 404: no SPK with this id. */
@@ -83,7 +89,26 @@ export const SPK_POLICIES: Policies<SpkRow, SpkAction> = {
       onlyOwner((spk: SpkRow) => spk.createdBy, SPK_MESSAGES.onlyCreatorCancels),
     ],
   },
+  /** T15, DEC-140: an Approver cancels in any open state; BR-03 covers approvals, not this. */
+  approverCancel: {
+    anyOf: ['spk.cancel'],
+    rules: [
+      inState((spk: SpkRow) => spk.status, APPROVER_CANCEL_STATUSES, SPK_MESSAGES.alreadyFinal),
+    ],
+  },
 };
+
+/**
+ * DEC-140: the stage of the Cancel approval row, where the SPK stands when it is cancelled: before
+ * Active it is still at creation; in Pending_Amendment at its amendment; otherwise on the way to
+ * completion.
+ */
+export function cancelStageOf(status: SpkStatus): ApprovalStage {
+  if (status === 'Draft' || status === 'Pending_Approval' || status === 'Rejected') {
+    return 'Creation';
+  }
+  return status === 'Pending_Amendment' ? 'Amendment' : 'Completion';
+}
 
 /** REQ-NTF-005: an SPK submitted for approval goes to these roles. */
 const APPROVER_ROLES: readonly Role[] = ['Supervisor', 'GM', 'System_Admin'];
@@ -200,6 +225,64 @@ export class SpkService {
         userId: actor.user.id,
         userRole: actor.user.role,
       });
+      return { status: 200, body: { spk: this.view(actor, after) } };
+    });
+  }
+
+  /**
+   * T15, TX-14, DEC-140: an Approver cancels an open SPK with a reason. In one transaction, in this
+   * order: the steps of `cancelSteps`, Cancelled with who and why, a Cancel approval row with the
+   * reason, one audit record, then a notice to the creator unless the creator cancels.
+   */
+  approverCancel(
+    actor: Actor,
+    id: number,
+    request: SpkApproverCancelRequest,
+    key: Omit<IdempotentRequest, 'userId'>,
+  ): Promise<IdempotentResponse> {
+    return runIdempotent(this.unitOfWork, { ...key, userId: actor.user.id }, async (gateways) => {
+      const before = await this.load(gateways, id, true);
+      assertAllowed(SPK_POLICIES, actor, before, 'approverCancel');
+      const role = actor.user.role;
+      if (!role) throw new ActionRefusedError('approverCancel', NOT_ALLOWED);
+      const { cancelSteps } = gateways;
+      await cancelSteps.reversePostedIssues(id, actor.user.id);
+      await cancelSteps.releaseIssuedTyres(id, actor.user.id);
+      await cancelSteps.listPurchasedItems(id);
+      await cancelSteps.leaveOpenSchedule(id);
+      await cancelSteps.reopenReportBreakdown(id);
+      await gateways.spks.cancel(id, request.version, {
+        reason: request.reason,
+        by: actor.user.id,
+      });
+      await gateways.spks.insertApproval({
+        spkId: id,
+        stage: cancelStageOf(before.status),
+        action: 'Cancel',
+        actedBy: actor.user.id,
+        approverRole: role,
+        note: request.reason,
+      });
+      const after = await this.load(gateways, id);
+      await gateways.audit.write({
+        entity: 'spk',
+        entityId: id,
+        action: 'approver_cancel',
+        before,
+        after,
+        reason: request.reason,
+        userId: actor.user.id,
+        userRole: role,
+      });
+      if (before.createdBy !== actor.user.id) {
+        await gateways.notifications.send([before.createdBy], {
+          kind: 'Approval',
+          title: `${before.spkNumber} was cancelled`,
+          body: request.reason,
+          linkRecord: `/spk/${id}`,
+          dedupeKey: `spk:${id}:cancel`,
+        });
+      }
       return { status: 200, body: { spk: this.view(actor, after) } };
     });
   }

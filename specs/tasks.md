@@ -432,17 +432,17 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-114, TASK-126
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-FUP-004|AC-FUP-009"`; `qa` FileUploadStates, PhotoViewer against their artboards
-- [ ] **TASK-124** Approver cancel with reason (reversals completed by TASK-308 and TASK-502) [REQ-SPK-008]
-  - _Scope_: T15 of SM-SPK; TASK-308 adds the reversal of posted issues and TASK-502 the release of Issued tyres.
-  - _Rules_: BR-06, TX-14
-  - _Screens built here (visual target)_: [`CancelSPK`](<../Design Artifact/spk/CancelSPK.html#CancelSPK>), [`AssignStep`](<../Design Artifact/spk/AssignStep.html#AssignStep>), [`CorrectStepTime`](<../Design Artifact/spk/CorrectStepTime.html#CorrectStepTime>)
+- [x] **TASK-124** Approver cancel with reason (reversals completed by TASK-308 and TASK-502) [REQ-SPK-008]
+  - _Scope_: T15 of SM-SPK; TASK-308 adds the reversal of posted issues and TASK-502 the release of Issued tyres. DEC-140: an Approver cancels in any open status; each TX-14 step before Cancelled is a port that does nothing until its owning task fills it (TASK-308, TASK-502, TASK-313, TASK-612, TASK-610); the creator is notified; AssignStep moved to TASK-206 and CorrectStepTime to TASK-204.
+  - _Rules_: BR-06, TX-14, DEC-140
+  - _Screens built here (visual target)_: [`CancelSPK`](<../Design Artifact/spk/CancelSPK.html#CancelSPK>)
   - _Screens touched_: [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
   - _Data_: `spks` (§9.6), `goods_issues` (§9.8; this task's part is extended in TASK-308), `tyres` (§9.9; this task's part is extended in TASK-502)
   - _Journey_: FLW-APR-05 Cancel an SPK
-  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-008); `docs/prd/data-model.md` §9.6, §9.8, §9.9 (spks, goods_issues, tyres) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-06 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CancelSPK, SPKDetail; `docs/prd/ui-action-map.md`: every row of CancelSPK, SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-APR-05 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Read_: `docs/prd/areas/4.1-spk.md` (REQ-SPK-008); `docs/prd/data-model.md` §9.6, §9.8, §9.9 (spks, goods_issues, tyres) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-06, DEC-140 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CancelSPK, SPKDetail; `docs/prd/ui-action-map.md`: every row of CancelSPK, SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-APR-05 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-122
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `e2e FLW-APR-05`; `qa` CancelSPK, AssignStep, CorrectStepTime against their artboards; regression check of SPKDetail
+  - _Verify_: `e2e FLW-APR-05`; `qa` CancelSPK against their artboards; regression check of SPKDetail
 - [ ] **TASK-127** Mobile spike: A) sign-in, camera, location on an Android 8 phone; B) push and signed APK — B BLOCKED Q-03
   - _Scope_: §8.3 mobile spike; design D-11.
   - _Rules_: NFR-18, DEC-66
@@ -507,17 +507,17 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `qa` StartFromPreset, SavePreset against their artboards; regression check of CreateSPK
 - [ ] **TASK-204** Step time: Start, Start earlier, Pause/Resume, external hand-over start, tracks_work_time, System Admin time correction [REQ-ENG-012, REQ-ENG-013, REQ-ENG-014, REQ-ENG-015, REQ-ENG-016, REQ-ENG-017]
-  - _Scope_: Append-only step time log per attempt.
+  - _Scope_: Append-only step time log per attempt. DEC-140: also builds the CorrectStepTime dialog (moved from TASK-124).
   - _Acceptance_: AC-ENG-007, AC-ENG-008, AC-ENG-009, AC-ENG-010
-  - _Rules_: DEC-87, DEC-95, C-19, C-20, C-21, C-22
-  - _Screens built here (visual target)_: [`PauseStep`](<../Design Artifact/steps/PauseStep.html#PauseStep>), [`StartEarlier`](<../Design Artifact/steps/StartEarlier.html#StartEarlier>), [`ReleaseStep`](<../Design Artifact/steps/ReleaseStep.html#ReleaseStep>), [`SwitchTeam`](<../Design Artifact/steps/SwitchTeam.html#SwitchTeam>), [`CatalogPicker`](<../Design Artifact/steps/CatalogPicker.html#CatalogPicker>), [`NothingBought`](<../Design Artifact/steps/NothingBought.html#NothingBought>), [`StepPaused`](<../Design Artifact/steps/StepPaused.html#StepPaused>), [`MobilePauseSheet`](<../Design Artifact/mobile/MobilePauseSheet.html#MobilePauseSheet>)
+  - _Rules_: DEC-87, DEC-95, C-19, C-20, C-21, C-22, DEC-140
+  - _Screens built here (visual target)_: [`CorrectStepTime`](<../Design Artifact/spk/CorrectStepTime.html#CorrectStepTime>), [`PauseStep`](<../Design Artifact/steps/PauseStep.html#PauseStep>), [`StartEarlier`](<../Design Artifact/steps/StartEarlier.html#StartEarlier>), [`ReleaseStep`](<../Design Artifact/steps/ReleaseStep.html#ReleaseStep>), [`SwitchTeam`](<../Design Artifact/steps/SwitchTeam.html#SwitchTeam>), [`CatalogPicker`](<../Design Artifact/steps/CatalogPicker.html#CatalogPicker>), [`NothingBought`](<../Design Artifact/steps/NothingBought.html#NothingBought>), [`StepPaused`](<../Design Artifact/steps/StepPaused.html#StepPaused>), [`MobilePauseSheet`](<../Design Artifact/mobile/MobilePauseSheet.html#MobilePauseSheet>)
   - _Screens touched_: [`Mechanic`](<../Design Artifact/steps/Mechanic.html#Mechanic>) (built later in TASK-402, which shows what this task provides), [`Stock`](<../Design Artifact/steps/Stock.html#Stock>) (built later in TASK-306, which shows what this task provides), [`PartPurchase`](<../Design Artifact/steps/PartPurchase.html#PartPurchase>) (built later in TASK-309, which shows what this task provides), [`Placement`](<../Design Artifact/steps/Placement.html#Placement>) (built later in TASK-508, which shows what this task provides), [`DocStep`](<../Design Artifact/steps/DocStep.html#DocStep>) (built later in TASK-603, which shows what this task provides), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`StepReturned`](<../Design Artifact/spk/StepReturned.html#StepReturned>) (built later in TASK-205, which shows what this task provides), [`MechanicExternal`](<../Design Artifact/steps/MechanicExternal.html#MechanicExternal>) (built later in TASK-402, which shows what this task provides)
   - _Data_: `spk_assignments` (§9.6), `step_time_events` (§9.6), `step_time_corrections` (§9.6), `audit_logs` (§9.2), `assignment_modules` (§9.6)
   - _Journey_: FLW-MEC-07 Start, pause and resume a step
-  - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-012, REQ-ENG-013, REQ-ENG-014, REQ-ENG-015, REQ-ENG-016, REQ-ENG-017); `docs/prd/data-model.md` §9.2, §9.6 (spk_assignments, step_time_events, step_time_corrections, audit_logs, assignment_modules) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-87, DEC-95 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Mechanic, Stock, PartPurchase, Placement, DocStep, MechanicMobileStep, SPKDetail, StepReturned, MechanicExternal; `docs/prd/ui-action-map.md`: every row of Mechanic, Stock, PartPurchase, Placement, DocStep, SPKDetail, StepReturned, MechanicExternal and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-MEC-07 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-012, REQ-ENG-013, REQ-ENG-014, REQ-ENG-015, REQ-ENG-016, REQ-ENG-017); `docs/prd/data-model.md` §9.2, §9.6 (spk_assignments, step_time_events, step_time_corrections, audit_logs, assignment_modules) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-87, DEC-95, DEC-140 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for Mechanic, Stock, PartPurchase, Placement, DocStep, MechanicMobileStep, SPKDetail, StepReturned, MechanicExternal; `docs/prd/ui-action-map.md`: every row of Mechanic, Stock, PartPurchase, Placement, DocStep, SPKDetail, StepReturned, MechanicExternal and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-MEC-07 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-202
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-ENG-007|AC-ENG-008|AC-ENG-009|AC-ENG-010"`; `e2e FLW-MEC-07`; `qa` PauseStep, StartEarlier, ReleaseStep, SwitchTeam, CatalogPicker, NothingBought, StepPaused, MobilePauseSheet against their artboards; regression check of SPKDetail
+  - _Verify_: `int "AC-ENG-007|AC-ENG-008|AC-ENG-009|AC-ENG-010"`; `e2e FLW-MEC-07`; `qa` CorrectStepTime, PauseStep, StartEarlier, ReleaseStep, SwitchTeam, CatalogPicker, NothingBought, StepPaused, MobilePauseSheet against their artboards; regression check of SPKDetail
 - [ ] **TASK-205** Verify and Return with attempts; verification screens [REQ-ENG-005, REQ-ENG-007, REQ-ENG-010, REQ-ENG-015]
   - _Scope_: Photos open in the shared viewer (DEC-33).
   - _Acceptance_: AC-ENG-004, AC-ENG-005
@@ -531,15 +531,16 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-ENG-004|AC-ENG-005"`; `e2e FLW-PLN-05`; `e2e FLW-MEC-04`; `qa` SPKDetailVerify, StepVerify, StepReturned, StepLocked against their artboards; regression check of PhotoViewer
 - [ ] **TASK-206** Assign, reassign, claim and release a step [REQ-ENG-011]
-  - _Scope_: The draft moves with the step.
+  - _Scope_: The draft moves with the step. DEC-140: also builds the AssignStep dialog (moved from TASK-124), and the cancel notice of TASK-124 then reaches the step executors.
   - _Acceptance_: AC-ENG-006
-  - _Rules_: BR-03, DEC-58, DEC-59
+  - _Rules_: BR-03, DEC-58, DEC-59, DEC-140
+  - _Screens built here (visual target)_: [`AssignStep`](<../Design Artifact/spk/AssignStep.html#AssignStep>)
   - _Screens touched_: [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it), [`MechanicMobileHome`](<../Design Artifact/mobile/MechanicMobileHome.html#MechanicMobileHome>) (built later in TASK-712, which shows what this task provides)
   - _Journey_: FLW-PLN-09 Assign a step
-  - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-011); `PRD.md` for BR-03, DEC-58, DEC-59 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKDetail, MechanicMobileHome; `docs/prd/ui-action-map.md`: every row of SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-09 and `specs/tdd-user-journeys.md` for the same IDs
+  - _Read_: `docs/prd/areas/4.2-eng.md` (REQ-ENG-011); `PRD.md` for BR-03, DEC-58, DEC-59, DEC-140 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for SPKDetail, MechanicMobileHome; `docs/prd/ui-action-map.md`: every row of SPKDetail and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-09 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-202
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-ENG-006"`; `e2e FLW-PLN-09`; regression check of SPKDetail
+  - _Verify_: `int "AC-ENG-006"`; `e2e FLW-PLN-09`; `qa` AssignStep against their artboards; regression check of SPKDetail
 - [ ] **TASK-207** Step composer in Create SPK: palette, drag and Move up/down, per-step details, live checks [REQ-SPK-004, REQ-SPK-017, REQ-REG-001, REQ-REG-004]
   - _Scope_: Each module's creation section comes from its registry entry; nothing is hard-coded per module.
   - _Acceptance_: AC-SPK-003, AC-REG-001, AC-REG-002, AC-REG-004
@@ -692,7 +693,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-STK-001|AC-STK-006"`; regression check of Stock, PartPurchase
 - [ ] **TASK-308** Issue reversal with verification; cancel reverses posted issues [REQ-STK-008]
-  - _Scope_: Stock returns at the original unit cost.
+  - _Scope_: Stock returns at the original unit cost. DEC-140: fills the reversal port of the TASK-124 cancel.
   - _Acceptance_: AC-STK-005
   - _Rules_: BR-06, TX-05, TX-14
   - _Screens built here (visual target)_: [`StockReversal`](<../Design Artifact/steps/StockReversal.html#StockReversal>)
@@ -755,7 +756,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: ecc:redis-patterns, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "job idempotency|reconciliation"`
 - [ ] **TASK-313** Goods Receipt "From cancelled SPK" [REQ-SPK-008]
-  - _Scope_: Parts bought for a cancelled SPK enter stock and are never billed.
+  - _Scope_: Parts bought for a cancelled SPK enter stock and are never billed. DEC-140: fills the purchased-items port of the TASK-124 cancel.
   - _Rules_: BR-06, DEC-58
   - _Screens touched_: [`CancelSPK`](<../Design Artifact/spk/CancelSPK.html#CancelSPK>) (built in TASK-124; extend and regression-check it), [`SPKDetail`](<../Design Artifact/spk/SPKDetail.html#SPKDetail>) (built in TASK-125; extend and regression-check it)
   - _Data_: `spks` (§9.6), `goods_issues` (§9.8), `tyres` (§9.9; this task's part is extended in TASK-502)
@@ -868,7 +869,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-VEH-003"`; `int "tyre migrations"`; migration drift test green
 - [ ] **TASK-502** Tyre status service (always writes tyre_events); tyre statuses master; release of Issued tyres [REQ-TYR-001, REQ-TYR-002, REQ-TYR-003, REQ-TYR-013]
-  - _Scope_: §8.3: one service for every tyre change, tested like the SPK machine.
+  - _Scope_: §8.3: one service for every tyre change, tested like the SPK machine. DEC-140: fills the tyre release port of the TASK-124 cancel.
   - _Acceptance_: AC-TYR-007
   - _Rules_: BR-11, DEC-13, DEC-14
   - _Screens built here (visual target)_: [`SettingsTyreStatuses`](<../Design Artifact/settings/SettingsTyreStatuses.html#SettingsTyreStatuses>)
@@ -1132,7 +1133,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-PM-002|AC-BRK-001|AC-BRK-002|AC-BRK-003|AC-BRK-008"`; `e2e FLW-SA-04`; `qa` VehicleInspections, AdminInspectionForm, AdminBreakdownForm against their artboards; regression check of CreateSPKFromAlert
 - [ ] **TASK-610** Report Breakdown list, web report form, Create SPK from a report with its Report reference, reject, urgent pop-up [REQ-BRK-004, REQ-BRK-005, REQ-BRK-006, REQ-BRK-007]
-  - _Scope_: The Field Coordinator and the Mechanic can only send and follow reports. The pop-up closes only with Create SPK.
+  - _Scope_: The Field Coordinator and the Mechanic can only send and follow reports. The pop-up closes only with Create SPK. DEC-140: fills the Report Breakdown port of the TASK-124 cancel (back to New).
   - _Acceptance_: AC-BRK-004, AC-BRK-005, AC-BRK-006, AC-BRK-007
   - _Rules_: NFR-A11Y, RL-6, SM-BRK, DEC-91, SM-SPK, TX-24, DQ-10, DQ-11, DEC-109
   - _Screens built here (visual target)_: [`UrgentReportPopup`](<../Design Artifact/shell/UrgentReportPopup.html#UrgentReportPopup>), [`BreakdownReports`](<../Design Artifact/spk/BreakdownReports.html#BreakdownReports>), [`CreateSPKFromReport`](<../Design Artifact/spk/CreateSPKFromReport.html#CreateSPKFromReport>), [`RejectReport`](<../Design Artifact/spk/RejectReport.html#RejectReport>), [`ReportBreakdownForm`](<../Design Artifact/spk/ReportBreakdownForm.html#ReportBreakdownForm>)
@@ -1156,7 +1157,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-CR-001|AC-CR-002|AC-CR-003|AC-CR-004|AC-CR-005"`; `e2e FLW-MEC-05`; `e2e FLW-PLN-06`; `e2e FLW-APR-02`; `qa` ChangeRequest, CreateSPKRevision, AmendmentReview against their artboards; regression check of StepLocked, SPKDetail
 - [ ] **TASK-612** Maintenance schedule board and read-only views [REQ-SCH-001, REQ-SCH-002, REQ-SCH-005, REQ-SCH-006]
-  - _Scope_: §8.3: a mature drag-and-drop library; the server decides, the screen proposes.
+  - _Scope_: §8.3: a mature drag-and-drop library; the server decides, the screen proposes. DEC-140: fills the schedule port of the TASK-124 cancel (the card leaves the open lists).
   - _Acceptance_: AC-SCH-002, AC-SCH-004
   - _Rules_: RL-6, SM-SCH, DEC-18
   - _Screens built here (visual target)_: [`MaintenanceSchedule`](<../Design Artifact/schedule/MaintenanceSchedule.html#MaintenanceSchedule>), [`ScheduleDispatcher`](<../Design Artifact/schedule/ScheduleDispatcher.html#ScheduleDispatcher>), [`ScheduleMonth`](<../Design Artifact/schedule/ScheduleMonth.html#ScheduleMonth>)

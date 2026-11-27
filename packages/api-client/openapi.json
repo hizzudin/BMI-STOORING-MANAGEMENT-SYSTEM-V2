@@ -1264,6 +1264,44 @@
         }
       }
     },
+    "/spks/{id}/approver-cancel": {
+      "post": {
+        "operationId": "approverCancelSpk",
+        "summary": "An Approver cancels an open SPK with a reason (T15, TX-14, DEC-140); needs an Idempotency-Key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpkCancelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An Approver cancels an open SPK with a reason (T15, TX-14, DEC-140); needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/approvals/count": {
       "get": {
         "operationId": "countApprovals",
@@ -4975,7 +5013,8 @@
                     "enum": [
                       "edit",
                       "submit",
-                      "cancel"
+                      "cancel",
+                      "approverCancel"
                     ]
                   }
                 },
@@ -5282,7 +5321,8 @@
                       "enum": [
                         "edit",
                         "submit",
-                        "cancel"
+                        "cancel",
+                        "approverCancel"
                       ]
                     }
                   }
@@ -5830,7 +5870,8 @@
                   "enum": [
                     "edit",
                     "submit",
-                    "cancel"
+                    "cancel",
+                    "approverCancel"
                   ]
                 }
               }

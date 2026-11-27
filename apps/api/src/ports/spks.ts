@@ -14,6 +14,7 @@ import type { IdempotencyGateway } from './idempotency.js';
 import type { NotificationGateway } from './notifications.js';
 import type { DocumentNumberGateway } from './numbering.js';
 import type { PlannerApprovalState } from './planner-approval.js';
+import type { SpkCancelSteps } from './spk-cancel-steps.js';
 
 /** The fields a new SPK row is written with (§9.6); later tasks add the steps, parts and sources. */
 export interface NewSpk {
@@ -174,4 +175,6 @@ export interface SpkGateways {
   plannerApproval: { read(): Promise<PlannerApprovalState> };
   /** NFR-01, TX-22: a retried cancel replays its answer. */
   idempotency: IdempotencyGateway;
+  /** TX-14, DEC-140: the approver cancel's steps before Cancelled. */
+  cancelSteps: SpkCancelSteps;
 }

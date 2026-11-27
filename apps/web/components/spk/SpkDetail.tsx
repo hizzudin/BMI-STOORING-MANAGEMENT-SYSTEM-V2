@@ -12,7 +12,9 @@ import type { SpksApi } from '../../lib/spks-api';
 import { StatusPill } from '../kit/StatusPill';
 import { Tabs } from '../kit/Tabs';
 import { PageHead } from '../shell/AppShell';
+import { Button } from '../kit/Button';
 import { ApprovalBlock, approvalOf } from './ApprovalBlock';
+import { ApproverCancelDialog } from './CancelSpkDialog';
 import { personText, PRIORITY_TONES, STATUS_TONES, statusText } from './spk-format';
 import { SpkRejected } from './SpkRejected';
 import { StepCard, StepTracker } from './StepTracker';
@@ -52,6 +54,9 @@ export function SpkDetail({
 }) {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+  // T15: a cancel reloads the detail so the status and the History row come from the server.
+  const [loads, setLoads] = useState(0);
 
   useEffect(() => {
     let current = true;
@@ -63,7 +68,7 @@ export function SpkDetail({
     return () => {
       current = false;
     };
-  }, [api, id]);
+  }, [api, id, loads]);
 
   if (!detail) {
     return (
@@ -99,6 +104,13 @@ export function SpkDetail({
             <StatusPill tone={STATUS_TONES[spk.status]}>{statusText(spk.status)}</StatusPill>
             <StatusPill tone={PRIORITY_TONES[spk.priority]}>{spk.priority}</StatusPill>
           </>
+        }
+        actions={
+          spk.allowedActions.includes('approverCancel') && (
+            <Button variant="danger" onClick={() => setCancelling(true)}>
+              Cancel SPK
+            </Button>
+          )
         }
       />
       <p className="muted subline">
@@ -177,6 +189,17 @@ export function SpkDetail({
           },
         ]}
       />
+      {cancelling && (
+        <ApproverCancelDialog
+          api={api}
+          spk={spk}
+          onClose={() => setCancelling(false)}
+          onCancelled={() => {
+            setCancelling(false);
+            setLoads((count) => count + 1);
+          }}
+        />
+      )}
     </>
   );
 }

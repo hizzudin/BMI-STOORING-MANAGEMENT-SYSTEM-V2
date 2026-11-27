@@ -179,6 +179,30 @@ export class SpksController {
     });
     return outcome.body as SpkResponse;
   }
+
+  @Post(':id/approver-cancel')
+  @HttpCode(200)
+  @RequireCapability('spk.cancel')
+  @ApiContract({
+    operationId: 'approverCancelSpk',
+    summary:
+      'An Approver cancels an open SPK with a reason (T15, TX-14, DEC-140); needs an Idempotency-Key',
+    body: { name: 'SpkCancelRequest', schema: SpkCancelRequestSchema },
+    response: One,
+  })
+  async approverCancel(
+    @CurrentSession() session: SignedIn,
+    @Param('id', ParseIntPipe) id: number,
+    @ValidBody() body: SpkCancelRequest,
+    @IdempotencyKey() key: string,
+    @Req() request: Request,
+  ): Promise<SpkResponse> {
+    const outcome = await this.spks.approverCancel(actorOf(session), id, body, {
+      key,
+      requestHash: hashRequest('POST', request.path, body),
+    });
+    return outcome.body as SpkResponse;
+  }
 }
 
 /** 400 and 404 of the SPK routes, each with one sentence. */

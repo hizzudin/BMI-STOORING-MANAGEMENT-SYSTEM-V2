@@ -32,6 +32,15 @@ export function spksApi(given?: ApiClient) {
           headers: { 'Idempotency-Key': key },
         }),
       ),
+    /** T15, DEC-140: an Approver cancels an open SPK; NFR-01 as for `cancel`. */
+    approverCancel: (id: number, body: SpkCancelRequest, key: string) =>
+      settle(
+        client().POST('/spks/{id}/approver-cancel', {
+          ...path(id),
+          body,
+          headers: { 'Idempotency-Key': key },
+        }),
+      ),
   };
 }
 

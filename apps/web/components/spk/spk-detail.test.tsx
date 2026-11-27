@@ -174,3 +174,69 @@ describe('SPKDetail (REQ-SPK-011, DEC-127)', () => {
     expect(screen.getByRole('alert').textContent).toBe('This SPK does not exist.');
   });
 });
+
+describe('SPKDetail Cancel SPK for an Approver (REQ-SPK-011, T15, DEC-140)', () => {
+  const approverDetail: Detail = {
+    ...detail,
+    spk: { ...detail.spk, allowedActions: ['approverCancel'] },
+  };
+  const cancelledDetail: Detail = {
+    ...detail,
+    spk: { ...detail.spk, status: 'Cancelled', version: 4, allowedActions: [] },
+    approvals: [
+      ...detail.approvals,
+      {
+        stage: 'Completion',
+        action: 'Cancel',
+        by: { name: 'Budi S.', role: 'Supervisor' },
+        actedAt: '2026-11-03T03:00:00Z',
+        note: 'Vehicle sold',
+        selfApproved: false,
+      },
+    ],
+  };
+
+  it('REQ-SPK-011 DEC-93 Cancel SPK shows only when allowedActions holds approverCancel', async () => {
+    await show(vi.fn(() => ok({ detail: approverDetail })));
+    expect(screen.getByRole('button', { name: 'Cancel SPK' })).toBeTruthy();
+  });
+
+  it('REQ-SPK-008 Cancel SPK opens CancelSPK; after the cancel SPKDetail shows Cancelled and the History row', async () => {
+    const getDetail = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true, data: { detail: approverDetail } })
+      .mockResolvedValueOnce({ ok: true, data: { detail: cancelledDetail } });
+    const approverCancel = vi.fn(() => ok({ spk: cancelledDetail.spk }));
+    await act(async () => {
+      render(
+        <SpkDetail
+          api={{ getDetail, approverCancel } as unknown as SpksApi}
+          id={9}
+          navigate={vi.fn()}
+        />,
+      );
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel SPK' }));
+    const dialog = screen.getByRole('dialog', { name: 'Cancel SPK-2611040139?' });
+    fireEvent.change(screen.getByLabelText('Reason'), { target: { value: 'Vehicle sold' } });
+    const confirm = [...dialog.querySelectorAll('button')].find(
+      (button) => button.textContent === 'Cancel SPK',
+    );
+    await act(async () => {
+      if (confirm) fireEvent.click(confirm);
+    });
+    expect(approverCancel).toHaveBeenCalledWith(
+      9,
+      { version: 3, reason: 'Vehicle sold' },
+      expect.any(String),
+    );
+    expect(getDetail).toHaveBeenCalledTimes(2);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByText('Cancelled')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Cancel SPK' })).toBeNull();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'History' }));
+    });
+    expect(screen.getByText('Cancelled the SPK: Vehicle sold')).toBeTruthy();
+  });
+});

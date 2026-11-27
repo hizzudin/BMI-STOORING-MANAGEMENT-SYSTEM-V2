@@ -458,9 +458,9 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: ecc:redis-patterns, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "storage usage"`: below 80% no alert; at 80% one alert to the System Admin; at 84% none more; at 85% one more; a rerun of the same day adds none (DEC-137)
 - [ ] **TASK-128** Staging deploy (Cloud Run, Cloud SQL, Memorystore, R2, Cloudflare), R2 contract run, staging seed — BLOCKED Q-03
-  - _Scope_: PRD §8.2 hosting; ADR-0001 seed. DEC-142: also serves the web build of the mobile app over HTTPS and proves sign-in, camera and position in Chrome on an Android phone (the browser half of the TASK-127 spike).
-  - _Rules_: DEC-67, NFR-13
-  - _Read_: `PRD.md` for DEC-67, NFR-13 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Scope_: PRD §8.2 hosting; ADR-0001 seed. DEC-142: also serves the web build of the mobile app over HTTPS and proves sign-in, camera and position in Chrome on an Android phone (the browser half of the TASK-127 spike). DEC-143: from the same origin as the API through a proxy (for example Cloudflare routing /api); the API stays without CORS.
+  - _Rules_: DEC-67, NFR-13, DEC-142, DEC-143
+  - _Read_: `PRD.md` for DEC-67, NFR-13, DEC-142, DEC-143 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-008, TASK-113
   - _Skill_: ecc:deployment-patterns, ecc:docker-patterns, ecc:delivery-gate, ecc:canary-watch, security-reviewer, ecc:security-review, ecc:production-audit
   - _Verify_: staging `/health` 200; `int "storage contract"` against R2

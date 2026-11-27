@@ -576,7 +576,7 @@ Test layers, naming and journeys: [tdd-user-journeys.md](tdd-user-journeys.md). 
 | D-08 | Squash merge; RED/GREEN summary in the PR body and `specs/evidence/` | Clean `main` without losing the TDD proof | Q21, Q22 |
 | D-09 | Coverage 80 % global, 90 % for shared, ENG and REG | Critical tier (§8.4) | Q23 |
 | D-10 | Tasks are vertical slices per AC group or journey with Req/Journey/Skill/Verify/Depends lines; foundations are horizontal tasks | Small PRs, each proving one journey | Q17 |
-| D-11 | Mobile spike split: sign-in, camera, location on a temporary Expo account; push and signed APK wait for Q-03 | Q-03 open; a local Android SDK is too large for the disk | Q18 |
+| D-11 | Mobile spike split: sign-in, camera, location in Expo Go on the owner's phone over the LAN, with no Expo account (DEC-141); push and signed APK wait for Q-03 | Q-03 open; a local Android SDK is too large for the disk | Q18, DEC-141 |
 | D-12 | Plain SQL migrations are the schema source; Drizzle definitions are checked for drift | §8.2 keeps enums, CHECKs and triggers in the database; §9 cannot change silently | PRD §8.2 |
 | D-13 | One NestJS code base with HTTP and worker entry points | Shared services and transactions; two Cloud Run services | PRD §8.2 |
 | D-14 | Spec files and code in English; a short Indonesian summary for the product owner in CONTEXT.md | Same terms as the PRD and the code | Q8 |

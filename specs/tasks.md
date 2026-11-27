@@ -444,9 +444,9 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `e2e FLW-APR-05`; `qa` CancelSPK against their artboards; regression check of SPKDetail
 - [ ] **TASK-127** Mobile spike: A) sign-in, camera, location on an Android 8 phone; B) push and signed APK — B BLOCKED Q-03
-  - _Scope_: §8.3 mobile spike; design D-11.
-  - _Rules_: NFR-18, DEC-66
-  - _Read_: `PRD.md` for NFR-18, DEC-66 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Scope_: §8.3 mobile spike; design D-11. DEC-141: part A is one temporary development screen (sign-in, one camera photo uploaded through /files, the position) run in Expo Go on the owner phone over the LAN with no Expo account; part A done leaves the task open for part B. DEC-142: part A also opens the web build of the same code in the phone browser for sign-in; camera and position in the browser are proven on staging in TASK-128. Part A done 2026-11-28 on a Redmi 10C with Android 12 in Expo Go (evidence TASK-127); the owner waived the screen recording for the spike; Android 8.0 still to run on a device before TASK-710.
+  - _Rules_: NFR-18, DEC-66, DEC-141, DEC-142
+  - _Read_: `PRD.md` for NFR-18, DEC-66, DEC-141, DEC-142 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-104
   - _Skill_: react-native-expert, ecc:react-native-patterns, ecc:accessibility, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: recorded device run; notes in specs/evidence/TASK-127.tdd.md
@@ -458,9 +458,9 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: ecc:redis-patterns, nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "storage usage"`: below 80% no alert; at 80% one alert to the System Admin; at 84% none more; at 85% one more; a rerun of the same day adds none (DEC-137)
 - [ ] **TASK-128** Staging deploy (Cloud Run, Cloud SQL, Memorystore, R2, Cloudflare), R2 contract run, staging seed — BLOCKED Q-03
-  - _Scope_: PRD §8.2 hosting; ADR-0001 seed.
-  - _Rules_: DEC-67, NFR-13
-  - _Read_: `PRD.md` for DEC-67, NFR-13 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Scope_: PRD §8.2 hosting; ADR-0001 seed. DEC-142: also serves the web build of the mobile app over HTTPS and proves sign-in, camera and position in Chrome on an Android phone (the browser half of the TASK-127 spike). DEC-143: from the same origin as the API through a proxy (for example Cloudflare routing /api); the API stays without CORS.
+  - _Rules_: DEC-67, NFR-13, DEC-142, DEC-143
+  - _Read_: `PRD.md` for DEC-67, NFR-13, DEC-142, DEC-143 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-008, TASK-113
   - _Skill_: ecc:deployment-patterns, ecc:docker-patterns, ecc:delivery-gate, ecc:canary-watch, security-reviewer, ecc:security-review, ecc:production-audit
   - _Verify_: staging `/health` 200; `int "storage contract"` against R2
@@ -1248,17 +1248,17 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-BIL-002|AC-BIL-003|AC-IAM-010|AC-SPKD-008"`; `e2e FLW-ACC-01`; `e2e FLW-ACC-02`; golden invoice PDF; `qa` InvoiceDetail, InvoicePayment, InvoiceVoid, InvoiceDocument, InvoiceList, DashboardAccounting against their artboards
 - [ ] **TASK-704** Mobile app foundation: sign-in, role menu, profile, offline drafts, connection rules [REQ-MOB-001, REQ-MOB-002, REQ-MOB-009]
-  - _Scope_: One app; the menu follows the role from GET /me; the push mute stays P1 (DEC-100).
+  - _Scope_: One app; the menu follows the role from GET /me; the push mute stays P1 (DEC-100). DEC-142: built for the APK and the phone browser from one code base; OQ-11 (push and offline drafts in the browser) answered before this task.
   - _Acceptance_: AC-MOB-003
-  - _Rules_: RL-1, BR-01, BR-02, C-05, C-35, DQ-01, DQ-03, DEC-26, DEC-41, DEC-100, NFR-18
+  - _Rules_: RL-1, BR-01, BR-02, C-05, C-35, DQ-01, DQ-03, DEC-26, DEC-41, DEC-100, NFR-18, DEC-142
   - _Screens built here (visual target)_: [`MobileLogin`](<../Design Artifact/mobile/MobileLogin.html#MobileLogin>), [`MobileProfile`](<../Design Artifact/mobile/MobileProfile.html#MobileProfile>)
   - _Screens touched_: [`MechanicMobileHome`](<../Design Artifact/mobile/MechanicMobileHome.html#MechanicMobileHome>) (built later in TASK-712, which shows what this task provides), [`MechanicMobileStep`](<../Design Artifact/mobile/MechanicMobileStep.html#MechanicMobileStep>) (built later in TASK-708, which shows what this task provides), [`MechanicMobilePlacement`](<../Design Artifact/mobile/MechanicMobilePlacement.html#MechanicMobilePlacement>) (built later in TASK-712, which shows what this task provides), [`FCMobilePurchase`](<../Design Artifact/mobile/FCMobilePurchase.html#FCMobilePurchase>) (built later in TASK-707, which shows what this task provides)
-  - _Read_: `docs/prd/areas/4.20-mob.md` (REQ-MOB-001, REQ-MOB-002, REQ-MOB-009); `PRD.md` for RL-1, BR-01, BR-02, DEC-26, DEC-41, DEC-100, NFR-18 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for MobileLogin, MechanicMobileHome, MechanicMobileStep, MechanicMobilePlacement, FCMobilePurchase, MobileProfile; `docs/prd/ui-action-map.md`: every row of MobileLogin and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Read_: `docs/prd/areas/4.20-mob.md` (REQ-MOB-001, REQ-MOB-002, REQ-MOB-009); `PRD.md` for RL-1, BR-01, BR-02, DEC-26, DEC-41, DEC-100, NFR-18, DEC-142 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.5–7.6 for MobileLogin, MechanicMobileHome, MechanicMobileStep, MechanicMobilePlacement, FCMobilePurchase, MobileProfile; `docs/prd/ui-action-map.md`: every row of MobileLogin and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-127, TASK-010, TASK-105
   - _Skill_: react-native-expert, ecc:react-native-patterns, ecc:accessibility, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-MOB-003"`; `qa` MobileLogin, MobileProfile against their artboards
 - [ ] **TASK-705** Phone camera, compression and upload queue with automatic retry [REQ-FUP-003, REQ-FUP-012, REQ-FUP-013, REQ-FUP-014]
-  - _Scope_: Camera-only photos where marked (NFR-06).
+  - _Scope_: Camera-only photos where marked (NFR-06). DEC-142: the same camera, compression and upload queue in the phone browser.
   - _Acceptance_: AC-FUP-001, AC-FUP-007 (here because it phone upload queue)
   - _Rules_: NFR-06
   - _Screens touched_: [`FileUploadStates`](<../Design Artifact/components/FileUploadStates.html#FileUploadStates>) (built in TASK-115; extend and regression-check it), [`MechanicMobileUpload`](<../Design Artifact/mobile/MechanicMobileUpload.html#MechanicMobileUpload>) (built later in TASK-712, which shows what this task provides)
@@ -1324,7 +1324,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: react-native-expert, ecc:react-native-patterns, ecc:accessibility, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-BRK-009"`; `e2e FLW-MEC-06`; `e2e FLW-MEC-11`; regression check of MobileInspection
 - [ ] **TASK-709** Push via Expo and FCM for Driver, Field Coordinator, Mechanic, System Admin — BLOCKED Q-03 [REQ-NTF-002]
-  - _Scope_: P1 for the other roles.
+  - _Scope_: P1 for the other roles. DEC-142: push on the browser path follows the answer to OQ-11.
   - _Rules_: DEC-27, DEC-98
   - _Screens touched_: [`DispatcherMobileAlerts`](<../Design Artifact/mobile/DispatcherMobileAlerts.html#DispatcherMobileAlerts>) (built in TASK-707; extend and regression-check it)
   - _Data_: `push_devices` (§9.12), `notification_deliveries` (§9.12)

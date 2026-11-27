@@ -6,7 +6,7 @@
 
 web
 
-(Inferred, to confirm: the design canvas records the desktop web app. The same system also has an Android app for field roles, built with React Native and Expo and installed as an APK; iPhone follows in Release 2. Mobile screens live in the same canvas.)
+(Inferred, to confirm: the design canvas records the desktop web app. The same system also has an Android app for field roles, built with React Native and Expo and installed as an APK, and the same app also runs in Chrome on the phone (DEC-142); iPhone follows in Release 2. Mobile screens live in the same canvas.)
 
 ## Stack
 

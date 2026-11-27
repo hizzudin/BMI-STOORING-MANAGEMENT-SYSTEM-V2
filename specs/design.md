@@ -13,6 +13,7 @@ The entity is SPK everywhere: `spks`, `SpkGateway`, `core/spk/`, `spk.*`, `Creat
 apps/web (Next.js) ──┐                                ┌──► PostgreSQL 16  (Cloud SQL Jakarta; local: WSL)
                      ├── HTTPS / JSON ──► apps/api ───┼──► Redis + BullMQ (Memorystore; local: WSL)
 apps/mobile (Expo) ──┘   generated client  (NestJS)   └──► Object storage (R2; local: filesystem adapter)
+  Android APK + mobile web (react-native-web, HTTPS), one code base (DEC-142)
                                            └── worker entry (jobs, PDFs, file processing)
 ```
 
@@ -581,6 +582,7 @@ Test layers, naming and journeys: [tdd-user-journeys.md](tdd-user-journeys.md). 
 | D-13 | One NestJS code base with HTTP and worker entry points | Shared services and transactions; two Cloud Run services | PRD §8.2 |
 | D-14 | Spec files and code in English; a short Indonesian summary for the product owner in CONTEXT.md | Same terms as the PRD and the code | Q8 |
 | D-16 | Local trial with a dummy seed (DEC-113, ADR-0003) | The owner tries each feature on a local database as it lands; `pnpm trial` migrates, seeds and runs the API and web app, `pnpm trial:reset` reseeds | PRD §10 |
+| D-17 | One Expo code base for the Android APK and the mobile web app in Chrome on the phone (Expo Router web with react-native-web) | DEC-142: the field users must work from the phone browser or the app; one set of screens and rules; camera, position and push in the browser need HTTPS | DEC-142 |
 | D-15 | big.js for decimal money in `packages/shared` | Exact decimals with half-up rounding on web, phone and API; small, no dependencies, MIT; a private constructor keeps its settings local | NFR-16 |
 
 ADRs (divergences): [ADR-0001](../docs/adr/0001-staging-seed-from-canvas-values.md), staging seed from canvas values (Q6); [ADR-0002](../docs/adr/0002-interim-review-rule.md), interim reviewer rule until an internal developer joins (Q20).

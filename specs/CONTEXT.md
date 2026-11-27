@@ -10,7 +10,7 @@
 | Phase | 1 (R1 step 1) |
 | Spec status | PRD v2.23 merged into `main` and pushed on the owner go-ahead (2026-11-09) |
 | Blockers | Q-03 blocks TASK-127 part B, TASK-128, TASK-709 to TASK-711 |
-| Spec version | PRD v2.53 |
+| Spec version | PRD v2.54 |
 | Branching | squash merges on `main`; pushed to `origin` from session 13 on owner's go-ahead; the next task branches from `main` |
 
 **Ringkasan untuk product owner:** Phase 0 selesai dan `main` sudah di GitHub; CI hijau. Tersisa untuk Anda: mengaktifkan branch protection di `main`. Berikutnya TASK-101. Masa simpan Idempotency-Key 30 hari masih asumsi [A].
@@ -98,6 +98,7 @@ The design choices are D-01 to D-14 in design.md §11. Process and product decis
 | OQ-6 | NFR-15 stores the number formats in `app_settings.numbering_formats` (9.12), but no screen edits that setting. Does the owner want one, or is a change by a developer in the database enough? | Nothing yet | No screen until the owner asks; the value is checked with `NumberingConfigSchema` before use |
 | Q-03 | Who owns the Google Cloud, Cloudflare, Firebase and Expo (EAS) accounts, and which domain do web and API use? (PRD §11.3) | TASK-127 B, 128, 709 to 711; R1 step 1 close | — (product owner) |
 | OQ-5 | Is an internal developer available to review the ENG/REG design note and critical merges (§8.4)? | TASK-202, 203 | Until one joins, ADR-0002 applies |
+| OQ-11 | DEC-142: on the browser path of the mobile app (Chrome on the phone), do field users get push notifications (Web Push) and offline drafts like the APK, or in-app notices and online work only? | TASK-704, TASK-709 | — (product owner; ask before TASK-704) |
 
 ## Divergences
 

@@ -2,18 +2,19 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Prove on a real Android 8.0+ phone, in Expo Go, that the mobile app signs in through the API, takes a camera photo and uploads it through `/files`, and reads the position (NFR-18, DEC-66, DEC-141).
+**Goal:** Prove on a real Android 8.0+ phone, in Expo Go, that the mobile app signs in through the API, takes a camera photo and uploads it through `/files`, and reads the position; and prove that the web build of the same code opens in Chrome on that phone and signs in (NFR-18, DEC-66, DEC-141, DEC-142). Camera and position in the phone browser need HTTPS and are proven on staging in TASK-128.
 
-**Architecture:** One temporary screen `app/spike.tsx`, reachable only in a development build. Its network work lives in a framework-free module `src/spike/spike-api.ts` (sign-in, upload link, PUT, uploaded signal) that takes `fetch` as a parameter, so it is unit tested without a phone. The camera is `expo-image-picker` (`launchCameraAsync`), the position `expo-location`. The phone reaches the API and Metro over the same Wi-Fi at the laptop's LAN address.
+**Architecture:** One temporary screen `app/spike.tsx`, reachable only in a development build. Its network work lives in a framework-free module `src/spike/spike-api.ts` (sign-in, upload link, PUT, uploaded signal) that takes `fetch` as a parameter, so it is unit tested without a phone. The camera is `expo-image-picker` (`launchCameraAsync`), the position `expo-location`. The phone reaches the API and Metro over the same Wi-Fi at the laptop's LAN address. DEC-142: `apps/mobile` gains the web target (Expo Router web with `react-native-web`, `react-dom`, `@expo/metro-runtime`); the same `app/spike.tsx` runs in Chrome on the phone from `expo start --web` at the LAN address.
 
 **Tech Stack:** Expo SDK 58, React Native 0.88, expo-router, expo-image-picker and expo-location (versions chosen by `npx expo install` for SDK 58), Vitest for the module tests.
 
-**Spec:** `PRD.md` NFR-18, DEC-66, DEC-141 (PRD v2.53, commit a41c5e4); `specs/design.md` D-11; `docs/prd/areas/8.1-fup.md` for the upload flow already built in TASK-114 (REQ-FUP-004, REQ-FUP-005).
+**Spec:** `PRD.md` NFR-18, DEC-66, DEC-141 (PRD v2.53, commit a41c5e4), DEC-142 (PRD v2.54, commit b6bfe90); `specs/design.md` D-17; `specs/design.md` D-11; `docs/prd/areas/8.1-fup.md` for the upload flow already built in TASK-114 (REQ-FUP-004, REQ-FUP-005).
 
 **Branch:** `feat/phase1-task127-mobile-spike`.
 
 ## Success criteria (Done when)
-- The _Verify_ line: a recorded device run on the owner's Android 8.0+ phone shows sign-in, one camera photo uploaded (the file reaches `uploaded`), and the position on screen; notes in `specs/evidence/TASK-127.tdd.md`.
+- The _Verify_ line: a recorded device run on the owner's Android 8.0+ phone shows sign-in, one camera photo uploaded (the file reaches `uploaded`), and the position on screen in Expo Go; and the same screen opened in Chrome on that phone signing in; notes in `specs/evidence/TASK-127.tdd.md`.
+- `pnpm --filter @bmi/mobile exec expo export --platform web` builds the web app without errors.
 - The module tests pass; typecheck, lint and the repository gates pass.
 - TASK-127 stays `[ ]` (part B is BLOCKED Q-03); part A is recorded as done in the task scope, the evidence and CONTEXT.
 
@@ -36,6 +37,9 @@
 4. **The API base URL comes from `EXPO_PUBLIC_API_URL`** (the laptop's LAN address, e.g. `http://192.168.x.y:3001`); the API runs with `STORAGE_PUBLIC_URL` at the same address so the phone can PUT to it.
 5. **Development only:** `app/spike.tsx` renders nothing unless `__DEV__`, and the home screen shows a "Spike" link only in `__DEV__`. TASK-704 removes it.
 6. **Vitest in `apps/mobile`** for `spike-api.ts` (node environment, no React Native renderer); it joins the root test run.
+7. **The browser run uses the same mobile-client sign-in (bearer token in memory)** for the spike only; how the browser path keeps its session, and whether it gets push and offline drafts (OQ-11), is decided in TASK-704.
+8. **For the browser run the API also accepts the Metro web origin** (`WEB_ORIGIN` set to `http://<LAN address>:8081` while the spike runs); nothing in the API code changes.
+9. **`app.json` platforms become `android` and `web`**; the web output is a static build (`expo export --platform web`) checked in the gates, not deployed (TASK-128 deploys it).
 
 ## File Structure
 
@@ -45,8 +49,8 @@
 | `apps/mobile/src/spike/spike-api.test.ts` | create | the module tests |
 | `apps/mobile/app/spike.tsx` | create | the temporary screen: email, password, Sign in; Take photo; Read position; the results |
 | `apps/mobile/app/index.tsx` | modify | the `__DEV__` link to the spike |
-| `apps/mobile/app.json` | modify | the image-picker and location plugins with Android permission texts |
-| `apps/mobile/package.json` | modify | expo-image-picker, expo-location, vitest, the `test` script |
+| `apps/mobile/app.json` | modify | platforms `android` and `web`; the image-picker and location plugins with Android permission texts |
+| `apps/mobile/package.json` | modify | expo-image-picker, expo-location, react-dom, react-native-web, @expo/metro-runtime, vitest, the `test` script |
 | `apps/mobile/vitest.config.ts` | create | node environment |
 | `pnpm-lock.yaml`, `pnpm-workspace.yaml` | modify | the new packages (a release-age exclusion only if pnpm refuses a package Expo requires) |
 
@@ -77,6 +81,7 @@ export function uploadPhoto(
 3. **A photo larger than the 30 MB input limit:** the upload link is refused with its sentence (covered by the module test of a refused link).
 4. **No GPS fix indoors:** the position call times out with a message.
 5. **The spike in a release build:** it renders nothing (checked by the `__DEV__` guard).
+6. **The browser over plain HTTP on the LAN:** Take photo and Read position may be refused by Chrome; the screen says so in words, and the evidence records it as expected until staging HTTPS.
 
 ---
 
@@ -87,8 +92,8 @@ export function uploadPhoto(
 
 ### Task 2: The spike screen and the native modules
 **Skills:** react-native-expert, ecc:react-native-patterns, ecc:accessibility (48 px targets, labels).
-- [ ] `npx expo install expo-image-picker expo-location`; plugins and permission texts in `app.json`.
-- [ ] `app/spike.tsx` and the `__DEV__` link; `pnpm --filter @bmi/mobile typecheck` and `lint` pass.
+- [ ] `npx expo install expo-image-picker expo-location react-dom react-native-web @expo/metro-runtime`; platforms, plugins and permission texts in `app.json`.
+- [ ] `app/spike.tsx` and the `__DEV__` link; `pnpm --filter @bmi/mobile typecheck` and `lint` pass; `expo export --platform web` builds.
 - [ ] Commit `feat(mobile): temporary spike screen for sign-in, camera and position [TASK-127, NFR-18, DEC-141]`.
 
 ### Task 3: Gates
@@ -97,9 +102,10 @@ export function uploadPhoto(
 ### Task 4: The device run with the owner
 - [ ] I start the API on `bmi_dev` with `STORAGE_PUBLIC_URL` at the LAN address and `expo start` (LAN); you scan the QR code in Expo Go, type the System Admin password, take a photo, read the position, and screen-record it. Each server stops when the run is done.
 - [ ] I confirm on the server that the file reached `uploaded` and note the phone model, Android version and Expo Go version.
+- [ ] Browser run: I start `expo start --web` on the LAN; you open `http://<LAN address>:8081/spike` in Chrome on the same phone, sign in and try the photo and position (expected refused over HTTP); you record it and I note the Chrome version.
 
 ### Task 5: Bookkeeping, audit, PR
 - [ ] `specs/evidence/TASK-127.tdd.md`, design.md D-11 note, tasks.source scope "part A done", CONTEXT row 51, AGENT_LOG with the workflow audit; push; ask "Buat PR untuk TASK-127 bagian A?".
 
 ## Not in this task
-Push, the signed APK and the Expo account (part B, Q-03); MobileLogin and the role menus (TASK-704); phone compression and offline queue (TASK-705).
+Push, the signed APK and the Expo account (part B, Q-03); MobileLogin and the role menus (TASK-704); phone compression and offline queue (TASK-705); camera and position in the phone browser over HTTPS and hosting the web build (TASK-128); push and offline drafts in the browser (OQ-11).

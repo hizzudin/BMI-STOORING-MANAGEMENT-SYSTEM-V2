@@ -432,7 +432,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-114, TASK-126
   - _Skill_: nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-FUP-004|AC-FUP-009"`; `qa` FileUploadStates, PhotoViewer against their artboards
-- [ ] **TASK-124** Approver cancel with reason (reversals completed by TASK-308 and TASK-502) [REQ-SPK-008]
+- [x] **TASK-124** Approver cancel with reason (reversals completed by TASK-308 and TASK-502) [REQ-SPK-008]
   - _Scope_: T15 of SM-SPK; TASK-308 adds the reversal of posted issues and TASK-502 the release of Issued tyres. DEC-140: an Approver cancels in any open status; each TX-14 step before Cancelled is a port that does nothing until its owning task fills it (TASK-308, TASK-502, TASK-313, TASK-612, TASK-610); the creator is notified; AssignStep moved to TASK-206 and CorrectStepTime to TASK-204.
   - _Rules_: BR-06, TX-14, DEC-140
   - _Screens built here (visual target)_: [`CancelSPK`](<../Design Artifact/spk/CancelSPK.html#CancelSPK>)

@@ -75,8 +75,8 @@ describe('REQ-SPK-010 DEC-127 the SPK list query', () => {
 });
 
 describe('T6 DEC-129 the creator cancels a Draft or Rejected SPK', () => {
-  it('T6 cancel is one of the SPK actions', () => {
-    expect(SPK_ACTIONS).toEqual(['edit', 'submit', 'cancel']);
+  it('T6 cancel is one of the SPK actions; DEC-140 T15 approverCancel is its own', () => {
+    expect(SPK_ACTIONS).toEqual(['edit', 'submit', 'cancel', 'approverCancel']);
   });
 
   it('T6 the reason is required, trimmed and at most 500 characters', () => {

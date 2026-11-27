@@ -63,6 +63,7 @@ import {
   vehicleClasses,
   vehicles,
 } from './schema/index.js';
+import { NoCancelStepsYet } from './spk-cancel-steps.js';
 import type { DbTransaction } from './unit-of-work.js';
 
 type Db = NodePgDatabase | DbTransaction;
@@ -477,4 +478,5 @@ export const spkGateways = (tx: DbTransaction): SpkGateways => ({
   notifications: new DrizzleNotificationGateway(tx),
   plannerApproval: new DrizzlePlannerApprovalGateway(tx),
   idempotency: new DrizzleIdempotencyGateway(tx),
+  cancelSteps: new NoCancelStepsYet(),
 });

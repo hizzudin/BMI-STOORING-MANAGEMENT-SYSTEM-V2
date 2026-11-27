@@ -478,7 +478,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 
 **Goal:** The engine runs each SPK's own steps, built in Create SPK and frozen at approval, with step time, verification in parallel, completion approval and the SPK document (PRD §10 R1 step 2). Engine first, on a dummy module (§8.3).
 
-- [ ] **TASK-201** Engine migrations and gateway methods
+- [x] **TASK-201** Engine migrations and gateway methods
   - _Scope_: §9.6 engine tables incl. `tracks_work_time`. DEC-124: adds the references of spks.preset_id, spk_attachments.check_item_id and spk_approvals.change_request_id. DEC-144: the dummy module is registered by the test harness and the e2e seed only; no gateway method before a task uses it.
   - _Rules_: DEC-95, DEC-124, DEC-144
   - _Data_: `spk_presets` (§9.6), `spk_preset_steps` (§9.6), `step_time_events` (§9.6), `step_time_corrections` (§9.6), `spk_change_requests` (§9.6), `mobilisation_location_trail` (§9.6), `spk_check_items` (§9.6)

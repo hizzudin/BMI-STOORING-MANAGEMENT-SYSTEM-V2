@@ -139,6 +139,8 @@ v2.55 (2026-11-28) adds DEC-143, product owner decision: the web build of the mo
 
 v2.56 (2026-11-28) adds DEC-144, product owner decision on the engine tables: TASK-201 adds the seven §9.6 tables and the references DEC-124 left open, the dummy module is registered by the tests only, and gateway methods come with the tasks that use them.
 
+v2.57 (2026-11-28) adds DEC-145, product owner decision on the engine core: steps frozen by locking their rows (no JSON snapshot; §8.3 corrected), one engine submit route with the executor check, the next step opened at once, T7 and T11 on submit, the DEC-139 failed-file rule, and the design note reviewed under ADR-0002.
+
 v2.46 (2026-11-17) adds DEC-134, product owner decision on the vendor master: every REQ-INV-014 field with a typed code fixed once saved, deactivated vendors stay listed and can be activated again, the page is the System Admin's only, and TASK-112 gives the active vendors to pick from; the SettingsVendors artboard gains Code, Phone and Address and loses its Planner viewer.
 
 v2.45 (2026-11-17) adds DEC-133, product owner decision on Setup mode and self-decisions: Setup mode removes no capability, so the System Admin may create, submit and approve in Setup; BR-03 now forbids every self-decision while Live, the System Admin included, and allows it, still marked Self-approved or Self-verified, while in Setup mode. BR-03, RL-3, the 2.4 capability set, the glossary, REQ-IAM-010, REQ-IAM-012, AC-IAM-006, REQ-SPK-006, AC-SPK-006, REQ-ENG-007, REQ-APR-006, AC-APR-003 and AC-INV-004 are corrected.

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { signIn, uploadPhoto, type Fetcher } from './spike-api';
+import { signIn, uploadPhoto, type Fetcher, type SpikeFile } from './spike-api';
 
 // TASK-127 part A (NFR-18, DEC-141, DEC-142): the spike's calls to the API, without a phone.
 
@@ -46,19 +46,23 @@ describe('spike sign-in', () => {
 });
 
 describe('spike photo upload', () => {
-  // The picker's fileSize can differ from the bytes read back from the uri on Android (the device
-  // run of 2026-11-28 got "The file does not match the signed link."), so the link must name the
-  // size of the bytes sent.
+  // The device runs of 2026-11-28 found that the picker's fileSize can differ from the bytes on
+  // disk ("The file does not match the signed link."), and that fetch(uri).blob() in Expo Go reads
+  // "File not found" (14 bytes). So the size and the PUT both go through the platform's file access.
   const photo = { uri: 'file:///photo.jpg', contentType: 'image/jpeg' };
-  const blob = new Blob(['jpeg-bytes'], { type: 'image/jpeg' });
-  const body = vi.fn(() => Promise.resolve(blob));
   let keys = 0;
   const key = () => `key-${(keys += 1)}`;
 
+  function device(put: SpikeFile['put'] = () => Promise.resolve({ status: 200, body: '' })) {
+    return {
+      size: vi.fn<SpikeFile['size']>(() => Promise.resolve(8_357_472)),
+      put: vi.fn<SpikeFile['put']>(put),
+    };
+  }
+
   function server() {
     return vi.fn<Fetcher>((url) => {
-      const path = String(url);
-      if (path.endsWith('/files/upload-links')) {
+      if (url.endsWith('/files/upload-links')) {
         return Promise.resolve(
           json(201, {
             file: { id: 77, status: 'Pending' },
@@ -71,39 +75,37 @@ describe('spike photo upload', () => {
           }),
         );
       }
-      if (path.includes('/storage/fs/put')) {
-        return Promise.resolve(new Response(null, { status: 200 }));
-      }
       // The worker turns it Ready later (REQ-FUP-005); right after the signal it is still Pending.
       return Promise.resolve(json(200, { file: { id: 77, status: 'Pending' } }));
     });
   }
 
-  it('REQ-FUP-004 uploadPhoto asks a Photo upload link with the size of the bytes it sends and capture source Camera, then PUTs those bytes with the given headers', async () => {
+  it('REQ-FUP-004 uploadPhoto asks a Photo upload link with the size on disk and capture source Camera, then PUTs the file with the given headers', async () => {
     const fetcher = server();
-    await uploadPhoto(fetcher, API, 'token-1', photo, body, key);
+    const file = device();
+    await uploadPhoto(fetcher, API, 'token-1', photo, file, key);
+    expect(file.size).toHaveBeenCalledWith('file:///photo.jpg');
     const [linkUrl, linkInit] = fetcher.mock.calls[0] ?? [];
     expect(linkUrl).toBe(`${API}/files/upload-links`);
     expect(new Headers(linkInit?.headers).get('authorization')).toBe('Bearer token-1');
     expect(JSON.parse(String(linkInit?.body))).toEqual({
       profile: 'Photo',
       contentType: 'image/jpeg',
-      bytes: blob.size,
+      bytes: 8_357_472,
       originalName: null,
       captureSource: 'Camera',
     });
-    const [putUrl, putInit] = fetcher.mock.calls[1] ?? [];
-    expect(putUrl).toBe(`${API}/storage/fs/put?sig=abc`);
-    expect(putInit?.method).toBe('PUT');
-    expect(new Headers(putInit?.headers).get('content-type')).toBe('image/jpeg');
-    expect(putInit?.body).toBe(blob);
-    expect(body).toHaveBeenCalledWith('file:///photo.jpg');
+    expect(file.put).toHaveBeenCalledWith(
+      `${API}/storage/fs/put?sig=abc`,
+      { 'Content-Type': 'image/jpeg' },
+      'file:///photo.jpg',
+    );
   });
 
   it('REQ-FUP-005 uploadPhoto signals uploaded and returns the file id and status', async () => {
     const fetcher = server();
-    const uploaded = await uploadPhoto(fetcher, API, 'token-1', photo, body, key);
-    const [doneUrl, doneInit] = fetcher.mock.calls[2] ?? [];
+    const uploaded = await uploadPhoto(fetcher, API, 'token-1', photo, device(), key);
+    const [doneUrl, doneInit] = fetcher.mock.calls[1] ?? [];
     expect(doneUrl).toBe(`${API}/files/77/uploaded`);
     expect(doneInit?.method).toBe('POST');
     expect(uploaded).toEqual({ id: 77, status: 'Pending' });
@@ -111,7 +113,7 @@ describe('spike photo upload', () => {
 
   it('NFR-01 each POST carries its own Idempotency-Key', async () => {
     const fetcher = server();
-    await uploadPhoto(fetcher, API, 'token-1', photo, body, key);
+    await uploadPhoto(fetcher, API, 'token-1', photo, device(), key);
     const posts = fetcher.mock.calls.filter(([, init]) => init?.method === 'POST');
     const sent = posts.map(([, init]) => new Headers(init?.headers).get('idempotency-key'));
     expect(sent).toHaveLength(2);
@@ -123,8 +125,24 @@ describe('spike photo upload', () => {
     const fetcher = vi.fn<Fetcher>(() =>
       Promise.resolve(json(400, { statusCode: 400, message: 'This file is larger than 30 MB.' })),
     );
-    await expect(uploadPhoto(fetcher, API, 'token-1', photo, body, key)).rejects.toThrow(
+    const file = device();
+    await expect(uploadPhoto(fetcher, API, 'token-1', photo, file, key)).rejects.toThrow(
       'This file is larger than 30 MB.',
+    );
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(file.put).not.toHaveBeenCalled();
+  });
+
+  it('REQ-FUP-004 a refused PUT throws the storage sentence and no uploaded signal is sent', async () => {
+    const fetcher = server();
+    const file = device(() =>
+      Promise.resolve({
+        status: 400,
+        body: JSON.stringify({ message: 'The file does not match the signed link.' }),
+      }),
+    );
+    await expect(uploadPhoto(fetcher, API, 'token-1', photo, file, key)).rejects.toThrow(
+      'The file does not match the signed link.',
     );
     expect(fetcher).toHaveBeenCalledTimes(1);
   });

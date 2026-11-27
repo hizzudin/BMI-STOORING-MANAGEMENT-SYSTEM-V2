@@ -18,6 +18,19 @@ export interface SpikePhoto {
   contentType: string;
 }
 
+/**
+ * The platform's file access (DEC-142): on the phone app expo-file-system, in the browser fetch and
+ * Blob. `put` sends the file at `uri` as the raw body and answers the HTTP status and body text.
+ */
+export interface SpikeFile {
+  size(uri: string): Promise<number>;
+  put(
+    url: string,
+    headers: Record<string, string>,
+    uri: string,
+  ): Promise<{ status: number; body: string }>;
+}
+
 /** The stored file after the uploaded signal: Pending until the worker makes it Ready. */
 export interface UploadedPhoto {
   id: number;
@@ -71,11 +84,11 @@ export async function uploadPhoto(
   apiUrl: string,
   token: string,
   photo: SpikePhoto,
-  body: (uri: string) => Promise<Blob>,
+  file: SpikeFile,
   key: () => string,
 ): Promise<UploadedPhoto> {
   const auth = { authorization: `Bearer ${token}` };
-  const bytes = await body(photo.uri);
+  const bytes = await file.size(photo.uri);
   const link = await postJson<{
     file: { id: number };
     upload: { url: string; headers: Record<string, string> };
@@ -85,18 +98,16 @@ export async function uploadPhoto(
     {
       profile: 'Photo',
       contentType: photo.contentType,
-      bytes: bytes.size,
+      bytes,
       originalName: null,
       captureSource: 'Camera',
     },
     { ...auth, 'Idempotency-Key': key() },
   );
-  const put = await fetcher(link.upload.url, {
-    method: 'PUT',
-    headers: link.upload.headers,
-    body: bytes,
-  });
-  if (!put.ok) throw await refusal(put);
+  const put = await file.put(link.upload.url, link.upload.headers, photo.uri);
+  if (put.status < 200 || put.status >= 300) {
+    throw await refusal(new Response(put.body, { status: put.status }));
+  }
   const done = await postJson<{ file: { id: number; status: string } }>(
     fetcher,
     `${apiUrl}/files/${link.file.id}/uploaded`,

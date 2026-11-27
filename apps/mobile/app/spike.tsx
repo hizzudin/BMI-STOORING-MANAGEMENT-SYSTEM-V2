@@ -3,6 +3,7 @@ import * as Location from 'expo-location';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { signIn, uploadPhoto, type SpikeSession } from '../src/spike/spike-api';
+import { spikeFile } from '../src/spike/spike-file';
 
 /**
  * TASK-127 part A (NFR-18, DEC-141, DEC-142): a temporary screen that proves sign-in, one camera
@@ -69,7 +70,7 @@ export default function SpikeScreen() {
         API_URL,
         session.accessToken,
         { uri: asset.uri, contentType: asset.mimeType ?? 'image/jpeg' },
-        async (uri) => (await fetch(uri)).blob(),
+        spikeFile,
         newKey,
       );
       note(`Photo uploaded: file ${uploaded.id}, status ${uploaded.status}`);

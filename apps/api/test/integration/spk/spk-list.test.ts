@@ -117,13 +117,31 @@ async function insertSpk(
   return id;
 }
 
+/** One statement with `bmi.step_revision` on, in its own transaction (DEC-146, migration 0015). */
+async function withStepRevision(sql: string, params: unknown[]): Promise<void> {
+  const client = await testPool().connect();
+  try {
+    await client.query('BEGIN');
+    await client.query(`SET LOCAL bmi.step_revision = 'on'`);
+    await client.query(sql, params);
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 /** DEC-126: no composer yet, so the test writes the steps. */
 async function insertStep(
   spk: string,
   sequenceNo: number,
   values: { status: string; executorRoles?: string; assignee?: string; verifier?: string },
 ): Promise<void> {
-  await testPool().query(
+  // DEC-145: the SPK already holds its status; a fixture writes its steps through the named
+  // exception of the freeze trigger, inside one transaction (migration 0015).
+  await withStepRevision(
     `INSERT INTO spk_assignments (spk_id, sequence_no, module, executor_roles, verifier_role, status,
        assigned_to, opened_at, submitted_at, verified_at, verified_by)
      VALUES ($1, $2, 'Test_Step', $3::role_t[], 'Planner', $4::asg_status_t, $5,

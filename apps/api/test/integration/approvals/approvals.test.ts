@@ -105,7 +105,7 @@ async function waitingSpk(
   const { rows } = await testPool().query<{ id: string }>(
     `INSERT INTO spks (spk_number, vehicle_id, title, category, request_source, description, status,
        priority, created_by, created_at)
-     VALUES ($1, $2, $3, 'Corrective', 'Manual_Planner', 'Brake pedal feels soft.', 'Pending_Approval',
+     VALUES ($1, $2, $3, 'Corrective', 'Manual_Planner', 'Brake pedal feels soft.', 'Draft',
        $4, $5, $6::timestamp)
      RETURNING id`,
     [
@@ -126,6 +126,8 @@ async function waitingSpk(
       [spkId, step, step === 1 ? '{Warehouse_Manager}' : '{Mechanic}'],
     );
   }
+  // DEC-145: the steps are written while Draft, then the SPK waits for approval.
+  await testPool().query(`UPDATE spks SET status = 'Pending_Approval' WHERE id = $1`, [spkId]);
   await testPool().query(
     `INSERT INTO spk_approvals (spk_id, stage, action, acted_by, approver_role, acted_at)
      VALUES ($1, 'Creation', 'Submit', $2, (SELECT role FROM user_roles WHERE user_id = $2),

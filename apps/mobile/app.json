@@ -5,10 +5,29 @@
     "scheme": "bmistooring",
     "version": "0.0.0",
     "orientation": "portrait",
-    "platforms": ["android"],
+    "platforms": ["android", "web"],
     "android": {
       "package": "id.bmi.stooring"
     },
-    "plugins": ["expo-router", "expo-status-bar"]
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "BMI Stooring System uses the camera to take photos of the work."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "BMI Stooring System records where the work is done."
+        }
+      ]
+    ]
   }
 }

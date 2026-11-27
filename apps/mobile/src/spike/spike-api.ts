@@ -4,6 +4,9 @@
  * TASK-705 replace it with the generated client and the upload queue.
  */
 
+/** The one `fetch` signature the spike uses (React Native's global `fetch` has several). */
+export type Fetcher = (input: string, init?: RequestInit) => Promise<Response>;
+
 export interface SpikeSession {
   accessToken: string;
   user: { name: string; role: string | null };
@@ -30,7 +33,7 @@ async function refusal(response: Response): Promise<Error> {
 }
 
 async function postJson<T>(
-  fetcher: typeof fetch,
+  fetcher: Fetcher,
   url: string,
   body: unknown,
   headers: Record<string, string> = {},
@@ -46,7 +49,7 @@ async function postJson<T>(
 
 /** REQ-IAM-001: sign in as a mobile client; the tokens come back in the body. */
 export async function signIn(
-  fetcher: typeof fetch,
+  fetcher: Fetcher,
   apiUrl: string,
   email: string,
   password: string,
@@ -64,7 +67,7 @@ export async function signIn(
 
 /** REQ-FUP-004, REQ-FUP-005: an upload link, the PUT of the bytes, then the uploaded signal. */
 export async function uploadPhoto(
-  fetcher: typeof fetch,
+  fetcher: Fetcher,
   apiUrl: string,
   token: string,
   photo: SpikePhoto,

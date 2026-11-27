@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { signIn, uploadPhoto } from './spike-api';
+import { signIn, uploadPhoto, type Fetcher } from './spike-api';
 
 // TASK-127 part A (NFR-18, DEC-141, DEC-142): the spike's calls to the API, without a phone.
 
@@ -9,7 +9,7 @@ const json = (status: number, body: unknown) =>
 
 describe('spike sign-in', () => {
   it('NFR-18 signIn posts the email, the password and client mobile, and returns the token and the user', async () => {
-    const fetcher = vi.fn<typeof fetch>(() =>
+    const fetcher = vi.fn<Fetcher>(() =>
       Promise.resolve(
         json(200, {
           user: { id: 4, name: 'Yusuf', email: 'sa.qa@bmi.test', role: 'System_Admin' },
@@ -34,7 +34,7 @@ describe('spike sign-in', () => {
   });
 
   it('REQ-IAM-001 signIn throws the server sentence on 401', async () => {
-    const fetcher = vi.fn<typeof fetch>(() =>
+    const fetcher = vi.fn<Fetcher>(() =>
       Promise.resolve(
         json(401, { statusCode: 401, message: 'The email or password is not correct.' }),
       ),
@@ -53,7 +53,7 @@ describe('spike photo upload', () => {
   const key = () => `key-${(keys += 1)}`;
 
   function server() {
-    return vi.fn<typeof fetch>((url) => {
+    return vi.fn<Fetcher>((url) => {
       const path = String(url);
       if (path.endsWith('/files/upload-links')) {
         return Promise.resolve(
@@ -117,7 +117,7 @@ describe('spike photo upload', () => {
   });
 
   it('REQ-FUP-004 a refused upload link throws its sentence and no PUT is sent', async () => {
-    const fetcher = vi.fn<typeof fetch>(() =>
+    const fetcher = vi.fn<Fetcher>(() =>
       Promise.resolve(json(400, { statusCode: 400, message: 'This file is larger than 30 MB.' })),
     );
     await expect(uploadPhoto(fetcher, API, 'token-1', photo, body, key)).rejects.toThrow(

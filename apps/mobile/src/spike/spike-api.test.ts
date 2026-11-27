@@ -46,7 +46,10 @@ describe('spike sign-in', () => {
 });
 
 describe('spike photo upload', () => {
-  const photo = { uri: 'file:///photo.jpg', bytes: 2048, contentType: 'image/jpeg' };
+  // The picker's fileSize can differ from the bytes read back from the uri on Android (the device
+  // run of 2026-11-28 got "The file does not match the signed link."), so the link must name the
+  // size of the bytes sent.
+  const photo = { uri: 'file:///photo.jpg', contentType: 'image/jpeg' };
   const blob = new Blob(['jpeg-bytes'], { type: 'image/jpeg' });
   const body = vi.fn(() => Promise.resolve(blob));
   let keys = 0;
@@ -76,7 +79,7 @@ describe('spike photo upload', () => {
     });
   }
 
-  it('REQ-FUP-004 uploadPhoto asks a Photo upload link with the size and capture source Camera, then PUTs the bytes with the given headers', async () => {
+  it('REQ-FUP-004 uploadPhoto asks a Photo upload link with the size of the bytes it sends and capture source Camera, then PUTs those bytes with the given headers', async () => {
     const fetcher = server();
     await uploadPhoto(fetcher, API, 'token-1', photo, body, key);
     const [linkUrl, linkInit] = fetcher.mock.calls[0] ?? [];
@@ -85,7 +88,7 @@ describe('spike photo upload', () => {
     expect(JSON.parse(String(linkInit?.body))).toEqual({
       profile: 'Photo',
       contentType: 'image/jpeg',
-      bytes: 2048,
+      bytes: blob.size,
       originalName: null,
       captureSource: 'Camera',
     });

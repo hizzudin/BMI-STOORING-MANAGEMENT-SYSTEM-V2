@@ -64,17 +64,12 @@ export default function SpikeScreen() {
         note('No photo taken.');
         return;
       }
-      const blob = await (await fetch(asset.uri)).blob();
       const uploaded = await uploadPhoto(
         fetch,
         API_URL,
         session.accessToken,
-        {
-          uri: asset.uri,
-          bytes: asset.fileSize ?? blob.size,
-          contentType: asset.mimeType ?? 'image/jpeg',
-        },
-        () => Promise.resolve(blob),
+        { uri: asset.uri, contentType: asset.mimeType ?? 'image/jpeg' },
+        async (uri) => (await fetch(uri)).blob(),
         newKey,
       );
       note(`Photo uploaded: file ${uploaded.id}, status ${uploaded.status}`);

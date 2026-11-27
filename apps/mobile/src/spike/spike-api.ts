@@ -12,9 +12,9 @@ export interface SpikeSession {
   user: { name: string; role: string | null };
 }
 
+/** The size is not taken from the picker: the link names the bytes actually sent (storage checks them). */
 export interface SpikePhoto {
   uri: string;
-  bytes: number;
   contentType: string;
 }
 
@@ -75,6 +75,7 @@ export async function uploadPhoto(
   key: () => string,
 ): Promise<UploadedPhoto> {
   const auth = { authorization: `Bearer ${token}` };
+  const bytes = await body(photo.uri);
   const link = await postJson<{
     file: { id: number };
     upload: { url: string; headers: Record<string, string> };
@@ -84,7 +85,7 @@ export async function uploadPhoto(
     {
       profile: 'Photo',
       contentType: photo.contentType,
-      bytes: photo.bytes,
+      bytes: bytes.size,
       originalName: null,
       captureSource: 'Camera',
     },
@@ -93,7 +94,7 @@ export async function uploadPhoto(
   const put = await fetcher(link.upload.url, {
     method: 'PUT',
     headers: link.upload.headers,
-    body: await body(photo.uri),
+    body: bytes,
   });
   if (!put.ok) throw await refusal(put);
   const done = await postJson<{ file: { id: number; status: string } }>(

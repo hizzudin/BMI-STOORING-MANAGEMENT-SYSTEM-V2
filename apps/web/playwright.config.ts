@@ -2,7 +2,9 @@ import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 3100;
 const BASE_URL = `http://localhost:${PORT}`;
-const SERVER_START_MS = 120_000;
+// A slow local machine may need longer to start the API and the web app (E2E_SERVER_START_MS);
+// CI keeps the 120 s default.
+const SERVER_START_MS = Number(process.env.E2E_SERVER_START_MS ?? 120_000);
 const inCi = Boolean(process.env.CI);
 const API_PORT = 3001;
 const LOCAL_TEST_DATABASE_URL = 'postgres://bmi:bmi_local_dev@localhost:5432/bmi_dev';

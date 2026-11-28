@@ -141,6 +141,9 @@ Every artboard of the design artifact ([Design Artifact/index.html](<../../Desig
 | **Settings** |  |  |  |
 | [`Settings`](<../../Design Artifact/settings/Settings.html#Settings>) | Settings (home) | P0 | 7.2 |
 | [`SettingsSPKPresets`](<../../Design Artifact/settings/SettingsSPKPresets.html#SettingsSPKPresets>) | Settings: SPK presets | P0 | REQ-REG-003, REQ-REG-005 |
+| [`SettingsModules`](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Settings: Modules | P0 | REQ-REG-008 |
+| [`DeactivateModule`](<../../Design Artifact/settings/DeactivateModule.html#DeactivateModule>) | Deactivate a module (dialog) | P0 | REQ-REG-005, REQ-REG-008 |
+| [`ActivateModule`](<../../Design Artifact/settings/ActivateModule.html#ActivateModule>) | Activate a module (dialog) | P0 | REQ-REG-005, REQ-REG-008 |
 | [`SettingsAlertRules`](<../../Design Artifact/settings/SettingsAlertRules.html#SettingsAlertRules>) | Settings: Alert rules | P0 | REQ-PM-007 to REQ-PM-010 |
 | [`ChassisLayouts`](<../../Design Artifact/settings/ChassisLayouts.html#ChassisLayouts>) | Vehicle classes and chassis layouts | P0 | REQ-PLC-013 |
 | [`DocumentTypes`](<../../Design Artifact/settings/DocumentTypes.html#DocumentTypes>) | Settings: Document types | P0 | REQ-DOC-002 |

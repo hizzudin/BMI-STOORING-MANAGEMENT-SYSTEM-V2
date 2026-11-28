@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modules · BMI Stooring System</title>
+<link rel="stylesheet" href="../_kit/bmi.css">
+<script src="../_kit/kit.js"></script>
+<style>
+/* TASK-215, DEC-150: palette order rows; the grip shows the row can be dragged */
+.modtbl td.grip{width:28px;color:var(--line-strong);font-size:12px;letter-spacing:-2px;cursor:grab;user-select:none}
+.modtbl td.pos{width:36px;color:var(--muted)}
+.ordbar{display:flex;gap:8px;align-items:center;margin:0 0 10px}
+.spklinks{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+</style>
+</head>
+<body data-nav="settings" data-roles="Planner:manage|System Admin:manage" data-root="../">
+<main class="stage">
+<div class="screen"><div class="head"><div class="crumb">Settings</div><h1>Modules</h1><span class="grow"></span><a class="btn " href="Settings.html">Back to Settings</a></div>
+<section class="variant" id="SettingsModules" data-label="Modules (REQ-REG-008, DEC-150): every module in Create SPK palette order; name and palette order edited here, every other column comes from the module's own migration">
+<div class="grid g2"><div>
+<div class="ordbar"><span class="small muted grow">Drag a row, or use Move up and Move down, to change the order of the Create SPK palette.</span><button class="btn " data-act="manage" type="button">Move up</button><button class="btn " data-act="manage" type="button">Move down</button><button class="btn pri" data-act="manage" type="button" disabled>Save order</button></div>
+<div class="tbl modtbl"><table><thead><tr><th></th><th>#</th><th>Module</th><th>Executor roles</th><th>Cost kind</th><th>Status</th><th class="num">Open SPKs</th></tr></thead><tbody>
+<tr class="sel"><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">1</td><td><b>Stock</b><div class="small muted">Stock</div></td><td>Warehouse Manager</td><td>Parts</td><td><span class="pill ok">Active</span></td><td class="num">3</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">2</td><td><b>Part Purchase</b><div class="small muted">Part_Purchase</div></td><td>Purchasing</td><td>Parts</td><td><span class="pill ok">Active</span></td><td class="num">1</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">3</td><td><b>Mechanic Action</b><div class="small muted">Mechanic_Action</div></td><td>Mechanic</td><td>Labor</td><td><span class="pill ok">Active</span></td><td class="num">4</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">4</td><td><b>Part Replacement</b><div class="small muted">Part_Replacement</div></td><td>Mechanic</td><td>None</td><td><span class="pill ok">Active</span></td><td class="num">2</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">5</td><td><b>Document</b><div class="small muted">Document</div></td><td>Document Admin</td><td>Document</td><td><span class="pill neu">Inactive</span></td><td class="num">0</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">6</td><td><b>Tyre rotation</b><div class="small muted">Tyre_Rotation</div></td><td>Mechanic</td><td>Labor</td><td><span class="pill warn">Not in code</span></td><td class="num">0</td></tr>
+</tbody></table></div></div>
+<div class="panel">
+<div class="field"><label>Code</label><input class="input" value="Stock" readonly><div class="small muted">Set by the module's own migration</div></div>
+<div class="field"><label>Name</label><input class="input" value="Stock" maxlength="100"><div class="small muted">Shown in the Create SPK palette, the SPK and its document</div></div>
+<div class="grid g2" style="grid-template-columns:1fr 1fr"><div class="field"><label>Executor roles</label><div>Warehouse Manager</div></div><div class="field"><label>Cost kind</label><div>Parts</div></div></div>
+<div class="field"><label>Tracks work time</label><div>Yes</div></div>
+<div class="field"><label>Open SPKs that use it</label><div><b>3</b> <span class="muted">not Completed or Cancelled</span></div><div class="spklinks"><a href="../spk/SPKDetail.html">SPK-2611280004</a><a href="../spk/SPKDetail.html">SPK-2611270012</a><a href="../spk/SPKDetail.html">SPK-2611250031</a></div></div>
+<div class="bar"><a class="btn dan" data-act="manage" href="DeactivateModule.html#DeactivateModule">Deactivate</a><a class="btn " href="../components/DiscardConfirm.html">Discard changes</a><button class="btn pri" data-act="manage" type="button">Save</button></div>
+</div></div>
+</section>
+<section class="variant" id="SettingsModulesOrder" data-label="Order changed, not saved yet: Mechanic Action dragged above Part Purchase; Save order saves the whole order and renumbers 1 to n; leaving asks first (C-13)">
+<div class="grid g2"><div>
+<div class="ordbar"><span class="small grow"><b>Palette order changed.</b> <span class="muted">Not saved yet.</span></span><button class="btn " data-act="manage" type="button">Move up</button><button class="btn " data-act="manage" type="button">Move down</button><button class="btn pri" data-act="manage" type="button">Save order</button></div>
+<div class="tbl modtbl"><table><thead><tr><th></th><th>#</th><th>Module</th><th>Executor roles</th><th>Cost kind</th><th>Status</th><th class="num">Open SPKs</th></tr></thead><tbody>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">1</td><td><b>Stock</b><div class="small muted">Stock</div></td><td>Warehouse Manager</td><td>Parts</td><td><span class="pill ok">Active</span></td><td class="num">3</td></tr>
+<tr class="sel"><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">2</td><td><b>Mechanic Action</b><div class="small muted">Mechanic_Action</div></td><td>Mechanic</td><td>Labor</td><td><span class="pill ok">Active</span></td><td class="num">4</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">3</td><td><b>Part Purchase</b><div class="small muted">Part_Purchase</div></td><td>Purchasing</td><td>Parts</td><td><span class="pill ok">Active</span></td><td class="num">1</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">4</td><td><b>Part Replacement</b><div class="small muted">Part_Replacement</div></td><td>Mechanic</td><td>None</td><td><span class="pill ok">Active</span></td><td class="num">2</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">5</td><td><b>Document</b><div class="small muted">Document</div></td><td>Document Admin</td><td>Document</td><td><span class="pill neu">Inactive</span></td><td class="num">0</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">6</td><td><b>Tyre rotation</b><div class="small muted">Tyre_Rotation</div></td><td>Mechanic</td><td>Labor</td><td><span class="pill warn">Not in code</span></td><td class="num">0</td></tr>
+</tbody></table></div></div>
+<div class="panel">
+<div class="field"><label>Code</label><input class="input" value="Mechanic_Action" readonly><div class="small muted">Set by the module's own migration</div></div>
+<div class="field"><label>Name</label><input class="input" value="Mechanic Action" maxlength="100"><div class="small muted">Shown in the Create SPK palette, the SPK and its document</div></div>
+<div class="grid g2" style="grid-template-columns:1fr 1fr"><div class="field"><label>Executor roles</label><div>Mechanic</div></div><div class="field"><label>Cost kind</label><div>Labor</div></div></div>
+<div class="field"><label>Tracks work time</label><div>Yes</div></div>
+<div class="field"><label>Open SPKs that use it</label><div><b>4</b> <span class="muted">not Completed or Cancelled</span></div><div class="spklinks"><a href="../spk/SPKDetail.html">SPK-2611280004</a><a href="../spk/SPKDetail.html">SPK-2611280002</a><a href="../spk/SPKDetail.html">SPK-2611260017</a><a href="../spk/SPKDetail.html">SPK-2611250031</a></div></div>
+<div class="bar"><a class="btn dan" data-act="manage" href="DeactivateModule.html#DeactivateModule">Deactivate</a><a class="btn " href="../components/DiscardConfirm.html">Discard changes</a><button class="btn pri" data-act="manage" type="button">Save</button></div>
+</div></div>
+</section>
+<section class="variant" id="SettingsModulesNotInCode" data-label="A row whose module has no code yet (DEC-148): Not in code, not offered in Create SPK; its name and place can still change. An Inactive row shows Activate (ActivateModule) in place of Deactivate">
+<div class="grid g2"><div>
+<div class="ordbar"><span class="small muted grow">Drag a row, or use Move up and Move down, to change the order of the Create SPK palette.</span><button class="btn " data-act="manage" type="button">Move up</button><button class="btn " data-act="manage" type="button" disabled>Move down</button><button class="btn pri" data-act="manage" type="button" disabled>Save order</button></div>
+<div class="tbl modtbl"><table><thead><tr><th></th><th>#</th><th>Module</th><th>Executor roles</th><th>Cost kind</th><th>Status</th><th class="num">Open SPKs</th></tr></thead><tbody>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">1</td><td><b>Stock</b><div class="small muted">Stock</div></td><td>Warehouse Manager</td><td>Parts</td><td><span class="pill ok">Active</span></td><td class="num">3</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">2</td><td><b>Part Purchase</b><div class="small muted">Part_Purchase</div></td><td>Purchasing</td><td>Parts</td><td><span class="pill ok">Active</span></td><td class="num">1</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">3</td><td><b>Mechanic Action</b><div class="small muted">Mechanic_Action</div></td><td>Mechanic</td><td>Labor</td><td><span class="pill ok">Active</span></td><td class="num">4</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">4</td><td><b>Part Replacement</b><div class="small muted">Part_Replacement</div></td><td>Mechanic</td><td>None</td><td><span class="pill ok">Active</span></td><td class="num">2</td></tr>
+<tr><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">5</td><td><b>Document</b><div class="small muted">Document</div></td><td>Document Admin</td><td>Document</td><td><span class="pill neu">Inactive</span></td><td class="num">0</td></tr>
+<tr class="sel"><td class="grip" aria-hidden="true">⋮⋮</td><td class="pos">6</td><td><b>Tyre rotation</b><div class="small muted">Tyre_Rotation</div></td><td>Mechanic</td><td>Labor</td><td><span class="pill warn">Not in code</span></td><td class="num">0</td></tr>
+</tbody></table></div></div>
+<div class="panel">
+<div class="note warn">This module has no code yet; it is not offered in Create SPK.</div>
+<div class="field"><label>Code</label><input class="input" value="Tyre_Rotation" readonly><div class="small muted">Set by the module's own migration</div></div>
+<div class="field"><label>Name</label><input class="input" value="Tyre rotation" maxlength="100"><div class="small muted">Shown in the Create SPK palette, the SPK and its document</div></div>
+<div class="grid g2" style="grid-template-columns:1fr 1fr"><div class="field"><label>Executor roles</label><div>Mechanic</div></div><div class="field"><label>Cost kind</label><div>Labor</div></div></div>
+<div class="field"><label>Tracks work time</label><div>Yes</div></div>
+<div class="field"><label>Open SPKs that use it</label><div><b>0</b> <span class="muted">not Completed or Cancelled</span></div></div>
+<div class="bar"><a class="btn dan" data-act="manage" href="DeactivateModule.html#DeactivateModule">Deactivate</a><a class="btn " href="../components/DiscardConfirm.html">Discard changes</a><button class="btn pri" data-act="manage" type="button">Save</button></div>
+</div></div>
+</section>
+</div>
+</main>
+</body>
+</html>

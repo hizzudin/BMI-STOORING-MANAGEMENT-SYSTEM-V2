@@ -412,6 +412,7 @@ CREATE TABLE assignment_modules (             -- OL (DEC-150); module registry (
   is_active BOOLEAN NOT NULL DEFAULT true,
   sort_order INT NOT NULL DEFAULT 0
 );
+CREATE UNIQUE INDEX uq_assignment_modules_name ON assignment_modules (lower(name));   -- a name is unique regardless of case (DEC-150)
 CREATE TABLE spk_presets (                     -- SD; saved step sequences, a starting point only (DEC-85)
   name VARCHAR(100) NOT NULL,
   category spk_category_t NOT NULL,

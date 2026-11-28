@@ -175,6 +175,20 @@ Every control drawn in the canvas, with what it does, where it goes and the rule
 | [RejectReport](<../../Design Artifact/spk/RejectReport.html#RejectReport>) | Reject report | Needs a reason; TX-24 | REQ-BRK-007 |
 | [UrgentReportPopup](<../../Design Artifact/shell/UrgentReportPopup.html#UrgentReportPopup>) | Create SPK | Records who and when, closes the pop-up for all Planners and opens [CreateSPKFromReport](<../../Design Artifact/spk/CreateSPKFromReport.html#CreateSPKFromReport>) in a new tab | REQ-BRK-004 |
 | [MobileReportBreakdown](<../../Design Artifact/mobile/MobileReportBreakdown.html#MobileReportBreakdown>) | Send | As ReportBreakdownForm; refused while offline, the report stays a draft on the phone (REQ-MOB-009) | REQ-BRK-001 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Row (click) | C-07: selects the module and fills the right panel | C-07 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Row (drag by its grip) | Moves the module to the place where it is dropped; nothing is saved until Save order; leaving the page asks first (C-13) | REQ-REG-008, DEC-150 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Move up / Move down | Moves the selected row one place, the same as a drag, for keyboard and touch; disabled at the top or the bottom; nothing is saved until Save order | REQ-REG-001, DEC-150 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Save order | Enabled only while the order differs from the saved one; saves the whole order, numbers the modules 1 to n, writes one audit record with the order before and after, and shows Saved; refused with 409 when a module was changed by someone else meanwhile | REQ-REG-008, NFR-03, DEC-150 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Save | C-17 for the name: trimmed, 1 to 100 characters, unique among the modules regardless of case; no reason; one audit record with the name before and after; refused with 409 when the module was changed meanwhile | REQ-REG-008, DEC-150 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Discard changes | C-16 (the name of the selected module) | C-16 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Deactivate (active module) | Opens [DeactivateModule](<../../Design Artifact/settings/DeactivateModule.html#DeactivateModule>) | REQ-REG-005 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Activate (inactive module) | Opens [ActivateModule](<../../Design Artifact/settings/ActivateModule.html#ActivateModule>) | REQ-REG-005 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | SPK number (Open SPKs that use it) | Opens [SPKDetail](<../../Design Artifact/spk/SPKDetail.html#SPKDetail>) of that SPK | REQ-REG-008, DEC-150 |
+| [SettingsModules](<../../Design Artifact/settings/SettingsModules.html#SettingsModules>) | Back to Settings | C-28 | C-28 |
+| [DeactivateModule](<../../Design Artifact/settings/DeactivateModule.html#DeactivateModule>) | Cancel | C-14 | C-14 |
+| [DeactivateModule](<../../Design Artifact/settings/DeactivateModule.html#DeactivateModule>) | Deactivate | Enabled when the reason has text; no new step can use the module, saved steps and every SPK keep it; one audit record with the reason; back on SettingsModules with the module Inactive | REQ-REG-005, DEC-148 |
+| [ActivateModule](<../../Design Artifact/settings/ActivateModule.html#ActivateModule>) | Cancel | C-14 | C-14 |
+| [ActivateModule](<../../Design Artifact/settings/ActivateModule.html#ActivateModule>) | Activate | Enabled when the reason has text; new steps can use the module again when it has code; one audit record with the reason; back on SettingsModules with the module Active | REQ-REG-005, DEC-148 |
 
 ## Action map: Step screens
 

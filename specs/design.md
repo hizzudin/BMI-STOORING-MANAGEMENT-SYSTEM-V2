@@ -538,6 +538,44 @@ Written before code (WORKFLOW_STANDARDS §1 step 10). Plan: `docs/superpowers/pl
 - **Drizzle:** the seven tables in `infra/db/schema/index.ts` and in `allTables`, so the D-12 drift check covers them.
 - **No gateway method and no module row** (DEC-144): TASK-202 registers the dummy module in its harness and adds the methods it uses.
 
+### 5.26 Module registry and contract: design note (REQ-REG-002, REQ-REG-005, REQ-REG-006, NFR-11, DEC-05, DEC-144, DEC-148)
+
+Critical tier (§8.4). Written before code and reviewed under ADR-0002 (an independent agent in a separate session, then the product owner) before the plan. No screen and no migration: `assignment_modules` (§9.6, migration 0009) already has every column.
+
+- **Two halves of one module (DEC-148):** the row in `assignment_modules` (data, PR-6) and the code in `apps/api/src/modules/<folder>/` (one folder per module, §8.2). A module's own task adds both: the folder and a migration that inserts its row. The row is what the designer, the workspace, the SPK document and the scope lock read; the code is what runs on submit.
+- **Contract in code (`engine/module-contract.ts`):**
+  ```ts
+  interface ModuleContract<G = void> {
+    code: string;                         // = assignment_modules.code
+    executeCapability: PermissionCode;    // DEC-148: replaces the DEC-146 map in @bmi/shared
+    row: ModuleRowDefinition;             // what its migration writes: name, uiComponent, executorRoles,
+                                          // configSchema, creationSchema, scopeRules, completionSection,
+                                          // costKind, tracksWorkTime (shared Zod, below)
+    validateSubmit?(ctx: SubmitContext, gateways: G): Promise<string | null>; // a sentence refuses (400)
+    onSubmit?(ctx: SubmitContext, gateways: G): Promise<void>;                // the module's TX, same transaction
+  }
+  interface SubmitContext { spkId; stepId; sequenceNo; stepConfig: unknown; actor: Actor; fileIds; now: Date }
+  ```
+  `onVerify` (TASK-205) and the document rows for the SPK document (TASK-212) are added by the tasks that call them, by a DEC, so no hook exists before its caller (DEC-144 rule). `G` is the module's own gateway port in `ports/modules/<folder>.ts`; the infra side gives a factory per module code that builds `G` on the engine's transaction (`EngineGateways.moduleGateways(code)`), empty until the first real module (TASK-306).
+- **Row shapes (`@bmi/shared/src/registry/`):** Zod schemas for the JSONB columns, so the designer (TASK-207), the document (TASK-212) and the scope lock read data, never a module name:
+  - `config_schema` (step options) and the free fields of a creation section: `{ fields: { key, label, type: 'text'|'number'|'boolean'|'select', required, options? }[] }`;
+  - `creation_schema` (null = the step shows only its name): `{ required: boolean, lists: ('parts_with_quantity'|'parts'|'tyre_sizes_with_quantity'|'parts_to_check'|'vehicle_document')[], fields }`, the kinds of the 4.3 contract table;
+  - `scope_rules` (BR-02): `{ vehicle: 'none'|'read'|'write', spkParts: 'none'|'read'|'write', masters: { table, access: 'read'|'write' }[] }`;
+  - `completion_section`: `{ title, columns: { key, label }[] }`, the layout the renderer fills with the rows the module returns (TASK-212).
+  `ModuleRowSchema` adds `code` (`^[A-Z][A-Za-z_]{1,39}$`), `name`, `uiComponent`, `executorRoles` (at least one role), `costKind`, `tracksWorkTime`, `isActive`, `sortOrder`.
+- **Code list (`modules/index.ts`):** `MODULES: ModuleContract[]`, imported only by the composition root (`app.module.ts`) and the tests; the engine never imports it (CI rule `engine-never-imports-a-module`). `modules/dummy/` is always in the list: with no row in staging or production (DEC-144) it is never offered there; the harness and the e2e seed insert its row from `dummy.row`.
+- **Registry service (`engine/registry/registry-service.ts`, 90 % coverage, D-09):** built from `MODULES` and `RegistryGateway` (port `ports/registry.ts`, Drizzle in `infra/db/registry-gateways.ts`). Refuses at construction two contracts with one code or a contract whose `row` fails `ModuleRowSchema`.
+  - `list()`: every row by `sort_order`, then `name`, each with `isActive`, `implemented` (a contract has its code) and `offered` (= active and implemented, REQ-REG-002, DEC-148).
+  - `assertOfferable(code)`: refuses an inactive or unimplemented module, "This module is not available for new steps."; TASK-207 (Create SPK steps) and TASK-208 (presets) call it when a step is added (REQ-REG-005 "stop new use").
+  - `contractOf(code)`: the contract or null; the engine reads `executeCapability` and the hooks from it.
+  - `deactivate(actor, code, { reason })` and `activate(...)`: `registry.manage`, a reason of 1 to 500 characters, one transaction under an Idempotency-Key with an audit record (entity `assignment_module`, action `deactivate` or `activate`, before and after `is_active`, the reason); deactivating an inactive module or activating an active one is 409.
+- **Deactivation (REQ-REG-005):** stops new use only: a step of that module cannot be added to an SPK or a preset. Steps already saved keep it (a Draft included), every SPK stays readable (its step names come from the row, which is never deleted, BR-10), and a running step can still be submitted, so no SPK is stuck; the step's module code is frozen at approval (DEC-145).
+- **Engine changes (TASK-202 code):** `StepItem` gains `executeCapability: PermissionCode | null`, taken from `registry.contractOf(step.module)` by `StepService` and by `SpkListService` (SPKDetail `allowedActions`); a null refuses with "The module of this step is not available yet." (a row with no code, DEC-148). `moduleExecuteCapability` and its map leave `@bmi/shared`. The submit route's `@RequireCapability` list of five codes becomes `PERMISSION_CODES` (L1 per module is the step policy, as `STEP_POLICIES.submit.anyOf` already is), so a new module touches no route. In `submitIn`, after the file checks: `validateSubmit` (a sentence is 400), then `onSubmit` with the module's gateways, then the engine's own writes; a throw rolls back the whole submit.
+- **Routes (`http/registry/assignment-modules.controller.ts`, `@ApiContract`):** `GET /assignment-modules` (`registry.manage`; the list above), `POST /assignment-modules/:code/deactivate` and `/activate` (`registry.manage`, Idempotency-Key, body `{ reason }`); 400 without a reason, 404 for an unknown code, 409 as above. The name and palette order edit is TASK-215.
+- **Contract test suite (`test/integration/registry/module-contract.suite.ts`, REQ-REG-006):** `describe.each(MODULES)`: the code is unique and matches the folder; `row` passes `ModuleRowSchema`; `executeCapability` is in the catalogue and held by every executor role or by none but the System Admin (the 2.2 matrix); with the row inserted (the dummy) or migrated (a real module), the stored row equals `row` except `name`, `sort_order` and `is_active`, which SettingsModules may change; a step of the module in a one-step SPK can be submitted through the engine route by an executor and is refused for another role; and the module's folder imports no other module. A second test proves REQ-REG-006 by registering a test-only module that is not in `MODULES` (a second contract built in the test) and running the same suite and the same submit with no change to the engine.
+- **Tests RED first:** shared schema tests (`registry.test.ts`), the registry service unit test with a fake gateway, the step policy test for the null capability, the engine integration tests (hooks in the transaction, a refusing `validateSubmit`, a throwing `onSubmit` rolls back), the routes, the suite. Every title starts with its ID (REQ-REG-002, REQ-REG-005, REQ-REG-006).
+- **Open points for the review:** (1) fixing the four JSONB shapes now versus letting each consumer task (TASK-207, TASK-212, the first scope lock in TASK-306) define its own; (2) the hooks taking the module's own port `G` through `EngineGateways.moduleGateways(code)` versus a narrower design; (3) the dummy code shipped in production with no row; (4) the submit route L1 opened to every code with the module check in the policy; (5) the Draft rule of deactivation (a Draft keeps its step and may still be submitted and approved).
+
 ### 5.1 Sign-in and sessions (NFR-05, DEC-102, DEC-114)
 
 - Passwords: scrypt hashes from `node:crypto` (OWASP parameters N=2^17, r=8, p=1; no native dependency); rules in `@bmi/shared` (`PasswordSchema`: at least 8 characters, letters and digits) so web, phone and API refuse the same input.

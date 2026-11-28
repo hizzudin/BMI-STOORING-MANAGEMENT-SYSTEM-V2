@@ -92,9 +92,9 @@ async function insertSpk(status: string, creator: string): Promise<number> {
   const { rows } = await testPool().query<{ id: string }>(
     `INSERT INTO spks (spk_number, vehicle_id, title, category, request_source, description, status,
        created_by)
-     VALUES ($1, $2, 'Clutch replacement', 'Corrective', 'Manual_Planner', 'Kopling selip.', $3, $4)
+     VALUES ($1, $2, 'Clutch replacement', 'Corrective', 'Manual_Planner', 'Kopling selip.', 'Draft', $3)
      RETURNING id`,
-    [`SPK-261116${String(sequence).padStart(4, '0')}`, vehicleId, status, ids.get(creator)],
+    [`SPK-261116${String(sequence).padStart(4, '0')}`, vehicleId, ids.get(creator)],
   );
   const spkId = Number(rows[0]?.id);
   await testPool().query(
@@ -102,6 +102,8 @@ async function insertSpk(status: string, creator: string): Promise<number> {
      VALUES ($1, 1, 'Test_Step', '{Warehouse_Manager}', 'Planner', 'Locked')`,
     [spkId],
   );
+  // DEC-145: the steps are written while Draft, then the SPK takes the status under test.
+  await testPool().query(`UPDATE spks SET status = $2 WHERE id = $1`, [spkId, status]);
   return spkId;
 }
 

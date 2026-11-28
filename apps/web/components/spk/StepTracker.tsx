@@ -1,13 +1,13 @@
-import { formatTimeWib, type SpkDetailStep } from '@bmi/shared';
+import { currentStepOf, formatTimeWib, type SpkDetailStep } from '@bmi/shared';
 import { StatusPill } from '../kit/StatusPill';
 import { personText, roleText, STEP_TONES, statusText } from './spk-format';
 
 const DONE = ['Verified', 'Skipped'];
 const time = (iso: string) => formatTimeWib(new Date(iso));
 
-/** ui.md 7.5 StepTracker: every step in order; the current one (the first not done) is marked. */
+/** ui.md 7.5 StepTracker: every step in order; the current one (DEC-147) is marked. */
 export function StepTracker({ steps }: { steps: SpkDetailStep[] }) {
-  const current = steps.find((step) => !DONE.includes(step.status));
+  const current = currentStepOf(steps);
   return (
     <ol className="steps" aria-label="Steps">
       {steps.map((step) => {

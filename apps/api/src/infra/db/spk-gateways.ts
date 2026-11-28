@@ -1,4 +1,5 @@
 import {
+  currentStepOf,
   formatDocumentNumber,
   NumberingConfigSchema,
   OPEN_SPK_STATUSES,
@@ -96,8 +97,6 @@ export class DrizzleDocumentNumbers implements DocumentNumberGateway {
 
 /** REQ-SPK-015: Urgent, then High, Normal and Low. */
 const URGENCY_ORDER = sql`CASE ${spks.priority} WHEN 'Urgent' THEN 0 WHEN 'High' THEN 1 WHEN 'Normal' THEN 2 ELSE 3 END`;
-/** A step that is done is no longer the current step. */
-const DONE_STEPS: readonly AsgStatus[] = ['Verified', 'Skipped'];
 export const UNKNOWN_PERSON: PersonRow = { name: 'Unknown', role: null };
 
 /** The SpkRow part of a header row. */
@@ -265,8 +264,7 @@ export class DrizzleSpkGateway implements SpkGateway {
     return rows.map((row) => ({
       ...toSpkRow(row),
       creator: creators.get(row.createdBy) ?? UNKNOWN_PERSON,
-      currentStep:
-        (steps.get(row.id) ?? []).find((step) => !DONE_STEPS.includes(step.status)) ?? null,
+      currentStep: currentStepOf(steps.get(row.id) ?? []) ?? null,
     }));
   }
 
@@ -422,6 +420,7 @@ export class DrizzleSpkGateway implements SpkGateway {
         id: spkAssignments.id,
         spkId: spkAssignments.spkId,
         sequenceNo: spkAssignments.sequenceNo,
+        module: spkAssignments.module,
         name: assignmentModules.name,
         status: spkAssignments.status,
         executorRoles: spkAssignments.executorRoles,
@@ -443,6 +442,7 @@ export class DrizzleSpkGateway implements SpkGateway {
       const step: SpkStepRow = {
         id: row.id,
         sequenceNo: row.sequenceNo,
+        module: row.module,
         name: row.name,
         status: row.status as AsgStatus,
         executorRoles: row.executorRoles as Role[],

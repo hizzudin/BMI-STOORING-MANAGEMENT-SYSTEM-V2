@@ -129,6 +129,8 @@ export interface PersonRow {
 export interface SpkStepRow {
   id: number;
   sequenceNo: number;
+  /** assignment_modules.code: decides the step's execute capability (DEC-146). */
+  module: string;
   name: string;
   status: AsgStatus;
   executorRoles: Role[];
@@ -140,7 +142,7 @@ export interface SpkStepRow {
   verifiedBy: PersonRow | null;
 }
 
-/** SPKList: the SPK, its creator and its current step (the first not Verified or Skipped). */
+/** SPKList: the SPK, its creator and its current step (DEC-147, `currentStepOf`). */
 export interface SpkListRow extends SpkRow {
   creator: PersonRow;
   currentStep: SpkStepRow | null;

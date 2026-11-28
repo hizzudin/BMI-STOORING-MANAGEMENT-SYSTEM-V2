@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { Role } from '../enums/index.js';
-import { defaultRolePermissions, menuFor, PERMISSION_CODES, type PermissionCode } from './index.js';
+import {
+  defaultRolePermissions,
+  menuFor,
+  moduleExecuteCapability,
+  passesExecutorCheck,
+  PERMISSION_CODES,
+  type PermissionCode,
+} from './index.js';
 import { isSwitchableCell, PERMISSION_GROUPS, PERMISSION_MEANINGS } from './groups.js';
 
 const rows = defaultRolePermissions();
@@ -211,5 +218,37 @@ describe('NAV-9 the 2.4 menu table', () => {
 
   it('NAV-9 the Access Manager has its own navigation: Users and roles, Audit log', () => {
     expect(menu('Access_Manager')).toEqual(['Users and roles', 'Audit log']);
+  });
+});
+
+describe('DEC-146 step execution', () => {
+  it.each([
+    ['Stock', 'stock.issue'],
+    ['Part_Purchase', 'purchase.line'],
+    ['Mechanic_Action', 'mechanic.execute'],
+    ['Part_Replacement', 'mechanic.execute'],
+    ['Part_Check', 'mechanic.execute'],
+    ['Mobilisasi', 'mobilisasi.execute'],
+    ['Document', 'docstep.execute'],
+    ['Dummy', 'mechanic.execute'],
+  ])('DEC-146 the %s module is executed with %s', (module, code) => {
+    expect(moduleExecuteCapability(module)).toBe(code);
+  });
+
+  it('DEC-146 an unknown module has no execute capability', () => {
+    expect(moduleExecuteCapability('Unknown_Module')).toBeNull();
+  });
+
+  it('REQ-ENG-003 a role of the step passes the executor check, another role does not', () => {
+    expect(passesExecutorCheck('Mechanic', ['Mechanic'])).toBe(true);
+    expect(
+      passesExecutorCheck('Warehouse_Manager', ['Warehouse_Manager', 'Field_Coordinator']),
+    ).toBe(true);
+    expect(passesExecutorCheck('Planner', ['Mechanic'])).toBe(false);
+    expect(passesExecutorCheck(null, ['Mechanic'])).toBe(false);
+  });
+
+  it('REQ-ENG-003 RL-3 DEC-08 the System Admin passes the executor check of any step', () => {
+    expect(passesExecutorCheck('System_Admin', ['Mechanic'])).toBe(true);
   });
 });

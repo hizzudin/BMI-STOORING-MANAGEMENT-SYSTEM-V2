@@ -146,7 +146,7 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
         fixture.priority,
         creator,
         createdAt.toISOString(),
-        fixture.rejected ? 'Rejected' : 'Pending_Approval',
+        'Draft',
       ],
     );
     const spkId = rows[0]?.id;
@@ -156,6 +156,11 @@ async function seedApprovalFixtures(db: pg.Client): Promise<void> {
               ($1, 2, 'E2e_Mechanic', '{Mechanic}', 'Planner', 'Locked')`,
       [spkId],
     );
+    // DEC-145: the steps are written while Draft, then the SPK takes its status.
+    await db.query(`UPDATE spks SET status = $2 WHERE id = $1`, [
+      spkId,
+      fixture.rejected ? 'Rejected' : 'Pending_Approval',
+    ]);
     // UTC wall time whatever the session time zone (NFR-14): the columns hold UTC.
     await db.query(
       `INSERT INTO spk_approvals (spk_id, stage, action, acted_by, approver_role, acted_at)

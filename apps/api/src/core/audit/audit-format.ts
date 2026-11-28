@@ -12,6 +12,7 @@ import {
  */
 export const AREA_OF: Readonly<Record<string, AuditArea>> = {
   spk: 'SPK',
+  spk_assignment: 'SPK',
   user: 'Access',
   role_permissions: 'Access',
   planner_approval: 'Access',

@@ -136,6 +136,9 @@ export async function seedTrial(
   const hasher = new ScryptPasswordHasher();
 
   await db.query('BEGIN');
+  // DEC-145, DEC-146: the seed writes SPKs in every status with their steps, so it uses the named
+  // exception of the step freeze trigger for its own transaction only (migration 0015).
+  await db.query(`SET LOCAL bmi.step_revision = 'on'`);
   try {
     await db.query(
       `INSERT INTO app_settings (setting_key, setting_value) VALUES ('system_mode', '"Live"'::jsonb)

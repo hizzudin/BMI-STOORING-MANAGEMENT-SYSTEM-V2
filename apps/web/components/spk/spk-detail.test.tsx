@@ -42,6 +42,7 @@ const detail: Detail = {
       submittedAt: '2026-11-03T01:02:11Z',
       verifiedAt: '2026-11-03T01:20:40Z',
       verifiedBy: { name: 'Sari', role: 'Planner' },
+      allowedActions: [],
     },
     {
       id: 2,
@@ -54,6 +55,7 @@ const detail: Detail = {
       submittedAt: null,
       verifiedAt: null,
       verifiedBy: null,
+      allowedActions: [],
     },
     {
       id: 3,
@@ -66,6 +68,7 @@ const detail: Detail = {
       submittedAt: null,
       verifiedAt: null,
       verifiedBy: null,
+      allowedActions: [],
     },
   ],
   approvals: [
@@ -140,6 +143,38 @@ describe('SPKDetail (REQ-SPK-011, DEC-127)', () => {
       '2026-11-02 16:40:12Supervisor Budi S.Approved creation',
       '2026-11-02 15:12:03Planner SariSubmitted for approval',
     ]);
+  });
+
+  it('REQ-SPK-011 DEC-145 after a step submit SPKDetail shows Submitted and the opened step, with no submit button', async () => {
+    const submitted: Detail = {
+      ...detail,
+      steps: detail.steps.map((step) =>
+        step.sequenceNo === 2
+          ? { ...step, status: 'Submitted', submittedAt: '2026-11-03T02:10:00Z' }
+          : step.sequenceNo === 3
+            ? {
+                ...step,
+                status: 'Open',
+                openedAt: '2026-11-03T02:10:00Z',
+                allowedActions: ['submit'],
+              }
+            : step,
+      ),
+    };
+    await show(vi.fn(() => ok({ detail: submitted })));
+    expect(screen.getByText('Submitted 09:10:00')).toBeTruthy();
+    expect(screen.getByText('Waiting to start since 09:10:00')).toBeTruthy();
+    expect(screen.queryByText('Opens when step 2 is submitted')).toBeNull();
+    expect(screen.queryByRole('button', { name: /submit/i })).toBeNull();
+    // DEC-147: the opened step is the current one, not the step waiting for verification.
+    expect(screen.getByRole('listitem', { current: 'step' }).textContent).toContain(
+      'Mechanic Action',
+    );
+  });
+
+  it('DESIGN.md an In Progress SPK wears the petrol (info) pill', async () => {
+    await show();
+    expect(screen.getByText('In progress').className).toContain('pill-info');
   });
 
   it('DEC-127 what later tasks build is not shown', async () => {

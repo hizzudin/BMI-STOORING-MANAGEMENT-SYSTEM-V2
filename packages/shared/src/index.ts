@@ -2,6 +2,7 @@
 export * from './enums/index.js';
 export * from './files/index.js';
 export * from './format/index.js';
+export * from './machines/index.js';
 export * from './money/index.js';
 export * from './numbering/index.js';
 export * from './permissions/groups.js';

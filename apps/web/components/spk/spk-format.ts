@@ -14,7 +14,8 @@ export const STATUS_TONES: Record<SpkStatus, Tone> = {
   Pending_Approval: 'info',
   Rejected: 'danger',
   Active: 'success',
-  In_Progress: 'success',
+  // DESIGN.md: In Progress pills are petrol (info).
+  In_Progress: 'info',
   Pending_Verification: 'info',
   Pending_Amendment: 'warning',
   Completed: 'success',

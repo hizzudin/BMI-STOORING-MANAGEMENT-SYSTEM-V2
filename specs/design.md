@@ -68,7 +68,7 @@ Package names: `@bmi/api`, `@bmi/web`, `@bmi/mobile`, `@bmi/shared`, `@bmi/api-c
 | Layer | May import | Never imports |
 | --- | --- | --- |
 | `core/*`, `engine/`, `modules/*` | `@bmi/shared`, `ports/` | Drizzle, `pg`, BullMQ, S3 SDK, Nest HTTP types |
-| `engine/` | `core/` contracts, `ports/` | any `modules/*` folder (checked in CI, §8.3) |
+| `engine/` | `core/iam` (policies, `assertAllowed`, `allowedActions`), `core/idempotency` (`runIdempotent`), `core/` contracts, `ports/` (DEC-146) | any `modules/*` folder (checked in CI, §8.3), `infra/` |
 | `modules/*` | the engine's module contract, `core/`, `ports/` | another module |
 | `infra/*` | everything above | — |
 | `http/*` | `core/`, `engine/`, `modules/` services | `infra/` directly |
@@ -190,7 +190,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - My steps: an SPK with an Open or In_Progress step that is assigned to the user, or unassigned with the user's role among its executor roles (matching data in `executor_roles`, not a permission).
 - Every tab count uses the same search, type and vehicle. Search is "contains, any case" over the SPK number, the title and the plate.
 - Order: Urgent, High, Normal, Low, then newest first. Pages of 10, 20, 50 or 100 (20 by default); `totalPages` is at least 1.
-- Each row: the SPK with its `allowedActions` from the Create SPK policy table, its current step (the first step not Verified or Skipped) and who it waits on:
+- Each row: the SPK with its `allowedActions` from the Create SPK policy table, its current step and who it waits on. The current step (DEC-147) is the first step that is Open or In_Progress, else the first not Verified or Skipped; one function `currentStepOf` in `@bmi/shared` serves SPKList and the SPKDetail tracker:
 
   | Status | Waiting on |
   | --- | --- |
@@ -512,6 +512,24 @@ Written before code (WORKFLOW_STANDARDS §1 step 10); updated at the end of TASK
 - **Tests:** `spk-policies.spec.ts`, `approver-cancel.spec.ts` (TX-14 order with a recording fake), `test/integration/spk/spk-approver-cancel.test.ts`, `approver-cancel-dialog.test.tsx`, `spk-detail.test.tsx`, `spk-rejected.test.tsx`, `e2e/approvals-flw-apr-05.spec.ts` with the seeded SPK "Approver cancel me". `playwright.config.ts` reads `E2E_SERVER_START_MS` (default 120 s) for slow local machines.
 - **Moved out (DEC-140):** AssignStep to TASK-206, CorrectStepTime to TASK-204.
 
+### 5.25 Engine core: approved design note (REQ-ENG-001 to 003, BR-05, TX-02, DEC-139, DEC-145, DEC-146)
+
+Critical tier (§8.4). Reviewed before code under ADR-0002: an independent agent review in a separate session (`ecc:architect`, verdict "approve with changes", 2 blocking and 9 other findings) and the product owner, who approved the note with the changes (DEC-146). The review is recorded in `specs/evidence/TASK-202.tdd.md`.
+
+- **Where:** `apps/api/src/engine/` (new): `step-lifecycle.ts` (pure functions: which step opens next, whether the SPK moves T7 or T11) and `step-service.ts` (`StepService.submit`). It imports `ports/`, `@bmi/shared`, `core/iam` and `core/idempotency` (DEC-146), never `modules/` or `infra/` (dependency-cruiser rule `engine-never-imports-a-module`, already in CI). Port `ports/engine.ts`: `EngineGateways` = the SPK and step rows locked for update, the step write methods, stored file statuses, notifications, audit, idempotency.
+- **Freeze (DEC-145, DEC-146):** the `spk_assignments` rows are the frozen steps. Migration `0015` adds a trigger that, while the SPK is not Draft or Rejected, refuses an INSERT of a step, a DELETE of a step, and an UPDATE of `spk_id`, `module`, `sequence_no`, `step_config`, `is_optional`, `executor_roles` or `verifier_role`; the lifecycle columns stay writable. A test lists every column of `spk_assignments` as frozen or lifecycle, so a new column has to be placed. Change requests (TASK-611) apply a revision through a named exception, `SET LOCAL bmi.step_revision = 'on'`, as migration 0013 does for the audit archive.
+- **Submit (`POST /spks/:id/steps/:stepId/submit`, Idempotency-Key, body `{ fileIds: number[] }`), one transaction:**
+  1. lock in one fixed order, the SPK, then its steps, then the files (the same order in approve, cancel and change requests); the SPK must be Active or In_Progress (Pending_Amendment freezes the open step, T8);
+  2. the step must be Open or In_Progress, moved by `transition(STEP_MACHINE, …, 'Submit')` (SM-STEP gains Open → Submitted, DEC-146; the "not paused" check comes with Pause in TASK-204); a submitted step gets 409 "This step is already submitted." for another key, the same key replays;
+  3. L1: the actor holds the execute capability of the step's module, from one map in `@bmi/shared/permissions` (`MODULE_EXECUTE_CAPABILITY`; the tests' dummy module maps to `mechanic.execute`; an unknown module refuses). L2 (REQ-ENG-003): `passesExecutorCheck(role, executorRoles)` in `@bmi/shared`, true for one of the step's roles or the System Admin (RL-3, DEC-08); the same predicate serves `allowedActions` and later verify (TASK-205); no Setup-mode limit (a submit is not a decision, DEC-133);
+  4. DEC-139, REQ-FUP-006, REQ-FUP-009: every `fileIds` file is locked, must be the actor's and unattached; a Rejected or Expired file refuses with its sentence, a Pending one with 409 "Wait until every file is ready." (the client queue retries with the same key); Rejected is checked first. The notice naming a Rejected file is written in its own unit of work after the refusal, so the rollback keeps it (dedupe `file:<id>:failed`). On success each file gets `attached_at`;
+  5. the step becomes Submitted with `submitted_at` and `executed_by`; only the step at `sequence_no + 1` opens, and only while Locked (a resubmit after a Return opens nothing), with `opened_at`; its assignee, or else the users of its executor roles, are notified (dedupe `spk:<id>:step:<assignmentId>:open:a<attempt>`); the verifiers (Planners and the System Admin) are notified of the submit (REQ-NTF-005);
+  6. T7: an Active SPK becomes In_Progress with `started_at` (the vehicle Repair status is TASK-604); T11: when no step is Locked, Open or In_Progress, the SPK becomes Pending_Verification. A one-step SPK runs T7 then T11 in the same transaction; each SPK status change goes through `transition(SPK_MACHINE, …)`, raises `spks.version` and writes its audit record;
+  7. one audit record `step_submit` (entity `spk_assignment`, area SPK) with the step status before and after and the `fileIds`.
+- **Policy:** `submit` is a step action in a policy table, so the step's `allowedActions` in SPKDetail equals what the server accepts (DEC-93), with the contract test per record type.
+- **Not here:** the step time log (`step_time_events`, TASK-204), files attached to the step record (each module), verify and return (TASK-205), the module contract and hooks (TASK-203), any step screen or button (DEC-145).
+- **Review answers (DEC-146):** (a) the System Admin exception stays, in one shared predicate behind the L1 check (DEC-93 governs L1 and L3; REQ-ENG-003 defines L2 by role); (b) the database trigger; (c) a Pending file refuses with 409, the client queue waits. Concurrency is tested with two submits in parallel on real transactions and a submit against a change request lock (T8 locks the SPK row too).
+
 ### 5.24 Engine tables (DEC-95, DEC-124, DEC-144)
 
 Written before code (WORKFLOW_STANDARDS §1 step 10). Plan: `docs/superpowers/plans/2026-11-28-task201-engine-migrations.md`.
@@ -531,7 +549,7 @@ Written before code (WORKFLOW_STANDARDS §1 step 10). Plan: `docs/superpowers/pl
 
 ## 6. Assignment engine and module registry (critical tier)
 
-- The engine is built and tested first with `modules/dummy` (§8.3). It owns step order, freezing the steps as a JSON snapshot at approval (TX-02), Locked → Open on the previous submit (BR-05), claim and assignment (REQ-ENG-011), the step time log (`step_time_events`, REQ-ENG-012 to 017, honouring `tracks_work_time`), verify and return attempts, and the completion request.
+- The engine is built and tested first with `modules/dummy` (§8.3). It owns step order, freezing the steps at approval by locking their `spk_assignments` rows (TX-02, DEC-145), Locked → Open on the previous submit (BR-05), claim and assignment (REQ-ENG-011), the step time log (`step_time_events`, REQ-ENG-012 to 017, honouring `tracks_work_time`), verify and return attempts, and the completion request.
 - Module contract (`engine/module-contract.ts`): `code`, `creationSection` schema (what Create SPK collects), `stepForm` schema, `scopeRules` (BR-02), `validateSubmit(ctx)`, `onSubmit(ctx, tx)` (the module's TX), `onVerify?`, `documentSection` (input to the SPK document renderer), `costContribution`. A module is registered by its `assignment_modules` row and wired only through it (REQ-REG-006).
 - One contract test suite (`engine/test/module-contract.suite.ts`) runs against every module folder, current and future.
 - The ENG/REG design note is reviewed before coding (§8.4), under ADR-0002 until an internal developer joins.

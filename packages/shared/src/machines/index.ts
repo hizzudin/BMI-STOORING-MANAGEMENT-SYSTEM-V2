@@ -129,6 +129,8 @@ export const STEP_MACHINE: Machine<StepState, string> = {
     t(['Open'], 'StartEarlier', 'In_Progress'),
     t(['Open'], 'FirstAction', 'In_Progress'),
     t(['In_Progress'], 'Submit', 'Submitted'),
+    // DEC-146: from Open while Start does not exist yet (TASK-204) and for a module without work time.
+    t(['Open'], 'Submit', 'Submitted'),
     t(['In_Progress'], 'Pause', 'Paused'),
     t(['Paused'], 'Resume', 'In_Progress'),
     t(['Submitted'], 'Verify', 'Verified'),
@@ -136,6 +138,22 @@ export const STEP_MACHINE: Machine<StepState, string> = {
     t(['Open'], 'Skip', 'Skipped', { release2: true }),
   ],
 };
+
+const WORKED_STEPS: readonly AsgStatus[] = ['Open', 'In_Progress'];
+const DONE_STEPS: readonly AsgStatus[] = ['Verified', 'Skipped'];
+
+/**
+ * DEC-147: the current step of an SPK (SPKList, Waiting on, the SPKDetail tracker) is the first
+ * Open or In_Progress step; with none, the first not Verified or Skipped. `steps` are in order.
+ */
+export function currentStepOf<Step extends { status: AsgStatus }>(
+  steps: readonly Step[],
+): Step | undefined {
+  return (
+    steps.find((step) => WORKED_STEPS.includes(step.status)) ??
+    steps.find((step) => !DONE_STEPS.includes(step.status))
+  );
+}
 
 /** The machine state of a stored step: In_Progress with the paused flag is Paused. */
 export function stepState(step: { status: AsgStatus; paused: boolean }): StepState {

@@ -642,6 +642,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/spks/{id}/steps/{stepId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit a step: it becomes Submitted, the next step opens, the SPK moves T7 and T11 (REQ-ENG-002, DEC-145); needs an Idempotency-Key */
+        post: operations["submitStep"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/approvals/count": {
         parameters: {
             query?: never;
@@ -1579,6 +1596,7 @@ export interface components {
                         name: string;
                         role: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting") | null;
                     } | null;
+                    allowedActions: "submit"[];
                 }[];
                 approvals: {
                     /** @enum {string} */
@@ -1664,6 +1682,23 @@ export interface components {
         SpkCancelRequest: {
             version: number;
             reason: string;
+        };
+        StepSubmitResponse: {
+            spk: {
+                id: number;
+                /** @enum {string} */
+                status: "Draft" | "Pending_Approval" | "Rejected" | "Active" | "In_Progress" | "Pending_Verification" | "Pending_Amendment" | "Completed" | "Cancelled";
+                version: number;
+            };
+            steps: {
+                id: number;
+                sequenceNo: number;
+                /** @enum {string} */
+                status: "Locked" | "Open" | "In_Progress" | "Submitted" | "Verified" | "Skipped";
+            }[];
+        };
+        StepSubmitRequest: {
+            fileIds: number[];
         };
         ApprovalCountResponse: {
             count: number;
@@ -3038,6 +3073,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SpkResponse"];
+                };
+            };
+        };
+    };
+    submitStep: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                stepId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StepSubmitRequest"];
+            };
+        };
+        responses: {
+            /** @description Submit a step: it becomes Submitted, the next step opens, the SPK moves T7 and T11 (REQ-ENG-002, DEC-145); needs an Idempotency-Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StepSubmitResponse"];
                 };
             };
         };

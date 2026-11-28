@@ -23,7 +23,8 @@ import type {
 } from '../../ports/spks.js';
 import type { UnitOfWork } from '../../ports/unit-of-work.js';
 import { ActionRefusedError, allowedActions, NOT_ALLOWED, type Actor } from '../iam/actions.js';
-import { STEP_POLICIES, type StepItem } from '../../engine/step-policies.js';
+import { stepPolicies, type StepItem } from '../../engine/step-policies.js';
+import type { ModuleCatalog } from '../../ports/registry.js';
 import { SPK_POLICIES, SpkNotFoundError } from './spk-service.js';
 
 /** REQ-SPK-010: the statuses of each tab; My steps and All take every status. */
@@ -44,7 +45,19 @@ const cents = (amount: string) => Math.round(Number(amount) * 100);
 
 /** REQ-SPK-010, REQ-SPK-011, REQ-SPK-015, DEC-127: SPKList and SPKDetail (read only). */
 export class SpkListService {
-  constructor(private readonly unitOfWork: UnitOfWork<SpkGateways>) {}
+  private readonly stepPolicies: ReturnType<typeof stepPolicies>;
+
+  /** DEC-149: the module catalog through its port, for each step's execute capability. */
+  constructor(
+    private readonly unitOfWork: UnitOfWork<SpkGateways>,
+    private readonly catalog: ModuleCatalog,
+  ) {
+    this.stepPolicies = stepPolicies(catalog.executeCapabilities());
+  }
+
+  private step(actor: Actor, spkStatus: SpkStatus, row: SpkStepRow): SpkDetailStep {
+    return stepOf(this.stepPolicies, this.catalog, actor, spkStatus, row);
+  }
 
   list(actor: Actor, query: SpkListQuery): Promise<SpkListResponse> {
     this.requireView(actor);
@@ -100,7 +113,7 @@ export class SpkListService {
           currentOdometer: row.vehicleOdometer,
         },
         createdBy: row.creator,
-        steps: row.steps.map((one) => step(actor, row.status, one)),
+        steps: row.steps.map((one) => this.step(actor, row.status, one)),
         approvals: row.approvals.map((approval) => ({
           ...approval,
           actedAt: approval.actedAt.toISOString(),
@@ -180,12 +193,19 @@ function waitingOn(row: SpkListRow): string | null {
 }
 
 /** DEC-93: the step's allowedActions come from the policy table the engine route checks. */
-function step(actor: Actor, spkStatus: SpkStatus, row: SpkStepRow): SpkDetailStep {
+function stepOf(
+  policies: ReturnType<typeof stepPolicies>,
+  catalog: ModuleCatalog,
+  actor: Actor,
+  spkStatus: SpkStatus,
+  row: SpkStepRow,
+): SpkDetailStep {
   const item: StepItem = {
     spkStatus,
     module: row.module,
     status: row.status,
     executorRoles: row.executorRoles,
+    executeCapability: catalog.executeCapabilityOf(row.module),
   };
   return {
     id: row.id,
@@ -198,6 +218,6 @@ function step(actor: Actor, spkStatus: SpkStatus, row: SpkStepRow): SpkDetailSte
     submittedAt: iso(row.submittedAt),
     verifiedAt: iso(row.verifiedAt),
     verifiedBy: row.verifiedBy,
-    allowedActions: allowedActions(STEP_POLICIES, actor, item),
+    allowedActions: allowedActions(policies, actor, item),
   };
 }

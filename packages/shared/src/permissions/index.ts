@@ -437,28 +437,6 @@ export const MENU: readonly MenuEntry[] = [
 ];
 
 /**
- * DEC-146 (L1 of REQ-ENG-003): the capability that executes a step of each registered module (§2.4).
- * `Dummy` is the engine's test module (§8.3, DEC-144); it is registered by the tests only.
- */
-const MODULE_EXECUTE_CAPABILITY: Readonly<Record<string, PermissionCode>> = {
-  Stock: 'stock.issue',
-  Part_Purchase: 'purchase.line',
-  Mechanic_Action: 'mechanic.execute',
-  Part_Replacement: 'mechanic.execute',
-  Part_Check: 'mechanic.execute',
-  Mobilisasi: 'mobilisasi.execute',
-  Document: 'docstep.execute',
-  Dummy: 'mechanic.execute',
-};
-
-/** DEC-146: an unknown module has no execute capability, so no one may execute its step. */
-export function moduleExecuteCapability(module: string): PermissionCode | null {
-  return Object.hasOwn(MODULE_EXECUTE_CAPABILITY, module)
-    ? (MODULE_EXECUTE_CAPABILITY[module] ?? null)
-    : null;
-}
-
-/**
  * REQ-ENG-003 (L2): the actor's role is one of the step's executor roles, or the actor is the System
  * Admin, who passes every operational role check (RL-3, DEC-08). The one role-named rule of the step
  * policies (DEC-146); the L1 capability check runs before it.

@@ -15,3 +15,7 @@ export const STORAGE_LINKS = Symbol('STORAGE_LINKS');
 export const FILE_JOBS = Symbol('FILE_JOBS');
 /** DEC-136: sharp, the HEIC decoder and pdf.js. */
 export const MEDIA = Symbol('MEDIA');
+/** TASK-203, DEC-148: the composition root's modules in code (`app.modules.ts`); tests override it. */
+export const MODULE_LIST = Symbol('MODULE_LIST');
+/** DEC-149: the `ModuleCatalog` port built from MODULE_LIST. */
+export const MODULE_CATALOG = Symbol('MODULE_CATALOG');

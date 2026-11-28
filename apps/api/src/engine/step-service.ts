@@ -17,9 +17,10 @@ import type {
   EngineStepRow,
 } from '../ports/engine.js';
 import type { IdempotentRequest } from '../ports/idempotency.js';
+import type { ModuleCatalog } from '../ports/registry.js';
 import type { UnitOfWork } from '../ports/unit-of-work.js';
 import { nextToOpen, spkMovesAfterSubmit } from './step-lifecycle.js';
-import { STEP_MESSAGES, STEP_POLICIES, submitConflict, type StepItem } from './step-policies.js';
+import { STEP_MESSAGES, stepPolicies, submitConflict, type StepItem } from './step-policies.js';
 
 /** HTTP 404. */
 export class StepNotFoundError extends Error {
@@ -76,10 +77,15 @@ const stepTo = (from: AsgStatus, event: 'Open' | 'Submit') =>
  * DEC-139, DEC-145, DEC-146). One transaction under an Idempotency-Key; no module is imported (§8.3).
  */
 export class StepService {
+  private readonly policies: ReturnType<typeof stepPolicies>;
+
   constructor(
     private readonly unitOfWork: UnitOfWork<EngineGateways>,
     private readonly clock: ClockPort,
-  ) {}
+    private readonly catalog: ModuleCatalog,
+  ) {
+    this.policies = stepPolicies(catalog.executeCapabilities());
+  }
 
   async submit(
     actor: Actor,
@@ -119,10 +125,11 @@ export class StepService {
       module: step.module,
       status: step.status,
       executorRoles: step.executorRoles,
+      executeCapability: this.catalog.executeCapabilityOf(step.module),
     };
     const conflict = submitConflict(item);
     if (conflict) throw new StepConflictError(conflict);
-    assertAllowed(STEP_POLICIES, actor, item, 'submit');
+    assertAllowed(this.policies, actor, item, 'submit');
     const role = actor.user.role;
     if (!role) throw new ActionRefusedError('submit', NOT_ALLOWED);
 
@@ -130,8 +137,29 @@ export class StepService {
     const fileIds = [...new Set(request.fileIds)].sort((a, b) => a - b);
     await this.checkFiles(gateways, actor, fileIds);
 
-    // 5. Submitted; only the next Locked step opens (BR-05); the notices.
+    // DEC-149: the module's own hooks, on this transaction; a refusal or a throw rolls it all back.
     const now = this.clock.now();
+    const bind = this.catalog.hooksOf(step.module);
+    if (!bind) throw new ActionRefusedError('submit', STEP_MESSAGES.moduleNotAvailable);
+    const hooks = bind(gateways.tx);
+    const context = {
+      spkId: spk.id,
+      stepId: step.id,
+      sequenceNo: step.sequenceNo,
+      stepConfig: step.stepConfig,
+      actor,
+      fileIds,
+      now,
+    };
+    const refusal = await hooks.validate(context);
+    if (refusal) {
+      throw refusal.status === 409
+        ? new StepConflictError(refusal.sentence)
+        : new StepInvalidError(refusal.sentence);
+    }
+    await hooks.submit(context);
+
+    // 5. Submitted; only the next Locked step opens (BR-05); the notices.
     const submitted = stepTo(step.status, 'Submit');
     await gateways.steps.markSubmitted(step.id, { at: now, by: actor.user.id });
     if (fileIds.length > 0) await gateways.steps.attachFiles(fileIds, now);

@@ -11,8 +11,14 @@ import {
   STORAGE_LINKS,
   FILE_JOBS,
   MEDIA,
+  MODULE_CATALOG,
+  MODULE_LIST,
   VEHICLE_ACTIVITY,
 } from './app.tokens.js';
+import { MODULES } from './app.modules.js';
+import type { RegisteredModule } from './engine/module-contract.js';
+import { ModuleCatalogService } from './engine/registry/module-catalog.js';
+import type { ModuleCatalog } from './ports/registry.js';
 import { DocumentTypeService } from './core/fleet/document-type-service.js';
 import { VehicleClassService } from './core/fleet/vehicle-class-service.js';
 import { VehicleService } from './core/fleet/vehicle-service.js';
@@ -296,8 +302,9 @@ const authHttpConfig = (): AuthHttpConfig => ({
     },
     {
       provide: SpkListService,
-      inject: [PG_POOL],
-      useFactory: (pool: pg.Pool) => new SpkListService(new DrizzleUnitOfWork(pool, spkGateways)),
+      inject: [PG_POOL, MODULE_CATALOG],
+      useFactory: (pool: pg.Pool, catalog: ModuleCatalog) =>
+        new SpkListService(new DrizzleUnitOfWork(pool, spkGateways), catalog),
     },
     {
       provide: ApprovalService,
@@ -307,9 +314,16 @@ const authHttpConfig = (): AuthHttpConfig => ({
     },
     {
       provide: StepService,
-      inject: [PG_POOL, CLOCK],
-      useFactory: (pool: pg.Pool, clock: ClockPort) =>
-        new StepService(new DrizzleUnitOfWork(pool, engineGateways), clock),
+      inject: [PG_POOL, CLOCK, MODULE_CATALOG],
+      useFactory: (pool: pg.Pool, clock: ClockPort, catalog: ModuleCatalog) =>
+        new StepService(new DrizzleUnitOfWork(pool, engineGateways), clock, catalog),
+    },
+    // TASK-203, DEC-148, DEC-149: the modules in code and the catalog the engine reads.
+    { provide: MODULE_LIST, useValue: MODULES },
+    {
+      provide: MODULE_CATALOG,
+      inject: [MODULE_LIST],
+      useFactory: (modules: readonly RegisteredModule[]) => new ModuleCatalogService(modules),
     },
     {
       provide: AuditLogService,

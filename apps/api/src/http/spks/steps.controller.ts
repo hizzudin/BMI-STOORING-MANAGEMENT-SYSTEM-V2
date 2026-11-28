@@ -28,16 +28,16 @@ import {
 import {
   actorOf,
   CurrentSession,
-  RequireCapability,
   SessionGuard,
   type SignedIn,
 } from '../auth/auth-http.js';
 import { ApiContract, ValidBody } from '../contract.js';
 import { hashRequest, IdempotencyKey } from '../idempotency-key.decorator.js';
+import { ModuleExecuteGuard } from './module-execute.guard.js';
 
 /**
- * DEC-145: the engine's one step route. The route asks for any execute capability; the capability
- * of the step's own module and the executor check are the step policy (DEC-146).
+ * DEC-145: the engine's one step route. Its guard asks for an execute capability of a registered
+ * module (DEC-149); the capability of the step's own module and the executor check are the step policy.
  */
 @Controller('spks/:id/steps')
 @UseGuards(SessionGuard)
@@ -46,13 +46,7 @@ export class StepsController {
 
   @Post(':stepId/submit')
   @HttpCode(200)
-  @RequireCapability(
-    'stock.issue',
-    'purchase.line',
-    'mechanic.execute',
-    'mobilisasi.execute',
-    'docstep.execute',
-  )
+  @UseGuards(ModuleExecuteGuard)
   @ApiContract({
     operationId: 'submitStep',
     summary:

@@ -48,7 +48,19 @@ HTTP answers: 404 for an unknown SPK or a step it does not hold; 409 when the SP
 - API unit and integration, full run: 52 files, 431 passed, 1 skipped (the S3 contract run, CI only), **2 failed, both known local failures, not counted as passed:** BR-10 in `db/identity-schema.test.ts` and NFR-14 in `harness/real-transactions.test.ts` (the local PostgreSQL is not in UTC). Redis was slow once during the run (a logged scheduling timeout); the BullMQ tests passed.
 - Shared 26 files, 350 tests; web 40 files, 253 tests.
 - E2E (SPKDetail regression), built web on a pre-started `next start -p 3100`, `E2E_SERVER_START_MS=300000`: `spk-list`, `create-spk`, `create-spk-flw-pln-03`, `approvals-flw-apr-01`, `approvals-flw-apr-05`: 9 of 9 passed. The servers were stopped after the run.
-- Artboard comparison: none. No screen changed (DEC-145: no step screen or button; SPKDetail renders the same, only its payload gained the step `allowedActions`).
+- Artboard comparison: at first skipped as "no screen changed". The owner pointed this out, so it was run afterwards (below).
+
+### QA against the artboard (run after the owner asked, 2026-11-28)
+Run on `bmi_trial` (`trial-cli --reset`), with the built API (`api-trial-build`) and web (`web-build`), at 1440 x 900, next to `Design Artifact/spk/SPKDetail.html`. The Planner was signed in by the owner in the browser pane. Steps were submitted through the new route by a QA script, signed in as the trial Warehouse Manager and then the Mechanic, because there is no button yet (DEC-145). Every server was stopped afterwards.
+
+- **The `allowedActions` of every trial SPK, read from the API:** `submit` only on the open step of the Active and In_Progress SPKs, and nothing on the Pending_Amendment, Pending_Verification, Draft, Rejected, Completed and Cancelled ones.
+- **State A, SPK-2611260004 Active, step 1 Open:** matches the artboard's crumb, title, pills, subline, tabs, tracker, step cards, context card and approval block. What DEC-127 hides is absent.
+- **State B, In_Progress, step 1 Submitted, step 2 Open:** "Submitted 09:11:36" with an amber Submitted pill, and step 2 "Waiting to start since 09:11:36" with an Open pill. The Planner's bell shows the "Step submitted" notice (REQ-NTF-005).
+- **State C, Pending_Verification, both steps Submitted:** a Pending verification pill in petrol, both steps amber Submitted, and a second notice.
+- **Differences found, reported to the owner, nothing changed:**
+  1. After a submit, the tracker marks the Submitted step as the current one, and SPKList's Waiting on names its executor. design.md §5.11 defines the current step as "the first not Verified or Skipped", while the artboard marks the step being worked. This state was first reachable with TASK-202.
+  2. The SPK's In_Progress pill is green (`STATUS_TONES`, TASK-125). DESIGN.md and the artboard use petrol (info) for In Progress.
+  3. From TASK-125, for later step tasks: step cards have no module icon, and the user's own step has no red outline. On the artboard that outline comes with the Open step button, which DEC-127 hides.
 
 ## Notes for later tasks
 - **TASK-203:** the module contract replaces the Dummy row of the harness.

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { AsgStatus } from '../enums/index.js';
 import {
   BRK_MACHINE,
   CR_MACHINE,
@@ -14,6 +15,7 @@ import {
   SPK_MACHINE,
   STEP_MACHINE,
   stepState,
+  currentStepOf,
   TC_MACHINE,
   TR_MACHINE,
   transition,
@@ -294,6 +296,23 @@ describe('SM-SPK special targets', () => {
       expect(() => transition(SPK_MACHINE, 'Completed', event)).toThrow(TransitionRefused);
       expect(() => transition(SPK_MACHINE, 'Cancelled', event)).toThrow(TransitionRefused);
     }
+  });
+});
+
+describe('DEC-147 the current step of an SPK', () => {
+  const steps = (...statuses: AsgStatus[]) =>
+    statuses.map((status, index) => ({ sequenceNo: index + 1, status }));
+
+  it('DEC-147 the open step is current while an earlier one waits for verification', () => {
+    expect(currentStepOf(steps('Verified', 'Submitted', 'Open', 'Locked'))?.sequenceNo).toBe(3);
+    expect(currentStepOf(steps('Submitted', 'In_Progress'))?.sequenceNo).toBe(2);
+  });
+
+  it('DEC-147 with no open step, the first not Verified or Skipped is current', () => {
+    expect(currentStepOf(steps('Verified', 'Submitted', 'Submitted'))?.sequenceNo).toBe(2);
+    expect(currentStepOf(steps('Locked', 'Locked'))?.sequenceNo).toBe(1);
+    expect(currentStepOf(steps('Verified', 'Skipped'))).toBeUndefined();
+    expect(currentStepOf([])).toBeUndefined();
   });
 });
 

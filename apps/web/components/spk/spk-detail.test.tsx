@@ -166,6 +166,15 @@ describe('SPKDetail (REQ-SPK-011, DEC-127)', () => {
     expect(screen.getByText('Waiting to start since 09:10:00')).toBeTruthy();
     expect(screen.queryByText('Opens when step 2 is submitted')).toBeNull();
     expect(screen.queryByRole('button', { name: /submit/i })).toBeNull();
+    // DEC-147: the opened step is the current one, not the step waiting for verification.
+    expect(screen.getByRole('listitem', { current: 'step' }).textContent).toContain(
+      'Mechanic Action',
+    );
+  });
+
+  it('DESIGN.md an In Progress SPK wears the petrol (info) pill', async () => {
+    await show();
+    expect(screen.getByText('In progress').className).toContain('pill-info');
   });
 
   it('DEC-127 what later tasks build is not shown', async () => {

@@ -4,6 +4,7 @@ import {
   STEP_ACTIONS,
   type Role,
   type SpkDetailResponse,
+  type SpkListResponse,
   type StepAction,
   type StepSubmitResponse,
 } from '@bmi/shared';
@@ -477,6 +478,23 @@ describe('TASK-202 step submit (REQ-ENG-001 to 003, BR-05, TX-02, DEC-145, DEC-1
     expect((await detailOf('rina')).map((step) => step.allowedActions)).toEqual([[], []]);
     expect((await submit('joko', spkId, stepIds[0] ?? 0)).status).toBe(200);
     expect((await detailOf('joko')).map((step) => step.allowedActions)).toEqual([[], ['submit']]);
+  });
+
+  it('DEC-147 after a submit SPKList shows the opened step as current and waits on its executor', async () => {
+    const { spkId, stepIds } = await insertSpk('Active', [{}, {}, {}]);
+    expect((await submit('joko', spkId, stepIds[0] ?? 0)).status).toBe(200);
+    const { rows } = await testPool().query<{ spk_number: string }>(
+      `SELECT spk_number FROM spks WHERE id = $1`,
+      [spkId],
+    );
+    const url = new URL(`${baseUrl}/spks`);
+    url.search = new URLSearchParams({ tab: 'all', search: rows[0]?.spk_number ?? '' }).toString();
+    const list = await json<SpkListResponse>(await fetch(url, { headers: auth('rina') }));
+    expect(list.items[0]).toMatchObject({
+      status: 'In_Progress',
+      currentStep: { sequenceNo: 2, status: 'Open' },
+      waitingOn: 'Mechanic',
+    });
   });
 
   it('REQ-IAM-014 DEC-93 the step record type passes the allowedActions contract', async () => {

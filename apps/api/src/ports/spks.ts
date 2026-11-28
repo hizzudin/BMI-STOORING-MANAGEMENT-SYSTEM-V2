@@ -142,7 +142,7 @@ export interface SpkStepRow {
   verifiedBy: PersonRow | null;
 }
 
-/** SPKList: the SPK, its creator and its current step (the first not Verified or Skipped). */
+/** SPKList: the SPK, its creator and its current step (DEC-147, `currentStepOf`). */
 export interface SpkListRow extends SpkRow {
   creator: PersonRow;
   currentStep: SpkStepRow | null;

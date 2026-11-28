@@ -62,6 +62,22 @@ Run on `bmi_trial` (`trial-cli --reset`), with the built API (`api-trial-build`)
   2. The SPK's In_Progress pill is green (`STATUS_TONES`, TASK-125). DESIGN.md and the artboard use petrol (info) for In Progress.
   3. From TASK-125, for later step tasks: step cards have no module icon, and the user's own step has no red outline. On the artboard that outline comes with the Open step button, which DEC-127 hides.
 
+### Fixes after the QA (owner: "Ya, perbaiki dulu")
+- **Difference 1, DEC-147 (PRD v2.59), spec committed first (8e1c223):** the current step is the first Open or In_Progress step; when there is none, it is the first not Verified or Skipped. One function, `currentStepOf` in `@bmi/shared`, now serves the SPKList gateway (current step and Waiting on) and the SPKDetail `StepTracker`. design.md §5.11 is updated.
+- **Difference 2:** `STATUS_TONES.In_Progress` is now `info` (petrol), as DESIGN.md says. This was a TASK-125 value.
+- **Difference 3:** left for the step tasks (TASK-211 StepCard; the Open step button comes with the modules).
+- **RED:**
+  - shared `DEC-147` 2 of 2 failing (`currentStepOf` missing);
+  - API `DEC-147 after a submit SPKList shows the opened step as current`: currentStep was step 1 Submitted;
+  - web: the tracker marked "Part Purchase" (Submitted), and the In_Progress pill was `pill-success`.
+- **GREEN:**
+  - shared 166 tests;
+  - API engine, SPK and approvals suites: 7 files, 86 tests;
+  - web `components/spk`: 6 files, 41 tests;
+  - typecheck and lint 9 of 9, layers clean;
+  - SPK E2E 9 of 9.
+- **Visual check on `bmi_trial`:** one QA SPK (SPK-QA-202, three steps) was added by SQL, and its step 1 was submitted by the Warehouse Manager. The tracker now marks step 2 (Open), and the In progress pill is petrol, as on the artboard. Its approval stamps are empty only because the SPK was written by SQL. `pnpm trial:reset` removes it.
+
 ## Notes for later tasks
 - **TASK-203:** the module contract replaces the Dummy row of the harness.
 - **TASK-204:** Start, Pause and the "not paused" check of submit; T7 then moves on Start.

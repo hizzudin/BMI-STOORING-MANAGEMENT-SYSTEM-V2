@@ -139,6 +139,22 @@ export const STEP_MACHINE: Machine<StepState, string> = {
   ],
 };
 
+const WORKED_STEPS: readonly AsgStatus[] = ['Open', 'In_Progress'];
+const DONE_STEPS: readonly AsgStatus[] = ['Verified', 'Skipped'];
+
+/**
+ * DEC-147: the current step of an SPK (SPKList, Waiting on, the SPKDetail tracker) is the first
+ * Open or In_Progress step; with none, the first not Verified or Skipped. `steps` are in order.
+ */
+export function currentStepOf<Step extends { status: AsgStatus }>(
+  steps: readonly Step[],
+): Step | undefined {
+  return (
+    steps.find((step) => WORKED_STEPS.includes(step.status)) ??
+    steps.find((step) => !DONE_STEPS.includes(step.status))
+  );
+}
+
 /** The machine state of a stored step: In_Progress with the paused flag is Paused. */
 export function stepState(step: { status: AsgStatus; paused: boolean }): StepState {
   return step.status === 'In_Progress' && step.paused ? 'Paused' : step.status;

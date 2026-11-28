@@ -183,6 +183,7 @@ export async function insertSpkWithSteps(
   createdBy: number,
   modules: readonly string[],
   status = 'Active',
+  executorRoles: readonly Role[] = ['Mechanic'],
 ): Promise<{ spkId: number; stepIds: number[] }> {
   spkSequence += 1;
   const { rows } = await testPool().query<{ id: string }>(
@@ -199,8 +200,15 @@ export async function insertSpkWithSteps(
     const { rows: step } = await testPool().query<{ id: string }>(
       `INSERT INTO spk_assignments (spk_id, sequence_no, module, executor_roles, verifier_role, status,
          opened_at)
-       VALUES ($1, $2, $3, '{Mechanic}', 'Planner', $4, $5) RETURNING id`,
-      [spkId, index + 1, module, open ? 'Open' : 'Locked', open ? new Date() : null],
+       VALUES ($1, $2, $3, $4, 'Planner', $5, $6) RETURNING id`,
+      [
+        spkId,
+        index + 1,
+        module,
+        `{${executorRoles.join(',')}}`,
+        open ? 'Open' : 'Locked',
+        open ? new Date() : null,
+      ],
     );
     stepIds.push(Number(step[0]?.id));
   }

@@ -32,6 +32,23 @@ module.exports = {
       to: { path: '^apps/api/src/modules/', pathNot: '^apps/api/src/modules/$1/' },
     },
     {
+      name: 'core-never-imports-a-module',
+      comment: 'DEC-149: core reaches a module only through the ModuleCatalog port.',
+      severity: 'error',
+      from: { path: '^apps/api/src/core/' },
+      to: { path: '^apps/api/src/modules/' },
+    },
+    {
+      name: 'only-the-composition-root-imports-a-module',
+      comment: 'DEC-149: the module list lives in app.modules.ts; tests are the only other importers.',
+      severity: 'error',
+      from: {
+        path: '^apps/api/src/',
+        pathNot: ['^apps/api/src/(app\\.modules\\.ts|modules/)', '\\.(spec|test)\\.ts$'],
+      },
+      to: { path: '^apps/api/src/modules/' },
+    },
+    {
       name: 'http-never-imports-infra',
       comment: 'design.md §3: controllers call services; adapters stay behind the ports.',
       severity: 'error',

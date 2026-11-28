@@ -486,7 +486,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-120
   - _Skill_: postgres-pro, database-optimizer, ecc:postgres-patterns, ecc:database-migrations, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "assignment migrations"`; migration drift test green
-- [ ] **TASK-202** Engine core on a dummy module: freeze at approval, Locked/Open, submit opens next, executor check [REQ-ENG-001, REQ-ENG-002, REQ-ENG-003]
+- [x] **TASK-202** Engine core on a dummy module: freeze at approval, Locked/Open, submit opens next, executor check [REQ-ENG-001, REQ-ENG-002, REQ-ENG-003]
   - _Scope_: Critical tier (§8.4): design note reviewed first (ADR-0002); the engine imports no module (CI rule). DEC-139: a submit whose file fails for good leaves the step a draft and sends the uploader one notification naming the file (REQ-FUP-006). DEC-144: registers the dummy module in its test harness and adds the engine gateway methods it uses.
   - _Acceptance_: AC-ENG-001, AC-SPK-002 (here because it needs steps (engine))
   - _Rules_: BR-05, BR-03, TX-02, DEC-04, DEC-05, DEC-65, DEC-144, DEC-145, DEC-146

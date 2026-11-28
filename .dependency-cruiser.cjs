@@ -40,7 +40,8 @@ module.exports = {
     },
     {
       name: 'only-the-composition-root-imports-a-module',
-      comment: 'DEC-149: the module list lives in app.modules.ts; tests are the only other importers.',
+      comment:
+        'DEC-149: the module list lives in app.modules.ts; tests are the only other importers.',
       severity: 'error',
       from: {
         path: '^apps/api/src/',

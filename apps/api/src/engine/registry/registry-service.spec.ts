@@ -136,9 +136,9 @@ describe('TASK-203 registry service (REQ-REG-002, REQ-REG-005, DEC-148)', () => 
     await expect(registry.deactivate(actor(), 'Dummy', { reason: 'x' }, key('k2'))).rejects.toThrow(
       ModuleStateConflictError,
     );
-    await expect(registry.deactivate(actor(), 'Dummy', { reason: 'x' }, key('k2b'))).rejects.toThrow(
-      'This module is already inactive.',
-    );
+    await expect(
+      registry.deactivate(actor(), 'Dummy', { reason: 'x' }, key('k2b')),
+    ).rejects.toThrow('This module is already inactive.');
     await expect(
       registry.activate(actor(), 'Other_Module', { reason: 'x' }, key('k3')),
     ).rejects.toThrow('This module is already active.');

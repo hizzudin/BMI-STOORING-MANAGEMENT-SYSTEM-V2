@@ -25,12 +25,7 @@ import {
   StepNotFoundError,
   StepService,
 } from '../../engine/step-service.js';
-import {
-  actorOf,
-  CurrentSession,
-  SessionGuard,
-  type SignedIn,
-} from '../auth/auth-http.js';
+import { actorOf, CurrentSession, SessionGuard, type SignedIn } from '../auth/auth-http.js';
 import { ApiContract, ValidBody } from '../contract.js';
 import { hashRequest, IdempotencyKey } from '../idempotency-key.decorator.js';
 import { ModuleExecuteGuard } from './module-execute.guard.js';

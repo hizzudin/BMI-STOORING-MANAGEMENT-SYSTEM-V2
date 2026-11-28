@@ -20,7 +20,12 @@ const step = (executeCapability: PermissionCode | null): StepItem => ({
 describe('TASK-203 step policies from the module catalog (REQ-REG-006, REQ-ENG-003, DEC-148)', () => {
   it('REQ-REG-006 a step whose module has no code is refused "The module of this step is not available yet."', () => {
     expect(
-      refusalOf(stepPolicies(['mechanic.execute']), actor(['mechanic.execute']), step(null), 'submit'),
+      refusalOf(
+        stepPolicies(['mechanic.execute']),
+        actor(['mechanic.execute']),
+        step(null),
+        'submit',
+      ),
     ).toBe('The module of this step is not available yet.');
   });
 

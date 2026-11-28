@@ -496,7 +496,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Depends_: TASK-201, TASK-122
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-ENG-001|AC-SPK-002"`; regression check of SPKDetail
-- [ ] **TASK-203** Module contract, registry service and the contract test suite [REQ-REG-002, REQ-REG-005, REQ-REG-006]
+- [x] **TASK-203** Module contract, registry service and the contract test suite [REQ-REG-002, REQ-REG-005, REQ-REG-006]
   - _Scope_: A module is one API folder plus one step screen, wired only through its registry row (§8.2). Critical tier (§8.4): design note reviewed first (ADR-0002). DEC-148: no screen (StartFromPreset and SavePreset move to TASK-208); the registry routes, deactivate and activate with a reason under registry.manage; a row with no module in code is not offered and its steps cannot be submitted; the execute capability comes from the module contract, replacing the DEC-146 map.
   - _Rules_: BR-10, NFR-11, DEC-05, DEC-148, DEC-149
   - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`SettingsSPKPresets`](<../Design Artifact/settings/SettingsSPKPresets.html#SettingsSPKPresets>) (built later in TASK-208, which shows what this task provides)

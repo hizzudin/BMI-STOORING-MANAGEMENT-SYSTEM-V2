@@ -12,7 +12,17 @@ Asked in two rounds instead of one (deviation): the owner's choice of a new Sett
 
 1. **Agent review of the design note, in a separate session** ("ADR-0002 review: TASK-202 engine design note" session, reused for this note; read only, `ecc:architect`). Verdict: **approve with changes**: 3 blocking, 4 should-fix, 3 nits. Blocking: (1) the submit guard opened to every code guarded nothing; it is now the union of the modules' execute capabilities; (2) nothing enforced `scope_rules`; the scope lock is left to a DEC in TASK-306; (3) the layering broke §3 and CI did not catch it; a narrow `ModuleCatalog` port and two new dependency-cruiser rules. Should-fix: every entry point of "new use" named; every executor role must hold the execute capability; a static check against module code literals; §6 aligned with §5.26. Nits: `validateSubmit` refuses with 400 or 409; a module parses its own step options; the old map removed in one commit. Open points answered: two JSONB shapes fixed now, two minimal; typed module gateways; the dummy code shipped with a check that no migration inserts it; the Draft rule kept.
 2. **Product owner review of the note:** approved with every finding, and decided the reviewer's open question: a system draft is made without the step of an inactive module and the Planner is notified (DEC-149, PRD v2.61).
-3. **Agent review of the merge:** to be recorded before the PR.
+3. **Agent review of the merge, in the same separate session** (read only, `ecc:code-reviewer`, on `git diff main...` at 6682592). Verdict: **approve with changes**, no critical, 4 important, 6 minor. Acted on at the owner's word ("lakukan tindakan atas review ADR-0002"):
+   - important 1: `core/spk` imported `engine/step-policies`; the policy table moved to `core/steps/`, new rule `core-never-imports-the-engine` (RED: 1 violation, then clean);
+   - important 2: nothing stopped an import of `app.modules.ts`; new rule `only-the-composition-root-imports-the-module-list` (proven by a temporary engine import: 1 violation, reverted);
+   - important 3: the suite could not pass a real module; submit fixtures (`stepConfig`, `prepare` → files) and `fixtureOf` failing loudly without one (RED: `Checked_Module` 1 failed, then 20 of 20);
+   - important 4: the static check was too narrow; every code, both quotes, module contexts for Stock, Document and Part_Check, `infra`, web and mobile scanned, seeds excepted by name, an allowlist (empty) (proven by `step.module === "Stock"` in a web file: 1 finding, reverted);
+   - minor 5: `assertOfferable` now runs on the caller's transaction and locks the row (RED 1, then 10 of 10);
+   - minor 7: the suite's refusal prefers a role holding the capability but not an executor and asserts the L2 sentence (`Purchase_Like_Module`);
+   - minor 9: TASK-306 scope notes its row upsert, its suite fixture and the scope_rules DEC;
+   - minor 10: the refusal test asserts no `attached_at` and no idempotency row (passed at once, same code path as the throw; kept as a pin);
+   - deferred: minor 6 (a row with JSONB that does not fit cannot be deactivated, 500; no such row can exist, only migrations write rows; revisit with TASK-215) and minor 8 (`ports/registry.ts` imports the `Actor` type from `core/iam`; a wider refactor).
+   - After the fixes: registry, engine, SPK, approvals integration and every API unit test: 24 files, 228 passed; lint, typecheck, check:layers, Prettier clean. The PR body records both reviews.
 
 ## Plan and execution
 

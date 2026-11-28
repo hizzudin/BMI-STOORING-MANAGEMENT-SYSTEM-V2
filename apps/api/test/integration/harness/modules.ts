@@ -1,6 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import type { ModuleRow, Role } from '@bmi/shared';
+import type { ModuleRow, PermissionCode, Role } from '@bmi/shared';
 import { AppModule } from '../../../src/app.module.js';
 import {
   CLOCK,
@@ -83,11 +83,12 @@ export function testModule(
   code: string,
   hooks: Pick<ModuleContract<DbTransaction>, 'validateSubmit' | 'onSubmit'> = {},
   change: Partial<ModuleRow> = {},
+  executeCapability: PermissionCode = 'mechanic.execute',
 ): RegisteredModule {
   return defineModule<DbTransaction>({
     contract: {
       code,
-      executeCapability: 'mechanic.execute',
+      executeCapability,
       row: { ...codelessRow(code, `${code} step`), ...change },
       ...hooks,
     },
@@ -184,6 +185,7 @@ export async function insertSpkWithSteps(
   modules: readonly string[],
   status = 'Active',
   executorRoles: readonly Role[] = ['Mechanic'],
+  stepConfig: unknown = {},
 ): Promise<{ spkId: number; stepIds: number[] }> {
   spkSequence += 1;
   const { rows } = await testPool().query<{ id: string }>(
@@ -199,8 +201,8 @@ export async function insertSpkWithSteps(
     const open = index === 0;
     const { rows: step } = await testPool().query<{ id: string }>(
       `INSERT INTO spk_assignments (spk_id, sequence_no, module, executor_roles, verifier_role, status,
-         opened_at)
-       VALUES ($1, $2, $3, $4, 'Planner', $5, $6) RETURNING id`,
+         opened_at, step_config)
+       VALUES ($1, $2, $3, $4, 'Planner', $5, $6, $7) RETURNING id`,
       [
         spkId,
         index + 1,
@@ -208,6 +210,7 @@ export async function insertSpkWithSteps(
         `{${executorRoles.join(',')}}`,
         open ? 'Open' : 'Locked',
         open ? new Date() : null,
+        JSON.stringify(stepConfig),
       ],
     );
     stepIds.push(Number(step[0]?.id));

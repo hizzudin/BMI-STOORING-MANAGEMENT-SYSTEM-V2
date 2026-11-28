@@ -22,6 +22,31 @@ export interface ContractSuiteOptions {
   label: string;
   modules: readonly RegisteredModule[];
   insertRow: (module: RegisteredModule) => boolean;
+  /** ADR-0002 merge review 3: how to prepare a valid submit of each module, by code. */
+  fixtures?: Readonly<Record<string, SubmitFixture>>;
+}
+
+/** What a module's submit needs: the frozen step options and the files its executor attaches. */
+export interface SubmitFixture {
+  stepConfig?: unknown;
+  prepare?: (ctx: { executorId: number }) => Promise<{ fileIds: number[] }>;
+}
+
+/**
+ * A module with a `validateSubmit` must bring its fixture: a bare submit proves nothing for it, and
+ * weakening the suite for it is not allowed.
+ */
+export function fixtureOf(
+  module: RegisteredModule,
+  fixtures: Readonly<Record<string, SubmitFixture>> = {},
+): SubmitFixture {
+  const fixture = fixtures[module.contract.code];
+  if (!fixture && module.contract.validateSubmit) {
+    throw new Error(
+      `Module ${module.contract.code} has a validateSubmit: give the contract suite a submit fixture for it.`,
+    );
+  }
+  return fixture ?? {};
 }
 
 interface StoredRow {
@@ -40,19 +65,25 @@ const holds = (role: Role, code: string) =>
     (cell) => cell.role === role && cell.permissionCode === code && cell.allowed,
   );
 
-export function runModuleContractSuite({ label, modules, insertRow }: ContractSuiteOptions): void {
+export function runModuleContractSuite({
+  label,
+  modules,
+  insertRow,
+  fixtures,
+}: ContractSuiteOptions): void {
   describe(label, () => {
     const clock = FakeClock.atWib('2026-11-28 11:00');
     let engine: EngineApp;
     let vehicleId = 0;
     let planner = 0;
     let keys = 0;
+    const executorIds = new Map<Role, number>();
 
     beforeAll(async () => {
       engine = await startEngineApp(modules, clock);
       planner = await engine.account('planner', 'Planner');
       for (const role of new Set(modules.flatMap((m) => m.contract.row.executorRoles))) {
-        await engine.account(role, role);
+        executorIds.set(role, await engine.account(role, role));
       }
       vehicleId = await insertVehicle();
       for (const module of modules) {
@@ -105,10 +136,14 @@ export function runModuleContractSuite({ label, modules, insertRow }: ContractSu
       });
 
       it(`REQ-REG-006 ${code} a step is submitted through the engine by an executor and refused for another role`, async () => {
+        const fixture = fixtureOf(module, fixtures);
         const executor = row.executorRoles[0] ?? 'Mechanic';
-        const other = ROLES.find(
+        // Merge review 7: a role that holds the capability but is not an executor reaches L2.
+        const outsiders = ROLES.filter(
           (role) => !row.executorRoles.includes(role) && role !== 'System_Admin',
         );
+        const holder = outsiders.find((role) => holds(role, executeCapability));
+        const other = holder ?? outsiders[0];
         if (other) await engine.account(`other-${code}`, other);
         const refused = await insertSpkWithSteps(
           vehicleId,
@@ -116,6 +151,7 @@ export function runModuleContractSuite({ label, modules, insertRow }: ContractSu
           [code],
           'Active',
           row.executorRoles,
+          fixture.stepConfig,
         );
         if (other) {
           keys += 1;
@@ -127,6 +163,11 @@ export function runModuleContractSuite({ label, modules, insertRow }: ContractSu
             `contract-${code}-${keys}`,
           );
           expect(response.status).toBe(403);
+          if (holder) {
+            expect(((await response.json()) as { message: string }).message).toBe(
+              'Only an executor of this step may submit it.',
+            );
+          }
         }
         const { spkId, stepIds } = await insertSpkWithSteps(
           vehicleId,
@@ -134,7 +175,13 @@ export function runModuleContractSuite({ label, modules, insertRow }: ContractSu
           [code],
           'Active',
           row.executorRoles,
+          fixture.stepConfig,
         );
+        const prepared = (await fixture.prepare?.({
+          executorId: executorIds.get(executor) ?? 0,
+        })) ?? {
+          fileIds: [],
+        };
         keys += 1;
         const response = await submitStep(
           engine,
@@ -142,6 +189,7 @@ export function runModuleContractSuite({ label, modules, insertRow }: ContractSu
           spkId,
           stepIds[0] ?? 0,
           `contract-${code}-${keys}`,
+          prepared.fileIds,
         );
         expect(response.status).toBe(200);
         expect(await stepStatus(stepIds[0] ?? 0)).toBe('Submitted');

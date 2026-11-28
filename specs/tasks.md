@@ -497,15 +497,22 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "AC-ENG-001|AC-SPK-002"`; regression check of SPKDetail
 - [ ] **TASK-203** Module contract, registry service and the contract test suite [REQ-REG-002, REQ-REG-005, REQ-REG-006]
-  - _Scope_: A module is one API folder plus one step screen, wired only through its registry row (§8.2).
-  - _Rules_: BR-10, NFR-11, DEC-05
-  - _Screens built here (visual target)_: [`StartFromPreset`](<../Design Artifact/spk/StartFromPreset.html#StartFromPreset>), [`SavePreset`](<../Design Artifact/spk/SavePreset.html#SavePreset>)
+  - _Scope_: A module is one API folder plus one step screen, wired only through its registry row (§8.2). Critical tier (§8.4): design note reviewed first (ADR-0002). DEC-148: no screen (StartFromPreset and SavePreset move to TASK-208); the registry routes, deactivate and activate with a reason under registry.manage; a row with no module in code is not offered and its steps cannot be submitted; the execute capability comes from the module contract, replacing the DEC-146 map.
+  - _Rules_: BR-10, NFR-11, DEC-05, DEC-148
   - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it), [`SettingsSPKPresets`](<../Design Artifact/settings/SettingsSPKPresets.html#SettingsSPKPresets>) (built later in TASK-208, which shows what this task provides)
   - _Data_: `assignment_modules` (§9.6)
-  - _Read_: `docs/prd/areas/4.3-reg.md` (REQ-REG-002, REQ-REG-005, REQ-REG-006); `docs/prd/data-model.md` §9.6 (assignment_modules) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-10, NFR-11, DEC-05 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, SettingsSPKPresets; `docs/prd/ui-action-map.md`: every row of CreateSPK and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
+  - _Read_: `docs/prd/areas/4.3-reg.md` (REQ-REG-002, REQ-REG-005, REQ-REG-006); `docs/prd/data-model.md` §9.6 (assignment_modules) and §9.13 for the TX named in _Rules_; `PRD.md` for BR-10, NFR-11, DEC-05, DEC-148 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions); `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, SettingsSPKPresets; `docs/prd/ui-action-map.md`: every row of CreateSPK and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96)
   - _Depends_: TASK-202
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `qa` StartFromPreset, SavePreset against their artboards; regression check of CreateSPK
+  - _Verify_: `unit @bmi/api "module contract"`; `int "REQ-REG-002|REQ-REG-005|REQ-REG-006"`; regression check of CreateSPK
+- [ ] **TASK-215** Settings: Modules screen (name, palette order, deactivate and activate) [REQ-REG-008]
+  - _Scope_: DEC-148: draws the SettingsModules artboard, approved by the owner before the screen is built, adds its 7.3 row and action map rows, then the name and palette order edit and the screen over the TASK-203 routes.
+  - _Rules_: DEC-148
+  - _Data_: `assignment_modules` (§9.6), `audit_logs` (§9.2)
+  - _Read_: `docs/prd/areas/4.3-reg.md` (REQ-REG-008); `docs/prd/data-model.md` §9.2, §9.6 (assignment_modules, audit_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-148 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Depends_: TASK-203, TASK-126
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Verify_: `qa` SettingsModules against its artboard (drawn and approved in this task)
 - [ ] **TASK-204** Step time: Start, Start earlier, Pause/Resume, external hand-over start, tracks_work_time, System Admin time correction [REQ-ENG-012, REQ-ENG-013, REQ-ENG-014, REQ-ENG-015, REQ-ENG-016, REQ-ENG-017]
   - _Scope_: Append-only step time log per attempt. DEC-140: also builds the CorrectStepTime dialog (moved from TASK-124).
   - _Acceptance_: AC-ENG-007, AC-ENG-008, AC-ENG-009, AC-ENG-010
@@ -555,14 +562,14 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
 - [ ] **TASK-208** SPK presets: Save as preset (versions), start from preset, presets page [REQ-REG-003, REQ-ENG-004]
   - _Scope_: An SPK never follows later preset versions. DEC-121: also adds document_types.preset_id and its preset field on DocumentTypes (DEC-86).
   - _Acceptance_: AC-ENG-003, AC-REG-005
-  - _Screens built here (visual target)_: [`SettingsSPKPresets`](<../Design Artifact/settings/SettingsSPKPresets.html#SettingsSPKPresets>)
+  - _Screens built here (visual target)_: [`SettingsSPKPresets`](<../Design Artifact/settings/SettingsSPKPresets.html#SettingsSPKPresets>), [`StartFromPreset`](<../Design Artifact/spk/StartFromPreset.html#StartFromPreset>), [`SavePreset`](<../Design Artifact/spk/SavePreset.html#SavePreset>)
   - _Screens touched_: [`CreateSPK`](<../Design Artifact/spk/CreateSPK.html#CreateSPK>) (built in TASK-121; extend and regression-check it)
   - _Data_: `spk_presets` (§9.6), `spk_preset_steps` (§9.6)
   - _Journey_: FLW-PLN-08 Maintain SPK presets and PM packages, with the System Admin
   - _Read_: `docs/prd/areas/4.3-reg.md` (REQ-REG-003); `docs/prd/areas/4.2-eng.md` (REQ-ENG-004); `docs/prd/data-model.md` §9.6 (spk_presets, spk_preset_steps) and §9.13 for the TX named in _Rules_; `docs/prd/ui.md` §7.3 rows and §7.4 key layouts and §7.5–7.6 for CreateSPK, SettingsSPKPresets; `docs/prd/ui-action-map.md`: every row of CreateSPK and the shared controls they cite; `DESIGN.md` and the artboards below (the visual target, DEC-96); `docs/prd/flows.md` FLW-PLN-08 and `specs/tdd-user-journeys.md` for the same IDs
   - _Depends_: TASK-207
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
-  - _Verify_: `int "AC-ENG-003|AC-REG-005"`; `e2e FLW-PLN-08`; `qa` SettingsSPKPresets against their artboards; regression check of CreateSPK
+  - _Verify_: `int "AC-ENG-003|AC-REG-005"`; `e2e FLW-PLN-08`; `qa` SettingsSPKPresets, StartFromPreset, SavePreset against their artboards; regression check of CreateSPK
 - [ ] **TASK-209** PM packages per vehicle class [REQ-REG-007]
   - _Scope_: A Towed class uses days only.
   - _Rules_: DEC-70

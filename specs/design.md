@@ -190,7 +190,7 @@ Enforced by `dependency-cruiser` rules in CI (TASK-008).
 - My steps: an SPK with an Open or In_Progress step that is assigned to the user, or unassigned with the user's role among its executor roles (matching data in `executor_roles`, not a permission).
 - Every tab count uses the same search, type and vehicle. Search is "contains, any case" over the SPK number, the title and the plate.
 - Order: Urgent, High, Normal, Low, then newest first. Pages of 10, 20, 50 or 100 (20 by default); `totalPages` is at least 1.
-- Each row: the SPK with its `allowedActions` from the Create SPK policy table, its current step (the first step not Verified or Skipped) and who it waits on:
+- Each row: the SPK with its `allowedActions` from the Create SPK policy table, its current step and who it waits on. The current step (DEC-147) is the first step that is Open or In_Progress, else the first not Verified or Skipped; one function `currentStepOf` in `@bmi/shared` serves SPKList and the SPKDetail tracker:
 
   | Status | Waiting on |
   | --- | --- |

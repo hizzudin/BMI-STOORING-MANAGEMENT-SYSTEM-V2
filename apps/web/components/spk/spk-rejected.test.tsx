@@ -41,6 +41,7 @@ const rejected: Detail = {
     submittedAt: null,
     verifiedAt: null,
     verifiedBy: null,
+    allowedActions: [],
   })),
   approvals: [
     {

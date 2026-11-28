@@ -422,6 +422,7 @@ export class DrizzleSpkGateway implements SpkGateway {
         id: spkAssignments.id,
         spkId: spkAssignments.spkId,
         sequenceNo: spkAssignments.sequenceNo,
+        module: spkAssignments.module,
         name: assignmentModules.name,
         status: spkAssignments.status,
         executorRoles: spkAssignments.executorRoles,
@@ -443,6 +444,7 @@ export class DrizzleSpkGateway implements SpkGateway {
       const step: SpkStepRow = {
         id: row.id,
         sequenceNo: row.sequenceNo,
+        module: row.module,
         name: row.name,
         status: row.status as AsgStatus,
         executorRoles: row.executorRoles as Role[],

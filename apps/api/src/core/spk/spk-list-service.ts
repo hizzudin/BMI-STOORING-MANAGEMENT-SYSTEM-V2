@@ -23,6 +23,7 @@ import type {
 } from '../../ports/spks.js';
 import type { UnitOfWork } from '../../ports/unit-of-work.js';
 import { ActionRefusedError, allowedActions, NOT_ALLOWED, type Actor } from '../iam/actions.js';
+import { STEP_POLICIES, type StepItem } from '../../engine/step-policies.js';
 import { SPK_POLICIES, SpkNotFoundError } from './spk-service.js';
 
 /** REQ-SPK-010: the statuses of each tab; My steps and All take every status. */
@@ -99,7 +100,7 @@ export class SpkListService {
           currentOdometer: row.vehicleOdometer,
         },
         createdBy: row.creator,
-        steps: row.steps.map(step),
+        steps: row.steps.map((one) => step(actor, row.status, one)),
         approvals: row.approvals.map((approval) => ({
           ...approval,
           actedAt: approval.actedAt.toISOString(),
@@ -178,7 +179,14 @@ function waitingOn(row: SpkListRow): string | null {
   }
 }
 
-function step(row: SpkStepRow): SpkDetailStep {
+/** DEC-93: the step's allowedActions come from the policy table the engine route checks. */
+function step(actor: Actor, spkStatus: SpkStatus, row: SpkStepRow): SpkDetailStep {
+  const item: StepItem = {
+    spkStatus,
+    module: row.module,
+    status: row.status,
+    executorRoles: row.executorRoles,
+  };
   return {
     id: row.id,
     sequenceNo: row.sequenceNo,
@@ -190,5 +198,6 @@ function step(row: SpkStepRow): SpkDetailStep {
     submittedAt: iso(row.submittedAt),
     verifiedAt: iso(row.verifiedAt),
     verifiedBy: row.verifiedBy,
+    allowedActions: allowedActions(STEP_POLICIES, actor, item),
   };
 }

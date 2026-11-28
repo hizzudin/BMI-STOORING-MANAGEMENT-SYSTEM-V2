@@ -66,6 +66,9 @@ import { plannerApprovalGateways } from './infra/db/planner-approval-gateways.js
 import { rolePermissionGateways } from './infra/db/role-permission-gateways.js';
 import { spkGateways } from './infra/db/spk-gateways.js';
 import { approvalGateways } from './infra/db/approval-gateways.js';
+import { engineGateways } from './infra/db/engine-gateways.js';
+import { StepService } from './engine/step-service.js';
+import { StepErrorFilter, StepsController } from './http/spks/steps.controller.js';
 import { ApprovalService } from './core/approvals/approval-service.js';
 import { ApprovalsController } from './http/approvals/approvals.controller.js';
 import { AuditLogService } from './core/audit/audit-log-service.js';
@@ -167,6 +170,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     VehiclesController,
     NotificationsController,
     SpksController,
+    StepsController,
     ApprovalsController,
     AuditLogController,
     AccessHistoryController,
@@ -186,6 +190,7 @@ const authHttpConfig = (): AuthHttpConfig => ({
     { provide: APP_FILTER, useClass: VehicleErrorFilter },
     { provide: APP_FILTER, useClass: NotificationErrorFilter },
     { provide: APP_FILTER, useClass: SpkErrorFilter },
+    { provide: APP_FILTER, useClass: StepErrorFilter },
     { provide: APP_FILTER, useClass: AuditLogErrorFilter },
     { provide: APP_FILTER, useClass: SystemModeErrorFilter },
     { provide: APP_FILTER, useClass: VendorErrorFilter },
@@ -299,6 +304,12 @@ const authHttpConfig = (): AuthHttpConfig => ({
       inject: [PG_POOL, CLOCK],
       useFactory: (pool: pg.Pool, clock: ClockPort) =>
         new ApprovalService(new DrizzleUnitOfWork(pool, approvalGateways), clock),
+    },
+    {
+      provide: StepService,
+      inject: [PG_POOL, CLOCK],
+      useFactory: (pool: pg.Pool, clock: ClockPort) =>
+        new StepService(new DrizzleUnitOfWork(pool, engineGateways), clock),
     },
     {
       provide: AuditLogService,

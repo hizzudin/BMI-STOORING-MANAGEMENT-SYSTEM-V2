@@ -129,6 +129,8 @@ export interface PersonRow {
 export interface SpkStepRow {
   id: number;
   sequenceNo: number;
+  /** assignment_modules.code: decides the step's execute capability (DEC-146). */
+  module: string;
   name: string;
   status: AsgStatus;
   executorRoles: Role[];

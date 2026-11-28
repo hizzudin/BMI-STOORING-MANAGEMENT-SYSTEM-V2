@@ -19,6 +19,10 @@ export type SpkPriority = (typeof SPK_PRIORITIES)[number];
 export const SPK_ACTIONS = ['edit', 'submit', 'cancel', 'approverCancel'] as const;
 export type SpkAction = (typeof SPK_ACTIONS)[number];
 
+/** DEC-145, DEC-146: what may be done on one step; verify and the others come with their tasks. */
+export const STEP_ACTIONS = ['submit'] as const;
+export type StepAction = (typeof STEP_ACTIONS)[number];
+
 export const SPKS_PAGE_ACTIONS = ['create'] as const;
 export type SpksPageAction = (typeof SPKS_PAGE_ACTIONS)[number];
 
@@ -178,8 +182,33 @@ export const SpkDetailStepSchema = z.object({
   submittedAt: z.string().nullable(),
   verifiedAt: z.string().nullable(),
   verifiedBy: PersonSchema.nullable(),
+  /** DEC-93, DEC-145: what the user may do on the step now; no button shows it yet. */
+  allowedActions: z.array(z.enum(STEP_ACTIONS)),
 });
 export type SpkDetailStep = z.infer<typeof SpkDetailStepSchema>;
+
+/** DEC-145: `POST /spks/:id/steps/:stepId/submit`, with the ids of the step's files (8.1). */
+export const StepSubmitRequestSchema = z.object({
+  fileIds: z.array(z.number().int().positive()).max(50),
+});
+export type StepSubmitRequest = z.infer<typeof StepSubmitRequestSchema>;
+
+/** The SPK and its steps after the submit (REQ-ENG-002, T7, T11). */
+export const StepSubmitResponseSchema = z.object({
+  spk: z.object({
+    id: z.number().int(),
+    status: z.enum(SPK_STATUSES),
+    version: z.number().int(),
+  }),
+  steps: z.array(
+    z.object({
+      id: z.number().int(),
+      sequenceNo: z.number().int(),
+      status: z.enum(ASG_STATUSES),
+    }),
+  ),
+});
+export type StepSubmitResponse = z.infer<typeof StepSubmitResponseSchema>;
 
 /** REQ-SPK-011, ui.md 7.5 ApprovalBlock and the History tab: one row of spk_approvals. */
 export const SpkDetailApprovalSchema = z.object({

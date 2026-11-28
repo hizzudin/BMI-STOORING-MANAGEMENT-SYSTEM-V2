@@ -58,11 +58,12 @@ export class RegistryService {
 
   /**
    * REQ-REG-005, DEC-149: the check of every way a step is added (Create SPK, presets, change
-   * requests, system drafts); an inactive or unimplemented module stops new use.
+   * requests, system drafts); an inactive or unimplemented module stops new use. It runs on the
+   * caller's own transaction and holds the module row, so a deactivation cannot slip in between
+   * (ADR-0002 merge review 5).
    */
-  async assertOfferable(code: string): Promise<void> {
-    const rows = await this.unitOfWork.run(({ modules }) => modules.list());
-    const row = rows.find((candidate) => candidate.code === code);
+  async assertOfferable(gateways: Pick<RegistryGateways, 'modules'>, code: string): Promise<void> {
+    const row = await gateways.modules.lock(code);
     if (!row) throw new ModuleNotFoundError();
     if (!this.toItem(row).offered) throw new ModuleUnavailableError();
   }

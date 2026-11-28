@@ -103,13 +103,21 @@ describe('TASK-203 registry service (REQ-REG-002, REQ-REG-005, DEC-148)', () => 
     expect(items[0]).not.toHaveProperty('id');
   });
 
-  it('REQ-REG-005 assertOfferable refuses an inactive or unimplemented module "This module is not available for new steps."', async () => {
-    const { registry } = service([row('Dummy', { isActive: false }), row('Mechanic_Action')]);
-    await expect(registry.assertOfferable('Dummy')).rejects.toThrow(ModuleUnavailableError);
-    await expect(registry.assertOfferable('Mechanic_Action')).rejects.toThrow(
+  it('REQ-REG-005 merge review 5 assertOfferable checks on the transaction of its caller and refuses an inactive or unimplemented module', async () => {
+    const { fake, registry } = service([row('Dummy', { isActive: false }), row('Mechanic_Action')]);
+    let runs = 0;
+    fake.unitOfWork = { run: (work) => ((runs += 1), work(fake.gateways)) };
+    const caller = { modules: fake.gateways.modules };
+    await expect(registry.assertOfferable(caller, 'Dummy')).rejects.toThrow(ModuleUnavailableError);
+    await expect(registry.assertOfferable(caller, 'Mechanic_Action')).rejects.toThrow(
       'This module is not available for new steps.',
     );
-    await expect(registry.assertOfferable('Unknown_Module')).rejects.toThrow(ModuleNotFoundError);
+    await expect(registry.assertOfferable(caller, 'Unknown_Module')).rejects.toThrow(
+      ModuleNotFoundError,
+    );
+    fake.rows[0] = row('Dummy');
+    await expect(registry.assertOfferable(caller, 'Dummy')).resolves.toBeUndefined();
+    expect(runs).toBe(0);
   });
 
   it('REQ-REG-005 deactivate writes is_active false and one audit record with the reason', async () => {

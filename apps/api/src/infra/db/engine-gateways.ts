@@ -8,6 +8,7 @@ import type {
   StepGateway,
 } from '../../ports/engine.js';
 import type { FileStatus } from '../../ports/files.js';
+import type { TxHandle } from '../../ports/unit-of-work.js';
 import { DrizzleAuditGateway } from './account-gateways.js';
 import { DrizzleIdempotencyGateway } from './idempotency-gateway.js';
 import { DrizzleNotificationGateway } from './notification-gateways.js';
@@ -50,6 +51,7 @@ export class DrizzleStepGateway implements StepGateway {
         executorRoles: spkAssignments.executorRoles,
         assignedTo: spkAssignments.assignedTo,
         attemptNo: spkAssignments.attemptNo,
+        stepConfig: spkAssignments.stepConfig,
       })
       .from(spkAssignments)
       .innerJoin(assignmentModules, eq(assignmentModules.code, spkAssignments.module))
@@ -116,6 +118,8 @@ export class DrizzleStepGateway implements StepGateway {
 }
 
 export const engineGateways = (tx: DbTransaction): EngineGateways => ({
+  // DEC-149: only infra turns its transaction into the opaque handle and back.
+  tx: tx as unknown as TxHandle,
   steps: new DrizzleStepGateway(tx),
   audit: new DrizzleAuditGateway(tx),
   notifications: new DrizzleNotificationGateway(tx),

@@ -3,6 +3,7 @@ import type { AuditGateway } from './accounts.js';
 import type { FileStatus } from './files.js';
 import type { IdempotencyGateway } from './idempotency.js';
 import type { NotificationGateway } from './notifications.js';
+import type { TxHandle } from './unit-of-work.js';
 
 /** §9.6 spks: what the engine reads of the SPK it holds. */
 export interface EngineSpkRow {
@@ -25,6 +26,8 @@ export interface EngineStepRow {
   executorRoles: Role[];
   assignedTo: number | null;
   attemptNo: number;
+  /** The frozen step options, handed to the module's hooks (DEC-149). */
+  stepConfig: unknown;
 }
 
 /** §9.12 stored_files: what a submit checks of each file (8.1, DEC-139). */
@@ -57,6 +60,8 @@ export interface StepGateway {
 }
 
 export interface EngineGateways {
+  /** DEC-149: the transaction itself, opaque, on which a module's own gateways are built. */
+  tx: TxHandle;
   steps: StepGateway;
   audit: AuditGateway;
   notifications: NotificationGateway;

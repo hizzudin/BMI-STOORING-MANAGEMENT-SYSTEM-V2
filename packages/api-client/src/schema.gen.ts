@@ -659,6 +659,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/assignment-modules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Every module row with whether it is implemented and offered in Create SPK (REQ-REG-002, DEC-148) */
+        get: operations["listAssignmentModules"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assignment-modules/{code}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Deactivate a module with a reason: no new step may use it, old SPKs stay readable (REQ-REG-005); needs an Idempotency-Key */
+        post: operations["deactivateAssignmentModule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assignment-modules/{code}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Activate a module again with a reason (REQ-REG-005); needs an Idempotency-Key */
+        post: operations["activateAssignmentModule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/approvals/count": {
         parameters: {
             query?: never;
@@ -1699,6 +1750,47 @@ export interface components {
         };
         StepSubmitRequest: {
             fileIds: number[];
+        };
+        AssignmentModuleListResponse: {
+            items: components["schemas"]["AssignmentModule"][];
+        };
+        AssignmentModule: {
+            code: string;
+            name: string;
+            uiComponent: string;
+            configSchema: {
+                fields: {
+                    key: string;
+                    label: string;
+                    /** @enum {string} */
+                    type: "text" | "number" | "boolean" | "select";
+                    required: boolean;
+                    options?: string[];
+                }[];
+            } | null;
+            creationSchema: {
+                required: boolean;
+                lists: ("parts_with_quantity" | "parts" | "tyre_sizes_with_quantity" | "parts_to_check" | "vehicle_document")[];
+                fields: {
+                    key: string;
+                    label: string;
+                    /** @enum {string} */
+                    type: "text" | "number" | "boolean" | "select";
+                    required: boolean;
+                    options?: string[];
+                }[];
+            } | null;
+            executorRoles: ("Planner" | "Mechanic" | "Warehouse_Manager" | "Supervisor" | "GM" | "System_Admin" | "Access_Manager" | "Driver" | "Field_Coordinator" | "Accounting")[];
+            /** @enum {string} */
+            costKind: "Parts" | "Labor" | "Document" | "None";
+            tracksWorkTime: boolean;
+            isActive: boolean;
+            sortOrder: number;
+            implemented: boolean;
+            offered: boolean;
+        };
+        ModuleStatusChangeRequest: {
+            reason: string;
         };
         ApprovalCountResponse: {
             count: number;
@@ -3100,6 +3192,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StepSubmitResponse"];
+                };
+            };
+        };
+    };
+    listAssignmentModules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Every module row with whether it is implemented and offered in Create SPK (REQ-REG-002, DEC-148) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentModuleListResponse"];
+                };
+            };
+        };
+    };
+    deactivateAssignmentModule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModuleStatusChangeRequest"];
+            };
+        };
+        responses: {
+            /** @description Deactivate a module with a reason: no new step may use it, old SPKs stay readable (REQ-REG-005); needs an Idempotency-Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentModule"];
+                };
+            };
+        };
+    };
+    activateAssignmentModule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModuleStatusChangeRequest"];
+            };
+        };
+        responses: {
+            /** @description Activate a module again with a reason (REQ-REG-005); needs an Idempotency-Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentModule"];
                 };
             };
         };

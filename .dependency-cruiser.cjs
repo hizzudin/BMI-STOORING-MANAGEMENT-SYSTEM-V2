@@ -32,6 +32,42 @@ module.exports = {
       to: { path: '^apps/api/src/modules/', pathNot: '^apps/api/src/modules/$1/' },
     },
     {
+      name: 'core-never-imports-a-module',
+      comment: 'DEC-149: core reaches a module only through the ModuleCatalog port.',
+      severity: 'error',
+      from: { path: '^apps/api/src/core/' },
+      to: { path: '^apps/api/src/modules/' },
+    },
+    {
+      name: 'core-never-imports-the-engine',
+      comment:
+        'design.md §3: core imports only @bmi/shared and ports/; the engine builds on core, never the reverse.',
+      severity: 'error',
+      from: { path: '^apps/api/src/core/' },
+      to: { path: '^apps/api/src/engine/' },
+    },
+    {
+      name: 'only-the-composition-root-imports-the-module-list',
+      comment: 'DEC-149: only app.module.ts and tests import the module list (app.modules.ts).',
+      severity: 'error',
+      from: {
+        path: '^apps/api/src/',
+        pathNot: ['^apps/api/src/app\\.module\\.ts$', '\\.(spec|test)\\.ts$'],
+      },
+      to: { path: '^apps/api/src/app\\.modules\\.ts$' },
+    },
+    {
+      name: 'only-the-composition-root-imports-a-module',
+      comment:
+        'DEC-149: the module list lives in app.modules.ts; tests are the only other importers.',
+      severity: 'error',
+      from: {
+        path: '^apps/api/src/',
+        pathNot: ['^apps/api/src/(app\\.modules\\.ts|modules/)', '\\.(spec|test)\\.ts$'],
+      },
+      to: { path: '^apps/api/src/modules/' },
+    },
+    {
       name: 'http-never-imports-infra',
       comment: 'design.md §3: controllers call services; adapters stay behind the ports.',
       severity: 'error',

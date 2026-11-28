@@ -1348,6 +1348,100 @@
         }
       }
     },
+    "/assignment-modules": {
+      "get": {
+        "operationId": "listAssignmentModules",
+        "summary": "Every module row with whether it is implemented and offered in Create SPK (REQ-REG-002, DEC-148)",
+        "responses": {
+          "200": {
+            "description": "Every module row with whether it is implemented and offered in Create SPK (REQ-REG-002, DEC-148)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentModuleListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/assignment-modules/{code}/deactivate": {
+      "post": {
+        "operationId": "deactivateAssignmentModule",
+        "summary": "Deactivate a module with a reason: no new step may use it, old SPKs stay readable (REQ-REG-005); needs an Idempotency-Key",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModuleStatusChangeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deactivate a module with a reason: no new step may use it, old SPKs stay readable (REQ-REG-005); needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentModule"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/assignment-modules/{code}/activate": {
+      "post": {
+        "operationId": "activateAssignmentModule",
+        "summary": "Activate a module again with a reason (REQ-REG-005); needs an Idempotency-Key",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModuleStatusChangeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Activate a module again with a reason (REQ-REG-005); needs an Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentModule"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/approvals/count": {
       "get": {
         "operationId": "countApprovals",
@@ -6190,6 +6284,252 @@
         },
         "required": [
           "fileIds"
+        ],
+        "additionalProperties": false
+      },
+      "AssignmentModuleListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssignmentModule"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "AssignmentModule": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Za-z_]{1,39}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "uiComponent": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "configSchema": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "text",
+                            "number",
+                            "boolean",
+                            "select"
+                          ]
+                        },
+                        "required": {
+                          "type": "boolean"
+                        },
+                        "options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "label",
+                        "type",
+                        "required"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "fields"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "creationSchema": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "required": {
+                    "type": "boolean"
+                  },
+                  "lists": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "parts_with_quantity",
+                        "parts",
+                        "tyre_sizes_with_quantity",
+                        "parts_to_check",
+                        "vehicle_document"
+                      ]
+                    }
+                  },
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 40
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "text",
+                            "number",
+                            "boolean",
+                            "select"
+                          ]
+                        },
+                        "required": {
+                          "type": "boolean"
+                        },
+                        "options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "label",
+                        "type",
+                        "required"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "required",
+                  "lists",
+                  "fields"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "executorRoles": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Planner",
+                "Mechanic",
+                "Warehouse_Manager",
+                "Supervisor",
+                "GM",
+                "System_Admin",
+                "Access_Manager",
+                "Driver",
+                "Field_Coordinator",
+                "Accounting"
+              ]
+            }
+          },
+          "costKind": {
+            "type": "string",
+            "enum": [
+              "Parts",
+              "Labor",
+              "Document",
+              "None"
+            ]
+          },
+          "tracksWorkTime": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "implemented": {
+            "type": "boolean"
+          },
+          "offered": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "uiComponent",
+          "configSchema",
+          "creationSchema",
+          "executorRoles",
+          "costKind",
+          "tracksWorkTime",
+          "isActive",
+          "sortOrder",
+          "implemented",
+          "offered"
+        ],
+        "additionalProperties": false
+      },
+      "ModuleStatusChangeRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
         ],
         "additionalProperties": false
       },

@@ -506,12 +506,12 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:hexagonal-architecture, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `unit @bmi/api "module contract"`; `int "REQ-REG-002|REQ-REG-005|REQ-REG-006"`; regression check of CreateSPK
 - [ ] **TASK-215** Settings: Modules screen (name, palette order, deactivate and activate) [REQ-REG-008]
-  - _Scope_: DEC-148: draws the SettingsModules artboard, approved by the owner before the screen is built, adds its 7.3 row and action map rows, then the name and palette order edit and the screen over the TASK-203 routes.
-  - _Rules_: DEC-148
+  - _Scope_: DEC-148: draws the SettingsModules artboard, approved by the owner before the screen is built, adds its 7.3 row and action map rows, then the name and palette order edit and the screen over the TASK-203 routes. DEC-150: web only, three statuses, open SPKs as a count and linked numbers, a unique name, the order by drag and Move up and Move down saved whole with Save order, migration 0016 adds the optimistic lock to assignment_modules.
+  - _Rules_: DEC-148, DEC-150, NFR-03
   - _Data_: `assignment_modules` (§9.6), `audit_logs` (§9.2)
-  - _Read_: `docs/prd/areas/4.3-reg.md` (REQ-REG-008); `docs/prd/data-model.md` §9.2, §9.6 (assignment_modules, audit_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-148 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
+  - _Read_: `docs/prd/areas/4.3-reg.md` (REQ-REG-008); `docs/prd/data-model.md` §9.2, §9.6 (assignment_modules, audit_logs) and §9.13 for the TX named in _Rules_; `PRD.md` for DEC-148, DEC-150, NFR-03 (§2 roles, §3 machines, §5 rules, §8 NFRs, §11 decisions)
   - _Depends_: TASK-203, TASK-126
-  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
+  - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, ecc:hexagonal-architecture, nextjs-developer, impeccable, frontend-design-direction, ecc:frontend-patterns, ecc:react-patterns, ecc:react-performance, ecc:design-system, ecc:make-interfaces-feel-better, ecc:motion-foundations, ecc:frontend-a11y, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `qa` SettingsModules against its artboard (drawn and approved in this task)
 - [ ] **TASK-204** Step time: Start, Start earlier, Pause/Resume, external hand-over start, tracks_work_time, System Admin time correction [REQ-ENG-012, REQ-ENG-013, REQ-ENG-014, REQ-ENG-015, REQ-ENG-016, REQ-ENG-017]
   - _Scope_: Append-only step time log per attempt. DEC-140: also builds the CorrectStepTime dialog (moved from TASK-124).

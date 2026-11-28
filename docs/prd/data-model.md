@@ -397,7 +397,7 @@ CREATE TABLE breakdown_report_photos (        -- at least one per report (REQ-BR
 ## 9.6 SPKs, steps and approvals
 
 ```sql
-CREATE TABLE assignment_modules (             -- module registry (REQ-REG-002)
+CREATE TABLE assignment_modules (             -- OL (DEC-150); module registry (REQ-REG-002)
   code VARCHAR(40) NOT NULL UNIQUE,           -- Stock, Part_Purchase, Mechanic_Action, Mobilisasi (MBL), Part_Replacement, Document, Part_Check (DEC-88), future modules
   name VARCHAR(100) NOT NULL,
   description TEXT,

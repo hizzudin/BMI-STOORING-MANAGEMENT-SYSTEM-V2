@@ -90,13 +90,32 @@ describe('TASK-203 the engine runs registered modules (REQ-REG-006, DEC-148, DEC
     ['Hooked_Refuse_Input', 400, 'The odometer is missing.'],
     ['Hooked_Refuse_Conflict', 409, 'The part was taken.'],
   ])(
-    'REQ-REG-006 validateSubmit of %s refuses with its status and sentence',
+    'REQ-REG-006 validateSubmit of %s refuses with its status and sentence, and leaves nothing behind',
     async (module, status, sentence) => {
       const { spkId, stepIds } = await insertSpkWithSteps(vehicleId, planner, [module]);
-      const response = await submitStep(engine, 'joko', spkId, stepIds[0] ?? 0, key());
+      const { rows } = await testPool().query<{ id: string }>(
+        `INSERT INTO stored_files (storage_key, profile, mime_type, original_name, status, sha256, uploaded_by)
+         VALUES ($1, 'Photo', 'image/jpeg', 'gauge.jpg', 'Ready', $2, $3) RETURNING id`,
+        [`test/reg-hooks/${module}.jpg`, 'a'.repeat(64), mechanic],
+      );
+      const fileId = Number(rows[0]?.id);
+      const refusedKey = key();
+      const response = await submitStep(engine, 'joko', spkId, stepIds[0] ?? 0, refusedKey, [
+        fileId,
+      ]);
       expect(response.status).toBe(status);
       expect(await messageOf(response)).toBe(sentence);
       expect(await stepStatus(stepIds[0] ?? 0)).toBe('Open');
+      // Merge review 10: the refusal rolls back like a throw.
+      expect(
+        await count(
+          `SELECT count(*) AS n FROM stored_files WHERE id = $1 AND attached_at IS NOT NULL`,
+          [fileId],
+        ),
+      ).toBe(0);
+      expect(
+        await count(`SELECT count(*) AS n FROM idempotency_keys WHERE idem_key = $1`, [refusedKey]),
+      ).toBe(0);
     },
   );
 

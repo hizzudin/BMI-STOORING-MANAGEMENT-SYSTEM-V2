@@ -679,7 +679,7 @@ Verify shorthands: `unit <pkg> "<ids>"` = `pnpm --filter <pkg> test -t "<ids>"`;
   - _Skill_: nestjs-expert, api-designer, fullstack-guardian, ecc:nestjs-patterns, ecc:backend-patterns, ecc:api-design, ecc:error-handling, test-master, ecc:tdd-workflow, ecc:react-testing, ecc:e2e-testing, ecc:browser-qa
   - _Verify_: `int "REQ-INV-009"`
 - [ ] **TASK-306** Stock module: issue parts, scope lock, insufficient stock, per-SKU lock, one transaction [REQ-STK-001, REQ-STK-002, REQ-STK-003, REQ-STK-009, REQ-STK-011]
-  - _Scope_: Reference module (§8.3) with Mechanic Action; passes the module contract suite; concurrency tests for stock. DEC-126: also builds PartPicker, the Add part panel of the creation section of the Stock step.
+  - _Scope_: Reference module (§8.3) with Mechanic Action; passes the module contract suite; concurrency tests for stock. DEC-126: also builds PartPicker, the Add part panel of the creation section of the Stock step. DEC-148, DEC-149 (TASK-203 merge review): its migration upserts the Stock registry row (the trial seed already holds a code-less Stock row) and gives the contract suite a submit fixture; it decides the shape and enforcement of scope_rules by a DEC before its row is migrated.
   - _Acceptance_: AC-STK-003
   - _Rules_: BR-02, BR-06, BR-07, NFR-01, NFR-06, TX-03, BR-01, NFR-03, DEC-60, DEC-126
   - _Screens built here (visual target)_: [`Stock`](<../Design Artifact/steps/Stock.html#Stock>), [`PartPicker`](<../Design Artifact/spk/PartPicker.html#PartPicker>)

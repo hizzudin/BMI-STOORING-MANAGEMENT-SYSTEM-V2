@@ -590,7 +590,7 @@ Critical tier (§8.4, area REG). Reviewed before code under ADR-0002: an indepen
 
   Drizzle gains `version` (D-12 drift test). The seeds and the tests that insert several rows keep distinct names.
 - **Shared (`registry/index.ts`, `enums/index.ts`):**
-  - `NOT_FINAL_SPK_STATUSES` is derived once, `SPK_MACHINE.states` minus its `finals`, and `APPROVER_CANCEL_STATUSES` becomes that list (the T15 test keeps it equal). `OPEN_SPK_STATUSES` is not the right list, because it leaves out Rejected, which DEC-150 counts;
+  - `NOT_FINAL_SPK_STATUSES` in `enums` (which `machines` imports, so it cannot read the machine): `SPK_STATUSES` without Completed and Cancelled, kept equal to `SPK_MACHINE.states` minus its `finals` and to `APPROVER_CANCEL_STATUSES` by a test. `OPEN_SPK_STATUSES` is not the right list, because it leaves out Rejected, which DEC-150 counts;
   - `ModuleNameSchema`: trimmed, 1 to 100 characters;
   - `AssignmentModuleSchema` gains `version`, `status` (`Active` | `Inactive` | `Not_in_code`; Not in code when no contract has the code, whatever `is_active`), `openSpkCount`, `openSpks: { id, spkNumber }[]` (the newest 50) and `allowedActions`. `version` stays out of `ModuleRowSchema` and is added to `StoredModuleRow` (review 12);
   - `AssignmentModuleListResponseSchema` gains the page's `allowedActions`;

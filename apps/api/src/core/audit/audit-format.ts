@@ -21,6 +21,7 @@ export const AREA_OF: Readonly<Record<string, AuditArea>> = {
   document_type: 'Settings',
   system_mode: 'Settings',
   vendor: 'Settings',
+  assignment_module: 'Settings',
   audit_archive: 'Access',
 };
 

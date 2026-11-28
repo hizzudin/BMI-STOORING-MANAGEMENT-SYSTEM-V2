@@ -45,12 +45,15 @@ export interface ModuleCatalog {
   isImplemented(code: string): boolean;
 }
 
+/** A row as stored, with its id for the audit record. */
+export type StoredModuleRow = ModuleRow & { id: number };
+
 /** §9.6 assignment_modules, read and changed by the registry service. */
 export interface RegistryGateway {
   /** Every row, by `sort_order`, then `name`. */
-  list(): Promise<ModuleRow[]>;
+  list(): Promise<StoredModuleRow[]>;
   /** The row held for update; null when absent. */
-  lock(code: string): Promise<ModuleRow | null>;
+  lock(code: string): Promise<StoredModuleRow | null>;
   setActive(code: string, isActive: boolean, at: Date): Promise<void>;
 }
 

@@ -1,6 +1,6 @@
 import type { PermissionCode, SessionUser } from '@bmi/shared';
 import { describe, expect, it } from 'vitest';
-import { refusalOf, type Actor } from '../core/iam/actions.js';
+import { refusalOf, type Actor } from '../iam/actions.js';
 import { stepPolicies, type StepItem } from './step-policies.js';
 
 const actor = (codes: PermissionCode[]): Actor => ({

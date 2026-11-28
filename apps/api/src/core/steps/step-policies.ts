@@ -6,7 +6,7 @@ import {
   type SpkStatus,
   type StepAction,
 } from '@bmi/shared';
-import { NOT_ALLOWED, type Policies, type Rule } from '../core/iam/actions.js';
+import { NOT_ALLOWED, type Policies, type Rule } from '../iam/actions.js';
 
 /** One step of an SPK, as the step policies judge it. */
 export interface StepItem {

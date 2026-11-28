@@ -23,7 +23,7 @@ import type {
 } from '../../ports/spks.js';
 import type { UnitOfWork } from '../../ports/unit-of-work.js';
 import { ActionRefusedError, allowedActions, NOT_ALLOWED, type Actor } from '../iam/actions.js';
-import { stepPolicies, type StepItem } from '../../engine/step-policies.js';
+import { stepPolicies, type StepItem } from '../steps/step-policies.js';
 import type { ModuleCatalog } from '../../ports/registry.js';
 import { SPK_POLICIES, SpkNotFoundError } from './spk-service.js';
 

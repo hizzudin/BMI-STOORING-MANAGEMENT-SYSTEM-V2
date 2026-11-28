@@ -20,7 +20,12 @@ import type { IdempotentRequest } from '../ports/idempotency.js';
 import type { ModuleCatalog } from '../ports/registry.js';
 import type { UnitOfWork } from '../ports/unit-of-work.js';
 import { nextToOpen, spkMovesAfterSubmit } from './step-lifecycle.js';
-import { STEP_MESSAGES, stepPolicies, submitConflict, type StepItem } from './step-policies.js';
+import {
+  STEP_MESSAGES,
+  stepPolicies,
+  submitConflict,
+  type StepItem,
+} from '../core/steps/step-policies.js';
 
 /** HTTP 404. */
 export class StepNotFoundError extends Error {
